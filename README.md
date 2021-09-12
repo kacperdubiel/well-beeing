@@ -1,2 +1,2 @@
 # well-beeing
-Healthy web app - ZPI - 7th semester
+Healthy web app - SpringBoot - Vue - 7th semester (ZPI)
