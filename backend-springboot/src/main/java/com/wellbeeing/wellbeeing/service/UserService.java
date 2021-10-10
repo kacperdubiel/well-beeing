@@ -26,8 +26,10 @@ public class UserService implements UserDetailsService, UserServiceApi {
 
     @Override
     public boolean register(User user) {
-        User userToRegister = new User(user.getUsername(), user.getPassword());
-        userDAO.save(userToRegister);
-        return true;
+        if(userDAO.findUserByEmail(user.getUsername()).orElse(null) == null){
+            userDAO.save(new User(user.getUsername(), user.getPassword()));
+            return true;
+        }
+        return false;
     }
 }
