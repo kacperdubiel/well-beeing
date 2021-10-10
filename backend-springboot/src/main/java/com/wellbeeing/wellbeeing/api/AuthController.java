@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.api;
 
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationRequest;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationResponse;
+import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,7 +42,7 @@ public class AuthController {
                             authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         }
         catch (BadCredentialsException e){
-            return new ResponseEntity<>(new AuthenticationResponse("error"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ErrorMessage("Unauthorized", "error"), HttpStatus.UNAUTHORIZED);
         }
         final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
