@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service("userService")
@@ -27,7 +28,8 @@ public class UserService implements UserDetailsService, UserServiceApi {
     @Override
     public boolean register(User user) {
         if(userDAO.findUserByEmail(user.getUsername()).orElse(null) == null){
-            userDAO.save(new User(user.getUsername(), user.getPassword()));
+            userDAO.save(new User(user.getUsername(),
+                    BCrypt.hashpw(user.getPassword(), BCrypt.gensalt("$2a$"))));
             return true;
         }
         return false;
