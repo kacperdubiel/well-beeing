@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing;
+package com.wellbeeing;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
