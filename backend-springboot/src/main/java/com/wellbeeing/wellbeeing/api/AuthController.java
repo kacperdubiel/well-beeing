@@ -1,5 +1,7 @@
 package com.wellbeeing.wellbeeing.api;
 
+import com.wellbeeing.wellbeeing.domain.message.AuthenticationRequest;
+import com.wellbeeing.wellbeeing.domain.message.AuthenticationResponse;
 import com.wellbeeing.wellbeeing.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,36 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
-
-    private static class AuthenticationRequest{
-        private String email;
-        private String password;
-
-        public AuthenticationRequest(String email, String password){
-            this.email = email;
-            this.password = password;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-    }
-
-    private static class AuthenticationResponse{
-        private String jwt;
-
-        public AuthenticationResponse(String jwt){
-            this.jwt = jwt;
-        }
-
-        public String getJwt() {
-            return jwt;
-        }
-    }
 
     @Autowired
     private AuthenticationManager authenticationManager;
