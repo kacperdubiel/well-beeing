@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.api;
 
 import com.wellbeeing.wellbeeing.domain.User;
+import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.service.UserServiceApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,8 @@ public class UserController {
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> register(@RequestBody @NonNull User user){
-        userService.register(user);
+        if(!userService.register(user))
+            return new ResponseEntity<>(new ErrorMessage("Account already exist", "error"), HttpStatus.CONFLICT);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 }
