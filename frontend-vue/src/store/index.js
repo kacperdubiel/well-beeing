@@ -4,7 +4,7 @@ export default createStore({
     state () {
         return {
             // SOCIAL
-
+            token: ""
             // PHYSICAL ACTIVITY
 
             // NUTRITION
@@ -13,9 +13,13 @@ export default createStore({
         }
     },
     mutations: {
-
+        setToken (state, value) {
+            state.token = value;
+        }
     },
     getters: {
-
+        getToken (state) {
+            return state.token;
+        }
     }
 });
