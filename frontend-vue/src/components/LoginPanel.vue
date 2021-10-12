@@ -1,11 +1,20 @@
 <template>
     <div id="panel">
-        <div class="row mb-4">
+        <div class="row text-end align-content-end">
+            <p v-if="wrongData" class="has-error">
+                Niepoprawne dane logowania!
+            </p>
+        </div>
+
+        <div class="row mb-3">
             <input
             type="text"
             placeholder="Adres-email"
             v-model="email"
             class="login-input"
+            :class="{ 'has-error': wrongData}"
+            @focus="clearStatus"
+            @keypress="clearStatus"
             />
 
         </div>
@@ -15,15 +24,15 @@
             placeholder="Hasło"
             v-model="password"
             class="login-input"
+            :class="{ 'has-error': wrongData}"
+            @focus="clearStatus"
+            @keypress="clearStatus"
             />
         </div>
-        <div class="row">
+        <div class="row mb-5">
             <button id="login-btn" class="account-btn" @click="login">
                 Zaloguj się
             </button>
-        </div>
-        <div class="row text-end">
-            <p>Nie pamiętasz hasła?</p>
         </div>
         <div class="row">
             <button id="register-btn" class="account-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -80,7 +89,8 @@ export default {
             email: "",
             password: "",
             newEmail: "",
-            newPassword: ""
+            newPassword: "",
+            wrongData: false
         }
     },
     methods: {
@@ -94,7 +104,14 @@ export default {
             this.axios.post('http://localhost:8090/' + 'authenticate', data).then((response) => {
                 this.$store.commit('setToken', response.data['jwt']);
                 console.log(this.$store.getters.getToken)
-            })
+                this.$router.push({name: 'Feed'})
+            }).catch(error => {
+                console.log(error.response);
+                this.wrongData = true
+                console.log(this.wrongData)
+            });
+            this.email = ""
+            this.password = ""
         },
         register() {
             console.log('email: ' + this.newEmail + ' pass: ' + this.newPassword)
@@ -105,7 +122,13 @@ export default {
             this.axios.post('http://localhost:8090/' + 'register', data).then((response) => {
                 console.log(response.data)
             })
+            this.newEmail = ""
+            this.newPassword = ""
+        },
+        clearStatus() {
+            this.wrongData = false
         }
+
     }
 }
 </script>
@@ -147,4 +170,15 @@ export default {
 #register-btn {
     background: var(--GREY2);
 }
+
+input.has-error {
+    border: 1px solid var(--INTENSE-PINK);
+}
+
+p.has-error {
+    color: var(--INTENSE-PINK);
+    font-weight: bold;
+}
+
+
 </style>
