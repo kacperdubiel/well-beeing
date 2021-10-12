@@ -1,5 +1,5 @@
 <template>
-    <div id="login-page">
+    <div id="login-page" class="container-fluid mw-100">
         <div class="row" id="logo">
             <div id="logo-rel">
                 <img id="bee-img" src="../assets/bee.png" alt="Bee image" >
