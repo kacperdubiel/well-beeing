@@ -24,4 +24,9 @@ public class UserController {
             return new ResponseEntity<>(new ErrorMessage("Account already exist", "error"), HttpStatus.CONFLICT);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
+
+    @RequestMapping(path = "/test", method = RequestMethod.GET)
+    public ResponseEntity<?> test(){
+        return new ResponseEntity<>("hlo", HttpStatus.OK);
+    }
 }
