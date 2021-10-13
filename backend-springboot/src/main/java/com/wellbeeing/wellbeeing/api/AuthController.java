@@ -34,15 +34,16 @@ public class AuthController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody @NonNull AuthenticationRequest authenticationRequest){
+
+        final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getEmail());
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+                            authenticationRequest.getEmail(), authenticationRequest.getPassword(), userDetails.getAuthorities()));
         }
         catch (BadCredentialsException e){
             return new ResponseEntity<>(new ErrorMessage("Unauthorized", "error"), HttpStatus.UNAUTHORIZED);
         }
-        final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }

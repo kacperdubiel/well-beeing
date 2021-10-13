@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "wb_role")
-public class Role{
+public class Role implements GrantedAuthority {
 
     public static final String BASIC_USER = "BASIC_USER";
     public static final String DOCTOR_USER = "DOCTOR_USER";
@@ -38,5 +38,10 @@ public class Role{
     }
     public ERole getRole() {
         return name;
+    }
+
+    @Override
+    public String getAuthority() {
+        return name.toString();
     }
 }

@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.api;
 
+import com.wellbeeing.wellbeeing.domain.ERole;
 import com.wellbeeing.wellbeeing.domain.User;
 import com.wellbeeing.wellbeeing.domain.Role;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
@@ -41,10 +42,6 @@ public class UserController {
         return new ResponseEntity<>("hlo", HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/doctor", method = RequestMethod.GET)
-    @RolesAllowed(Role.DOCTOR_USER)
-    public ResponseEntity<?> doctorTest(){
-        return new ResponseEntity<>("Doctor here", HttpStatus.OK);
-    }
+
 
 }

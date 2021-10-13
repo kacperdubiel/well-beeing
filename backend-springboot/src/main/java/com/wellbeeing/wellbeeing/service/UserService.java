@@ -61,6 +61,7 @@ public class UserService implements UserDetailsService, UserServiceApi {
         if (foundUser != null && foundRole != null){
             foundUser.addRole(foundRole);
             userDAO.save(foundUser);
+            System.out.println("Authorities" + foundUser.getAuthorities());
             return true;
         }
         return false;
