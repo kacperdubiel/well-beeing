@@ -3,11 +3,11 @@ package com.wellbeeing.wellbeeing.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +19,13 @@ public class User implements UserDetails {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name="user_roles",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
     public User() {
     }
 
@@ -27,6 +33,13 @@ public class User implements UserDetails {
         this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
+    }
+
+    public User(@JsonProperty("email") String email, @JsonProperty("password") String password, Set<Role> roles){
+        this.id = UUID.randomUUID();
+        this.email = email;
+        this.password = password;
+        this.setRoles(roles);
     }
 
     @Override
@@ -63,4 +76,14 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Role role) {this.roles.add(role);}
 }
