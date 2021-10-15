@@ -2,14 +2,9 @@ package com.wellbeeing.wellbeeing.domain.account;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 
-@Entity
-public class Profile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-    @Column
+public abstract class Profile {
     private String profileImgPath;
     @Column(nullable = false)
     private String firstName;
