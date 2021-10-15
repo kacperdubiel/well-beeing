@@ -1,13 +1,19 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
 public enum EActivityLevel {
-    VERY_LOW(1),
-    LOW(2),
-    MEDIUM(3),
-    HIGH(4),
-    VERY_HIGH(5)
+    VERY_LOW(1.2),
+    LOW(1.4),
+    MEDIUM(1.5),
+    HIGH(1.7),
+    VERY_HIGH(1.8)
     ;
 
-    EActivityLevel(int i) {
+    private double palFactor;
+
+    EActivityLevel(double palFactor) {
+    }
+
+    public double getPalFactor() {
+        return palFactor;
     }
 }
