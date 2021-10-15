@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.util;
 
-import com.wellbeeing.wellbeeing.service.UserService;
+import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

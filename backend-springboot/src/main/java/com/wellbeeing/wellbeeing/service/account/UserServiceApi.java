@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.service;
+package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.User;
 

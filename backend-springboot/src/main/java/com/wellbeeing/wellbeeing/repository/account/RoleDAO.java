@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.repository;
+package com.wellbeeing.wellbeeing.repository.account;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Role;
