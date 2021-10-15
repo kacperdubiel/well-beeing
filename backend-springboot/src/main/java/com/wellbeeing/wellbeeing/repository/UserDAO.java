@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.repository;
 
-import com.wellbeeing.wellbeeing.domain.User;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

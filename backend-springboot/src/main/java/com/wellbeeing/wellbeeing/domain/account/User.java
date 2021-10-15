@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.domain;
+package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
