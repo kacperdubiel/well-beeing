@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.api;
 
-import com.wellbeeing.wellbeeing.domain.ERole;
-import com.wellbeeing.wellbeeing.domain.Role;
+import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.service.RoleServiceApi;
 import lombok.NonNull;

@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.api;
 
-import com.wellbeeing.wellbeeing.domain.Role;
+import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationRequest;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationResponse;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController

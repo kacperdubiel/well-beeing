@@ -1,11 +1,6 @@
 package com.wellbeeing.wellbeeing.service;
 
-import com.wellbeeing.wellbeeing.domain.Role;
-import com.wellbeeing.wellbeeing.domain.User;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
-import java.util.Set;
+import com.wellbeeing.wellbeeing.domain.account.User;
 
 public interface UserServiceApi {
     public boolean register(User user);

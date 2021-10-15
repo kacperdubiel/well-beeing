@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.domain;
+package com.wellbeeing.wellbeeing.domain.account;
 
 import java.util.*;
 import java.util.stream.Collectors;
