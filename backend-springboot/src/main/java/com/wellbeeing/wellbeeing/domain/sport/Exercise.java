@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.wellbeeing.wellbeeing.domain.Role;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -40,11 +41,13 @@ public class Exercise {
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings;
 
-    public Exercise(String name, ExerciseInTraining... exerciseInTrainings) {
+    public Exercise(String name, float met) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;
+        this.met = met;
         this.exerciseType = EExerciseType.OTHER;
-        for(ExerciseInTraining exerciseInTraining : exerciseInTrainings) exerciseInTraining.setExercise(this);
-        this.exerciseInTrainings = Stream.of(exerciseInTrainings).collect(Collectors.toSet());
+        this.exerciseInTrainings = new HashSet<>();
+//        for(ExerciseInTraining exerciseInTraining : exerciseInTrainings) exerciseInTraining.setExercise(this);
+//        this.exerciseInTrainings = Stream.of(exerciseInTrainings).collect(Collectors.toSet());
     }
 
     public Exercise() {
@@ -96,5 +99,41 @@ public class Exercise {
 
     public void setMet(float met) {
         this.met = met;
+    }
+
+    public Set<SportLabel> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Set<SportLabel> labels) {
+        this.labels = labels;
+    }
+
+    public Set<ExerciseInTraining> getExerciseInTrainings() {
+        return exerciseInTrainings;
+    }
+
+    public void setExerciseInTrainings(Set<ExerciseInTraining> exerciseInTrainings) {
+        this.exerciseInTrainings = exerciseInTrainings;
+    }
+
+    public int countCaloriesPerHour(int user_weight) {
+        //METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute
+        return (int) (60*(met*3.5*user_weight/200));
+    }
+
+    public void addTrainingToExercise(ExerciseInTraining training) {
+        exerciseInTrainings.add(training);
+    }
+
+    @Override
+    public String toString() {
+        return "Exercise{" +
+                "exercise_id=" + exercise_id +
+                ", name='" + name + '\'' +
+                ", exerciseType=" + exerciseType +
+                ", description='" + description + '\'' +
+                ", met=" + met +
+                '}';
     }
 }

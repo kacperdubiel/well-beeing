@@ -3,8 +3,11 @@ package com.wellbeeing.wellbeeing.domain.sport;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 @Data
 @Entity
 public class Training {
@@ -22,14 +25,17 @@ public class Training {
     private String instruction;
 
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
-    private Set<ExerciseInTraining> exerciseInTrainingSet = new HashSet<>();
+    private Set<ExerciseInTraining> exerciseInTrainings = new HashSet<>();
 
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<TrainingPosition> trainingPlans = new HashSet<>();
 
-    public Training(String name, ETrainingDifficulty difficulty) {
+    public Training(String name, ETrainingDifficulty difficulty) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;
         this.trainingDifficulty = difficulty;
+        this.exerciseInTrainings = new HashSet<>();
+//        for(ExerciseInTraining exerciseInTraining : exerciseInTrainings) exerciseInTraining.setTraining(this);
+//        this.exerciseInTrainings = Stream.of(exerciseInTrainings).collect(Collectors.toSet());
     }
 
     public Training() {
@@ -74,5 +80,31 @@ public class Training {
 
     public void setInstruction(String instruction) {
         this.instruction = instruction;
+    }
+
+    public int caloriesBurned(int user_weight) {
+        return this.exerciseInTrainings.stream().map(ex -> ex.countCaloriesPerExerciseDuration(user_weight)).mapToInt(num -> num).sum();
+    }
+
+    @Override
+    public String toString() {
+        return "Training{" +
+                "training_id=" + training_id +
+                ", name='" + name + '\'' +
+                ", trainingDifficulty=" + trainingDifficulty +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
+    public Set<ExerciseInTraining> getExerciseInTrainingSet() {
+        return exerciseInTrainings;
+    }
+
+    public void setExerciseInTrainingSet(Set<ExerciseInTraining> exerciseInTrainingSet) {
+        this.exerciseInTrainings = exerciseInTrainingSet;
+    }
+
+    public void addExerciseToTraining(ExerciseInTraining exercise) {
+        exerciseInTrainings.add(exercise);
     }
 }

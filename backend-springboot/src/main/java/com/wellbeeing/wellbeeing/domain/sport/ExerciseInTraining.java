@@ -26,13 +26,27 @@ public class ExerciseInTraining {
     private Training training;
     @Column(name = "reps")
     private int repetitions;
+    @Column(name = "series")
+    private Integer series;
     @Column(name = "time_in_seconds")
     private int time_seconds;
 
-    public ExerciseInTraining(Training training, int repetitions, int time_seconds) {
+    public ExerciseInTraining(Training training, Exercise exercise, int repetitions, int time_seconds, int series) {
         this.training = training;
+        this.exercise = exercise;
         this.repetitions = repetitions;
         this.time_seconds = time_seconds;
+        this.series = series;
+        this.training.addExerciseToTraining(this);
+        this.exercise.addTrainingToExercise(this);
+    }
+
+    public int getSeries() {
+        return series;
+    }
+
+    public void setSeries(int series) {
+        this.series = series;
     }
 
     @Override
@@ -81,5 +95,21 @@ public class ExerciseInTraining {
 
     public void setTime_seconds(int time_seconds) {
         this.time_seconds = time_seconds;
+    }
+
+    public int countCaloriesPerExerciseDuration(int user_weight) {
+        //METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute
+        return (int) ((time_seconds*series)/3600d*(exercise.getMet()*3.5*user_weight/200));
+    }
+
+    @Override
+    public String toString() {
+        return "ExerciseInTraining{" +
+                "id=" + id +
+                ", exercise=" + exercise +
+                ", training=" + training +
+                ", repetitions=" + repetitions +
+                ", time_seconds=" + time_seconds +
+                '}';
     }
 }
