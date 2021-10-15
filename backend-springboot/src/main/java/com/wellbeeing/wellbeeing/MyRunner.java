@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing;
 
-import com.wellbeeing.wellbeeing.domain.User;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;

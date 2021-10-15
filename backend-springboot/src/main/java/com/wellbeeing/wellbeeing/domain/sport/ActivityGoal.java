@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
-import com.wellbeeing.wellbeeing.domain.User;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
