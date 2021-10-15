@@ -21,4 +21,24 @@ public class Ailment {
     private List<NutritionLabel> allowedLabels;
     @Column
     private int changeInCalories;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public EAilmentType getType() {
+        return type;
+    }
+
+    public List<NutritionLabel> getAllowedLabels() {
+        return allowedLabels;
+    }
+
+    public int getChangeInCalories() {
+        return changeInCalories;
+    }
 }

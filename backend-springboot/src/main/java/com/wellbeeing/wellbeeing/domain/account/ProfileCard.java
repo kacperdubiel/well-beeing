@@ -36,7 +36,12 @@ public class ProfileCard {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "preferred_diet_id", referencedColumnName = "id")
     private Diet preferredDiet;
+    @Column
     private EActivityLevel activityLevel;
+    @Column
+    private int trainingActivityTimePerWeek;
+    @Column
+    private EDietGoal dietGoal;
     @OneToOne(mappedBy = "profileCard", fetch = FetchType.LAZY, optional = false)
     private Profile profile;
     @Column
@@ -91,5 +96,13 @@ public class ProfileCard {
 
     public ProfileDietCalculation getDietCalculations() {
         return dietCalculations;
+    }
+
+    public int getTrainingActivityTimePerWeek() {
+        return trainingActivityTimePerWeek;
+    }
+
+    public EDietGoal getDietGoal() {
+        return dietGoal;
     }
 }
