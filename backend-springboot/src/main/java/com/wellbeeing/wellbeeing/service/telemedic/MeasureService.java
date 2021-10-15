@@ -2,7 +2,7 @@ package com.wellbeeing.wellbeeing.service.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
-import com.wellbeeing.wellbeeing.repository.UserDAO;
+import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.telemedic.MeasureDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +33,7 @@ public class MeasureService implements MeasureServiceApi {
         if(user == null)
             return null;
         else
-            return user.getMeasures();
+            return user.getProfile().getMeasures();
     }
 
     @Override
