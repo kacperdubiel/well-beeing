@@ -3,7 +3,7 @@ package com.wellbeeing.wellbeeing.api;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
-import com.wellbeeing.wellbeeing.service.RoleServiceApi;
+import com.wellbeeing.wellbeeing.service.account.RoleServiceApi;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;

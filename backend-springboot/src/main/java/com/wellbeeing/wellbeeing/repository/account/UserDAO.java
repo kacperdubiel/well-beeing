@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.repository;
+package com.wellbeeing.wellbeeing.repository.account;
 
 import com.wellbeeing.wellbeeing.domain.account.User;
 import org.springframework.data.jpa.repository.JpaRepository;

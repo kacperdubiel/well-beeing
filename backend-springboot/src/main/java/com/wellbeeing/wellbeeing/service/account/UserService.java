@@ -1,10 +1,10 @@
-package com.wellbeeing.wellbeeing.service;
+package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.account.User;
-import com.wellbeeing.wellbeeing.repository.RoleDAO;
-import com.wellbeeing.wellbeeing.repository.UserDAO;
+import com.wellbeeing.wellbeeing.repository.account.RoleDAO;
+import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
