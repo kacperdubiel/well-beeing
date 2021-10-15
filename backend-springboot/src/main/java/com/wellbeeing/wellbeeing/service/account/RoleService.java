@@ -1,7 +1,7 @@
-package com.wellbeeing.wellbeeing.service;
+package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Role;
-import com.wellbeeing.wellbeeing.repository.RoleDAO;
+import com.wellbeeing.wellbeeing.repository.account.RoleDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
