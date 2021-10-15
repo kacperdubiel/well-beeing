@@ -24,6 +24,9 @@ public class Training {
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainingSet = new HashSet<>();
 
+    @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
+    private Set<TrainingPosition> trainingPlans = new HashSet<>();
+
     public Training(String name, ETrainingDifficulty difficulty) {
         this.name = name;
         this.trainingDifficulty = difficulty;

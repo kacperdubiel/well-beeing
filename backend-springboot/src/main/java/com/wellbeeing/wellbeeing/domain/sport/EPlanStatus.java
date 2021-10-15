@@ -1,8 +1,9 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
-public enum ETrainingStatus {
+public enum EPlanStatus {
     STARTED,
     PLANNED,
     COMPLETED,
+    TEMPLATE,
     SCRATCH //roboczy
 }

@@ -1,6 +1,8 @@
 package com.wellbeeing.wellbeeing.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,6 +28,13 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<TrainingPlan> trainingPlans = new HashSet<>();
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    private Set<TrainingPlan> createdTrainingPlans = new HashSet<>();
+
     public User() {
     }
 
