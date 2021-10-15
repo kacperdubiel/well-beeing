@@ -34,7 +34,7 @@ public class ProfileDietCalculationService implements ProfileDietCalculationServ
 
     public EBMIResult decideBmiResultType(double bmiValue, int age){
             if(bmiValue < 18.5)
-                return EBMIResult.HEALTHY;
+                return EBMIResult.UNDERWEIGHT;
             if(bmiValue < 24.99)
                 return EBMIResult.HEALTHY;
             if(bmiValue < 29.99)
