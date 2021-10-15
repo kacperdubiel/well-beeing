@@ -13,7 +13,9 @@ public class ProfileDietCalculation {
     @Column(nullable = false)
     private EBMIResult bmiResultType;
     @Column(nullable = false)
-    private int suggestedCalories;
+    private double basicMetabolism;
+    @Column(nullable = false)
+    private double suggestedCalories;
     @Column
     private int suggestedCarbohydrates;
     @Column
