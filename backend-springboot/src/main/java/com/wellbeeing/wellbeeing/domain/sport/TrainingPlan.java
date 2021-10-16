@@ -1,5 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
 
@@ -13,11 +15,12 @@ public class TrainingPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long trainingPlan_id;
 
-    @Column(name = "creator")
-    private Trainer creator;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator")
+    private TrainerProfile creator;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner")
-    private User owner;
+    private Profile owner;
 
     @Column(name = "year")
     private int year;
@@ -35,11 +38,19 @@ public class TrainingPlan {
 
     }
 
-    public TrainingPlan(User owner, int year, int week, String details) {
+    public TrainingPlan(Profile owner, int year, int week, String details) {
         this.owner = owner;
         this.year = year;
         this.week = week;
         this.details = details;
+    }
+
+    public TrainingPlan(Profile owner, int year, int week, String details, TrainerProfile creator) {
+        this.owner = owner;
+        this.year = year;
+        this.week = week;
+        this.details = details;
+        this.creator = creator;
     }
 
     public long getTrainingPlan_id() {

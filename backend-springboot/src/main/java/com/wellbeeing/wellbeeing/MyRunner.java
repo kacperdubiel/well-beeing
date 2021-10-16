@@ -1,8 +1,12 @@
 package com.wellbeeing.wellbeeing;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.sport.*;
-import com.wellbeeing.wellbeeing.repository.UserDAO;
+import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
+import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
+import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import sun.plugin.util.UserProfile;
 
 import java.time.Year;
 import java.util.Arrays;
@@ -39,6 +44,12 @@ public class MyRunner implements CommandLineRunner {
     @Autowired
     @Qualifier("activityGoalDAO")
     private ActivityGoalDAO activityGoalDAO;
+    @Autowired
+    @Qualifier("profileDAO")
+    private ProfileDAO profileDAO;
+    @Autowired
+    @Qualifier("trainerDAO")
+    private TrainerDAO trainerDAO;
 
     @Override
     public void run(String... args) throws Exception {
@@ -47,6 +58,8 @@ public class MyRunner implements CommandLineRunner {
         trainingPlanDAO.deleteAll();
         trainingPositionDAO.deleteAll();
         activityGoalDAO.deleteAll();
+//        profileDAO.deleteAll();
+//        trainerDAO.deleteAll();
         // Training and exercises
         Training training_a = new Training("Training_A", ETrainingDifficulty.MEDIUM);
         Training training_b = new Training("Training_B", ETrainingDifficulty.HARD);
@@ -63,7 +76,15 @@ public class MyRunner implements CommandLineRunner {
 
         //Training plan
         User abcUser = userDAO.findUserByEmail("abc@abc.com").orElse(null);
-        TrainingPlan trainingPlan_1 = new TrainingPlan(abcUser, 2021, 33, "Do details");
+        System.out.println(abcUser);
+        assert abcUser != null;
+        Profile abcUserProfile = new Profile("Aaa", "Bbb", new Date(), abcUser);
+        profileDAO.save(abcUserProfile);
+
+        TrainerProfile trainerAbcUserProfile = new TrainerProfile(abcUserProfile);
+        trainerDAO.save(trainerAbcUserProfile);
+
+        TrainingPlan trainingPlan_1 = new TrainingPlan(abcUserProfile, 2021, 33, "Do details", trainerAbcUserProfile);
         trainingPlanDAO.save(trainingPlan_1);
 
         trainingPositionDAO.save(new TrainingPosition(training_a, trainingPlan_1, new Date()));
@@ -71,7 +92,7 @@ public class MyRunner implements CommandLineRunner {
         System.out.println("Print trainings " + exercise_1.getExerciseInTrainings());
         System.out.println("Print exercises " + training_a.getExerciseInTrainingSet());
         //Activity goal
-        ActivityGoal activityGoal_1 = new ActivityGoal(EGoalType.LOSE_WEIGHT, 10f, "", new Date(2021-1900, Calendar.FEBRUARY, 15), abcUser);
+        ActivityGoal activityGoal_1 = new ActivityGoal(EGoalType.LOSE_WEIGHT, 10f, "", new Date(2021-1900, Calendar.FEBRUARY, 15), abcUserProfile);
         activityGoalDAO.save(activityGoal_1);
 
         System.out.println("Calories from exercise 1 for 80kg person " + exercise_1.countCaloriesPerHour(80));

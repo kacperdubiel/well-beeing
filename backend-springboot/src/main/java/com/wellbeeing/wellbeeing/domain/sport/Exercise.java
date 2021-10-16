@@ -1,8 +1,8 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
-import com.wellbeeing.wellbeeing.domain.Role;
+import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
-import com.wellbeeing.wellbeeing.domain.User;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
 
 import javax.persistence.*;

@@ -29,15 +29,9 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+    @OneToOne(mappedBy="profileUser", cascade = CascadeType.ALL)
+    private Profile profile;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private Set<TrainingPlan> trainingPlans = new HashSet<>();
-
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
-    private Set<TrainingPlan> createdTrainingPlans = new HashSet<>();
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private Set<ActivityGoal> activityGoals = new HashSet<>();
 
     public User() {
     }
@@ -99,4 +93,23 @@ public class User implements UserDetails {
     }
 
     public void addRole(Role role) {this.roles.add(role);}
+
+    public UUID getId() {
+        return id;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

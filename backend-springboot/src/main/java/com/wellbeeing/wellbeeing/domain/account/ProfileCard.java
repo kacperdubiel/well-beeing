@@ -26,24 +26,24 @@ public class ProfileCard {
             inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     )
     private List<Ailment> ailments;
-    @ManyToMany
-    @JoinTable(
-            name = "profile_card_disliked_product",
-            joinColumns = @JoinColumn(name = "disliked_product_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
-    )
-    private List<Product> dislikedProducts;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "preferred_diet_id", referencedColumnName = "id")
-    private Diet preferredDiet;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "profile_card_disliked_product",
+//            joinColumns = @JoinColumn(name = "disliked_product_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
+//    )
+//    private List<Product> dislikedProducts;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "preferred_diet_id", referencedColumnName = "id")
+//    private Diet preferredDiet;
     private EActivityLevel activityLevel;
     @OneToOne(mappedBy = "profileCard", fetch = FetchType.LAZY, optional = false)
     private Profile profile;
     @Column
     private EGlycemicIndexLevel glycemicIndexLevel;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
-    private ProfileDietCalculation dietCalculations;
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+//    @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
+//    private ProfileDietCalculation dietCalculations;
 
     public UUID getId() {
         return id;
@@ -69,13 +69,13 @@ public class ProfileCard {
         return ailments;
     }
 
-    public List<Product> getDislikedProducts() {
-        return dislikedProducts;
-    }
-
-    public Diet getPreferredDiet() {
-        return preferredDiet;
-    }
+//    public List<Product> getDislikedProducts() {
+//        return dislikedProducts;
+//    }
+//
+//    public Diet getPreferredDiet() {
+//        return preferredDiet;
+//    }
 
     public EActivityLevel getActivityLevel() {
         return activityLevel;
@@ -89,7 +89,7 @@ public class ProfileCard {
         return glycemicIndexLevel;
     }
 
-    public ProfileDietCalculation getDietCalculations() {
-        return dietCalculations;
-    }
+//    public ProfileDietCalculation getDietCalculations() {
+//        return dietCalculations;
+//    }
 }

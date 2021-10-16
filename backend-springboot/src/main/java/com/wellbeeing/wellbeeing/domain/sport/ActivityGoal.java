@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.NoArgsConstructor;
 
@@ -30,9 +31,9 @@ public class ActivityGoal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner")
-    private User owner;
+    private Profile owner;
 
-    public ActivityGoal(EGoalType goalType, float numericValue, String textValue, Date goalTargetDate, User owner) {
+    public ActivityGoal(EGoalType goalType, float numericValue, String textValue, Date goalTargetDate, Profile owner) {
         this.goalType = goalType;
         this.numericValue = numericValue;
         this.textValue = textValue;
@@ -88,11 +89,11 @@ public class ActivityGoal {
         this.goalTargetDate = goalTargetDate;
     }
 
-    public User getOwner() {
+    public Profile getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(Profile owner) {
         this.owner = owner;
     }
 }
