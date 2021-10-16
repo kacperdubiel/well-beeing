@@ -11,14 +11,16 @@ import java.util.UUID;
 @Table(name = "measureTypes")
 public class MeasureType {
     @Id
+    @GeneratedValue
     private UUID id;
+
     @Column(name = "name")
     private String name;
     @Column(name = "unit")
     private String unit;
 
     @JsonIgnore
-    @OneToMany (mappedBy = "measureType")
+    @OneToMany(mappedBy = "measureType")
     private List<Measure> measures;
 
     public MeasureType() {
@@ -54,6 +56,14 @@ public class MeasureType {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public List<Measure> getMeasures() {
+        return measures;
+    }
+
+    public void setMeasures(List<Measure> measures) {
+        this.measures = measures;
     }
 }
 

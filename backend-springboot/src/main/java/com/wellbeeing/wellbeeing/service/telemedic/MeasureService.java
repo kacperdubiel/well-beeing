@@ -1,8 +1,8 @@
 package com.wellbeeing.wellbeeing.service.telemedic;
 
-import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
-import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.telemedic.MeasureDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,12 +14,10 @@ import java.util.UUID;
 @Service("measureService")
 public class MeasureService implements MeasureServiceApi {
     private MeasureDAO measureDAO;
-    private UserDAO userDAO;
 
     @Autowired
-    public MeasureService(@Qualifier("measureDAO") MeasureDAO measureDAO, @Qualifier("userDAO") UserDAO userDAO){
+    public MeasureService(@Qualifier("measureDAO") MeasureDAO measureDAO){
         this.measureDAO = measureDAO;
-        this.userDAO = userDAO;
     }
 
     @Override
@@ -28,12 +26,8 @@ public class MeasureService implements MeasureServiceApi {
     }
 
     @Override
-    public List<Measure> getUserMeasures(UUID userId) {
-        User user = userDAO.findById(userId).orElse(null);
-        if(user == null)
-            return null;
-        else
-            return user.getProfile().getMeasures();
+    public List<Measure> getMeasuresByProfile(Profile profile) {
+        return measureDAO.findByOwner(profile);
     }
 
     @Override

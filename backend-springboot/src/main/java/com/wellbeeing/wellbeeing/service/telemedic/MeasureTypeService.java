@@ -30,8 +30,6 @@ public class MeasureTypeService implements MeasureTypeServiceApi {
 
     @Override
     public MeasureType addMeasureType(MeasureType measureType) {
-        measureType.setId(UUID.randomUUID());
-
         return measureTypeDAO.save(measureType);
     }
 

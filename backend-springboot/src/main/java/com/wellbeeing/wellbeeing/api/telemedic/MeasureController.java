@@ -1,7 +1,9 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
+import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureServiceApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -16,8 +18,10 @@ import java.util.UUID;
 @RestController
 public class MeasureController {
     private MeasureServiceApi measureService;
+    private ProfileServiceApi profileService;
 
-    public MeasureController(@Qualifier("measureService") MeasureServiceApi measureService){
+    public MeasureController(@Qualifier("measureService") MeasureServiceApi measureService,
+                             @Qualifier("profileService") ProfileServiceApi profileService){
         this.measureService = measureService;
     }
 
@@ -30,9 +34,10 @@ public class MeasureController {
             return new ResponseEntity<>(measureResult, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "measures/user/{id}", method = RequestMethod.GET)
-    public ResponseEntity<List<Measure>> getUserMeasures(@PathVariable("id") UUID userId){
-        List<Measure> measuresResult = measureService.getUserMeasures(userId);
+    @RequestMapping(path = "measures/profile/{id}", method = RequestMethod.GET)
+    public ResponseEntity<List<Measure>> getUserMeasures(@PathVariable("id") UUID profileId){
+        Profile measuresOwner = profileService.getProfileById(profileId);
+        List<Measure> measuresResult = measureService.getMeasuresByProfile(measuresOwner);
         if(measuresResult == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         else {

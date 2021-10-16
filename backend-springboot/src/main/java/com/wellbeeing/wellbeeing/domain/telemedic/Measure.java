@@ -11,14 +11,16 @@ import java.util.UUID;
 @Table(name = "measures")
 public class Measure {
     @Id
+    @GeneratedValue
     private UUID id;
+
     @Column(name = "value")
     private double value;
     @Column(name = "measure_date")
     private Date measureDate;
+
     @ManyToOne
     private MeasureType measureType;
-
     @ManyToOne
     private Profile owner;
 
