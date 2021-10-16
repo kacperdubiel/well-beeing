@@ -1,6 +1,9 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
+import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,6 +29,10 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+    @OneToOne(mappedBy="profileUser", cascade = CascadeType.ALL)
+    private Profile profile;
+
+
     public User() {
     }
 
@@ -86,4 +93,23 @@ public class User implements UserDetails {
     }
 
     public void addRole(Role role) {this.roles.add(role);}
+
+    public UUID getId() {
+        return id;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

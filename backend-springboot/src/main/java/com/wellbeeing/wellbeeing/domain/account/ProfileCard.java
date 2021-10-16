@@ -60,4 +60,5 @@ public class ProfileCard {
     @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
     private ProfileDietCalculation dietCalculations;
 
-}
+
+
