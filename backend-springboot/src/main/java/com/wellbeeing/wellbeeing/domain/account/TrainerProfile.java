@@ -12,4 +12,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 public class TrainerProfile extends SpecialistProfile {
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    private Set<TrainingPlan> createdTrainingPlans = new HashSet<>();
+
+    public TrainerProfile(Profile userProfile) {
+        super(userProfile);
+    }
 }
