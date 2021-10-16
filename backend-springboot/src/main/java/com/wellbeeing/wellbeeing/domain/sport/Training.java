@@ -1,12 +1,10 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Data
 @Entity
@@ -23,6 +21,10 @@ public class Training {
     private String description;
     @Column(name = "instruction")
     private String instruction;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator")
+    private Profile creator;
 
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings = new HashSet<>();

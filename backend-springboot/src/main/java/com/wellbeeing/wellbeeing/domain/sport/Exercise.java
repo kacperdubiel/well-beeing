@@ -1,7 +1,10 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
 
@@ -30,6 +33,10 @@ public class Exercise {
     @Column(name = "metabolic_eqv_of_task")
     private float met;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator")
+    private Profile creator;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="exercise_labels",
@@ -37,7 +44,7 @@ public class Exercise {
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
     private Set<SportLabel> labels = new HashSet<>();
-
+    @JsonIgnore
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings;
 
@@ -125,7 +132,7 @@ public class Exercise {
     public void addTrainingToExercise(ExerciseInTraining training) {
         exerciseInTrainings.add(training);
     }
-
+    public void addLabelToExercise(SportLabel sportLabel) {this.labels.add(sportLabel);}
     @Override
     public String toString() {
         return "Exercise{" +

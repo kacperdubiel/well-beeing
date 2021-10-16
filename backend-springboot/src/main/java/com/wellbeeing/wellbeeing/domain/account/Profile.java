@@ -41,6 +41,13 @@ public class Profile {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<ActivityGoal> activityGoals = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="user_roles",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public Profile(String firstName, String lastName, Date birthday, User profileUser) {
         System.out.println("Entered constructor");

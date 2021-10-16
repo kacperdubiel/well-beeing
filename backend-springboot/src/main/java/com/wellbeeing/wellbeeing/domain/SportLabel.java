@@ -21,4 +21,6 @@ public class SportLabel {
     public SportLabel() {
 
     }
+
+    public void addLabeledExercise(Exercise exercise) {this.exercises.add(exercise);}
 }
