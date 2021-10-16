@@ -1,8 +1,8 @@
 package com.wellbeeing.wellbeeing.service.account;
 
-import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.account.Role;
-import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.account.*;
+import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
+import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.RoleDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +19,21 @@ import java.util.Set;
 @Service("userService")
 public class UserService implements UserDetailsService, UserServiceApi {
     private UserDAO userDAO;
-    @Qualifier("roleDAO")
-    @Autowired
+    private ProfileDAO profileDAO;
+    private ProfileCardDAO profileCardDAO;
     private RoleDAO roleDAO;
-    public UserService(@Qualifier("userDAO") UserDAO userDAO){
+
+    @Autowired
+    public UserService(@Qualifier("userDAO") UserDAO userDAO,
+                       @Qualifier("roleDAO") RoleDAO roleDAO,
+                       @Qualifier("profileDAO") ProfileDAO profileDAO,
+                       @Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO){
         this.userDAO = userDAO;
+        this.profileDAO = profileDAO;
+        this.profileCardDAO = profileCardDAO;
+        this.roleDAO = roleDAO;
+
     }
-//    public UserService(@Qualifier("roleDAO") RoleDAO roleDAO){
-//        this.roleDAO = roleDAO;
-//    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -42,11 +48,16 @@ public class UserService implements UserDetailsService, UserServiceApi {
         if(userDAO.findUserByEmail(user.getUsername()).orElse(null) == null){
             Set<Role> roles = new HashSet<>();
             roles.add(roleDAO.findRoleByName(ERole.ROLE_BASIC_USER).orElse(null));
-            user.setRoles(roles);
-            System.out.println("User:");
-            System.out.println(user);
-            userDAO.save(new User(user.getUsername(),
-                    BCrypt.hashpw(user.getPassword(), BCrypt.gensalt("$2a$")), user.getRoles()));
+            user.setRoles(roles);;
+            User newUser = new User(user.getUsername(),
+                    BCrypt.hashpw(user.getPassword(), BCrypt.gensalt("$2a$")), user.getRoles());
+            userDAO.save(newUser);
+
+            Profile newUserProfile = Profile.builder().profileUser(newUser).build();
+            profileDAO.save(newUserProfile);
+            ProfileCard newUserProfileCard = ProfileCard.builder().profile(newUserProfile).build();
+            profileCardDAO.save(newUserProfileCard);
+
             return true;
         }
         return false;
