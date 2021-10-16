@@ -1,12 +1,18 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.wellbeeing.wellbeeing.domain.diet.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@Builder
 public class ProfileCard {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,9 +39,13 @@ public class ProfileCard {
             inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     )
     private List<Product> dislikedProducts;
-    @OneToOne(fetch = FetchType.LAZY)
+    /*@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "preferred_diet_id", referencedColumnName = "id")
-    private Diet preferredDiet;
+    private Diet preferredDiet;*/
+    @Column
+    private boolean isVegan;
+    @Column
+    private boolean isVegetarian;
     @Column
     private EActivityLevel activityLevel;
     @Column
@@ -44,65 +54,10 @@ public class ProfileCard {
     private EDietGoal dietGoal;
     @OneToOne(mappedBy = "profileCard", fetch = FetchType.LAZY, optional = false)
     private Profile profile;
-    @Column
-    private EGlycemicIndexLevel glycemicIndexLevel;
+   /* @Column
+    private EGlycemicIndexLevel glycemicIndexLevel;*/
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
     private ProfileDietCalculation dietCalculations;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public com.wellbeeing.wellbeeing.domain.account.ESex getESex() {
-        return ESex;
-    }
-
-    public List<Ailment> getAilments() {
-        return ailments;
-    }
-
-    public List<Product> getDislikedProducts() {
-        return dislikedProducts;
-    }
-
-    public Diet getPreferredDiet() {
-        return preferredDiet;
-    }
-
-    public EActivityLevel getActivityLevel() {
-        return activityLevel;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public EGlycemicIndexLevel getGlycemicIndexLevel() {
-        return glycemicIndexLevel;
-    }
-
-    public ProfileDietCalculation getDietCalculations() {
-        return dietCalculations;
-    }
-
-    public int getTrainingActivityTimePerWeek() {
-        return trainingActivityTimePerWeek;
-    }
-
-    public EDietGoal getDietGoal() {
-        return dietGoal;
-    }
 }

@@ -1,41 +1,53 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@Builder
 public class ProfileDietCalculation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column(nullable = false)
+    @Column
     private double bmi;
-    @Column(nullable = false)
+    @Column
     private EBMIResult bmiResultType;
-    @Column(nullable = false)
+    @Column
     private double basicMetabolism;
-    @Column(nullable = false)
+    @Column
     private double suggestedCalories;
     @Column
-    private int suggestedCarbohydrates;
+    private double suggestedCarbohydrates;
     @Column
-    private int suggestedFats;
+    private double suggestedFats;
     @Column
-    private int suggestedProteins;
+    private double suggestedProteins;
     @Column
-    private int suggestedBreakfastCalories;
+    private double suggestedBreakfastCalories;
     @Column
-    private int suggestedLunchCalories;
+    private double suggestedLunchCalories;
     @Column
-    private int suggestedDinnerCalories;
+    private double suggestedDinnerCalories;
     @Column
-    private int suggestedSnackCalories;
+    private double suggestedSnackCalories;
     @Column
-    private int suggestedBreakfastGlycemic;
+    private double suggestedSupperCalories;
     @Column
-    private int suggestedLunchGlycemic;
+    private EGlycemicIndexLevel suggestedBreakfastGlycemic;
     @Column
-    private int suggestedDinnerGlycemic;
+    private EGlycemicIndexLevel suggestedLunchGlycemic;
     @Column
-    private int suggestedSnackGlycemic;
+    private EGlycemicIndexLevel suggestedDinnerGlycemic;
+    @Column
+    private EGlycemicIndexLevel suggestedSnackGlycemic;
+    @Column
+    private EGlycemicIndexLevel suggestedSupperGlycemic;
+
 }

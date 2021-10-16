@@ -1,16 +1,24 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
 public enum EDietGoal {
-    LOSE_WEIGHT(-300),
-    KEEP_WEIGHT(0),
-    GAIN_WEIGHT(300);
+    FAST_LOSE_WEIGHT(-500, 1),
+    LOSE_WEIGHT(-300, 0.9),
+    KEEP_WEIGHT(0, 0),
+    GAIN_WEIGHT(300, 0),
+    FAST_GAIN_WEIGHT(500, 0),
+    GAIN_MUSCLES(300, 0.8);
 
     private int changeInCalories;
+    private double changeInProteinsGramsPerKilogramWeight;
 
-    EDietGoal(int changeInCalories) {
+    EDietGoal(int changeInCalories, double changeInProteinsGramsPerKilogramWeight) {
     }
 
     public int getChangeInCalories() {
         return changeInCalories;
+    }
+
+    public double getChangeInProteinsGramsPerKilogramWeight() {
+        return changeInProteinsGramsPerKilogramWeight;
     }
 }

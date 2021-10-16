@@ -1,10 +1,18 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Builder
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
 public class Ailment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,24 +29,10 @@ public class Ailment {
     private List<NutritionLabel> allowedLabels;
     @Column
     private int changeInCalories;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public EAilmentType getType() {
-        return type;
-    }
-
-    public List<NutritionLabel> getAllowedLabels() {
-        return allowedLabels;
-    }
-
-    public int getChangeInCalories() {
-        return changeInCalories;
-    }
+    @Column
+    private int changeInProteinsGramPerKilogram;
+    @Column
+    private boolean isLowGlycemicIndexRecommended;
 }
+
+
