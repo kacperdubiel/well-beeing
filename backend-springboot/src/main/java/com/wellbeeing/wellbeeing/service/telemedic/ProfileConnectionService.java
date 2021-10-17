@@ -43,20 +43,7 @@ public class ProfileConnectionService implements ProfileConnectionServiceApi {
 
     @Override
     public ProfileConnection updateProfileConnection(ProfileConnection updatedProfileConnection) {
-        ProfileConnection resultProfileConnection = profileConnectionDAO
-                .findById(updatedProfileConnection.getId())
-                .orElse(null);
-
-        if(resultProfileConnection != null){
-            resultProfileConnection.setConnectionType(updatedProfileConnection.getConnectionType());
-            resultProfileConnection.setAccepted(updatedProfileConnection.isAccepted());
-            resultProfileConnection.setRequestDate(updatedProfileConnection.getRequestDate());
-            resultProfileConnection.setAcceptDate(updatedProfileConnection.getAcceptDate());
-            resultProfileConnection.setProfile(updatedProfileConnection.getProfile());
-            resultProfileConnection.setConnectedWith(updatedProfileConnection.getConnectedWith());
-            return profileConnectionDAO.save(resultProfileConnection);
-        }
-        return null;
+        return profileConnectionDAO.save(updatedProfileConnection);
     }
 
     @Override

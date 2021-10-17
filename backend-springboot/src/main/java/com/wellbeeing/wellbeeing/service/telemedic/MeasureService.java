@@ -39,15 +39,7 @@ public class MeasureService implements MeasureServiceApi {
 
     @Override
     public Measure updateMeasure(Measure updatedMeasure) {
-        Measure resultMeasure = measureDAO.findById(updatedMeasure.getId()).orElse(null);
-        if(resultMeasure != null){
-            resultMeasure.setValue(updatedMeasure.getValue());
-            resultMeasure.setMeasureDate(updatedMeasure.getMeasureDate());
-            resultMeasure.setMeasureType(updatedMeasure.getMeasureType());
-            resultMeasure.setOwner(updatedMeasure.getOwner());
-            return measureDAO.save(resultMeasure);
-        }
-        return null;
+        return measureDAO.save(updatedMeasure);
     }
 
     @Override

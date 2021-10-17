@@ -35,13 +35,7 @@ public class MeasureTypeService implements MeasureTypeServiceApi {
 
     @Override
     public MeasureType updateMeasureType(MeasureType updatedMeasureType) {
-        MeasureType resultMeasureType = measureTypeDAO.findById(updatedMeasureType.getId()).orElse(null);
-        if(resultMeasureType != null){
-            resultMeasureType.setName(updatedMeasureType.getName());
-            resultMeasureType.setUnit(updatedMeasureType.getUnit());
-            return measureTypeDAO.save(resultMeasureType);
-        }
-        return null;
+        return measureTypeDAO.save(updatedMeasureType);
     }
 
     @Override
