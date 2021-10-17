@@ -24,7 +24,7 @@ public class ProfileConnection {
 
     @ManyToOne
     private Profile profile;
-    @OneToOne
+    @ManyToOne
     private Profile connectedWith;
 
     public UUID getId() {
