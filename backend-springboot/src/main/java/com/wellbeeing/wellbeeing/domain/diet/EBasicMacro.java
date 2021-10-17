@@ -1,13 +1,14 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
-public enum EBasicMacros {
+public enum EBasicMacro {
     FATS(9),
     CARBOHYDRATES(4),
     PROTEINS(4);
 
     private int kcalPerGram;
 
-    EBasicMacros(int kcalPerGram) {
+    EBasicMacro(int kcalPerGram) {
+        this.kcalPerGram = kcalPerGram;
     }
 
     public int getKcalPerGram() {

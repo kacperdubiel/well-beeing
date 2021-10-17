@@ -1,9 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import javax.persistence.*;
 import java.util.List;
@@ -11,8 +8,10 @@ import java.util.UUID;
 
 @Entity
 @Builder
-@Getter(AccessLevel.PUBLIC)
-@Setter(AccessLevel.PUBLIC)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Ailment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

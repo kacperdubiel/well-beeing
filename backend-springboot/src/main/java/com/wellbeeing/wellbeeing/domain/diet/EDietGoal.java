@@ -12,6 +12,8 @@ public enum EDietGoal {
     private double changeInProteinsGramsPerKilogramWeight;
 
     EDietGoal(int changeInCalories, double changeInProteinsGramsPerKilogramWeight) {
+        this.changeInCalories = changeInCalories;
+        this.changeInProteinsGramsPerKilogramWeight = changeInProteinsGramsPerKilogramWeight;
     }
 
     public int getChangeInCalories() {

@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.config;
 
-import com.wellbeeing.wellbeeing.service.account.UserService;
+import com.wellbeeing.wellbeeing.service.account.UserServiceImpl;
 import com.wellbeeing.wellbeeing.util.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -25,19 +25,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     private JwtRequestFilter jwtRequestFilter;
 
-    protected SpringSecurityConfig(@Qualifier("userService") UserService userService,
+    protected SpringSecurityConfig(@Qualifier("userService") UserServiceImpl userServiceImpl,
                                    @Qualifier("jwtRequestFilter") JwtRequestFilter jwtRequestFilter) {
         super();
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService);
+        auth.userDetailsService(userServiceImpl);
     }
 
     @Override

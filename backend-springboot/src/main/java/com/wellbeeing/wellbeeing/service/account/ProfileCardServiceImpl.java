@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.service.diet;
+package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
 import com.wellbeeing.wellbeeing.domain.diet.ProfileDietCalculation;
@@ -52,13 +52,6 @@ public class ProfileCardServiceImpl implements ProfileCardService {
             return newProfileCard;
         }
         return null;
-    }
-
-    @Override
-    public ProfileCard addProfileCard(ProfileCard newProfileCard) {
-        ProfileCard newProf = profileCardDAO.save(newProfileCard);
-        updateDietCalculationsForProfileCard(newProf.getId());
-        return newProf;
     }
 
     @Override

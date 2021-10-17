@@ -1,9 +1,8 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProfileCard {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +24,7 @@ public class ProfileCard {
     private double weight;
     @Column
     private int age;
+    @Enumerated(EnumType.STRING)
     @Column
     private ESex ESex;
     @ManyToMany
@@ -39,26 +41,26 @@ public class ProfileCard {
             inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     )
     private List<Product> dislikedProducts;
-    /*@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "preferred_diet_id", referencedColumnName = "id")
-    private Diet preferredDiet;*/
     @Column
     private boolean isVegan;
     @Column
     private boolean isVegetarian;
+    @Enumerated(EnumType.STRING)
     @Column
     private EActivityLevel activityLevel;
     @Column
     private int trainingActivityTimePerWeek;
+    @Enumerated(EnumType.STRING)
     @Column
     private EDietGoal dietGoal;
-    @OneToOne(mappedBy = "profileCard", fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "profileCard", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Profile profile;
-   /* @Column
-    private EGlycemicIndexLevel glycemicIndexLevel;*/
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
+    @JsonIgnore
     private ProfileDietCalculation dietCalculations;
+}
 
 
 

@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.api;
+package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationRequest;

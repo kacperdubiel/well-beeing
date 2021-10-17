@@ -24,11 +24,6 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
     private MacrosCalcStrategy macrosCalcStrategy;
     private GlycemicIndexCalcStrategy glycemicIndexCalcStrategy;
 
-    private static final double BREAKFAST_CALORIES_PERCENTAGE = 0.25;
-    private static final double LUNCH_CALORIES_PERCENTAGE = 0.1;
-    private static final double DINNER_CALORIES_PERCENTAGE = 0.4;
-    private static final double SNACK_CALORIES_PERCENTAGE = 0.1;
-    private static final double SUPPER_CALORIES_PERCENTAGE = 0.15;
 
     @Autowired
     public ProfileDietCalculationServiceImpl(@Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO,
@@ -98,18 +93,18 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
             int changeDueToGoal = profileCard.getDietGoal().getChangeInCalories();
             int changeDueToBmiResult = bmiResultType.getSuggestedChangeInCalories();
 
-            int suggestedCalories = changeDueToAilments + changeDueToGoal + changeDueToBmiResult;
+            double suggestedCalories = completeMetabolism + changeDueToAilments + changeDueToGoal + changeDueToBmiResult;
 
-            HashMap<EBasicMacros, Double> macros = macrosCalcStrategy.calculateMacros(completeMetabolism, profileCard);
-            double suggestedCarbohydrates = macros.get(EBasicMacros.CARBOHYDRATES);
-            double suggestedFats = macros.get(EBasicMacros.FATS);
-            double suggestedProteins = macros.get(EBasicMacros.PROTEINS);
+            HashMap<EBasicMacro, Double> macros = macrosCalcStrategy.calculateMacros(completeMetabolism, profileCard);
+            double suggestedCarbohydrates = macros.get(EBasicMacro.CARBOHYDRATES);
+            double suggestedFats = macros.get(EBasicMacro.FATS);
+            double suggestedProteins = macros.get(EBasicMacro.PROTEINS);
 
-            double suggestedBreakfastCalories = BREAKFAST_CALORIES_PERCENTAGE * completeMetabolism;
-            double suggestedLunchCalories = LUNCH_CALORIES_PERCENTAGE * completeMetabolism;
-            double suggestedDinnerCalories = DINNER_CALORIES_PERCENTAGE * completeMetabolism;
-            double suggestedSnackCalories = SNACK_CALORIES_PERCENTAGE * completeMetabolism;
-            double suggestedSupperCalories = SUPPER_CALORIES_PERCENTAGE * completeMetabolism;
+            double suggestedBreakfastCalories = EMealType.BREAKFAST.getSuggestedDailyCaloriesPars() * suggestedCalories;
+            double suggestedLunchCalories = EMealType.LUNCH.getSuggestedDailyCaloriesPars() * suggestedCalories;
+            double suggestedDinnerCalories = EMealType.DINNER.getSuggestedDailyCaloriesPars() * suggestedCalories;
+            double suggestedSnackCalories = EMealType.SNACK.getSuggestedDailyCaloriesPars() * suggestedCalories;
+            double suggestedSupperCalories = EMealType.SUPPER.getSuggestedDailyCaloriesPars() * suggestedCalories;
 
             HashMap<EMealType, EGlycemicIndexLevel> suggestedGlycemicIndexForMeals =
                     glycemicIndexCalcStrategy.countGlycemicIndexesForMeals(profileCard);

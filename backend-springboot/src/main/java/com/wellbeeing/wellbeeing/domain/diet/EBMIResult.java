@@ -12,7 +12,9 @@ public enum EBMIResult {
     private double higherRange;
 
     EBMIResult(int suggestedChangeInCalories, double lowerRange, double higherRange){
-
+        this.suggestedChangeInCalories = suggestedChangeInCalories;
+        this.lowerRange = lowerRange;
+        this.higherRange = higherRange;
     }
 
     public int getSuggestedChangeInCalories() {

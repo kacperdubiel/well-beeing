@@ -11,6 +11,7 @@ public enum EActivityLevel {
     private double palFactor;
 
     EActivityLevel(double palFactor) {
+        this.palFactor = palFactor;
     }
 
     public double getPalFactor() {

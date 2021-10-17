@@ -1,8 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -11,12 +9,15 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProfileDietCalculation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column
     private double bmi;
+    @Enumerated(EnumType.STRING)
     @Column
     private EBMIResult bmiResultType;
     @Column

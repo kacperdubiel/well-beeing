@@ -2,7 +2,7 @@ package com.wellbeeing.wellbeeing.service.diet.calculation;
 
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
-import com.wellbeeing.wellbeeing.domain.diet.EBasicMacros;
+import com.wellbeeing.wellbeeing.domain.diet.EBasicMacro;
 
 import java.util.HashMap;
 
@@ -30,18 +30,18 @@ public class BasicMacrosCalcStrategy implements MacrosCalcStrategy {
     }
 
     @Override
-    public HashMap<EBasicMacros, Double> calculateMacros(double completeMetabolism, ProfileCard profileCard) {
+    public HashMap<EBasicMacro, Double> calculateMacros(double completeMetabolism, ProfileCard profileCard) {
         double fatsKcal = completeMetabolism * FATS_NEED_BASIC_METABOLISM_PART;
-        double fatsGram = fatsKcal / EBasicMacros.FATS.getKcalPerGram();
+        double fatsGram = fatsKcal / EBasicMacro.FATS.getKcalPerGram();
         double proteinsGramPerKilogramWeight = countProteinsGramPerKilogramWeight(profileCard);
         double proteinsGram = proteinsGramPerKilogramWeight * profileCard.getWeight();
-        double proteinsKcal = proteinsGram * EBasicMacros.PROTEINS.getKcalPerGram();
+        double proteinsKcal = proteinsGram * EBasicMacro.PROTEINS.getKcalPerGram();
         double carbohydratesKcal = completeMetabolism - fatsKcal - proteinsKcal;
-        double carbohydratesGram = carbohydratesKcal / EBasicMacros.CARBOHYDRATES.getKcalPerGram();
-        HashMap<EBasicMacros, Double> resultMacros = new HashMap<>();
-        resultMacros.put(EBasicMacros.PROTEINS, proteinsGram);
-        resultMacros.put(EBasicMacros.FATS, fatsGram);
-        resultMacros.put(EBasicMacros.CARBOHYDRATES, carbohydratesGram);
+        double carbohydratesGram = carbohydratesKcal / EBasicMacro.CARBOHYDRATES.getKcalPerGram();
+        HashMap<EBasicMacro, Double> resultMacros = new HashMap<>();
+        resultMacros.put(EBasicMacro.PROTEINS, proteinsGram);
+        resultMacros.put(EBasicMacro.FATS, fatsGram);
+        resultMacros.put(EBasicMacro.CARBOHYDRATES, carbohydratesGram);
 
         return resultMacros;
     }

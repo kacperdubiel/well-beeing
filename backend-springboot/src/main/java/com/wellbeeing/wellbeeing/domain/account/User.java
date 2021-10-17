@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Table(name = "wb_user")
 public class User implements UserDetails {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -30,6 +32,7 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
     @OneToOne(mappedBy="profileUser", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Profile profile;
 
 
@@ -43,7 +46,6 @@ public class User implements UserDetails {
     }
 
     public User(@JsonProperty("email") String email, @JsonProperty("password") String password, Set<Role> roles){
-        this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
         this.setRoles(roles);

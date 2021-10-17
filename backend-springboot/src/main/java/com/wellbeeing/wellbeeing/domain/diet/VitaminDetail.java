@@ -11,20 +11,16 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Diet {
+public class VitaminDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    @Enumerated(EnumType.STRING)
     @Column
-    private String name;
+    private EVitamin vitaminType;
     @Column
-    private String description;
-    @Column(nullable = false)
-    private boolean connectedWithMacros;
+    private double amount;
+    @Enumerated(EnumType.STRING)
     @Column
-    private int suggestedCarbohydratesForDiet;
-    @Column
-    private int suggestedProteinsForDiet;
-    @Column()
-    private int suggestedFatsForDiet;
+    private EWeightMeasure measureType;
 }

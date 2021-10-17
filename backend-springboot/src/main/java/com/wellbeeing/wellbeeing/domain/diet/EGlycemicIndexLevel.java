@@ -15,4 +15,12 @@ public enum  EGlycemicIndexLevel {
         this.lowerRange = lower_range;
         this.higherRange = higher_range;
     }
+
+    public int getLowerRange() {
+        return lowerRange;
+    }
+
+    public int getHigherRange() {
+        return higherRange;
+    }
 }

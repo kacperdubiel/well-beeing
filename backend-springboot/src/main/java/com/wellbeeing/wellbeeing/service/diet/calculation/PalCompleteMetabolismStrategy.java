@@ -11,8 +11,8 @@ public class PalCompleteMetabolismStrategy implements CompleteMetabolismStrategy
     @Override
     public double calculateCompleteMetabolism(double basicMetabolism, ProfileCard profileCard) {
 
-        return basicMetabolism * profileCard.getActivityLevel().getPalFactor() +
-                calculateAdditionalPalFromTraining(profileCard.getTrainingActivityTimePerWeek())
+        return  basicMetabolism * (profileCard.getActivityLevel().getPalFactor() +
+                calculateAdditionalPalFromTraining(profileCard.getTrainingActivityTimePerWeek()))
                 + basicMetabolism * THE_POWER_OF_FOOD;
     }
 }

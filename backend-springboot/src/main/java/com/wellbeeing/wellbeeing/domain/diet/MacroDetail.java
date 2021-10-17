@@ -5,18 +5,22 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NutritionLabel {
+@Builder
+@Entity
+public class MacroDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    @Enumerated(EnumType.STRING)
     @Column
-    private String description;
-    @Column(unique = true)
-    private String name;
+    private EDetailedMacro detailedMacroType;
+    @Column
+    private double amount;
+    @Enumerated(EnumType.STRING)
+    @Column
+    private EWeightMeasure measureType;
 }
