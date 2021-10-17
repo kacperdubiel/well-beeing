@@ -10,6 +10,7 @@ import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
+import jdk.nashorn.internal.ir.RuntimeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import sun.plugin.util.UserProfile;
 
+import javax.xml.ws.http.HTTPBinding;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -62,13 +64,13 @@ public class MyRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        trainingDAO.deleteAll();
-        exerciseDAO.deleteAll();
-        trainingPlanDAO.deleteAll();
         trainingPositionDAO.deleteAll();
+        trainingPlanDAO.deleteAll();
         activityGoalDAO.deleteAll();
         exerciseInTrainingDAO.deleteAll();
         profileCardDAO.deleteAll();
+        trainingDAO.deleteAll();
+        exerciseDAO.deleteAll();
 //        profileDAO.deleteAll();
 //        trainerDAO.deleteAll();
         // Training and exercises
@@ -87,6 +89,7 @@ public class MyRunner implements CommandLineRunner {
         exerciseInTrainingDAO.saveAll(Arrays.asList(ex_in_tr_1, ex_in_tr_2, ex_in_tr_3));
         //Training plan
         User abcUser = userDAO.findUserByEmail("abc@abc.com").orElse(null);
+        User aaaUser = userDAO.findUserByEmail("aaa@aaaa.pl").orElse(null);
         System.out.println(abcUser);
         assert abcUser != null;
         Profile abcUserProfile = new Profile("Aaa", "Bbb", new Date(), abcUser);
@@ -98,7 +101,7 @@ public class MyRunner implements CommandLineRunner {
         TrainerProfile trainerAbcUserProfile = new TrainerProfile(abcUserProfile);
         trainerDAO.save(trainerAbcUserProfile);
 
-        TrainingPlan trainingPlan_1 = new TrainingPlan(abcUserProfile, 2021, 33, "Do details", trainerAbcUserProfile);
+        TrainingPlan trainingPlan_1 = new TrainingPlan(abcUserProfile, 2021, 33, "Do details", abcUserProfile);
         trainingPlanDAO.save(trainingPlan_1);
 
         trainingPositionDAO.save(new TrainingPosition(training_a, trainingPlan_1, new Date()));

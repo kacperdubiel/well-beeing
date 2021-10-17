@@ -10,13 +10,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TrainingPlanService {
-    TrainingPlan addTrainingPlan(TrainingPlan trainingPlan, String creatorName);
+    TrainingPlan addTrainingPlan(TrainingPlan trainingPlan, String creatorName, UUID ownerId);
     TrainingPlan addTrainingWithExercises(Training training, String creatorName, List<TrainingPosition> trainingPositions);
     boolean deleteTrainingPlan(long trainingPlanId);
     TrainingPlan getTrainingPlan(long trainingPlanId);
-    TrainingPosition addPositionToTrainingPlan(long trainingPlanId, long trainingId, Date trainingDate, String status, String clientName);
+    TrainingPosition addPositionToTrainingPlan(long trainingPlanId, long trainingId, Date trainingDate, String clientName);
     boolean removePositionFromTrainingPlan(long trainingPlanId, long trainingPositionId, String clientName);
-    List<TrainingPlan> getAllTrainings();
+    List<TrainingPlan> getAllTrainingPlans();
     List<TrainingPosition> getPositionsFromTrainingPlan(long trainingPlanId);
-    List<TrainingPlan> getTrainingByCreatorId(UUID creatorId);
+    List<TrainingPlan> getTrainingPlansByCreatorId(UUID creatorId);
+    List<TrainingPlan> getTrainingPlansByOwnerId(UUID ownerId);
+    List<TrainingPlan> getMyTrainingPlans(String ownerName);
 }
