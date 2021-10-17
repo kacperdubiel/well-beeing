@@ -17,6 +17,7 @@ import java.util.UUID;
 @Table(name = "wb_user")
 public class User implements UserDetails {
     @Id
+    @GeneratedValue
     private UUID id;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -37,13 +38,13 @@ public class User implements UserDetails {
     }
 
     public User(@JsonProperty("email") String email, @JsonProperty("password") String password){
-        this.id = UUID.randomUUID();
+//        this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
     }
 
     public User(@JsonProperty("email") String email, @JsonProperty("password") String password, Set<Role> roles){
-        this.id = UUID.randomUUID();
+//        this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
         this.setRoles(roles);
