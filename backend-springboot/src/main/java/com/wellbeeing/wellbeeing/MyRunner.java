@@ -90,7 +90,7 @@ public class MyRunner implements CommandLineRunner {
         trainingPositionDAO.save(new TrainingPosition(training_a, trainingPlan_1, new Date()));
         trainingPositionDAO.save(new TrainingPosition(training_b, trainingPlan_1, new Date()));
         System.out.println("Print trainings " + exercise_1.getExerciseInTrainings());
-        System.out.println("Print exercises " + training_a.getExerciseInTrainingSet());
+        System.out.println("Print exercises " + training_a.getExerciseInTrainings());
         //Activity goal
         ActivityGoal activityGoal_1 = new ActivityGoal(EGoalType.LOSE_WEIGHT, 10d, "", new Date(2021-1900, Calendar.FEBRUARY, 15), abcUserProfile);
         activityGoalDAO.save(activityGoal_1);
