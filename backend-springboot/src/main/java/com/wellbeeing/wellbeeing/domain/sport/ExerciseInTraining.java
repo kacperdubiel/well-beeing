@@ -98,7 +98,7 @@ public class ExerciseInTraining {
         this.time_seconds = time_seconds;
     }
 
-    public int countCaloriesPerExerciseDuration(int user_weight) {
+    public int countCaloriesPerExerciseDuration(double user_weight) {
         //METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute
         return (int) ((time_seconds*series)/3600d*(exercise.getMet()*3.5*user_weight/200));
     }

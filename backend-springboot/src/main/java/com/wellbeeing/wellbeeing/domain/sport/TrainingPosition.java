@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +9,6 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @Entity
 public class TrainingPosition {
@@ -23,6 +22,7 @@ public class TrainingPosition {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "trainingPlan_id")
+    @JsonIgnore
     private TrainingPlan trainingPlan;
 
     @Column(name = "training_date")
@@ -52,5 +52,45 @@ public class TrainingPosition {
     @Override
     public int hashCode() {
         return Objects.hash(training.getName(), trainingPlan.getTrainingPlan_id(), trainingDate, trainingStatus);
+    }
+
+    public long getTrainingPositionId() {
+        return trainingPositionId;
+    }
+
+    public void setTrainingPositionId(long trainingPositionId) {
+        this.trainingPositionId = trainingPositionId;
+    }
+
+    public Training getTraining() {
+        return training;
+    }
+
+    public void setTraining(Training training) {
+        this.training = training;
+    }
+
+    public TrainingPlan getTrainingPlan() {
+        return trainingPlan;
+    }
+
+    public void setTrainingPlan(TrainingPlan trainingPlan) {
+        this.trainingPlan = trainingPlan;
+    }
+
+    public Date getTrainingDate() {
+        return trainingDate;
+    }
+
+    public void setTrainingDate(Date trainingDate) {
+        this.trainingDate = trainingDate;
+    }
+
+    public ETrainingStatus getTrainingStatus() {
+        return trainingStatus;
+    }
+
+    public void setTrainingStatus(ETrainingStatus trainingStatus) {
+        this.trainingStatus = trainingStatus;
     }
 }

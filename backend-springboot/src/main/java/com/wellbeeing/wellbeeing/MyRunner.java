@@ -1,9 +1,11 @@
 package com.wellbeeing.wellbeeing;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.sport.*;
+import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
@@ -54,6 +56,9 @@ public class MyRunner implements CommandLineRunner {
     @Autowired
     @Qualifier("exerciseInTrainingDAO")
     private ExerciseInTrainingDAO exerciseInTrainingDAO;
+    @Autowired
+    @Qualifier("profileCardDAO")
+    private ProfileCardDAO profileCardDAO;
 
     @Override
     public void run(String... args) throws Exception {
@@ -63,6 +68,7 @@ public class MyRunner implements CommandLineRunner {
         trainingPositionDAO.deleteAll();
         activityGoalDAO.deleteAll();
         exerciseInTrainingDAO.deleteAll();
+        profileCardDAO.deleteAll();
 //        profileDAO.deleteAll();
 //        trainerDAO.deleteAll();
         // Training and exercises
@@ -85,7 +91,10 @@ public class MyRunner implements CommandLineRunner {
         assert abcUser != null;
         Profile abcUserProfile = new Profile("Aaa", "Bbb", new Date(), abcUser);
         profileDAO.save(abcUserProfile);
-
+        ProfileCard abcUserProfileCard = new ProfileCard(120, 21, abcUserProfile);
+        abcUserProfile.setProfileCard(abcUserProfileCard);
+        profileCardDAO.save(abcUserProfileCard);
+        profileDAO.save(abcUserProfile);
         TrainerProfile trainerAbcUserProfile = new TrainerProfile(abcUserProfile);
         trainerDAO.save(trainerAbcUserProfile);
 

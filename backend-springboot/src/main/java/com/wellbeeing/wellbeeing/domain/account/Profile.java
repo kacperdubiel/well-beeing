@@ -117,6 +117,14 @@ public class Profile {
         this.profileUser = profileUser;
     }
 
+    public ProfileCard getProfileCard() {
+        return profileCard;
+    }
+
+    public void setProfileCard(ProfileCard profileCard) {
+        this.profileCard = profileCard;
+    }
+
     public UUID getId() {
         return id;
     }

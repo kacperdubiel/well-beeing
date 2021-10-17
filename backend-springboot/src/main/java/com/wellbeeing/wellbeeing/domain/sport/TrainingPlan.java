@@ -30,6 +30,9 @@ public class TrainingPlan {
 
     @Column(name = "details")
     private String details;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EPlanStatus planStatus = EPlanStatus.SCRATCH;
 
     @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL)
     private Set<TrainingPosition> trainingPositions = new HashSet<>();

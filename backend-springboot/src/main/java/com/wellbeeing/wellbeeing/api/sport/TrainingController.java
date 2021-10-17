@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseToTrainingRequest;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
@@ -54,7 +55,7 @@ public class TrainingController {
         if (createdTraining == null) {
             return new ResponseEntity<>("Couldn't create training!", HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(createdTraining, HttpStatus.OK);
+        return new ResponseEntity<>(createdTraining, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -82,6 +83,14 @@ public class TrainingController {
             return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't add exercise %d to training with id=%d",exerciseId, trainingId), "Error"), HttpStatus.OK);
         }
         return new ResponseEntity<>(addedExercise, HttpStatus.OK);
+    }
+    @GetMapping("/calories-burned/{trainingId}")
+    public ResponseEntity<?> getCaloriesBurnedFromClient(@PathVariable(value = "trainingId") long trainingId, Principal principal) {
+        double caloriesBurned = trainingService.getCaloriesBurnedFromUser(trainingId, principal.getName());
+        if (caloriesBurned == -1) {
+            return new ResponseEntity<>(new ErrorMessage("",""), HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(caloriesBurned, HttpStatus.OK);
     }
 
 

@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
@@ -149,5 +150,17 @@ public class TrainingServiceImpl implements TrainingService{
     public Training partialUpdateTraining(long trainingId, Training training) {
         trainingDAO.save(training);
         return training;
+    }
+
+    @Override
+    public double getCaloriesBurnedFromUser(long trainingPositionId, String userName) {
+
+        User user = userDAO.findUserByEmail(userName).orElse(null);
+        Training training = trainingDAO.findById(trainingPositionId).orElse(null);
+        if (user == null || training == null)
+            return -1;
+        double weight  = user.getProfile().getProfileCard().getWeight();
+        System.out.println("User weight: " + weight);
+        return training.caloriesBurned(weight);
     }
 }

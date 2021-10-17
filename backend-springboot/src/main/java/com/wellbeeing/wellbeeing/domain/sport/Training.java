@@ -86,7 +86,7 @@ public class Training {
         this.instruction = instruction;
     }
 
-    public int caloriesBurned(int user_weight) {
+    public int caloriesBurned(double user_weight) {
         return this.exerciseInTrainings.stream().map(ex -> ex.countCaloriesPerExerciseDuration(user_weight)).mapToInt(num -> num).sum();
     }
 
