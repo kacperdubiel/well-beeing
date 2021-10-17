@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
@@ -31,12 +32,12 @@ public class Exercise {
     private String instruction;
 
     @Column(name = "metabolic_eqv_of_task")
-    private float met;
+    private double met;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
     private Profile creator;
-
+    @JsonProperty
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="exercise_labels",
@@ -48,7 +49,7 @@ public class Exercise {
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings;
 
-    public Exercise(String name, float met) { //, ExerciseInTraining... exerciseInTrainings
+    public Exercise(String name, double met) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;
         this.met = met;
         this.exerciseType = EExerciseType.OTHER;
@@ -100,7 +101,7 @@ public class Exercise {
         this.instruction = instruction;
     }
 
-    public float getMet() {
+    public double getMet() {
         return met;
     }
 

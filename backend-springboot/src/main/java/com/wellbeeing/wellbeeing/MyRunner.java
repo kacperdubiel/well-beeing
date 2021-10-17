@@ -65,8 +65,8 @@ public class MyRunner implements CommandLineRunner {
         Training training_b = new Training("Training_B", ETrainingDifficulty.HARD);
         trainingDAO.saveAll(Arrays.asList(training_a, training_b));
 
-        Exercise exercise_1 = new Exercise("Exercise_1", 3.4f);
-        Exercise exercise_2 = new Exercise("Exercise_2", 5.5f);
+        Exercise exercise_1 = new Exercise("Exercise_1", 3.4d);
+        Exercise exercise_2 = new Exercise("Exercise_2", 5.5d);
         ExerciseInTraining ex_in_tr_1 = new ExerciseInTraining(training_a, exercise_1, 15,20*3600, 1);
         ExerciseInTraining ex_in_tr_2 = new ExerciseInTraining(training_b, exercise_2, 20,30*3600, 1);
         ExerciseInTraining ex_in_tr_3 = new ExerciseInTraining(training_a, exercise_2, 20,30*3600, 3);
@@ -92,7 +92,7 @@ public class MyRunner implements CommandLineRunner {
         System.out.println("Print trainings " + exercise_1.getExerciseInTrainings());
         System.out.println("Print exercises " + training_a.getExerciseInTrainingSet());
         //Activity goal
-        ActivityGoal activityGoal_1 = new ActivityGoal(EGoalType.LOSE_WEIGHT, 10f, "", new Date(2021-1900, Calendar.FEBRUARY, 15), abcUserProfile);
+        ActivityGoal activityGoal_1 = new ActivityGoal(EGoalType.LOSE_WEIGHT, 10d, "", new Date(2021-1900, Calendar.FEBRUARY, 15), abcUserProfile);
         activityGoalDAO.save(activityGoal_1);
 
         System.out.println("Calories from exercise 1 for 80kg person " + exercise_1.countCaloriesPerHour(80));
