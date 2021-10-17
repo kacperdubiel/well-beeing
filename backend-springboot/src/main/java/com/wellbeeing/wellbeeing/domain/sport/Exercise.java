@@ -135,6 +135,11 @@ public class Exercise {
     public void addTrainingToExercise(ExerciseInTraining training) {
         exerciseInTrainings.add(training);
     }
+
+    public boolean removeTrainingFromExercise(long trainingId) {
+        return exerciseInTrainings.removeIf(e->e.getTraining().getTraining_id() == trainingId);
+    }
+
     public void addLabelToExercise(SportLabel sportLabel) {this.labels.add(sportLabel);}
     @Override
     public String toString() {

@@ -12,8 +12,8 @@ public interface TrainingService {
     Training addTrainingWithExercises(Training training, String creatorName, List<ExerciseInTraining> exercisesInTraining);
     boolean deleteTraining(long trainingId);
     Training getTraining(long trainingId);
-    ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId, int repetitions, int timeSeconds, int series);
-    boolean removeExerciseFromTraining(long trainingId, long exerciseId);
+    ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId, int repetitions, int timeSeconds, int series, String clientName);
+    boolean removeExerciseFromTraining(long trainingId, long exerciseId, String clientName);
     List<Training> getAllTrainings();
     List<ExerciseInTraining> getExercisesFromTraining(long trainingId);
     List<Training> getTrainingByCreatorId(UUID creatorId);

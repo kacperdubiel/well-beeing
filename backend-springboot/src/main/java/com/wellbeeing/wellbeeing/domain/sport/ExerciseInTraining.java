@@ -11,6 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"exercise_id", "training_id"})})
 @Entity
 public class ExerciseInTraining {
     @Id
@@ -62,7 +63,7 @@ public class ExerciseInTraining {
 
     @Override
     public int hashCode() {
-        return Objects.hash(training.getName(), exercise.getName(), repetitions, time_seconds);
+        return Objects.hash(this.id, repetitions, time_seconds);
     }
 
     public Exercise getExercise() {

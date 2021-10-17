@@ -1,11 +1,13 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
+import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,16 @@ import java.util.UUID;
 public class TrainingServiceImpl implements TrainingService{
     private ExerciseDAO exerciseDAO;
     private TrainingDAO trainingDAO;
+    private ExerciseInTrainingDAO exerciseInTrainingDAO;
     private UserDAO userDAO;
 
     public TrainingServiceImpl(@Qualifier("exerciseDAO") ExerciseDAO exerciseDAO,
                                @Qualifier("trainingDAO") TrainingDAO trainingDAO,
+                               @Qualifier("exerciseInTrainingDAO") ExerciseInTrainingDAO exerciseInTrainingDAO,
                                @Qualifier("userDAO") UserDAO userDAO) {
         this.exerciseDAO = exerciseDAO;
         this.trainingDAO = trainingDAO;
+        this.exerciseInTrainingDAO = exerciseInTrainingDAO;
         this.userDAO = userDAO;
     }
 
@@ -72,27 +77,43 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId, int repetitions, int timeSeconds, int series ) {
+    public ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId,
+                                                    int repetitions, int timeSeconds,
+                                                    int series, String clientName ) {
         Training foundTraining = trainingDAO.findById(trainingId).orElse(null);
         Exercise foundExercise = exerciseDAO.findById(exerciseId).orElse(null);
         if ( foundTraining == null || foundExercise == null) {
             return null;
         }
-
-        ExerciseInTraining newExerciseInTraining = new ExerciseInTraining(foundTraining, foundExercise, repetitions, timeSeconds, series);
-        foundTraining.addExerciseToTraining(newExerciseInTraining);
-        trainingDAO.save(foundTraining);
-        exerciseDAO.save(foundExercise);
-        foundExercise.addTrainingToExercise(newExerciseInTraining);
-        return newExerciseInTraining;
+        Profile creator = foundTraining.getCreator();
+        if (creator == null || creator.getProfileUser().getUsername().equals(clientName))
+        {
+            ExerciseInTraining newExerciseInTraining = new ExerciseInTraining(foundTraining, foundExercise, repetitions, timeSeconds, series);
+//            foundTraining.addExerciseToTraining(newExerciseInTraining);
+//            trainingDAO.save(foundTraining);
+//            exerciseDAO.save(foundExercise);
+            exerciseInTrainingDAO.save(newExerciseInTraining); // Duplicate Key
+            return newExerciseInTraining;
+        }
+        return null;
     }
 
     @Override
-    public boolean removeExerciseFromTraining(long trainingId, long exerciseId) {
+    public boolean removeExerciseFromTraining(long trainingId, long exerciseId, String clientName) {
         Training foundTraining = trainingDAO.findById(trainingId).orElse(null);
-        if (foundTraining == null)
+        Exercise foundExercise = exerciseDAO.findById(exerciseId).orElse(null);
+        if (foundTraining == null || foundExercise == null)
             return false;
-        return foundTraining.removeExerciseFromTraining(exerciseId);
+        Profile creator = foundTraining.getCreator();
+        if (creator == null || creator.getProfileUser().getUsername().equals(clientName))
+        {
+            ExerciseInTraining ex_in_training = exerciseInTrainingDAO.getExerciseInTrainingByExerciseAndTraining(foundExercise, foundTraining);
+            if (ex_in_training == null)
+                return false;
+            exerciseInTrainingDAO.delete(ex_in_training);
+            return true;
+        }
+        return false;
     }
 
     @Override

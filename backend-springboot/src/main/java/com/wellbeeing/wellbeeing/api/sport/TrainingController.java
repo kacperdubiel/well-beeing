@@ -2,6 +2,8 @@ package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseToTrainingRequest;
+import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
@@ -62,5 +64,25 @@ public class TrainingController {
         }
         return new ResponseEntity<>("Successfully deleted training with id=" + trainingId, HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}/remove-exercise/{exerciseId}")
+    public ResponseEntity<?> removeExerciseFromTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, Principal principal) {
+        if (!trainingService.removeExerciseFromTraining(trainingId, exerciseId, principal.getName())) {
+            return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't remove exercise %d from training with id=%d",exerciseId, trainingId), "Error"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(String.format("Successfully removed exercise %d from training with id=%d", exerciseId, trainingId), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/add-exercise/{exerciseId}")
+    public ResponseEntity<?> addExerciseToTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, @RequestBody @NonNull AddExerciseToTrainingRequest request, Principal principal) {
+        ExerciseInTraining addedExercise = trainingService.addExerciseToTraining(trainingId, exerciseId, request.getReps(),
+                                                request.getTime_seconds(), request.getSeries(),
+                                                principal.getName());
+        if (addedExercise == null) {
+            return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't add exercise %d to training with id=%d",exerciseId, trainingId), "Error"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(addedExercise, HttpStatus.OK);
+    }
+
 
 }

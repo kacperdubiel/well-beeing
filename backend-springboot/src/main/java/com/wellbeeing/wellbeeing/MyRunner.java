@@ -20,6 +20,7 @@ import java.time.Year;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 
 @Component
 public class MyRunner implements CommandLineRunner {
@@ -50,6 +51,9 @@ public class MyRunner implements CommandLineRunner {
     @Autowired
     @Qualifier("trainerDAO")
     private TrainerDAO trainerDAO;
+    @Autowired
+    @Qualifier("exerciseInTrainingDAO")
+    private ExerciseInTrainingDAO exerciseInTrainingDAO;
 
     @Override
     public void run(String... args) throws Exception {
@@ -58,6 +62,7 @@ public class MyRunner implements CommandLineRunner {
         trainingPlanDAO.deleteAll();
         trainingPositionDAO.deleteAll();
         activityGoalDAO.deleteAll();
+        exerciseInTrainingDAO.deleteAll();
 //        profileDAO.deleteAll();
 //        trainerDAO.deleteAll();
         // Training and exercises
@@ -67,13 +72,13 @@ public class MyRunner implements CommandLineRunner {
 
         Exercise exercise_1 = new Exercise("Exercise_1", 3.4d);
         Exercise exercise_2 = new Exercise("Exercise_2", 5.5d);
+        exerciseDAO.save(exercise_1);
+        exerciseDAO.save(exercise_2);
         ExerciseInTraining ex_in_tr_1 = new ExerciseInTraining(training_a, exercise_1, 15,20*3600, 1);
         ExerciseInTraining ex_in_tr_2 = new ExerciseInTraining(training_b, exercise_2, 20,30*3600, 1);
         ExerciseInTraining ex_in_tr_3 = new ExerciseInTraining(training_a, exercise_2, 20,30*3600, 3);
-        exerciseDAO.save(exercise_1);
-        exerciseDAO.save(exercise_2);
 
-
+        exerciseInTrainingDAO.saveAll(Arrays.asList(ex_in_tr_1, ex_in_tr_2, ex_in_tr_3));
         //Training plan
         User abcUser = userDAO.findUserByEmail("abc@abc.com").orElse(null);
         System.out.println(abcUser);
@@ -98,5 +103,10 @@ public class MyRunner implements CommandLineRunner {
         System.out.println("Calories from exercise 1 for 80kg person " + exercise_1.countCaloriesPerHour(80));
         System.out.println("Calories from training_a for 80kg person " + training_a.caloriesBurned(80));
 
+//        training_a.removeExerciseFromTraining(exercise_1.getExercise_id());
+//        exercise_1.removeTrainingFromExercise(training_a.getTraining_id());
+//        trainingDAO.save(training_a);
+//        exerciseDAO.save(exercise_1);
+//        exerciseInTrainingDAO.delete(exerciseInTrainingDAO.getExerciseInTrainingByExerciseAndTraining(exercise_1,training_a));
     }
 }
