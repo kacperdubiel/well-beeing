@@ -116,4 +116,8 @@ public class User implements UserDetails {
                 ", roles=" + roles +
                 '}';
     }
+
+    public String getEmail() {
+        return email;
+    }
 }

@@ -16,9 +16,6 @@ import java.util.UUID;
 public class TrainerProfile extends SpecialistProfile {
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
-    private Set<TrainingPlan> createdTrainingPlans = new HashSet<>();
-
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<Exercise> createdExercises = new HashSet<>();
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)

@@ -16,11 +16,11 @@ public class TrainingPosition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long trainingPositionId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "training_id")
     private Training training;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "trainingPlan_id")
     @JsonIgnore
     private TrainingPlan trainingPlan;
@@ -29,7 +29,7 @@ public class TrainingPosition {
     private Date trainingDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ETrainingStatus trainingStatus;
+    private ETrainingStatus trainingStatus;;
 
     public TrainingPosition(Training training, TrainingPlan trainingPlan, Date trainingDate) {
         this.training = training;
