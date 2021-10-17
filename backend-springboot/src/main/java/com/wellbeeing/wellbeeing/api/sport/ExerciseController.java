@@ -1,25 +1,38 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
+import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.service.account.UserServiceApi;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.lang.reflect.Field;
+import java.security.Principal;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(path = "/sport/exercise")
 @RestController
 public class ExerciseController {
+    @Autowired
+    private AuthenticationManager authenticationManager;
     private ExerciseService exerciseService;
+    private UserDAO userDAO;
 
 
     public ExerciseController(@Qualifier("exerciseService") ExerciseService exerciseService) {
@@ -37,10 +50,11 @@ public class ExerciseController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<?> addExercise(@RequestBody @NonNull Exercise exercise) {
+    @RolesAllowed(ERole.Name.ROLE_TRAINER)
+    public ResponseEntity<?> addExercise(@RequestBody @NonNull Exercise exercise, Principal principal) {
         Exercise createdExercise;
         try {
-            createdExercise = exerciseService.addExercise(exercise);
+            createdExercise = exerciseService.addExercise(exercise, principal.getName());
         } catch (Exception e) {
             System.out.println("Exception message: "+e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);

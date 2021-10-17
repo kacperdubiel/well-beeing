@@ -19,16 +19,11 @@ import java.util.Set;
 @Service("userService")
 public class UserService implements UserDetailsService, UserServiceApi {
     private UserDAO userDAO;
-    @Qualifier("roleDAO")
-    @Autowired
     private RoleDAO roleDAO;
-    public UserService(@Qualifier("userDAO") UserDAO userDAO){
+    public UserService(@Qualifier("userDAO") UserDAO userDAO, @Qualifier("roleDAO") RoleDAO roleDAO){
         this.userDAO = userDAO;
+        this.roleDAO = roleDAO;
     }
-//    public UserService(@Qualifier("roleDAO") RoleDAO roleDAO){
-//        this.roleDAO = roleDAO;
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User foundUser = userDAO.findUserByEmail(email).orElse(null);

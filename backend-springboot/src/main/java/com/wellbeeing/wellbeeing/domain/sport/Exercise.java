@@ -8,6 +8,8 @@ import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -105,7 +107,7 @@ public class Exercise {
         return met;
     }
 
-    public void setMet(float met) {
+    public void setMet(double met) {
         this.met = met;
     }
 
@@ -143,5 +145,13 @@ public class Exercise {
                 ", description='" + description + '\'' +
                 ", met=" + met +
                 '}';
+    }
+
+    public Profile getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Profile creator) {
+        this.creator = creator;
     }
 }

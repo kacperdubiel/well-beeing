@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface ExerciseService {
-    Exercise addExercise(Exercise exercise);
+    Exercise addExercise(Exercise exercise, String creatorName);
     boolean addLabelToExerciseByLabelId(long exercise_id, long label_id);
     boolean addLabelToExerciseByLabelName(long exercise_id, String label_name);
     boolean deleteExercise(long id);

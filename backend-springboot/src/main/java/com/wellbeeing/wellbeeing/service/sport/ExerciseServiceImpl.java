@@ -1,8 +1,10 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
+import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.SportLabelDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,14 +17,20 @@ import java.util.UUID;
 public class ExerciseServiceImpl implements ExerciseService {
     private ExerciseDAO exerciseDAO;
     private SportLabelDAO sportLabelDAO;
-    public ExerciseServiceImpl(@Qualifier("exerciseDAO") ExerciseDAO exerciseDAO, @Qualifier("sportLabelDAO") SportLabelDAO sportLabelDAO){
+    private UserDAO userDAO;
+    public ExerciseServiceImpl(@Qualifier("exerciseDAO") ExerciseDAO exerciseDAO,
+                               @Qualifier("sportLabelDAO") SportLabelDAO sportLabelDAO,
+                               @Qualifier("userDAO") UserDAO userDAO){
         this.exerciseDAO = exerciseDAO;
         this.sportLabelDAO = sportLabelDAO;
+        this.userDAO = userDAO;
     }
 
     @Override
-    public Exercise addExercise(Exercise exercise) throws HttpMessageNotReadableException {
-        System.out.println("Exercise: " + exercise);
+    public Exercise addExercise(Exercise exercise, String creatorName) throws HttpMessageNotReadableException {
+        User user = userDAO.findUserByEmail(creatorName).orElse(null);
+        System.out.println("Print id:" + user.getId());
+        exercise.setCreator(user.getProfile());
         if (exerciseDAO.findAllByName(exercise.getName()).isEmpty()) {
             if (exercise.getName() != null && exercise.getExerciseType() != null)
             exerciseDAO.save(exercise);
