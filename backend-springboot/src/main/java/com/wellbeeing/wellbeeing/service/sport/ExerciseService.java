@@ -10,13 +10,13 @@ import java.util.UUID;
 
 public interface ExerciseService {
     Exercise addExercise(Exercise exercise, String creatorName);
-    boolean addLabelToExerciseByLabelId(long exercise_id, long label_id);
-    boolean addLabelToExerciseByLabelName(long exercise_id, String label_name);
-    boolean deleteExercise(long id);
-    Exercise getExercise(long id);
+    boolean addLabelToExerciseByLabelId(long exerciseId, long labelId);
+    boolean addLabelToExerciseByLabelName(long exerciseId, String labelName);
+    boolean deleteExercise(long exerciseId);
+    Exercise getExercise(long exerciseId);
     List<Exercise> getAllExercises();
     List<Exercise> getExercisesByType(EExerciseType type);
-    List<Exercise> getExercisesByCreatorId(UUID creator_id);
+    List<Exercise> getExercisesByCreatorId(UUID creatorId);
     Exercise updateExercise(Exercise exercise);
     Exercise partialUpdateExercise(Exercise exercise);
 }

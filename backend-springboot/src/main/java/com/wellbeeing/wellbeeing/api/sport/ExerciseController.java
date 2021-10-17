@@ -135,7 +135,7 @@ public class ExerciseController {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "OTHER ERROR"), HttpStatus.CONFLICT);
         }
 
-        exerciseService.partialUpdateExercise(exercise);
-        return new ResponseEntity<>(exercise, HttpStatus.OK);
+        Exercise updated = exerciseService.partialUpdateExercise(exercise);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 }
