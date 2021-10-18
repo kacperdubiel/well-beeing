@@ -14,8 +14,6 @@ public class Message {
     private UUID id;
 
     @Column
-    private EConnectionType connectionType;
-    @Column
     private EMessageType messageType;
     @Column
     private String data;
@@ -27,7 +25,7 @@ public class Message {
     @ManyToOne
     private Profile sender;
     @ManyToOne
-    private Profile receiver;
+    private Conversation conversation;
 
     public UUID getId() {
         return id;
@@ -35,14 +33,6 @@ public class Message {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public EConnectionType getConnectionType() {
-        return connectionType;
-    }
-
-    public void setConnectionType(EConnectionType connectionType) {
-        this.connectionType = connectionType;
     }
 
     public EMessageType getMessageType() {
@@ -85,11 +75,11 @@ public class Message {
         this.sender = sender;
     }
 
-    public Profile getReceiver() {
-        return receiver;
+    public Conversation getConversation() {
+        return conversation;
     }
 
-    public void setReceiver(Profile receiver) {
-        this.receiver = receiver;
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
     }
 }

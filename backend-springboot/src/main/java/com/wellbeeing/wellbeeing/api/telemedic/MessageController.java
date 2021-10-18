@@ -1,9 +1,6 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
-import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.Message;
-import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
 import com.wellbeeing.wellbeeing.service.telemedic.MessageServiceApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -11,20 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class MessageController {
     private MessageServiceApi messageService;
-    private ProfileServiceApi profileService;
 
-    public MessageController(
-            @Qualifier("messageService") MessageServiceApi messageService,
-            @Qualifier("profileService") ProfileServiceApi profileService){
+    public MessageController(@Qualifier("messageService") MessageServiceApi messageService){
         this.messageService = messageService;
-        this.profileService = profileService;
     }
 
     @RequestMapping(path = "messages/{id}", method = RequestMethod.GET)
@@ -34,23 +26,6 @@ public class MessageController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         else
             return new ResponseEntity<>(messageResult, HttpStatus.OK);
-    }
-
-    @RequestMapping(path = "messages/sender/{sender_id}/receiver/{receiver_id}/type/{type}", method = RequestMethod.GET)
-    public ResponseEntity<List<Message>> getMessageBySenderAndReceiverAndConnectionType(
-            @PathVariable("sender_id") UUID senderId,
-            @PathVariable("receiver_id") UUID receiverId,
-            @PathVariable("type") EConnectionType connectionType
-    ){
-        Profile sender = profileService.getProfileById(senderId);
-        Profile receiver = profileService.getProfileById(receiverId);
-        List<Message> messages = messageService.getMessageBySenderAndReceiverAndConnectionType(sender, receiver, connectionType);
-
-        if(messages == null)
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else {
-            return new ResponseEntity<>(messages, HttpStatus.OK);
-        }
     }
 
     @RequestMapping(path = "messages", method = RequestMethod.POST)

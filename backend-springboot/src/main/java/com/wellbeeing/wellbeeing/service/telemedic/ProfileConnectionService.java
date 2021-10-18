@@ -55,9 +55,4 @@ public class ProfileConnectionService implements ProfileConnectionServiceApi {
         return false;
     }
 
-
-
-
-
-
 }

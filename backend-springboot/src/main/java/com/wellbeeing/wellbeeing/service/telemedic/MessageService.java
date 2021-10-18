@@ -26,13 +26,6 @@ public class MessageService implements MessageServiceApi {
     }
 
     @Override
-    public List<Message> getMessageBySenderAndReceiverAndConnectionType(
-            Profile sender, Profile receiver, EConnectionType connectionType
-    ) {
-        return messageDAO.findBySenderAndReceiverAndConnectionType(sender, receiver, connectionType);
-    }
-
-    @Override
     public Message addMessage(Message message) {
         return messageDAO.save(message);
     }
