@@ -11,10 +11,11 @@ import java.util.UUID;
 
 public interface TrainingPlanService {
     TrainingPlan addTrainingPlan(TrainingPlan trainingPlan, String creatorName, UUID ownerId);
-    TrainingPlan addTrainingWithExercises(Training training, String creatorName, List<TrainingPosition> trainingPositions);
+    TrainingPlan addTrainingPlanWithExercises(Training training, String creatorName, List<TrainingPosition> trainingPositions);
     boolean deleteTrainingPlan(long trainingPlanId);
     TrainingPlan getTrainingPlan(long trainingPlanId);
     TrainingPosition addPositionToTrainingPlan(long trainingPlanId, long trainingId, Date trainingDate, String clientName);
+//    TrainingPosition addManyPositionsToTrainingPlan(long trainingPlanId, List<Long> trainingIds, List<Date> trainingDates, String clientName);
     boolean removePositionFromTrainingPlan(long trainingPlanId, long trainingPositionId, String clientName);
     List<TrainingPlan> getAllTrainingPlans();
     List<TrainingPosition> getPositionsFromTrainingPlan(long trainingPlanId);

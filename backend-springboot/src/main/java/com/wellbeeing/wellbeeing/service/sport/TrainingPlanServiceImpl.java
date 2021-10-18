@@ -51,7 +51,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
-    public TrainingPlan addTrainingWithExercises(Training training, String creatorName, List<TrainingPosition> trainingPositions) {
+    public TrainingPlan addTrainingPlanWithExercises(Training training, String creatorName, List<TrainingPosition> trainingPositions) {
         return null;
     }
 

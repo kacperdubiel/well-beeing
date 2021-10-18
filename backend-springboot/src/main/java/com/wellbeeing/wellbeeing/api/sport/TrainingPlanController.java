@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -83,5 +85,14 @@ public class TrainingPlanController {
         }
         return new ResponseEntity<>("Position removed!", HttpStatus.OK);
 
+    }
+    @PatchMapping("/{id}/add-many-positions/")
+    public ResponseEntity<?> addManyPositionsToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId,@RequestBody @NonNull List<AddTrainingToPlanRequest> requests, Principal principal) {
+        List<TrainingPosition> addedPositions = new ArrayList<>();
+        for (AddTrainingToPlanRequest request:requests) {
+            TrainingPosition trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
+            addedPositions.add(trainingPosition);
+        }
+        return new ResponseEntity<>(addedPositions, HttpStatus.OK);
     }
 }
