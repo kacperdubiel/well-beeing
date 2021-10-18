@@ -1,12 +1,11 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Data
 @Entity
@@ -24,9 +23,14 @@ public class Training {
     @Column(name = "instruction")
     private String instruction;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator")
+    private Profile creator;
+    @JsonIgnore
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<TrainingPosition> trainingPlans = new HashSet<>();
 
@@ -82,7 +86,7 @@ public class Training {
         this.instruction = instruction;
     }
 
-    public int caloriesBurned(int user_weight) {
+    public int caloriesBurned(double user_weight) {
         return this.exerciseInTrainings.stream().map(ex -> ex.countCaloriesPerExerciseDuration(user_weight)).mapToInt(num -> num).sum();
     }
 
@@ -96,15 +100,31 @@ public class Training {
                 '}';
     }
 
-    public Set<ExerciseInTraining> getExerciseInTrainingSet() {
-        return exerciseInTrainings;
-    }
-
     public void setExerciseInTrainingSet(Set<ExerciseInTraining> exerciseInTrainingSet) {
         this.exerciseInTrainings = exerciseInTrainingSet;
     }
 
     public void addExerciseToTraining(ExerciseInTraining exercise) {
         exerciseInTrainings.add(exercise);
+    }
+
+    public boolean removeExerciseFromTraining(long exerciseId) {
+        return exerciseInTrainings.removeIf(e->e.getExercise().getExercise_id() == exerciseId);
+    }
+
+    public Profile getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Profile creator) {
+        this.creator = creator;
+    }
+
+    public Set<ExerciseInTraining> getExerciseInTrainings() {
+        return exerciseInTrainings;
+    }
+
+    public void setExerciseInTrainings(Set<ExerciseInTraining> exerciseInTrainings) {
+        this.exerciseInTrainings = exerciseInTrainings;
     }
 }

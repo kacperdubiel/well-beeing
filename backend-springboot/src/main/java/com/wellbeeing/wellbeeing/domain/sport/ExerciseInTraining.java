@@ -11,17 +11,18 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"exercise_id", "training_id"})})
 @Entity
 public class ExerciseInTraining {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "training_id")
     private Training training;
     @Column(name = "reps")
@@ -62,7 +63,7 @@ public class ExerciseInTraining {
 
     @Override
     public int hashCode() {
-        return Objects.hash(training.getName(), exercise.getName(), repetitions, time_seconds);
+        return Objects.hash(this.id, repetitions, time_seconds);
     }
 
     public Exercise getExercise() {
@@ -97,7 +98,7 @@ public class ExerciseInTraining {
         this.time_seconds = time_seconds;
     }
 
-    public int countCaloriesPerExerciseDuration(int user_weight) {
+    public int countCaloriesPerExerciseDuration(double user_weight) {
         //METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute
         return (int) ((time_seconds*series)/3600d*(exercise.getMet()*3.5*user_weight/200));
     }

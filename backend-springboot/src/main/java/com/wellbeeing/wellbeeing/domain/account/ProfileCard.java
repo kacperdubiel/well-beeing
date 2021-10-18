@@ -1,11 +1,12 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.wellbeeing.wellbeeing.domain.diet.*;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
-
+@NoArgsConstructor
 @Entity
 public class ProfileCard {
     @Id
@@ -41,6 +42,12 @@ public class ProfileCard {
     private Profile profile;
     @Column
     private EGlycemicIndexLevel glycemicIndexLevel;
+
+    public ProfileCard(double weight, int age, Profile profile) {
+        this.weight = weight;
+        this.age = age;
+        this.profile = profile;
+    }
 //    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
 //    @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
 //    private ProfileDietCalculation dietCalculations;
