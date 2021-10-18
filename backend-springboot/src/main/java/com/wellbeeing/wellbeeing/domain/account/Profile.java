@@ -1,5 +1,8 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
+import com.wellbeeing.wellbeeing.domain.social.Comment;
+import com.wellbeeing.wellbeeing.domain.social.Like;
+import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
@@ -60,6 +63,15 @@ public class Profile {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL)
+    private Set<Like> profileLikes = new HashSet<>();
+
+    @OneToMany(mappedBy = "commenter", cascade = CascadeType.ALL)
+    private Set<Comment> profileComments = new HashSet<>();
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    private Set<Post> profilePosts = new HashSet<>();
 
     public Profile(String firstName, String lastName, Date birthday, User profileUser) {
         System.out.println("Entered constructor");
