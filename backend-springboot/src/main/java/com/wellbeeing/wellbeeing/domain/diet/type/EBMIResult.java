@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.domain.diet;
+package com.wellbeeing.wellbeeing.domain.diet.type;
 
 public enum EBMIResult {
     SEVERELY_UNDERWEIGHT(600, Integer.MIN_VALUE, 16),

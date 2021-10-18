@@ -24,8 +24,8 @@ public class Dish {
     private String description;
     @Column
     private String recipe;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "dish")
-    @JoinColumn(name = "dish_product_detail_id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "dish_product_details", referencedColumnName = "id")
     List<DishProductDetail> dishProductDetails;
     @Column
     private boolean isBreakfast;

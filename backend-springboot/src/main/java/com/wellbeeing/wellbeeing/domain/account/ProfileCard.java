@@ -2,6 +2,9 @@ package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
+import com.wellbeeing.wellbeeing.domain.diet.type.EActivityLevel;
+import com.wellbeeing.wellbeeing.domain.diet.type.EDietGoal;
 import lombok.*;
 
 import javax.persistence.*;
@@ -53,7 +56,7 @@ public class ProfileCard {
     @Enumerated(EnumType.STRING)
     @Column
     private EDietGoal dietGoal;
-    @OneToOne(mappedBy = "profileCard", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "profileCard")
     @JsonIgnore
     private Profile profile;
     @OneToOne(cascade = CascadeType.ALL)

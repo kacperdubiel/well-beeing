@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.service.diet.calculation;
 
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.diet.EBasicMacro;
+import com.wellbeeing.wellbeeing.domain.diet.type.EBasicMacro;
 
 import java.util.HashMap;
 

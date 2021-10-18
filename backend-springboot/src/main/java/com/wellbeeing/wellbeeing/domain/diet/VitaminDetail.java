@@ -1,5 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.wellbeeing.wellbeeing.domain.diet.type.EVitamin;
+import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
 import lombok.*;
 
 import javax.persistence.*;

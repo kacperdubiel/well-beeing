@@ -2,8 +2,8 @@ package com.wellbeeing.wellbeeing.service.diet.calculation;
 
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
-import com.wellbeeing.wellbeeing.domain.diet.EGlycemicIndexLevel;
-import com.wellbeeing.wellbeeing.domain.diet.EMealType;
+import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
+import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
 
 import java.util.HashMap;
 

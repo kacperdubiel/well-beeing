@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.domain.diet;
+package com.wellbeeing.wellbeeing.domain.diet.type;
 
 public enum EDietGoal {
     FAST_LOSE_WEIGHT(-500, 1),

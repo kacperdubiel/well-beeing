@@ -1,7 +1,6 @@
 package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.*;
-import com.wellbeeing.wellbeeing.domain.diet.ProfileDietCalculation;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.RoleDAO;
@@ -83,5 +82,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public UUID findUserIdByUsername(String username) {
+        User foundUser = userDAO.findUserByEmail(username).orElse(null);
+        if(foundUser != null)
+            return foundUser.getId();
+        else throw new UsernameNotFoundException("User: " + username + " not found");
     }
 }

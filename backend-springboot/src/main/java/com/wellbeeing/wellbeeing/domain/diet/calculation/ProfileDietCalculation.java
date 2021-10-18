@@ -1,8 +1,10 @@
-package com.wellbeeing.wellbeeing.domain.diet;
+package com.wellbeeing.wellbeeing.domain.diet.calculation;
 
+import com.wellbeeing.wellbeeing.domain.diet.type.EBMIResult;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,7 +32,7 @@ public class ProfileDietCalculation {
     private double suggestedFats;
     @Column
     private double suggestedProteins;
-    @Column
+    /*@Column
     private double suggestedBreakfastCalories;
     @Column
     private double suggestedLunchCalories;
@@ -49,6 +51,10 @@ public class ProfileDietCalculation {
     @Column
     private EGlycemicIndexLevel suggestedSnackGlycemic;
     @Column
-    private EGlycemicIndexLevel suggestedSupperGlycemic;
+    private EGlycemicIndexLevel suggestedSupperGlycemic;*/
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "dietCalculation")
+    List<DietCalcMealCaloriesSuggestion> suggestedCaloriesForMeals;
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "dietCalculation")
+    List<DietCalcMealGlycemicIndexSuggestion> suggestedGlycemicIndexForMeals;
 
 }

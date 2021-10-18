@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.domain.diet;
+package com.wellbeeing.wellbeeing.domain.diet.type;
 
 public enum EMealType {
     BREAKFAST(0.25),

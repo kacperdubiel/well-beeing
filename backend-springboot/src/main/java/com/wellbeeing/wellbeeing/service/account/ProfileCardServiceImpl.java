@@ -1,10 +1,15 @@
 package com.wellbeeing.wellbeeing.service.account;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.diet.ProfileDietCalculation;
+import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
+import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
+import com.wellbeeing.wellbeeing.repository.diet.DietCalcMealCaloriesSuggestionDAO;
+import com.wellbeeing.wellbeeing.repository.diet.DietCalcMealGlycemicIndexSuggestionDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
 import com.wellbeeing.wellbeeing.service.diet.calculation.ProfileDietCalculationService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,55 +20,55 @@ import java.util.UUID;
 public class ProfileCardServiceImpl implements ProfileCardService {
 
     private ProfileDietCalculationService profileDietCalculationService;
-    private ProfileDietCalculationDAO profileDietCalculationDAO;
+    private ProfileDAO profileDAO;
     private ProfileCardDAO profileCardDAO;
 
     @Autowired
     public ProfileCardServiceImpl(@Qualifier("profileDietCalculationService")
                                       ProfileDietCalculationService profileDietCalculationService,
-                                  @Qualifier("profileDietCalculationDAO") ProfileDietCalculationDAO profileDietCalculationDAO,
-                                  @Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO
-                              ){
+                                  @Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO,
+                                  @Qualifier("profileDAO") ProfileDAO profileDAO){
         this.profileDietCalculationService = profileDietCalculationService;
-        this.profileDietCalculationDAO = profileDietCalculationDAO;
         this.profileCardDAO = profileCardDAO;
-    }
-
-    @Override
-    public void updateDietCalculationsForProfileCard(UUID profileCardId) {
-        ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
-        if(profileCard != null){
-            ProfileDietCalculation calcForProfileCard =
-                    profileDietCalculationService.calculateAllSuggestionsForProfileCard(profileCardId);
-            profileDietCalculationDAO.save(calcForProfileCard);
-            profileCard.setDietCalculations(calcForProfileCard);
-            profileCardDAO.save(profileCard);
-        }
+        this.profileDAO = profileDAO;
     }
 
 
     @Override
-    public ProfileCard updateProfileCard(ProfileCard newProfileCard, UUID profileCardId) {
+    public ProfileCard updateProfileCardById(ProfileCard newProfileCard, UUID profileCardId) throws NotFoundException {
         ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
         if (profileCard != null) {
             newProfileCard.setId(profileCardId);
+            newProfileCard.setDietCalculations(profileCard.getDietCalculations());
+            newProfileCard.setProfile(profileCard.getProfile());
             profileCardDAO.save(newProfileCard);
-            updateDietCalculationsForProfileCard(profileCardId);
+            profileDietCalculationService.updateDietCalculationByProfileCardId(profileCardId);
             return newProfileCard;
         }
-        return null;
+        throw new NotFoundException("Profile card not found");
     }
 
     @Override
-    public ProfileCard getProfileCardById(UUID profileCardId) {
-        return profileCardDAO.findById(profileCardId).orElse(null);
+    public ProfileCard getProfileCardById(UUID profileCardId) throws NotFoundException {
+        ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
+        if(profileCard != null)
+            return profileCard;
+        else throw new NotFoundException("Profile card not found");
     }
 
     @Override
-    public ProfileDietCalculation getProfileDietCalculationByProfileCardId(UUID profileCardId) {
-        ProfileCard card = profileCardDAO.findById(profileCardId).orElse(null);
-        if(card != null)
-            return card.getDietCalculations();
-        return null;
+    public ProfileCard getProfileCardByProfileId(UUID profileId) throws NotFoundException {
+        Profile actProfile = profileDAO.findById(profileId).orElse(null);
+        if(actProfile != null)
+            return getProfileCardById(actProfile.getProfileCard().getId());
+        throw new NotFoundException("Profile not found");
+    }
+
+    @Override
+    public ProfileCard updateProfileCardByProfileId(ProfileCard profileCard, UUID profileId) throws NotFoundException {
+        Profile actProfile = profileDAO.findById(profileId).orElse(null);
+        if(actProfile != null)
+            return updateProfileCardById(profileCard, actProfile.getProfileCard().getId());
+        throw new NotFoundException("Profile not found");
     }
 }

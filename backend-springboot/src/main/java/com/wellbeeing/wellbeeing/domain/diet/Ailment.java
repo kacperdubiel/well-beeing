@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.wellbeeing.wellbeeing.domain.diet.type.EAilmentType;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import javax.persistence.*;
