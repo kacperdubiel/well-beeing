@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository("commentDAO")
 public interface CommentDAO extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByPost(Post likedPost);
+    List<Comment> findAllCommentsByPost_PostId(long post_postId);
 }

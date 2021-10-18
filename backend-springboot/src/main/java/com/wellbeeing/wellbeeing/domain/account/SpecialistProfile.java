@@ -1,5 +1,4 @@
 package com.wellbeeing.wellbeeing.domain.account;
-import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;

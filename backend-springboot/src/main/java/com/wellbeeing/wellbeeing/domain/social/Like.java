@@ -2,18 +2,21 @@ package com.wellbeeing.wellbeeing.domain.social;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
-
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "likes")
 @Entity
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long like_id;
+    private long likeId;
     @Column
     private Date addedDate;
 
@@ -32,42 +35,10 @@ public class Like {
         this.liker = liker;
     }
 
-    public long getLike_id() {
-        return like_id;
-    }
-
-    public void setLike_id(long like_id) {
-        this.like_id = like_id;
-    }
-
-    public Date getAddedDate() {
-        return addedDate;
-    }
-
-    public void setAddedDate(Date addedDate) {
-        this.addedDate = addedDate;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public Profile getLiker() {
-        return liker;
-    }
-
-    public void setLiker(Profile liker) {
-        this.liker = liker;
-    }
-
     @Override
     public String toString() {
         return "Like{" +
-                "like_id=" + like_id +
+                "like_id=" + likeId +
                 ", addedDate=" + addedDate +
                 ", post=" + post +
                 ", liker=" + liker +

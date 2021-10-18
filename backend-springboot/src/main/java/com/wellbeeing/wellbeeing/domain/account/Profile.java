@@ -1,8 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
-import com.wellbeeing.wellbeeing.domain.social.Comment;
-import com.wellbeeing.wellbeeing.domain.social.Like;
-import com.wellbeeing.wellbeeing.domain.social.Post;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.social.*;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
@@ -36,12 +35,17 @@ public class Profile {
     private String description;
     @Column(nullable = false)
     private Date birthday;
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     private User profileUser;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
+
+    @OneToOne(mappedBy="profile", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Settings settings;
 
     @OneToMany(mappedBy = "owner")
     private List<Measure> measures;
@@ -72,6 +76,12 @@ public class Profile {
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<Post> profilePosts = new HashSet<>();
+
+    @OneToMany(mappedBy = "giver", cascade = CascadeType.ALL)
+    private Set<Opinion> profileGivenOpinions = new HashSet<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private Set<Opinion> profileReceivedOpinions = new HashSet<>();
 
     public Profile(String firstName, String lastName, Date birthday, User profileUser) {
         System.out.println("Entered constructor");

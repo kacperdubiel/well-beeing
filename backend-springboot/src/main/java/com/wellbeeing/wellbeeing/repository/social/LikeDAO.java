@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository("likeDAO")
 public interface LikeDAO extends JpaRepository<Like, Long> {
-    List<Like> findAllByPost(Post likedPost);
+    List<Like> findAllByPost_PostId(long post_id);
 }

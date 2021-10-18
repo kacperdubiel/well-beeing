@@ -2,17 +2,21 @@ package com.wellbeeing.wellbeeing.domain.social;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long comment_id;
+    private long commentId;
     @Column
     private String comContent;
     @Column
@@ -34,50 +38,10 @@ public class Comment {
         this.commenter = commenter;
     }
 
-    public long getComment_id() {
-        return comment_id;
-    }
-
-    public void setComment_id(long comment_id) {
-        this.comment_id = comment_id;
-    }
-
-    public String getComContent() {
-        return comContent;
-    }
-
-    public void setComContent(String comContent) {
-        this.comContent = comContent;
-    }
-
-    public Date getAddedDate() {
-        return addedDate;
-    }
-
-    public void setAddedDate(Date addedDate) {
-        this.addedDate = addedDate;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public Profile getCommenter() {
-        return commenter;
-    }
-
-    public void setCommenter(Profile commenter) {
-        this.commenter = commenter;
-    }
-
     @Override
     public String toString() {
         return "Comment{" +
-                "comment_id=" + comment_id +
+                "comment_id=" + commentId +
                 ", comContent='" + comContent + '\'' +
                 ", addedDate=" + addedDate +
                 ", post=" + post +
