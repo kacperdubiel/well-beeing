@@ -4,11 +4,16 @@ import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
 
+import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
+import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.List;
+
 @NoArgsConstructor
 @Entity
 public class Profile {
@@ -35,6 +40,13 @@ public class Profile {
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
 
+    @OneToMany(mappedBy = "owner")
+    private List<Measure> measures;
+
+    @OneToMany(mappedBy = "profile")
+    private List<ProfileConnection> profileConnections;
+
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<TrainingPlan> trainingPlans = new HashSet<>();
 
@@ -59,6 +71,14 @@ public class Profile {
         profileUser.setProfile(this);
         this.id = profileUser.getId();
         System.out.println("Escaped constructor");
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getProfileImgPath() {
@@ -125,7 +145,20 @@ public class Profile {
         this.profileCard = profileCard;
     }
 
-    public UUID getId() {
-        return id;
+    public List<Measure> getMeasures() {
+        return measures;
     }
+
+    public void setMeasures(List<Measure> measures) {
+        this.measures = measures;
+    }
+
+    public List<ProfileConnection> getProfileConnections() {
+        return profileConnections;
+    }
+
+    public void setProfileConnections(List<ProfileConnection> profileConnections) {
+        this.profileConnections = profileConnections;
+    }
+
 }
