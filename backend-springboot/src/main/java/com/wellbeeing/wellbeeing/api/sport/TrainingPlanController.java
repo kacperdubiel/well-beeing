@@ -34,13 +34,28 @@ public class TrainingPlanController {
     }
 
     @RequestMapping(path = "/{id}")
-    public ResponseEntity<?> getTrainingById(@PathVariable(value = "id") Long trainingPlanId) {
+    public ResponseEntity<?> getTrainingPlanById(@PathVariable(value = "id") Long trainingPlanId) {
         return new ResponseEntity<>(trainingPlanService.getTrainingPlan(trainingPlanId), HttpStatus.OK);
     }
 
     @GetMapping(path = "")
-    public ResponseEntity<?> getTrainings() {
+    public ResponseEntity<?> getTrainingPlans() {
         return new ResponseEntity<>(trainingPlanService.getAllTrainingPlans(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/my")
+    public ResponseEntity<?> getMyTrainingPlans(Principal principal) {
+        return new ResponseEntity<>(trainingPlanService.getMyTrainingPlans(principal.getName()), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/owner/{ownerId}")
+    public ResponseEntity<?> getTrainingPlansByOwnerId(@PathVariable(value = "ownerId") UUID ownerId) {
+        return new ResponseEntity<>(trainingPlanService.getTrainingPlansByOwnerId(ownerId), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/creator/{creatorId}")
+    public ResponseEntity<?> getTrainingPlansByCreatorId(@PathVariable(value = "creatorId") UUID creatorId) {
+        return new ResponseEntity<>(trainingPlanService.getTrainingPlansByCreatorId(creatorId), HttpStatus.OK);
     }
 
     @PostMapping(path = "")

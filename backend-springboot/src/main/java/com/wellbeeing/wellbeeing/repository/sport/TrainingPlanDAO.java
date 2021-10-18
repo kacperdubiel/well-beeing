@@ -12,5 +12,5 @@ import java.util.UUID;
 public interface TrainingPlanDAO extends JpaRepository<TrainingPlan, Long> {
     List<TrainingPlan> findTrainingPlansByOwnerId(UUID ownerId);
     List<TrainingPlan> findTrainingPlansByOwnerProfileUserEmail(String userName);
-    List<TrainingPlan> findTrainingPlansByCreator(TrainerProfile trainerProfile);
+    List<TrainingPlan> findTrainingPlansByCreatorId(UUID creatorId);
 }

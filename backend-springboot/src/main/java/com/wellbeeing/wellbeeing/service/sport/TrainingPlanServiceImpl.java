@@ -113,7 +113,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
 
     @Override
     public List<TrainingPlan> getTrainingPlansByCreatorId(UUID creatorId) {
-        return trainingPlanDAO.findAll();
+        return trainingPlanDAO.findTrainingPlansByCreatorId(creatorId);
     }
 
     @Override
