@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.*;
 import lombok.NoArgsConstructor;
 
@@ -38,7 +39,8 @@ public class ProfileCard {
 //    @JoinColumn(name = "preferred_diet_id", referencedColumnName = "id")
 //    private Diet preferredDiet;
     private EActivityLevel activityLevel;
-    @OneToOne(mappedBy = "profileCard", fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "profileCard", fetch = FetchType.EAGER, optional = false)
+    @JsonIgnore
     private Profile profile;
     @Column
     private EGlycemicIndexLevel glycemicIndexLevel;

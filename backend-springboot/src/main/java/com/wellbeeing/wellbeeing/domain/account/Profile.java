@@ -36,7 +36,7 @@ public class Profile {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     private User profileUser;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
 

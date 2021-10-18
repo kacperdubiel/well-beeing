@@ -3,7 +3,7 @@ package com.wellbeeing.wellbeeing.api.telemedic;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
-import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionServiceApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -18,11 +18,11 @@ import java.util.UUID;
 @RestController
 public class ProfileConnectionController {
     private ProfileConnectionServiceApi profileConnectionService;
-    private ProfileServiceApi profileService;
+    private ProfileService profileService;
 
     public ProfileConnectionController(
             @Qualifier("profileConnectionService") ProfileConnectionServiceApi profileConnectionService,
-            @Qualifier("profileService") ProfileServiceApi profileService){
+            @Qualifier("profileService") ProfileService profileService){
         this.profileConnectionService = profileConnectionService;
         this.profileService = profileService;
     }

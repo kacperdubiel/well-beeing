@@ -3,7 +3,7 @@ package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
-import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureServiceApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,10 @@ import java.util.UUID;
 @RestController
 public class MeasureController {
     private MeasureServiceApi measureService;
-    private ProfileServiceApi profileService;
+    private ProfileService profileService;
 
     public MeasureController(@Qualifier("measureService") MeasureServiceApi measureService,
-                             @Qualifier("profileService") ProfileServiceApi profileService){
+                             @Qualifier("profileService") ProfileService profileService){
         this.measureService = measureService;
     }
 
