@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository("userDAO")
 public interface UserDAO extends JpaRepository<User, UUID>{
     Optional<User> findUserByEmail(String email);
+    Optional<User> findUserById(UUID id);
 }

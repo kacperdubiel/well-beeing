@@ -1,9 +1,15 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -28,8 +34,12 @@ public class Exercise {
     private String instruction;
 
     @Column(name = "metabolic_eqv_of_task")
-    private float met;
+    private double met;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator")
+    private Profile creator;
+    @JsonProperty
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="exercise_labels",
@@ -37,11 +47,11 @@ public class Exercise {
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
     private Set<SportLabel> labels = new HashSet<>();
-
+    @JsonIgnore
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings;
 
-    public Exercise(String name, float met) { //, ExerciseInTraining... exerciseInTrainings
+    public Exercise(String name, double met) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;
         this.met = met;
         this.exerciseType = EExerciseType.OTHER;
@@ -93,11 +103,11 @@ public class Exercise {
         this.instruction = instruction;
     }
 
-    public float getMet() {
+    public double getMet() {
         return met;
     }
 
-    public void setMet(float met) {
+    public void setMet(double met) {
         this.met = met;
     }
 
@@ -126,6 +136,11 @@ public class Exercise {
         exerciseInTrainings.add(training);
     }
 
+    public boolean removeTrainingFromExercise(long trainingId) {
+        return exerciseInTrainings.removeIf(e->e.getTraining().getTraining_id() == trainingId);
+    }
+
+    public void addLabelToExercise(SportLabel sportLabel) {this.labels.add(sportLabel);}
     @Override
     public String toString() {
         return "Exercise{" +
@@ -135,5 +150,13 @@ public class Exercise {
                 ", description='" + description + '\'' +
                 ", met=" + met +
                 '}';
+    }
+
+    public Profile getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Profile creator) {
+        this.creator = creator;
     }
 }

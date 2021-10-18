@@ -18,7 +18,7 @@ public class ActivityGoal {
     private EGoalType goalType;
 
     @Column(name = "numeric_value")
-    private float numericValue;
+    private double numericValue;
 
     @Column(name = "text_value")
     private String textValue;
@@ -33,7 +33,7 @@ public class ActivityGoal {
     @JoinColumn(name = "owner")
     private Profile owner;
 
-    public ActivityGoal(EGoalType goalType, float numericValue, String textValue, Date goalTargetDate, Profile owner) {
+    public ActivityGoal(EGoalType goalType, double numericValue, String textValue, Date goalTargetDate, Profile owner) {
         this.goalType = goalType;
         this.numericValue = numericValue;
         this.textValue = textValue;
@@ -57,7 +57,7 @@ public class ActivityGoal {
         this.goalType = goalType;
     }
 
-    public float getNumericValue() {
+    public double getNumericValue() {
         return numericValue;
     }
 
