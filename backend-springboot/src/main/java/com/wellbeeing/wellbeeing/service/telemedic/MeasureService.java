@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.service.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
+import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.telemedic.MeasureDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class MeasureService implements MeasureServiceApi {
     }
 
     @Override
-    public List<Measure> getMeasuresByProfile(Profile profile) {
+    public List<Measure> getMeasuresByProfileAndMeasureType(Profile profile, MeasureType measureType) {
         return measureDAO.findByOwner(profile);
     }
 

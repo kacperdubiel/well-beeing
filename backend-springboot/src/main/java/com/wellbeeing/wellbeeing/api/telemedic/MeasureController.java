@@ -3,8 +3,10 @@ package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
+import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureServiceApi;
+import com.wellbeeing.wellbeeing.service.telemedic.MeasureTypeServiceApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,13 @@ import java.util.UUID;
 @RestController
 public class MeasureController {
     private MeasureServiceApi measureService;
+    private MeasureTypeServiceApi measureTypeService;
     private ProfileServiceApi profileService;
 
     public MeasureController(@Qualifier("measureService") MeasureServiceApi measureService,
-                             @Qualifier("profileService") ProfileServiceApi profileService){
+                             @Qualifier("measureTypeService") MeasureTypeServiceApi measureTypeService,
+                             @Qualifier("profileService") ProfileServiceApi profileService
+    ){
         this.measureService = measureService;
     }
 
@@ -34,11 +39,13 @@ public class MeasureController {
             return new ResponseEntity<>(measureResult, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "measures/profile/{id}", method = RequestMethod.GET)
-    public ResponseEntity<List<Measure>> getUserMeasures(@PathVariable("id") UUID profileId){
+    @RequestMapping(path = "measures/profile/{id}/type/{type_id}", method = RequestMethod.GET)
+    public ResponseEntity<List<Measure>> getUserMeasures(@PathVariable("id") UUID profileId,
+                                                         @PathVariable("type_id") UUID measureTypeId){
+        MeasureType measuresType = measureTypeService.getMeasureTypeById(measureTypeId);
         Profile measuresOwner = profileService.getProfileById(profileId);
-        List<Measure> measuresResult = measureService.getMeasuresByProfile(measuresOwner);
-        if(measuresResult == null)
+        List<Measure> measuresResult = measureService.getMeasuresByProfileAndMeasureType(measuresOwner, measuresType);
+        if(measuresResult == null || measuresType == null || measuresOwner == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         else {
             // Sorted by measure date DESC
