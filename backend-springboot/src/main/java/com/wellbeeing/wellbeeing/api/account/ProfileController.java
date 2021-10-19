@@ -61,9 +61,10 @@ public class ProfileController {
         }
     }
 
-    @RequestMapping(path = "/profile/{profileId}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateProfileById(@PathVariable("profileId") UUID profileId,
+    @RequestMapping(path = "/profile", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateProfileById(Principal principal,
                                                @NonNull @RequestBody Profile profile){
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
         try {
             Profile actProfile = profileService.updateProfile(profile, profileId);
             return new ResponseEntity<>(actProfile, HttpStatus.OK);
