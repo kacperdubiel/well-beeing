@@ -36,6 +36,7 @@ public class MeasureController {
     ){
         this.measureService = measureService;
         this.measureTypeService = measureTypeService;
+        this.userService = userService;
         this.profileService = profileService;
     }
 
