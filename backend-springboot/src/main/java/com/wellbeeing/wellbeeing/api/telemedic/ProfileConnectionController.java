@@ -49,9 +49,11 @@ public class ProfileConnectionController {
 
     @RequestMapping(path = "profile-connections/profile/{id}/type/{type}", method = RequestMethod.GET)
     public ResponseEntity<List<ProfileConnection>> getProfileConnectionsByProfileAndType(
-            @PathVariable("id") UUID profileId, @PathVariable("type") EConnectionType connectionType
+            @PathVariable("id") UUID profileId, @PathVariable("type") String connectionTypeText
     ){
         Profile pConnectionsOwner = profileService.getProfileById(profileId);
+        EConnectionType connectionType = EConnectionType.valueOf(connectionTypeText);
+
         List<ProfileConnection> pConnResult = profileConnectionService
                 .getProfileConnectionsByProfileAndType(pConnectionsOwner, connectionType);
         if(pConnResult == null)

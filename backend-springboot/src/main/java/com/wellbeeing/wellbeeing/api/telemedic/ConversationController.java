@@ -1,9 +1,11 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.telemedic.Conversation;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
+import com.wellbeeing.wellbeeing.service.account.UserServiceApi;
 import com.wellbeeing.wellbeeing.service.telemedic.ConversationServiceApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -11,23 +13,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class ConversationController {
     private ConversationServiceApi conversationService;
+    private UserServiceApi userService;
     private ProfileServiceApi profileService;
 
     public ConversationController(
             @Qualifier("conversationService") ConversationServiceApi conversationService,
+            @Qualifier("userService") UserServiceApi userService,
             @Qualifier("profileService") ProfileServiceApi profileService
     ){
         this.conversationService = conversationService;
+        this.userService = userService;
         this.profileService = profileService;
     }
 
-    @RequestMapping(path = "conversations/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "conversations", method = RequestMethod.GET)
     public ResponseEntity<Conversation> getConversationById(@PathVariable("id") UUID id){
         Conversation conversationResult = conversationService.getConversationById(id);
         if(conversationResult == null)
@@ -40,10 +46,11 @@ public class ConversationController {
     public ResponseEntity<Conversation> getConversationByProfile(
             @PathVariable("first_id") UUID firstProfileId,
             @PathVariable("second_id") UUID secondProfileId,
-            @PathVariable("type") EConnectionType connectionType
+            @PathVariable("type") String connectionTypeText
     ){
         Profile profile1 = profileService.getProfileById(firstProfileId);
         Profile profile2 = profileService.getProfileById(secondProfileId);
+        EConnectionType connectionType = EConnectionType.valueOf(connectionTypeText);
 
         Conversation conversation = conversationService.getConversationByProfilesAndType(profile1, profile2, connectionType);
         if(conversation == null)
