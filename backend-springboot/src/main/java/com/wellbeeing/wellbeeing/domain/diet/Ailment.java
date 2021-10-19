@@ -1,12 +1,18 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.wellbeeing.wellbeeing.domain.diet.type.EAilmentType;
+import lombok.*;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Ailment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,4 +31,10 @@ public class Ailment {
     private List<SportLabel> allowedLabels;
     @Column
     private int changeInCalories;
+    @Column
+    private int changeInProteinsGramPerKilogram;
+    @Column
+    private boolean isLowGlycemicIndexRecommended;
 }
+
+

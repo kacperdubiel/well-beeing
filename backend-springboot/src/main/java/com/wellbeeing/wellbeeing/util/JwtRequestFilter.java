@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.util;
 
-import com.wellbeeing.wellbeeing.service.account.UserService;
+import com.wellbeeing.wellbeeing.service.account.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,13 +17,13 @@ import java.io.IOException;
 
 @Component("jwtRequestFilter")
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     private JwtUtil jwtUtil;
 
-    public JwtRequestFilter(@Qualifier("userService") UserService userService,
+    public JwtRequestFilter(@Qualifier("userService") UserServiceImpl userServiceImpl,
                             @Qualifier("jwtUtil") JwtUtil jwtUtil) {
         super();
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
         this.jwtUtil = jwtUtil;
     }
 
@@ -40,7 +40,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails user = this.userService.loadUserByUsername(username);
+            UserDetails user = this.userServiceImpl.loadUserByUsername(username);
             if(jwtUtil.validateToken(jwt, user)){
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());

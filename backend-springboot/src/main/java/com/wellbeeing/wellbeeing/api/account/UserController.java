@@ -1,9 +1,9 @@
-package com.wellbeeing.wellbeeing.api;
+package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.RoleToUserRequest;
-import com.wellbeeing.wellbeeing.service.account.UserServiceApi;
+import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class UserController {
-    private UserServiceApi userService;
+    private UserService userService;
 
-    public UserController(@Qualifier("userService") UserServiceApi userService){
+    public UserController(@Qualifier("userService") UserService userService){
         this.userService = userService;
     }
 
