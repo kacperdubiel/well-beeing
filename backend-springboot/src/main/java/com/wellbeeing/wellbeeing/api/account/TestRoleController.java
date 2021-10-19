@@ -1,9 +1,9 @@
-package com.wellbeeing.wellbeeing.api;
+package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
-import com.wellbeeing.wellbeeing.service.account.RoleServiceApi;
+import com.wellbeeing.wellbeeing.service.account.RoleService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -15,8 +15,8 @@ import javax.annotation.security.RolesAllowed;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class TestRoleController {
-    private RoleServiceApi roleService;
-    public TestRoleController(@Qualifier("roleService") RoleServiceApi roleService){
+    private RoleService roleService;
+    public TestRoleController(@Qualifier("roleService") RoleService roleService){
         this.roleService = roleService;
     }
 
