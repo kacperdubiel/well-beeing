@@ -11,6 +11,7 @@ public interface ProfileConnectionService {
     ProfileConnection getProfileConnectionById(UUID profileConnectionId);
     List<ProfileConnection> getProfileConnectionsByProfile(Profile profile);
     List<ProfileConnection> getProfileConnectionsByProfileAndType(Profile profile, EConnectionType connectionType);
+    ProfileConnection getProfileConnectionByProfileAndConnectedWithAndType(Profile profile, Profile connectedWith, EConnectionType connectionType);
     ProfileConnection addProfileConnection(ProfileConnection profileConnection);
     ProfileConnection updateProfileConnection(ProfileConnection updatedProfileConnection);
     boolean deleteProfileConnectionById(UUID profileConnectionId);

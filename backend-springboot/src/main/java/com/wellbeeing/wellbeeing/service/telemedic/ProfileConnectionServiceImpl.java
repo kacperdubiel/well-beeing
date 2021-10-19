@@ -36,6 +36,11 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     }
 
     @Override
+    public ProfileConnection getProfileConnectionByProfileAndConnectedWithAndType(Profile profile, Profile connectedWith, EConnectionType connectionType) {
+        return profileConnectionDAO.findByProfileAndConnectedWithAndConnectionType(profile, connectedWith, connectionType);
+    }
+
+    @Override
     public ProfileConnection addProfileConnection(ProfileConnection profileConnection) {
         return profileConnectionDAO.save(profileConnection);
     }

@@ -13,4 +13,5 @@ import java.util.UUID;
 public interface ProfileConnectionDAO extends JpaRepository<ProfileConnection, UUID> {
     List<ProfileConnection> findByProfile(Profile profile);
     List<ProfileConnection> findByProfileAndConnectionType(Profile profile, EConnectionType connectionType);
+    ProfileConnection findByProfileAndConnectedWithAndConnectionType(Profile profile, Profile connectedWith, EConnectionType connectionType);
 }
