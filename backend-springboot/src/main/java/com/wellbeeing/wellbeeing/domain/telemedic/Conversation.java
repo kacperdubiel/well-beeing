@@ -20,7 +20,7 @@ public class Conversation {
     private Profile firstProfile;
     @ManyToOne
     private Profile secondProfile;
-    @OneToMany
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     private List<Message> messages;
 
     public UUID getId() {

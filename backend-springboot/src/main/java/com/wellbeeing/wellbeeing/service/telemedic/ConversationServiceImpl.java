@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service("conversationService")
 public class ConversationServiceImpl implements ConversationService {
@@ -20,8 +23,16 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public Conversation getConversationById(UUID conversationId) {
-        return conversationDAO.findById(conversationId).orElse(null);
+    public List<Conversation> getConversationsByProfileAndConnectionType(Profile profile, EConnectionType connectionType) {
+        List<Conversation> convsAsFirstProfile = conversationDAO
+                .findByFirstProfileAndConnectionType(profile, connectionType);
+        List<Conversation> convsAsSecondProfile = conversationDAO
+                .findBySecondProfileAndConnectionType(profile, connectionType);
+
+        List<Conversation> mergedConversations = Stream.concat(convsAsFirstProfile.stream(), convsAsSecondProfile.stream())
+                .collect(Collectors.toList());
+
+        return mergedConversations;
     }
 
     @Override
@@ -31,6 +42,7 @@ public class ConversationServiceImpl implements ConversationService {
         if(conversation == null) {
             conversation = conversationDAO.findByFirstProfileAndSecondProfileAndConnectionType(profile2, profile1, connectionType);
         }
+
         return conversation;
     }
 
@@ -39,18 +51,5 @@ public class ConversationServiceImpl implements ConversationService {
         return conversationDAO.save(conversation);
     }
 
-    @Override
-    public Conversation updateConversation(Conversation updatedConversation) {
-        return conversationDAO.save(updatedConversation);
-    }
-
-    @Override
-    public boolean deleteConversationById(UUID conversationId) {
-        if(conversationDAO.findById(conversationId).isPresent()){
-            conversationDAO.deleteById(conversationId);
-            return true;
-        }
-        return false;
-    }
 
 }

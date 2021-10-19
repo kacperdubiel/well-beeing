@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ConversationService {
-    Conversation getConversationById(UUID conversationId);
+    List<Conversation> getConversationsByProfileAndConnectionType(Profile profile, EConnectionType connectionType);
     Conversation getConversationByProfilesAndType(Profile profile1, Profile profile2, EConnectionType connectionType);
     Conversation addConversation(Conversation conversation);
-    Conversation updateConversation(Conversation updatedConversation);
-    boolean deleteConversationById(UUID conversationId);
 }
