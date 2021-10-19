@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.telemedic.Message;
-import com.wellbeeing.wellbeeing.service.telemedic.MessageServiceApi;
+import com.wellbeeing.wellbeeing.service.telemedic.MessageService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,9 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class MessageController {
-    private MessageServiceApi messageService;
+    private MessageService messageService;
 
-    public MessageController(@Qualifier("messageService") MessageServiceApi messageService){
+    public MessageController(@Qualifier("messageService") MessageService messageService){
         this.messageService = messageService;
     }
 

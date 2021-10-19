@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
-import com.wellbeeing.wellbeeing.service.telemedic.MeasureTypeServiceApi;
+import com.wellbeeing.wellbeeing.service.telemedic.MeasureTypeService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,9 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class MeasureTypeController {
-    private MeasureTypeServiceApi measureTypeService;
+    private MeasureTypeService measureTypeService;
 
-    public MeasureTypeController(@Qualifier("measureTypeService") MeasureTypeServiceApi measureTypeService){
+    public MeasureTypeController(@Qualifier("measureTypeService") MeasureTypeService measureTypeService){
         this.measureTypeService = measureTypeService;
     }
 

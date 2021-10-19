@@ -1,32 +1,31 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.telemedic.Conversation;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
-import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
-import com.wellbeeing.wellbeeing.service.account.UserServiceApi;
-import com.wellbeeing.wellbeeing.service.telemedic.ConversationServiceApi;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
+import com.wellbeeing.wellbeeing.service.account.UserService;
+import com.wellbeeing.wellbeeing.service.telemedic.ConversationService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class ConversationController {
-    private ConversationServiceApi conversationService;
-    private UserServiceApi userService;
-    private ProfileServiceApi profileService;
+    private ConversationService conversationService;
+    private UserService userService;
+    private ProfileService profileService;
 
     public ConversationController(
-            @Qualifier("conversationService") ConversationServiceApi conversationService,
-            @Qualifier("userService") UserServiceApi userService,
-            @Qualifier("profileService") ProfileServiceApi profileService
+            @Qualifier("conversationService") ConversationService conversationService,
+            @Qualifier("userService") UserService userService,
+            @Qualifier("profileService") ProfileService profileService
     ){
         this.conversationService = conversationService;
         this.userService = userService;
@@ -48,15 +47,19 @@ public class ConversationController {
             @PathVariable("second_id") UUID secondProfileId,
             @PathVariable("type") String connectionTypeText
     ){
-        Profile profile1 = profileService.getProfileById(firstProfileId);
-        Profile profile2 = profileService.getProfileById(secondProfileId);
-        EConnectionType connectionType = EConnectionType.valueOf(connectionTypeText);
+        try {
+            Profile profile1 = profileService.getProfileById(firstProfileId);
+            Profile profile2 = profileService.getProfileById(secondProfileId);
+            EConnectionType connectionType = EConnectionType.valueOf(connectionTypeText);
 
-        Conversation conversation = conversationService.getConversationByProfilesAndType(profile1, profile2, connectionType);
-        if(conversation == null)
+            Conversation conversation = conversationService.getConversationByProfilesAndType(profile1, profile2, connectionType);
+            if(conversation == null)
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            else {
+                return new ResponseEntity<>(conversation, HttpStatus.OK);
+            }
+        } catch (NotFoundException e){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else {
-            return new ResponseEntity<>(conversation, HttpStatus.OK);
         }
     }
 

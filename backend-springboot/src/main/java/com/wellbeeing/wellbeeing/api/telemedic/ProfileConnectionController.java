@@ -3,8 +3,9 @@ package com.wellbeeing.wellbeeing.api.telemedic;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
-import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
-import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionServiceApi;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
+import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,12 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class ProfileConnectionController {
-    private ProfileConnectionServiceApi profileConnectionService;
-    private ProfileServiceApi profileService;
+    private ProfileConnectionService profileConnectionService;
+    private ProfileService profileService;
 
     public ProfileConnectionController(
-            @Qualifier("profileConnectionService") ProfileConnectionServiceApi profileConnectionService,
-            @Qualifier("profileService") ProfileServiceApi profileService){
+            @Qualifier("profileConnectionService") ProfileConnectionService profileConnectionService,
+            @Qualifier("profileService") ProfileService profileService){
         this.profileConnectionService = profileConnectionService;
         this.profileService = profileService;
     }
@@ -38,12 +39,17 @@ public class ProfileConnectionController {
 
     @RequestMapping(path = "profile-connections/profile/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<ProfileConnection>> getProfileConnectionsByProfile(@PathVariable("id") UUID profileId){
-        Profile pConnectionsOwner = profileService.getProfileById(profileId);
-        List<ProfileConnection> pConnectionsResult = profileConnectionService.getProfileConnectionsByProfile(pConnectionsOwner);
-        if(pConnectionsResult == null)
+        try {
+            Profile pConnectionsOwner = profileService.getProfileById(profileId);
+            List<ProfileConnection> pConnectionsResult = profileConnectionService.getProfileConnectionsByProfile(pConnectionsOwner);
+
+            if(pConnectionsResult == null)
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            else {
+                return new ResponseEntity<>(pConnectionsResult, HttpStatus.OK);
+            }
+        } catch (NotFoundException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else {
-            return new ResponseEntity<>(pConnectionsResult, HttpStatus.OK);
         }
     }
 
@@ -51,16 +57,21 @@ public class ProfileConnectionController {
     public ResponseEntity<List<ProfileConnection>> getProfileConnectionsByProfileAndType(
             @PathVariable("id") UUID profileId, @PathVariable("type") String connectionTypeText
     ){
-        Profile pConnectionsOwner = profileService.getProfileById(profileId);
-        EConnectionType connectionType = EConnectionType.valueOf(connectionTypeText);
+        try {
+            Profile pConnectionsOwner = profileService.getProfileById(profileId);
+            EConnectionType connectionType = EConnectionType.valueOf(connectionTypeText);
 
-        List<ProfileConnection> pConnResult = profileConnectionService
-                .getProfileConnectionsByProfileAndType(pConnectionsOwner, connectionType);
-        if(pConnResult == null)
+            List<ProfileConnection> pConnResult = profileConnectionService
+                    .getProfileConnectionsByProfileAndType(pConnectionsOwner, connectionType);
+            if(pConnResult == null)
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            else {
+                return new ResponseEntity<>(pConnResult, HttpStatus.OK);
+            }
+        } catch (NotFoundException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else {
-            return new ResponseEntity<>(pConnResult, HttpStatus.OK);
         }
+
     }
 
     @RequestMapping(path = "profile-connections", method = RequestMethod.POST)
