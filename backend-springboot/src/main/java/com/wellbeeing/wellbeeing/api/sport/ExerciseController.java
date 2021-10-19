@@ -1,12 +1,10 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
-import com.wellbeeing.wellbeeing.service.account.UserServiceApi;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,7 +90,7 @@ public class ExerciseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateExercise(@PathVariable(value = "id") Long exerciseId, @RequestBody @NonNull Exercise exercise) {
-        exercise.setExercise_id(exerciseId);
+        exercise.setExerciseId(exerciseId);
         if(exerciseService.updateExercise(exercise) == null)
             return new ResponseEntity<>("Couldn't update exercise!", HttpStatus.CONFLICT);
         return new ResponseEntity<>(exercise, HttpStatus.OK);

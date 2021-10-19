@@ -16,7 +16,7 @@ import java.util.Date;
 public class ActivityGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long activityGoal_id;
+    private long activityGoalId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "goal_type", nullable = false)

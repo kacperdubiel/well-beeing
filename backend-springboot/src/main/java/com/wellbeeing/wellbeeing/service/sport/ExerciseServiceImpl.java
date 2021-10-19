@@ -101,7 +101,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public Exercise updateExercise(Exercise exercise) {
         // Not creating a new object
-        Exercise targetExercise = exerciseDAO.findById(exercise.getExercise_id()).orElse(null);
+        Exercise targetExercise = exerciseDAO.findById(exercise.getExerciseId()).orElse(null);
         if(targetExercise == null)
             return null;
 

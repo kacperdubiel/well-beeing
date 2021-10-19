@@ -3,10 +3,7 @@ package com.wellbeeing.wellbeeing.domain.sport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
-import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
-import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +12,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +21,7 @@ import java.util.stream.Stream;
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long exercise_id;
+    private long exerciseId;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
     @Enumerated(EnumType.STRING)
@@ -75,14 +70,14 @@ public class Exercise {
     }
 
     public boolean removeTrainingFromExercise(long trainingId) {
-        return exerciseInTrainings.removeIf(e->e.getTraining().getTraining_id() == trainingId);
+        return exerciseInTrainings.removeIf(e->e.getTraining().getTrainingId() == trainingId);
     }
 
     public void addLabelToExercise(SportLabel sportLabel) {this.labels.add(sportLabel);}
     @Override
     public String toString() {
         return "Exercise{" +
-                "exercise_id=" + exercise_id +
+                "exercise_id=" + exerciseId +
                 ", name='" + name + '\'' +
                 ", exerciseType=" + exerciseType +
                 ", description='" + description + '\'' +

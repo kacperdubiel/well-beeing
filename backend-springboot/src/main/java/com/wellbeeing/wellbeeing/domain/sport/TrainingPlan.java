@@ -20,7 +20,7 @@ import java.util.Set;
 public class TrainingPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long trainingPlan_id;
+    private long trainingPlanId;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

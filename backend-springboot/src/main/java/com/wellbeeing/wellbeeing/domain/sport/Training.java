@@ -17,7 +17,7 @@ import java.util.*;
 public class Training {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long training_id;
+    private long trainingId;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
     @Enumerated(EnumType.STRING)
@@ -55,7 +55,7 @@ public class Training {
     @Override
     public String toString() {
         return "Training{" +
-                "training_id=" + training_id +
+                "training_id=" + trainingId +
                 ", name='" + name + '\'' +
                 ", trainingDifficulty=" + trainingDifficulty +
                 ", description='" + description + '\'' +
@@ -67,6 +67,6 @@ public class Training {
     }
 
     public boolean removeExerciseFromTraining(long exerciseId) {
-        return exerciseInTrainings.removeIf(e->e.getExercise().getExercise_id() == exerciseId);
+        return exerciseInTrainings.removeIf(e->e.getExercise().getExerciseId() == exerciseId);
     }
 }

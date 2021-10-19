@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class SportLabel {
     @Id
-    private long sportLabel_id;
+    private long sportLabelId;
 
     @Column(name = "name")
     private String name;
