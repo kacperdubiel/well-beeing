@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddTrainingPlanWithOwnerRequest;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddTrainingToPlanRequest;
+import com.wellbeeing.wellbeeing.domain.message.sport.PlanGeneratorRequest;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
@@ -109,5 +110,11 @@ public class TrainingPlanController {
             addedPositions.add(trainingPosition);
         }
         return new ResponseEntity<>(addedPositions, HttpStatus.OK);
+    }
+
+
+    @PatchMapping("/generate-plan-for/{id}")
+    public ResponseEntity<?> generateTrainingPlanForId(@PathVariable(value = "id") UUID userId, @RequestBody @NonNull PlanGeneratorRequest request) {
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
