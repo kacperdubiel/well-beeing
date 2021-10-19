@@ -26,7 +26,6 @@ public class Training {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
     private Profile creator;
-    @JsonIgnore
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings = new HashSet<>();
 
