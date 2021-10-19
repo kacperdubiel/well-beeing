@@ -3,10 +3,15 @@ package com.wellbeeing.wellbeeing.domain.sport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.*;
-
+@Getter
+@Setter
+@NoArgsConstructor
 @Data
 @Entity
 public class Training {
@@ -26,6 +31,10 @@ public class Training {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
     private Profile creator;
+
+    @Column(name = "isPrivate")
+    private boolean isPrivate = false;
+
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings = new HashSet<>();
 
@@ -37,52 +46,6 @@ public class Training {
         this.name = name;
         this.trainingDifficulty = difficulty;
         this.exerciseInTrainings = new HashSet<>();
-//        for(ExerciseInTraining exerciseInTraining : exerciseInTrainings) exerciseInTraining.setTraining(this);
-//        this.exerciseInTrainings = Stream.of(exerciseInTrainings).collect(Collectors.toSet());
-    }
-
-    public Training() {
-
-    }
-
-    public long getTraining_id() {
-        return training_id;
-    }
-
-    public void setTraining_id(long training_id) {
-        this.training_id = training_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ETrainingDifficulty getTrainingDifficulty() {
-        return trainingDifficulty;
-    }
-
-    public void setTrainingDifficulty(ETrainingDifficulty trainingDifficulty) {
-        this.trainingDifficulty = trainingDifficulty;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getInstruction() {
-        return instruction;
-    }
-
-    public void setInstruction(String instruction) {
-        this.instruction = instruction;
     }
 
     public int caloriesBurned(double user_weight) {
@@ -99,31 +62,11 @@ public class Training {
                 '}';
     }
 
-    public void setExerciseInTrainingSet(Set<ExerciseInTraining> exerciseInTrainingSet) {
-        this.exerciseInTrainings = exerciseInTrainingSet;
-    }
-
     public void addExerciseToTraining(ExerciseInTraining exercise) {
         exerciseInTrainings.add(exercise);
     }
 
     public boolean removeExerciseFromTraining(long exerciseId) {
         return exerciseInTrainings.removeIf(e->e.getExercise().getExercise_id() == exerciseId);
-    }
-
-    public Profile getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Profile creator) {
-        this.creator = creator;
-    }
-
-    public Set<ExerciseInTraining> getExerciseInTrainings() {
-        return exerciseInTrainings;
-    }
-
-    public void setExerciseInTrainings(Set<ExerciseInTraining> exerciseInTrainings) {
-        this.exerciseInTrainings = exerciseInTrainings;
     }
 }

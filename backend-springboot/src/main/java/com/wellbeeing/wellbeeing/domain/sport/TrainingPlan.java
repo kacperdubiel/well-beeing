@@ -5,11 +5,17 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class TrainingPlan {
     @Id
@@ -39,10 +45,6 @@ public class TrainingPlan {
     @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL)
     private Set<TrainingPosition> trainingPositions = new HashSet<>();
 
-    public TrainingPlan () {
-
-    }
-
     public TrainingPlan(Profile owner, int year, int week, String details) {
         this.owner = owner;
         this.year = year;
@@ -58,67 +60,5 @@ public class TrainingPlan {
         this.creator = creator;
     }
 
-    public long getTrainingPlan_id() {
-        return trainingPlan_id;
-    }
 
-    public void setTrainingPlan_id(long trainingPlan_id) {
-        this.trainingPlan_id = trainingPlan_id;
-    }
-
-    public Profile getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Profile creator) {
-        this.creator = creator;
-    }
-
-    public Profile getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Profile owner) {
-        this.owner = owner;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getWeek() {
-        return week;
-    }
-
-    public void setWeek(int week) {
-        this.week = week;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public EPlanStatus getPlanStatus() {
-        return planStatus;
-    }
-
-    public void setPlanStatus(EPlanStatus planStatus) {
-        this.planStatus = planStatus;
-    }
-
-    public Set<TrainingPosition> getTrainingPositions() {
-        return trainingPositions;
-    }
-
-    public void setTrainingPositions(Set<TrainingPosition> trainingPositions) {
-        this.trainingPositions = trainingPositions;
-    }
 }

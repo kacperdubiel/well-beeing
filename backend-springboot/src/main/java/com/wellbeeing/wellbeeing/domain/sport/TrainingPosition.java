@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.Objects;
 
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class TrainingPosition {
     @Id
@@ -29,7 +31,10 @@ public class TrainingPosition {
     private Date trainingDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ETrainingStatus trainingStatus;;
+    private ETrainingStatus trainingStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "time_of_day")
+    private ETimeOfDay timeOfDay;;
 
     public TrainingPosition(Training training, TrainingPlan trainingPlan, Date trainingDate) {
         this.training = training;
@@ -54,43 +59,4 @@ public class TrainingPosition {
         return Objects.hash(training.getName(), trainingPlan.getTrainingPlan_id(), trainingDate, trainingStatus);
     }
 
-    public long getTrainingPositionId() {
-        return trainingPositionId;
-    }
-
-    public void setTrainingPositionId(long trainingPositionId) {
-        this.trainingPositionId = trainingPositionId;
-    }
-
-    public Training getTraining() {
-        return training;
-    }
-
-    public void setTraining(Training training) {
-        this.training = training;
-    }
-
-    public TrainingPlan getTrainingPlan() {
-        return trainingPlan;
-    }
-
-    public void setTrainingPlan(TrainingPlan trainingPlan) {
-        this.trainingPlan = trainingPlan;
-    }
-
-    public Date getTrainingDate() {
-        return trainingDate;
-    }
-
-    public void setTrainingDate(Date trainingDate) {
-        this.trainingDate = trainingDate;
-    }
-
-    public ETrainingStatus getTrainingStatus() {
-        return trainingStatus;
-    }
-
-    public void setTrainingStatus(ETrainingStatus trainingStatus) {
-        this.trainingStatus = trainingStatus;
-    }
 }

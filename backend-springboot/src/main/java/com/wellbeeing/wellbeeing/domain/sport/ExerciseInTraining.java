@@ -44,14 +44,6 @@ public class ExerciseInTraining {
         this.exercise.addTrainingToExercise(this);
     }
 
-    public int getSeries() {
-        return series;
-    }
-
-    public void setSeries(int series) {
-        this.series = series;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,38 +58,6 @@ public class ExerciseInTraining {
     @Override
     public int hashCode() {
         return Objects.hash(this.id, repetitions, time_seconds);
-    }
-
-    public Exercise getExercise() {
-        return exercise;
-    }
-
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
-    }
-
-    public Training getTraining() {
-        return training;
-    }
-
-    public void setTraining(Training training) {
-        this.training = training;
-    }
-
-    public int getRepetitions() {
-        return repetitions;
-    }
-
-    public void setRepetitions(int repetitions) {
-        this.repetitions = repetitions;
-    }
-
-    public int getTime_seconds() {
-        return time_seconds;
-    }
-
-    public void setTime_seconds(int time_seconds) {
-        this.time_seconds = time_seconds;
     }
 
     public int countCaloriesPerExerciseDuration(double user_weight) {

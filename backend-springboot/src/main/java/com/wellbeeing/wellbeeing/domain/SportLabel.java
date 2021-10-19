@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -17,6 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class SportLabel {
     @Id
     private long sportLabel_id;
@@ -28,9 +30,6 @@ public class SportLabel {
     private Set<Exercise> exercises;
     @ManyToMany(mappedBy = "allowedLabels")
     private List<Ailment> labeledAilments;
-    public SportLabel() {
-
-    }
 
     public void addLabeledExercise(Exercise exercise) {this.exercises.add(exercise);}
 }
