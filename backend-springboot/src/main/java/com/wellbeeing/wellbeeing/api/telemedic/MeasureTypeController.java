@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
+import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureTypeService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,12 +40,14 @@ public class MeasureTypeController {
             return new ResponseEntity<>(measureTypeResult, HttpStatus.OK);
     }
 
+    @RolesAllowed(ERole.Name.ROLE_DOCTOR)
     @RequestMapping(path = "measure-types", method = RequestMethod.POST)
     public ResponseEntity<MeasureType> addMeasureType(@RequestBody @NonNull MeasureType measureType){
         MeasureType measureTypeResult = measureTypeService.addMeasureType(measureType);
         return new ResponseEntity<>(measureTypeResult, HttpStatus.CREATED);
     }
 
+    @RolesAllowed(ERole.Name.ROLE_DOCTOR)
     @RequestMapping(path = "measure-types", method = RequestMethod.PUT)
     public ResponseEntity<MeasureType> updateMeasureType(@RequestBody @NonNull MeasureType measureType){
         MeasureType measureTypeResult = measureTypeService.updateMeasureType(measureType);
@@ -53,6 +57,7 @@ public class MeasureTypeController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
+    @RolesAllowed(ERole.Name.ROLE_DOCTOR)
     @RequestMapping(path = "measure-types/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteMeasureType(@PathVariable("id") UUID id){
         boolean deleteResult = measureTypeService.deleteMeasureTypeById(id);
