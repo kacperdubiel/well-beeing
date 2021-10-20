@@ -6,6 +6,7 @@ import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -56,10 +57,9 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
-    public boolean deleteTrainingPlan(long trainingPlanId) {
+    public boolean deleteTrainingPlan(long trainingPlanId) throws NotFoundException {
         if (trainingPlanDAO.findById(trainingPlanId).orElse(null) == null)
-            return false;
-        trainingPlanDAO.deleteById(trainingPlanId);
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exists", trainingPlanId));
         return true;
     }
 
@@ -69,31 +69,48 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
-    public TrainingPosition addPositionToTrainingPlan(long trainingPlanId, long trainingId, Date trainingDate, String clientName) {
+    public TrainingPosition addPositionToTrainingPlan(long trainingPlanId, long trainingId, Date trainingDate, String clientName) throws NotFoundException {
         User clientUser = userDAO.findUserByEmail(clientName).orElse(null);
         TrainingPlan updatingPlan = trainingPlanDAO.findById(trainingPlanId).orElse(null);
         Training trainingToBeAdded = trainingDAO.findById(trainingId).orElse(null);
-        if (updatingPlan != null && (   clientUser.getId() == updatingPlan.getOwner().getId() ||
-                clientUser.getId() == updatingPlan.getCreator().getId()) )
+        if (updatingPlan == null)
         {
-            TrainingPosition newPosition = new TrainingPosition(trainingToBeAdded, updatingPlan, trainingDate);
-            trainingPositionDAO.save(newPosition);
-            return newPosition;
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exists", trainingPlanId));
         }
-        return null;
+        if (clientUser == null )
+        {
+            throw new NotFoundException(String.format("Couldn't find user with name=%s", clientName));
+        }
+        if ((   clientUser.getId() != updatingPlan.getOwner().getId() &&
+                clientUser.getId() != updatingPlan.getCreator().getId()) )
+        {
+            throw new NotFoundException("You can't edit that training plan!");
+        }
+
+        TrainingPosition newPosition = new TrainingPosition(trainingToBeAdded, updatingPlan, trainingDate);
+        trainingPositionDAO.save(newPosition);
+        return newPosition;
     }
 
     @Override
-    public boolean removePositionFromTrainingPlan(long trainingPlanId, long trainingPositionId, String clientName) {
+    public boolean removePositionFromTrainingPlan(long trainingPlanId, long trainingPositionId, String clientName) throws NotFoundException {
         User clientUser = userDAO.findUserByEmail(clientName).orElse(null);
         TrainingPlan updatingPlan = trainingPlanDAO.findById(trainingPlanId).orElse(null);
-        if (updatingPlan != null && (   clientUser.getId() == updatingPlan.getOwner().getId() ||
-                                        clientUser.getId() == updatingPlan.getCreator().getId()) )
+        if (updatingPlan == null)
         {
-            trainingPositionDAO.deleteById(trainingPositionId);
-            return true;
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exists", trainingPlanId));
         }
-        return false;
+        if (clientUser ==null )
+        {
+            throw new NotFoundException(String.format("Couldn't find user with name=%s", clientName));
+        }
+        if ((   clientUser.getId() != updatingPlan.getOwner().getId() &&
+                clientUser.getId() != updatingPlan.getCreator().getId()) )
+        {
+            throw new NotFoundException("You can't edit that training plan!");
+        }
+        trainingPositionDAO.deleteById(trainingPositionId);
+        return true;
 
     }
 
@@ -103,10 +120,10 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
-    public List<TrainingPosition> getPositionsFromTrainingPlan(long trainingPlanId) {
+    public List<TrainingPosition> getPositionsFromTrainingPlan(long trainingPlanId) throws NotFoundException {
         TrainingPlan foundTrainingPlan = trainingPlanDAO.findById(trainingPlanId).orElse(null);
         if (foundTrainingPlan == null)
-            return null;
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exists", trainingPlanId));
 
         return new ArrayList<>(foundTrainingPlan.getTrainingPositions());
     }

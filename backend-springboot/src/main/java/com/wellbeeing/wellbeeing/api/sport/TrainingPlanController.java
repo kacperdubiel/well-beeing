@@ -11,6 +11,7 @@ import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,26 +79,33 @@ public class TrainingPlanController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTrainingPlan(@PathVariable(value = "id") Long trainingPlanId ) {
-        if (!trainingPlanService.deleteTrainingPlan(trainingPlanId)) {
-            return new ResponseEntity<>(new ErrorMessage("Couldn't delete training plan with id=" + trainingPlanId, "Error"), HttpStatus.OK);
+        try {
+            trainingPlanService.deleteTrainingPlan(trainingPlanId);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.OK);
         }
         return new ResponseEntity<>("Successfully deleted training plan with id=" + trainingPlanId, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/add-position")
     public ResponseEntity<?> addPositionToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @RequestBody @NonNull AddTrainingToPlanRequest request, Principal principal) {
-        TrainingPosition trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
-        if (trainingPosition == null) {
-            return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't add training with id=%d to plan with id=%d",request.getTrainingId(), trainingPlanId), "Error"), HttpStatus.CONFLICT);
+        TrainingPosition trainingPosition = null;
+        try {
+            trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
         }
+
         return new ResponseEntity<>(trainingPosition, HttpStatus.OK);
 
     }
 
     @PatchMapping("/{id}/remove-position/{positionId}")
     public ResponseEntity<?> removePositionFromTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @PathVariable(value = "positionId")Long positionId, Principal principal) {
-        if (!trainingPlanService.removePositionFromTrainingPlan(trainingPlanId, positionId, principal.getName())) {
-            return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't remove position with id=%d from plan with id=%d", positionId, trainingPlanId), "Error"), HttpStatus.CONFLICT);
+        try {
+            trainingPlanService.removePositionFromTrainingPlan(trainingPlanId, positionId, principal.getName());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Position removed!", HttpStatus.OK);
 
@@ -106,7 +114,12 @@ public class TrainingPlanController {
     public ResponseEntity<?> addManyPositionsToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId,@RequestBody @NonNull List<AddTrainingToPlanRequest> requests, Principal principal) {
         List<TrainingPosition> addedPositions = new ArrayList<>();
         for (AddTrainingToPlanRequest request:requests) {
-            TrainingPosition trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
+            TrainingPosition trainingPosition;
+            try {
+                trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
+            } catch (NotFoundException e) {
+                return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
+            }
             addedPositions.add(trainingPosition);
         }
         return new ResponseEntity<>(addedPositions, HttpStatus.OK);
