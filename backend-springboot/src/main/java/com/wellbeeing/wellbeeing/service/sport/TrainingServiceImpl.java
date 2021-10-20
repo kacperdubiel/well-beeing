@@ -9,6 +9,7 @@ import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -34,41 +35,46 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Training addTraining(Training training, String creatorName) {
+    public Training addTraining(Training training, String creatorName) throws NotFoundException {
         User user = userDAO.findUserByEmail(creatorName).orElse(null); // user null?
-        System.out.println("Print id:" + user.getId());
-        training.setCreator(user.getProfile());
+        training.setCreator(user != null ? user.getProfile() : null);
         if (trainingDAO.findAllByName(training.getName()).isEmpty()) {
-            if (training.getName() != null && training.getTrainingDifficulty() != null)
-                trainingDAO.save(training);
+            if (training.getName() == null || training.getName().equals(""))
+            {
+                throw new NotFoundException("Training must have a name!");
+            }
+            else if (training.getTrainingDifficulty() == null)
+            {
+                throw new NotFoundException("Training must have a difficulty!");
+            }
+            trainingDAO.save(training);
             return training;
         }
-        return null;
+        throw new NotFoundException(String.format("Training with name=%s already exists", training.getName()));
     }
 
-    @Override
-    public Training addTrainingWithExercises(Training training, String creatorName, List<ExerciseInTraining> exercises) {
+    @Override //TODO
+    public Training addTrainingWithExercises(Training training, String creatorName, List<ExerciseInTraining> exercises) throws NotFoundException {
         User user = userDAO.findUserByEmail(creatorName).orElse(null); // user null?
-        System.out.println("Print id:" + user.getId());
         training.setCreator(user.getProfile());
         if (trainingDAO.findAllByName(training.getName()).isEmpty()) {
             if (training.getName() != null && training.getTrainingDifficulty() != null)
-
+            {
                 exercises.forEach(training::addExerciseToTraining);
-
                 trainingDAO.save(training);
+            }
             return training;
         }
-        return null;
+        throw new NotFoundException(String.format("Training with name=%s already exists", training.getName()));
     }
 
     @Override
-    public boolean deleteTraining(long trainingId) {
+    public boolean deleteTraining(long trainingId) throws NotFoundException {
         if (trainingDAO.findById(trainingId).orElse(null) != null) {
             trainingDAO.deleteById(trainingId);
             return true;
         }
-        return false;
+        throw new NotFoundException(String.format("Training with id=%d doesn't exist", trainingId));
     }
 
     @Override
@@ -79,41 +85,42 @@ public class TrainingServiceImpl implements TrainingService{
     @Override
     public ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId,
                                                     int repetitions, int timeSeconds,
-                                                    int series, String clientName ) {
+                                                    int series, String clientName ) throws NotFoundException {
         Training foundTraining = trainingDAO.findById(trainingId).orElse(null);
         Exercise foundExercise = exerciseDAO.findById(exerciseId).orElse(null);
-        if ( foundTraining == null || foundExercise == null) {
-            return null;
+        if ( foundTraining == null) {
+            throw new NotFoundException(String.format("Training with id=%d doesn't exist!", trainingId));
+        }
+        else if (foundExercise == null) {
+            throw new NotFoundException(String.format("Exercise with id=%d doesn't exist!", exerciseId));
         }
         Profile creator = foundTraining.getCreator();
         if (creator == null || creator.getProfileUser().getUsername().equals(clientName))
         {
             ExerciseInTraining newExerciseInTraining = new ExerciseInTraining(foundTraining, foundExercise, repetitions, timeSeconds, series);
-//            foundTraining.addExerciseToTraining(newExerciseInTraining);
-//            trainingDAO.save(foundTraining);
-//            exerciseDAO.save(foundExercise);
             exerciseInTrainingDAO.save(newExerciseInTraining); // Duplicate Key
             return newExerciseInTraining;
         }
-        return null;
+        else
+            throw new NotFoundException("You can't modify a training, that was created by somebody else!");
     }
 
     @Override
-    public boolean removeExerciseFromTraining(long trainingId, long exerciseId, String clientName) {
-        Training foundTraining = trainingDAO.findById(trainingId).orElse(null);
-        Exercise foundExercise = exerciseDAO.findById(exerciseId).orElse(null);
-        if (foundTraining == null || foundExercise == null)
-            return false;
-        Profile creator = foundTraining.getCreator();
-        if (creator == null || creator.getProfileUser().getUsername().equals(clientName))
-        {
-            ExerciseInTraining ex_in_training = exerciseInTrainingDAO.getExerciseInTrainingByExerciseAndTraining(foundExercise, foundTraining);
+    public boolean removeExerciseFromTraining(long trainingId, long exerciseId, String clientName) throws NotFoundException {
+
+
+            ExerciseInTraining ex_in_training =
+                    exerciseInTrainingDAO.getExerciseInTrainingByExercise_ExerciseIdAndTraining_TrainingId(exerciseId, trainingId);
             if (ex_in_training == null)
-                return false;
-            exerciseInTrainingDAO.delete(ex_in_training);
-            return true;
-        }
-        return false;
+                throw new NotFoundException("Couldn't find the exercise in training!");
+            Profile creator = ex_in_training.getTraining().getCreator();
+            if (creator == null || creator.getProfileUser().getUsername().equals(clientName))
+            {
+                exerciseInTrainingDAO.delete(ex_in_training);
+                return true;
+            }
+            else
+                throw new NotFoundException("You can't modify a training, that was created by somebody else!");
     }
 
     @Override
@@ -122,10 +129,10 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public List<ExerciseInTraining> getExercisesFromTraining(long trainingId) {
+    public List<ExerciseInTraining> getExercisesFromTraining(long trainingId) throws NotFoundException {
         Training training = trainingDAO.findById(trainingId).orElse(null);
         if (training == null) {
-            return null;
+            throw new NotFoundException("There's no training with id=" + trainingId);
         }
         return new ArrayList<>(training.getExerciseInTrainings());
     }
@@ -136,28 +143,25 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Training updateTraining(Training training) {
+    public Training updateTraining(Training training) throws NotFoundException {
         Training targetTraining = trainingDAO.findById(training.getTrainingId()).orElse(null);
         if(targetTraining == null)
-            return null;
+            throw new NotFoundException("There's no training with id=" + training.getTrainingId());
 
         trainingDAO.save(training);
         return training;
     }
 
     @Override
-    public Training partialUpdateTraining(long trainingId, Training training) {
-        trainingDAO.save(training);
-        return training;
-    }
-
-    @Override
-    public double getCaloriesBurnedFromUser(long trainingPositionId, String userName) {
+    public double getCaloriesBurnedFromUser(long trainingPositionId, String userName) throws NotFoundException {
 
         User user = userDAO.findUserByEmail(userName).orElse(null);
         Training training = trainingDAO.findById(trainingPositionId).orElse(null);
-        if (user == null || training == null)
-            return -1;
+        if (user == null)
+            throw new NotFoundException("There's no user with email=" + userName);
+        if ( training == null)
+            throw new NotFoundException("There's no training with id=" + trainingPositionId);
+
         double weight  = user.getProfile().getProfileCard().getWeight();
         System.out.println("User weight: " + weight);
         return training.caloriesBurned(weight);
