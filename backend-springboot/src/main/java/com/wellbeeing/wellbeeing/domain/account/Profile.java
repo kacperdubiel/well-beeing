@@ -35,6 +35,12 @@ public class Profile {
     private String description;
     @Column(nullable = false)
     private Date birthday;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ESportTag eSportTag;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ENutritionTag eNutritionTag;
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
@@ -83,11 +89,13 @@ public class Profile {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<Opinion> profileReceivedOpinions = new HashSet<>();
 
-    public Profile(String firstName, String lastName, Date birthday, User profileUser) {
+    public Profile(String firstName, String lastName, Date birthday, ESportTag eSportTag, ENutritionTag eNutritionTag, User profileUser) {
         System.out.println("Entered constructor");
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
+        this.eSportTag = eSportTag;
+        this.eNutritionTag = eNutritionTag;
         this.profileUser = profileUser;
         this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
         profileUser.setProfile(this);
@@ -149,6 +157,22 @@ public class Profile {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    public ESportTag geteSportTag() {
+        return eSportTag;
+    }
+
+    public void seteSportTag(ESportTag eSportTag) {
+        this.eSportTag = eSportTag;
+    }
+
+    public ENutritionTag geteNutritionTag() {
+        return eNutritionTag;
+    }
+
+    public void seteNutritionTag(ENutritionTag eNutritionTag) {
+        this.eNutritionTag = eNutritionTag;
     }
 
     public User getProfileUser() {

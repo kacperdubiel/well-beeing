@@ -1,4 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.social;
 
-public class Tag {
+public enum ESportTag {
+    NONE,
+    XXX,
+    YYY
 }
