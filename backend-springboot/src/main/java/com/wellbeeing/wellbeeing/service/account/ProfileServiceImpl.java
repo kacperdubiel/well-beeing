@@ -1,8 +1,6 @@
 package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import javassist.NotFoundException;
@@ -36,11 +34,21 @@ public class ProfileServiceImpl implements ProfileService {
     public Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException {
         Profile actProfile = profileDAO.findById(profileId).orElse(null);
         if (actProfile != null) {
-            profile.setId(profileId);
-            profile.setProfileCard(actProfile.getProfileCard());
-            profile.setProfileUser(actProfile.getProfileUser());
-            profileDAO.save(profile);
-            return profile;
+            if(profile.getProfileImgPath() != null) actProfile.setProfileImgPath(profile.getProfileImgPath());
+            if(profile.getFirstName() != null) actProfile.setFirstName(profile.getFirstName());
+            if(profile.getLastName() != null) actProfile.setLastName(profile.getLastName());
+            if(profile.getESex() != null) actProfile.setESex(profile.getESex());
+            if(profile.getDescription() != null) actProfile.setDescription(profile.getDescription());
+            if(profile.getBirthday() != null) actProfile.setBirthday(profile.getBirthday());
+            if(profile.getProfileUser() != null) actProfile.setProfileUser(profile.getProfileUser());
+            if(profile.getProfileCard() != null) actProfile.setProfileCard(profile.getProfileCard());
+            if(profile.getProfileCard() != null) actProfile.setProfileCard(profile.getProfileCard());
+            if(profile.getTrainingPlans() != null) actProfile.setTrainingPlans(profile.getTrainingPlans());
+            if(profile.getTrainingPlans() != null) actProfile.setTrainingPlans(profile.getTrainingPlans());
+            if(profile.getActivityGoals() != null) actProfile.setActivityGoals(profile.getActivityGoals());
+            if(profile.getDietReports() != null) actProfile.setDietReports(profile.getDietReports());
+            profileDAO.save(actProfile);
+            return actProfile;
         }
         throw new NotFoundException("Profile not found");
     }

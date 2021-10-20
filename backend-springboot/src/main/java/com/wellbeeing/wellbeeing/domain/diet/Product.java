@@ -1,4 +1,5 @@
 package com.wellbeeing.wellbeeing.domain.diet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,20 +19,23 @@ public class Product {
     @Column
     private String name;
     @Column
-    private double fatsInGrams;
+
+    private double caloriesPerGramInGram;
     @Column
-    private double carbohydratesInGrams;
+    private double fatsPerGramInGrams;
     @Column
-    private double proteinsInGrams;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "macro_details_id", referencedColumnName = "id")
+    private double carbohydratesPerGramInGram;
+    @Column
+    private double proteinsPerGramInGram;
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<MacroDetail> macroDetails;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "mineral_details_id", referencedColumnName = "id")
-    private List<MacroDetail> mineralDetails;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "mineral_details_id", referencedColumnName = "id")
-    private List<MacroDetail> vitaminDetails;
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private List<MineralDetail> mineralDetails;
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private List<VitaminDetail> vitaminDetails;
 
 
 

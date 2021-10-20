@@ -24,19 +24,18 @@ public class Dish {
     private String description;
     @Column
     private String recipe;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "dish_product_details", referencedColumnName = "id")
+    @OneToMany(mappedBy = "dish")
     List<DishProductDetail> dishProductDetails;
+    @OneToMany(mappedBy = "dish")
+    List<DishMealType> dishMealTypes;
     @Column
-    private boolean isBreakfast;
+    double derivedCalories;
     @Column
-    private boolean isLunch;
+    double derivedCarbohydrates;
     @Column
-    private boolean isDinner;
+    double derivedProteins;
     @Column
-    private boolean isSnack;
-    @Column
-    private boolean isSupper;
+    double derivedFats;
 
 
 }

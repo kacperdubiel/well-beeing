@@ -28,7 +28,14 @@ public class Ailment {
             joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "sport_label_id", referencedColumnName = "sportLabel_id")
     )
-    private List<SportLabel> allowedLabels;
+    private List<SportLabel> allowedSportLabels;
+    @ManyToMany
+    @JoinTable(
+            name = "ailment_nutrition_label",
+            joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "nutrition_label_id")
+    )
+    private List<NutritionLabel> allowedNutritionLabels;
     @Column
     private int changeInCalories;
     @Column

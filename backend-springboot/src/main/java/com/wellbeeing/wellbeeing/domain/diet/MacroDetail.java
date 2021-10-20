@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.type.EDetailedMacro;
 import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
 import lombok.*;
@@ -25,4 +26,8 @@ public class MacroDetail {
     @Enumerated(EnumType.STRING)
     @Column
     private EWeightMeasure measureType;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    @JsonIgnore
+    private Product product;
 }

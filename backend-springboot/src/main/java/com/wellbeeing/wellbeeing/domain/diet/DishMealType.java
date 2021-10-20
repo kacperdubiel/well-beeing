@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
+import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,22 +13,15 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DishProductDetail {
+public class DishMealType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-    @ManyToOne
     @JoinColumn(name = "dish_id")
     @JsonIgnore
     private Dish dish;
-    @Column
-    private double amount;
     @Enumerated(EnumType.STRING)
     @Column
-    private EWeightMeasure measureType;
-
-
+    private EMealType mealType;
 }
