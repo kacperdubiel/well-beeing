@@ -25,7 +25,7 @@ import java.security.Principal;
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(path = "/sport/training")
 public class TrainingController {
-    private TrainingService trainingService;
+    private final TrainingService trainingService;
     private UserDAO userDAO;
 
 

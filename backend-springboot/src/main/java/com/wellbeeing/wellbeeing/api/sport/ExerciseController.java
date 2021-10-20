@@ -73,7 +73,7 @@ public class ExerciseController {
         return new ResponseEntity<>("Successfully deleted exercise with id=" + exerciseId, HttpStatus.OK);
     }
 
-    @RequestMapping("/{id}/addLabelId/{labelId}")
+    @RequestMapping("/{id}/label-to-exercise-name/{labelId}")
     public ResponseEntity<?> addLabelToExerciseByLabelId(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelId") Long labelId) {
         try {
             exerciseService.addLabelToExerciseByLabelId(exerciseId, labelId);
@@ -84,7 +84,7 @@ public class ExerciseController {
         return new ResponseEntity<>(updatedExercise, HttpStatus.OK);
     }
 
-    @RequestMapping("/{id}/addLabelName/{labelName}")
+    @RequestMapping("/{id}/label-to-exercise-name/{labelName}")
     public ResponseEntity<?> addLabelToExerciseByLabelName(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelName") String labelName) {
         try {
             exerciseService.addLabelToExerciseByLabelName(exerciseId, labelName);

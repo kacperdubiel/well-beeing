@@ -20,7 +20,7 @@ public class TestRoleController {
         this.roleService = roleService;
     }
 
-    @RequestMapping(path = "/addRole", method = RequestMethod.POST)
+    @RequestMapping(path = "/add-role", method = RequestMethod.POST)
     public ResponseEntity<?> addRole(@RequestBody @NonNull Role role){
         if(!roleService.addRole(role))
             return new ResponseEntity<>(new ErrorMessage("Role already exist", "error"), HttpStatus.CONFLICT);

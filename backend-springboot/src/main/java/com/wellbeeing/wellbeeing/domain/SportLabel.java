@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 @ToString
@@ -21,6 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class SportLabel {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sportLabel_Id")
     private long sportLabelId;
 
     @Column(name = "name")

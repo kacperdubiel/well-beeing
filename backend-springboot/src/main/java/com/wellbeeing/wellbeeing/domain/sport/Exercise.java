@@ -43,8 +43,8 @@ public class Exercise {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="exercise_labels",
-            joinColumns = @JoinColumn(name = "exercise_id"),
-            inverseJoinColumns = @JoinColumn(name = "label_id")
+            joinColumns = @JoinColumn(name = "exerciseId"),
+            inverseJoinColumns = @JoinColumn(name = "sportLabelId")
     )
     private Set<SportLabel> labels = new HashSet<>();
     @JsonIgnore

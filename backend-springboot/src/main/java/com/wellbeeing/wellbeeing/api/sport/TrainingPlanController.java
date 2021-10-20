@@ -28,7 +28,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(path = "/sport/training-plan")
 public class TrainingPlanController {
-    private TrainingPlanService trainingPlanService;
+    private final TrainingPlanService trainingPlanService;
     private UserDAO userDAO;
 
     public TrainingPlanController(@Qualifier("trainingPlanService") TrainingPlanService trainingPlanService) {
