@@ -6,6 +6,7 @@ import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -64,16 +65,20 @@ public class ExerciseController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteExercise(@PathVariable(value = "id") Long exerciseId ) {
-        if (!exerciseService.deleteExercise(exerciseId)) {
-            return new ResponseEntity<>(new ErrorMessage("Couldn't delete exercise with id=" + exerciseId, "Error"), HttpStatus.OK);
+        try {
+            exerciseService.deleteExercise(exerciseId);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>("Successfully deleted exercise with id=" + exerciseId, HttpStatus.OK);
     }
 
     @RequestMapping("/{id}/addLabelId/{labelId}")
     public ResponseEntity<?> addLabelToExerciseByLabelId(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelId") Long labelId) {
-        if (!exerciseService.addLabelToExerciseByLabelId(exerciseId, labelId)) {
-            return new ResponseEntity<>(new ErrorMessage("Couldn't add label exercise with id=" + labelId, "Error"), HttpStatus.OK);
+        try {
+            exerciseService.addLabelToExerciseByLabelId(exerciseId, labelId);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
         }
         Exercise updatedExercise = exerciseService.getExercise(exerciseId);
         return new ResponseEntity<>(updatedExercise, HttpStatus.OK);
@@ -81,8 +86,10 @@ public class ExerciseController {
 
     @RequestMapping("/{id}/addLabelName/{labelName}")
     public ResponseEntity<?> addLabelToExerciseByLabelName(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelName") String labelName) {
-        if (!exerciseService.addLabelToExerciseByLabelName(exerciseId, labelName)) {
-            return new ResponseEntity<>(new ErrorMessage("Couldn't add label exercise with name=" + labelName, "Error"), HttpStatus.OK);
+        try {
+            exerciseService.addLabelToExerciseByLabelName(exerciseId, labelName);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
         }
         Exercise updatedExercise = exerciseService.getExercise(exerciseId);
         return new ResponseEntity<>(updatedExercise, HttpStatus.OK);
@@ -91,8 +98,11 @@ public class ExerciseController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateExercise(@PathVariable(value = "id") Long exerciseId, @RequestBody @NonNull Exercise exercise) {
         exercise.setExerciseId(exerciseId);
-        if(exerciseService.updateExercise(exercise) == null)
-            return new ResponseEntity<>("Couldn't update exercise!", HttpStatus.CONFLICT);
+        try {
+            exerciseService.updateExercise(exercise);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<>(exercise, HttpStatus.OK);
     }
 

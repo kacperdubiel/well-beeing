@@ -9,6 +9,7 @@ import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,6 @@ public class TrainingController {
         try {
             createdTraining = trainingService.addTraining(training, principal.getName());
         } catch (Exception e) {
-            System.out.println("Exception message: "+e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
 
         }
@@ -60,25 +60,34 @@ public class TrainingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTraining(@PathVariable(value = "id") Long trainingId ) {
-        if (!trainingService.deleteTraining(trainingId)) {
-            return new ResponseEntity<>(new ErrorMessage("Couldn't delete training with id=" + trainingId, "Error"), HttpStatus.OK);
+        try {
+            trainingService.deleteTraining(trainingId);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>("Successfully deleted training with id=" + trainingId, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/remove-exercise/{exerciseId}")
     public ResponseEntity<?> removeExerciseFromTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, Principal principal) {
-        if (!trainingService.removeExerciseFromTraining(trainingId, exerciseId, principal.getName())) {
-            return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't remove exercise %d from training with id=%d",exerciseId, trainingId), "Error"), HttpStatus.OK);
+        try {
+            trainingService.removeExerciseFromTraining(trainingId, exerciseId, principal.getName());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(String.format("Successfully removed exercise %d from training with id=%d", exerciseId, trainingId), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/add-exercise/{exerciseId}")
     public ResponseEntity<?> addExerciseToTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, @RequestBody @NonNull AddExerciseToTrainingRequest request, Principal principal) {
-        ExerciseInTraining addedExercise = trainingService.addExerciseToTraining(trainingId, exerciseId, request.getReps(),
-                                                request.getTime_seconds(), request.getSeries(),
-                                                principal.getName());
+        ExerciseInTraining addedExercise = null;
+        try {
+            addedExercise = trainingService.addExerciseToTraining(trainingId, exerciseId, request.getReps(),
+                                                    request.getTime_seconds(), request.getSeries(),
+                                                    principal.getName());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
+        }
         if (addedExercise == null) {
             return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't add exercise %d to training with id=%d",exerciseId, trainingId), "Error"), HttpStatus.OK);
         }
@@ -86,7 +95,12 @@ public class TrainingController {
     }
     @GetMapping("/calories-burned/{trainingId}")
     public ResponseEntity<?> getCaloriesBurnedFromClient(@PathVariable(value = "trainingId") long trainingId, Principal principal) {
-        double caloriesBurned = trainingService.getCaloriesBurnedFromUser(trainingId, principal.getName());
+        double caloriesBurned;
+        try {
+            caloriesBurned = trainingService.getCaloriesBurnedFromUser(trainingId, principal.getName());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
+        }
         if (caloriesBurned == -1) {
             return new ResponseEntity<>(new ErrorMessage("",""), HttpStatus.CONFLICT);
         }
