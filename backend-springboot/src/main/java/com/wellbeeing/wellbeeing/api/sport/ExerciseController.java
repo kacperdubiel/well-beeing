@@ -9,6 +9,9 @@ import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.lang.reflect.Field;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -41,9 +46,31 @@ public class ExerciseController {
         return new ResponseEntity<>(exerciseService.getExercise(exerciseId), HttpStatus.OK);
     }
 
+//    @GetMapping(path = "")
+//    public ResponseEntity<?> getExercises() {
+//        return new ResponseEntity<>(exerciseService.getAllExercises(), HttpStatus.OK);
+//    }
+
     @GetMapping(path = "")
-    public ResponseEntity<?> getExercises() {
-        return new ResponseEntity<>(exerciseService.getAllExercises(), HttpStatus.OK);
+    public ResponseEntity<?> getExercisesPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                   @RequestParam(value = "size", defaultValue = "3") int size) {
+        try {
+            List<Exercise> exercises;
+            Pageable paging = PageRequest.of(page, size);
+
+            Page<Exercise> pageExercises;
+            pageExercises = exerciseService.getAllExercises(paging);
+            exercises = pageExercises.getContent();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("exercises", exercises);
+            response.put("currentPage", pageExercises.getNumber());
+            response.put("totalItems", pageExercises.getTotalElements());
+            response.put("totalPages", pageExercises.getTotalPages());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping(path = "")

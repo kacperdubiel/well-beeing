@@ -7,8 +7,11 @@ import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.SportLabelDAO;
+import javafx.scene.control.Pagination;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +103,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     public List<Exercise> getAllExercises() {
         return exerciseDAO.findAll();
     }
+
+    @Override
+    public Page<Exercise> getAllExercises(Pageable pageable) {
+        return exerciseDAO.findAll(pageable);
+    }
+
 
     @Override
     public List<Exercise> getExercisesByType(EExerciseType type) {

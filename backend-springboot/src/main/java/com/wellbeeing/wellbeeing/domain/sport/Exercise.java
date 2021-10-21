@@ -38,6 +38,7 @@ public class Exercise {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
+    @JsonIgnore
     private Profile creator;
     @JsonProperty
     @ManyToMany(fetch = FetchType.EAGER)

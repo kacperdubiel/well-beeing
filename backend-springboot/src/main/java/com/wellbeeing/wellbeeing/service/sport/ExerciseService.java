@@ -1,12 +1,13 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
-import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
+import javafx.scene.control.Pagination;
 import javassist.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public interface ExerciseService {
@@ -16,6 +17,9 @@ public interface ExerciseService {
     boolean deleteExercise(long exerciseId) throws NotFoundException;
     Exercise getExercise(long exerciseId);
     List<Exercise> getAllExercises();
+
+    Page<Exercise> getAllExercises(Pageable pageable);
+
     List<Exercise> getExercisesByType(EExerciseType type);
     List<Exercise> getExercisesByCreatorId(UUID creatorId);
     Exercise updateExercise(Exercise exercise) throws NotFoundException;

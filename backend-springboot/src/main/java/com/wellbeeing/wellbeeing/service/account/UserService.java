@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Service("userService")
 public class UserService implements UserDetailsService, UserServiceApi {
@@ -58,6 +59,11 @@ public class UserService implements UserDetailsService, UserServiceApi {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public UUID findUserIdByUsername(String name) {
+        return null;
     }
 
 
