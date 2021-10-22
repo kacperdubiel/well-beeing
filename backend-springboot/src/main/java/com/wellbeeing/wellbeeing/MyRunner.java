@@ -4,27 +4,24 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.social.ENutritionTag;
+import com.wellbeeing.wellbeeing.domain.social.ESportTag;
 import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
-import jdk.nashorn.internal.ir.RuntimeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import sun.plugin.util.UserProfile;
 
-import javax.xml.ws.http.HTTPBinding;
-import java.time.Year;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 
 @Component
 public class MyRunner implements CommandLineRunner {
@@ -92,7 +89,7 @@ public class MyRunner implements CommandLineRunner {
         User aaaUser = userDAO.findUserByEmail("aaa@aaaa.pl").orElse(null);
         System.out.println(abcUser);
         assert abcUser != null;
-        Profile abcUserProfile = new Profile("Aaa", "Bbb", new Date(), abcUser);
+        Profile abcUserProfile = new Profile("Aaa", "Bbb", new Date(), ESportTag.NONE, ENutritionTag.NONE, abcUser);
         profileDAO.save(abcUserProfile);
         ProfileCard abcUserProfileCard = new ProfileCard(120, 21, abcUserProfile);
         abcUserProfile.setProfileCard(abcUserProfileCard);
