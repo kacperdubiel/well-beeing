@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureServiceApi;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,12 @@ public class MeasureController {
 
     @RequestMapping(path = "measures/profile/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<Measure>> getUserMeasures(@PathVariable("id") UUID profileId){
-        Profile measuresOwner = profileService.getProfileById(profileId);
+        Profile measuresOwner = null;
+        try {
+            measuresOwner = profileService.getProfileById(profileId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
         List<Measure> measuresResult = measureService.getMeasuresByProfile(measuresOwner);
         if(measuresResult == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

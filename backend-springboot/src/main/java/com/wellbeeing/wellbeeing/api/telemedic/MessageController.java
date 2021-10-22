@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.Message;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.telemedic.MessageServiceApi;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,22 +37,32 @@ public class MessageController {
             return new ResponseEntity<>(messageResult, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "messages/sender/{sender_id}/receiver/{receiver_id}/type/{type}", method = RequestMethod.GET)
-    public ResponseEntity<List<Message>> getMessageBySenderAndReceiverAndConnectionType(
-            @PathVariable("sender_id") UUID senderId,
-            @PathVariable("receiver_id") UUID receiverId,
-            @PathVariable("type") EConnectionType connectionType
-    ){
-        Profile sender = profileService.getProfileById(senderId);
-        Profile receiver = profileService.getProfileById(receiverId);
-        List<Message> messages = messageService.getMessageBySenderAndReceiverAndConnectionType(sender, receiver, connectionType);
-
-        if(messages == null)
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else {
-            return new ResponseEntity<>(messages, HttpStatus.OK);
-        }
-    }
+//    @RequestMapping(path = "messages/sender/{sender_id}/receiver/{receiver_id}/type/{type}", method = RequestMethod.GET)
+//    public ResponseEntity<List<Message>> getMessageBySenderAndReceiverAndConnectionType(
+//            @PathVariable("sender_id") UUID senderId,
+//            @PathVariable("receiver_id") UUID receiverId,
+//            @PathVariable("type") EConnectionType connectionType
+//    ){
+//        Profile sender = null;
+//        try {
+//            sender = profileService.getProfileById(senderId);
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        Profile receiver = null;
+//        try {
+//            receiver = profileService.getProfileById(receiverId);
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        List<Message> messages = messageService.getMessageBySenderAndReceiverAndConnectionType(sender, receiver, connectionType);
+//
+//        if(messages == null)
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        else {
+//            return new ResponseEntity<>(messages, HttpStatus.OK);
+//        }
+//    }
 
     @RequestMapping(path = "messages", method = RequestMethod.POST)
     public ResponseEntity<Message> addMessage(@RequestBody @NonNull Message message){
