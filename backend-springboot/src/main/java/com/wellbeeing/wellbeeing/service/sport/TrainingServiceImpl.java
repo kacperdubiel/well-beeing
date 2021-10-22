@@ -11,6 +11,8 @@ import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -126,6 +128,11 @@ public class TrainingServiceImpl implements TrainingService{
     @Override
     public List<Training> getAllTrainings() {
         return trainingDAO.findAll();
+    }
+
+    @Override
+    public Page<Training> getAllTrainings(Pageable pageable) {
+        return trainingDAO.findAll(pageable);
     }
 
     @Override

@@ -18,5 +18,5 @@ public interface ExerciseDAO extends JpaRepository<Exercise, Long> {
     List<Exercise> findAllByExerciseType(EExerciseType type);
     List<Exercise> findAllByCreator_Id(UUID creator_id);
 
-    Page<Exercise> findAll(Pageable pageable);
+//    Page<Exercise> findAll(Pageable pageable);
 }

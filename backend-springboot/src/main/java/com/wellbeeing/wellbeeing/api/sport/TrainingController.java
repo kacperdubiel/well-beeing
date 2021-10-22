@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.api.sport;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseToTrainingRequest;
+import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
@@ -12,6 +13,9 @@ import com.wellbeeing.wellbeeing.service.sport.TrainingService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -20,6 +24,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
@@ -38,8 +45,26 @@ public class TrainingController {
     }
 
     @GetMapping(path = "")
-    public ResponseEntity<?> getTrainings() {
-        return new ResponseEntity<>(trainingService.getAllTrainings(), HttpStatus.OK);
+    public ResponseEntity<?> getTrainings(@RequestParam(value = "page", defaultValue = "0") int page,
+                                          @RequestParam(value = "size", defaultValue = "3") int size) {
+//        return new ResponseEntity<>(trainingService.getAllTrainings(), HttpStatus.OK);
+        try {
+            List<Training> trainings;
+            Pageable paging = PageRequest.of(page, size);
+
+            Page<Training> pageTrainings;
+            pageTrainings = trainingService.getAllTrainings(paging);
+            trainings = pageTrainings.getContent();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("trainings", trainings);
+            response.put("currentPage", pageTrainings.getNumber());
+            response.put("totalItems", pageTrainings.getTotalElements());
+            response.put("totalPages", pageTrainings.getTotalPages());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping(path = "")
