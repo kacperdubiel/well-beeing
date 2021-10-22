@@ -4,7 +4,9 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.telemedic.Conversation;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.service.account.ProfileServiceApi;
+import com.wellbeeing.wellbeeing.service.account.ProfileServiceImpl;
 import com.wellbeeing.wellbeeing.service.telemedic.ConversationServiceApi;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,11 @@ import java.util.UUID;
 @RestController
 public class ConversationController {
     private ConversationServiceApi conversationService;
-    private ProfileServiceApi profileService;
+    private ProfileServiceImpl profileService;
 
     public ConversationController(
             @Qualifier("conversationService") ConversationServiceApi conversationService,
-            @Qualifier("profileService") ProfileServiceApi profileService
+            @Qualifier("profileService") ProfileServiceImpl profileService
     ){
         this.conversationService = conversationService;
         this.profileService = profileService;
@@ -42,8 +44,18 @@ public class ConversationController {
             @PathVariable("second_id") UUID secondProfileId,
             @PathVariable("type") EConnectionType connectionType
     ){
-        Profile profile1 = profileService.getProfileById(firstProfileId);
-        Profile profile2 = profileService.getProfileById(secondProfileId);
+        Profile profile1 = null;
+        try {
+            profile1 = profileService.getProfileById(firstProfileId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+        Profile profile2 = null;
+        try {
+            profile2 = profileService.getProfileById(secondProfileId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
 
         Conversation conversation = conversationService.getConversationByProfilesAndType(profile1, profile2, connectionType);
         if(conversation == null)

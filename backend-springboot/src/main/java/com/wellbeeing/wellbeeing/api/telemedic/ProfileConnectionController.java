@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionServiceApi;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,12 @@ public class ProfileConnectionController {
 
     @RequestMapping(path = "profile-connections/profile/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<ProfileConnection>> getProfileConnectionsByProfile(@PathVariable("id") UUID profileId){
-        Profile pConnectionsOwner = profileService.getProfileById(profileId);
+        Profile pConnectionsOwner = null;
+        try {
+            pConnectionsOwner = profileService.getProfileById(profileId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
         List<ProfileConnection> pConnectionsResult = profileConnectionService.getProfileConnectionsByProfile(pConnectionsOwner);
         if(pConnectionsResult == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -51,7 +57,12 @@ public class ProfileConnectionController {
     public ResponseEntity<List<ProfileConnection>> getProfileConnectionsByProfileAndType(
             @PathVariable("id") UUID profileId, @PathVariable("type") EConnectionType connectionType
     ){
-        Profile pConnectionsOwner = profileService.getProfileById(profileId);
+        Profile pConnectionsOwner = null;
+        try {
+            pConnectionsOwner = profileService.getProfileById(profileId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
         List<ProfileConnection> pConnResult = profileConnectionService
                 .getProfileConnectionsByProfileAndType(pConnectionsOwner, connectionType);
         if(pConnResult == null)

@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.ProfileDietCalculation;
+import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
 
 import java.util.UUID;
 
