@@ -5,5 +5,6 @@ public enum EPlanStatus {
     PLANNED,
     COMPLETED,
     TEMPLATE,
+    OWN_MEASURES,
     SCRATCH //roboczy
 }

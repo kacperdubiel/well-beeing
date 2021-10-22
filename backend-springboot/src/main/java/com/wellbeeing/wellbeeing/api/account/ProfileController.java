@@ -78,4 +78,9 @@ public class ProfileController {
                     "500"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(path = "/trainers")
+    public ResponseEntity<?> getTrainersProfiles() {
+        return new ResponseEntity<>(profileService.getTrainersProfiles(), HttpStatus.OK);
+    }
 }

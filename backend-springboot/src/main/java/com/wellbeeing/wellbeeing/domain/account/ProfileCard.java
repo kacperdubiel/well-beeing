@@ -51,6 +51,9 @@ public class ProfileCard {
     @Enumerated(EnumType.STRING)
     @Column
     private EActivityLevel activityLevel;
+    @OneToOne(mappedBy = "profileCard", fetch = FetchType.EAGER, optional = false)
+    @JsonIgnore
+    private Profile profile;
     @Column
     private int trainingActivityTimePerWeek;
     @Enumerated(EnumType.STRING)

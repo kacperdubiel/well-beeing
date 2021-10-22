@@ -5,8 +5,7 @@ import com.wellbeeing.wellbeeing.domain.diet.ProfileDietCalculation;
 import java.util.UUID;
 
 public interface ProfileDietCalculationServiceApi {
-
     ProfileDietCalculation calculateAllSuggestionsForCard(UUID profileCardId);
     ProfileDietCalculation getProfileDietCalculationByCard(UUID profileCardId);
-    public ProfileDietCalculation getProfileDietCalculation(UUID profileDietCalculationId);
+    ProfileDietCalculation getProfileDietCalculation(UUID profileDietCalculationId);
 }

@@ -1,8 +1,8 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.List;
-
 @Getter
 @Setter
 @Builder
@@ -50,6 +49,8 @@ public class Profile {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     //@JsonIgnore
+    @MapsId
+    @JsonIgnore
     private User profileUser;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
@@ -60,16 +61,18 @@ public class Profile {
     @JsonIgnore
     private Settings settings;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private List<Measure> measures;
 
     @OneToMany(mappedBy = "profile")
+    @JsonIgnore
     private List<ProfileConnection> profileConnections;
 
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<TrainingPlan> trainingPlans = new HashSet<>();
-
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<ActivityGoal> activityGoals = new HashSet<>();
 
