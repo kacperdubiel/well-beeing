@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.Getter;
@@ -39,21 +40,23 @@ public class Profile {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     @MapsId
+    @JsonIgnore
     private User profileUser;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private List<Measure> measures;
 
     @OneToMany(mappedBy = "profile")
+    @JsonIgnore
     private List<ProfileConnection> profileConnections;
 
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<TrainingPlan> trainingPlans = new HashSet<>();
-
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<ActivityGoal> activityGoals = new HashSet<>();
 

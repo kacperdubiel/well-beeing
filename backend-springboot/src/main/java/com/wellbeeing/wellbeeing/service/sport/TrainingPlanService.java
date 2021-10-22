@@ -1,9 +1,6 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
-import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
-import com.wellbeeing.wellbeeing.domain.sport.Training;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
+import com.wellbeeing.wellbeeing.domain.sport.*;
 import javassist.NotFoundException;
 
 import java.util.Date;
@@ -23,4 +20,8 @@ public interface TrainingPlanService {
     List<TrainingPlan> getTrainingPlansByCreatorId(UUID creatorId);
     List<TrainingPlan> getTrainingPlansByOwnerId(UUID ownerId);
     List<TrainingPlan> getMyTrainingPlans(String ownerName);
+    List<TrainingPlanRequest> getMyRequests(String userName) throws NotFoundException;
+    List<TrainingPlanRequest> getTrainersRequests(String trainerName) throws NotFoundException;
+    TrainingPlanRequest changeTrainingPlanRequestStatus(String userName, long requestId, String newStatus) throws NotFoundException;
+    TrainingPlanRequest sendRequestToTrainer(UUID trainerId, String submitterName, String message) throws NotFoundException;
 }

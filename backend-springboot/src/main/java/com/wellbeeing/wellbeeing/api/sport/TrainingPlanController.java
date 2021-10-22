@@ -2,11 +2,10 @@ package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
-import com.wellbeeing.wellbeeing.domain.message.sport.AddTrainingPlanWithOwnerRequest;
-import com.wellbeeing.wellbeeing.domain.message.sport.AddTrainingToPlanRequest;
-import com.wellbeeing.wellbeeing.domain.message.sport.PlanGeneratorRequest;
+import com.wellbeeing.wellbeeing.domain.message.sport.*;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPlanRequest;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
@@ -126,8 +125,55 @@ public class TrainingPlanController {
     }
 
 
-    @PatchMapping("/generate-plan-for/{id}")
+    @RequestMapping("/generate-plan-for/{id}")
     public ResponseEntity<?> generateTrainingPlanForId(@PathVariable(value = "id") UUID userId, @RequestBody @NonNull PlanGeneratorRequest request) {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+    @PostMapping("/send-request")
+    public ResponseEntity<?> sendRequestToTrainer(@RequestBody @NonNull MakeRequestToCreateTrainingPlanRequest request, Principal principal) {
+        TrainingPlanRequest newRequest;
+        try {
+            newRequest = trainingPlanService.sendRequestToTrainer(request.getTrainerId(), principal.getName(), request.getMessage());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(newRequest, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-my-requests")
+    public ResponseEntity<?> getUserRequests(Principal principal) {
+        List<TrainingPlanRequest> newRequest;
+        try {
+            newRequest = trainingPlanService.getMyRequests(principal.getName());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(newRequest, HttpStatus.OK);
+    }
+    @RolesAllowed(ERole.Name.ROLE_TRAINER)
+    @GetMapping("/get-trainer-requests")
+    public ResponseEntity<?> getTrainerRequests(Principal principal) {
+        List<TrainingPlanRequest> newRequest;
+        try {
+            newRequest = trainingPlanService.getTrainersRequests(principal.getName());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(newRequest, HttpStatus.OK);
+    }
+
+    @PatchMapping("/request")
+    public ResponseEntity<?> updateRequestStatus(@RequestBody @NonNull ChangeTrainingPlanRequestStatusRequest request, Principal principal) {
+        TrainingPlanRequest editedRequest;
+        try {
+            editedRequest = trainingPlanService.changeTrainingPlanRequestStatus(principal.getName(), request.getRequestId(), request.getNewStatus());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(editedRequest, HttpStatus.OK);
+    }
+
 }
