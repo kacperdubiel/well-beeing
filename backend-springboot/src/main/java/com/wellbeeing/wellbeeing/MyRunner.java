@@ -101,6 +101,16 @@ public class MyRunner implements CommandLineRunner {
         TrainerProfile trainerAbcUserProfile = new TrainerProfile(abcUserProfile);
         trainerDAO.save(trainerAbcUserProfile);
 
+        assert aaaUser != null;
+        Profile aaaaUserProfile = new Profile("aAaAa", "CcCc", new Date(), aaaUser);
+        profileDAO.save(aaaaUserProfile);
+        ProfileCard aaaaUserProfileCard = new ProfileCard(88, 35, aaaaUserProfile);
+        aaaaUserProfile.setProfileCard(aaaaUserProfileCard);
+        profileCardDAO.save(aaaaUserProfileCard);
+        profileDAO.save(aaaaUserProfile);
+
+
+
         TrainingPlan trainingPlan_1 = new TrainingPlan(abcUserProfile, 2021, 33, "Do details", abcUserProfile);
         trainingPlanDAO.save(trainingPlan_1);
 
