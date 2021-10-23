@@ -16,8 +16,24 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUserFriends } from '@fortawesome/free-solid-svg-icons'
+import { faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faComments } from '@fortawesome/free-solid-svg-icons'
+
+import { faUtensils } from '@fortawesome/free-solid-svg-icons'
+import { faDumbbell } from '@fortawesome/free-solid-svg-icons'
+import { faBriefcaseMedical } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faUserSecret)
+library.add(faUser)
+library.add(faUserFriends)
+library.add(faUsers)
+library.add(faComments)
+
+library.add(faUtensils)
+library.add(faDumbbell)
+library.add(faBriefcaseMedical)
 
 const app = createApp(App).use(router);
 
