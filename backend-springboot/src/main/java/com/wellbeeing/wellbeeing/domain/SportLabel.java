@@ -1,24 +1,35 @@
 package com.wellbeeing.wellbeeing.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
+@ToString
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
 public class SportLabel {
     @Id
-    private long sportLabel_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sportLabel_Id")
+    private long sportLabelId;
 
+    @Column(name = "name")
+    private String name;
+    @JsonIgnore
     @ManyToMany(mappedBy = "labels")
     private Set<Exercise> exercises;
-    @ManyToMany(mappedBy = "allowedLabels")
+    @ManyToMany(mappedBy = "allowedSportLabels")
     private List<Ailment> labeledAilments;
-    public SportLabel() {
 
-    }
+    public void addLabeledExercise(Exercise exercise) {this.exercises.add(exercise);}
 }
+

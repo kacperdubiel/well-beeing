@@ -1,20 +1,16 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.*;
-import com.wellbeeing.wellbeeing.domain.diet.type.EDetailedMacro;
-import com.wellbeeing.wellbeeing.domain.diet.type.EMineral;
-import com.wellbeeing.wellbeeing.domain.diet.type.EVitamin;
 import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service("dishService")
@@ -27,27 +23,26 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public Dish getDishById(UUID dishId) throws NotFoundException {
-        Dish dish = dishDAO.findById(dishId).orElse(null);
-        if(dish != null)
-            return dish;
-        throw new NotFoundException("NotFoundException");
+    public Dish getDishById(UUID dishId) {
+        return dishDAO.findById(dishId).orElse(null);
     }
 
     @Override
-    public List<Dish> getAllDishes(int numberOfElements, int startIndex) {
-        return dishDAO.findAll(PageRequest.of(startIndex, startIndex + numberOfElements, Sort.by("name"))).toList();
+    public Page<Dish> getAllDishes(int numberOfElements, int startIndex) {
+        return dishDAO.findAll(PageRequest.of(startIndex, startIndex + numberOfElements, Sort.by("name")));
     }
 
     @Override
-    public List<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int startIndex) {
+    public Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int startIndex) {
         return dishDAO.findByNameStartingWith(namePart,
-                PageRequest.of(startIndex, startIndex + numberOfElements, Sort.by("name"))).toList();
+                PageRequest.of(startIndex, startIndex + numberOfElements, Sort.by("name")));
     }
 
     @Override
-    public boolean updateCaloriesAndMacrosByDishId(UUID dishId) throws NotFoundException {
+    public boolean updateCaloriesAndMacrosByDishId(UUID dishId) {
         Dish dish = getDishById(dishId);
+        if(dish == null)
+            return false;
         dish.setDerivedCalories(countDishCalories(dish));
         dish.setDerivedCarbohydrates(countDishCarbohydrates(dish));
         dish.setDerivedFats(countDishFats(dish));
@@ -59,32 +54,32 @@ public class DishServiceImpl implements DishService {
     private double countDishCalories(Dish dish) {
         return dish.getDishProductDetails()
                 .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getCaloriesPerGramInGram())
+                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getCaloriesPerHundredGrams()/100)
                 .sum();
     }
 
     public double countDishCarbohydrates(Dish dish) {
         return dish.getDishProductDetails()
                 .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getCarbohydratesPerGramInGram())
+                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getCarbohydratesPerHundredGrams()/100)
                 .sum();
     }
 
     public double countDishProteins(Dish dish) {
         return dish.getDishProductDetails()
                 .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getProteinsPerGramInGram())
+                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getProteinsPerHundredGrams()/100)
                 .sum();
     }
 
     public double countDishFats(Dish dish) {
         return dish.getDishProductDetails()
                 .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getFatsPerGramInGrams())
+                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getFatsPerHundredGrams()/100)
                 .sum();
     }
 
-    @Override
+    /*@Override
     public Map<String, Map<String, Double>> countDishDetailsByDishId(UUID dishId) throws NotFoundException {
         Dish dish = getDishById(dishId);
 
@@ -130,5 +125,5 @@ public class DishServiceImpl implements DishService {
         result.put("vitamins", dishVitaminDetails);
         result.put("minerals", dishMineralDetails);
         return result;
-    }
+    }*/
 }

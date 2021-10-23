@@ -4,7 +4,7 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.service.diet.calculation.ProfileDietCalculationService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -25,18 +25,8 @@ public class ProfileDietCalculationController {
     }
 
     @RequestMapping(path = "/diet-calc/profile/{profileId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getProfileDietCalculationByProfileId(@PathVariable("profileId") UUID profileId){
-        try {
-            ProfileDietCalculation dietCalc = profileDietCalculationService.getDietCalculationByProfileId(profileId);
-            return new ResponseEntity<>(dietCalc, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> getProfileDietCalculationByProfileId(@PathVariable("profileId") UUID profileId) throws NotFoundException {
+        ProfileDietCalculation dietCalc = profileDietCalculationService.getDietCalculationByProfileId(profileId);
+        return new ResponseEntity<>(dietCalc, HttpStatus.OK);
     }
 }

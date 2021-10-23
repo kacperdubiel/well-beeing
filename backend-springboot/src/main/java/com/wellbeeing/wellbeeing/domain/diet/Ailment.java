@@ -24,18 +24,18 @@ public class Ailment {
     private EAilmentType type;
     @ManyToMany
     @JoinTable(
-            name = "ailment_sportLabel",
-            joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "sport_label_id", referencedColumnName = "sportLabel_id")
-    )
-    private List<SportLabel> allowedSportLabels;
-    @ManyToMany
-    @JoinTable(
             name = "ailment_nutrition_label",
             joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "nutrition_label_id")
+            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "id")
     )
     private List<NutritionLabel> allowedNutritionLabels;
+    @ManyToMany
+    @JoinTable(
+            name = "ailment_sportLabel",
+            joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "sport_label_id", referencedColumnName = "sportLabel_Id")
+    )
+    private List<SportLabel> allowedSportLabels;
     @Column
     private int changeInCalories;
     @Column

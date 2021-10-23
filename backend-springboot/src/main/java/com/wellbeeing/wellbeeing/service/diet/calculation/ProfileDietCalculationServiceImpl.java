@@ -14,7 +14,7 @@ import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.diet.AilmentDAO;
 import com.wellbeeing.wellbeeing.repository.diet.DietDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

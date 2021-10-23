@@ -20,21 +20,21 @@ public class Product {
     private String name;
     @Column
 
-    private double caloriesPerGramInGram;
+    private double caloriesPerHundredGrams;
     @Column
-    private double fatsPerGramInGrams;
+    private double fatsPerHundredGrams;
     @Column
-    private double carbohydratesPerGramInGram;
+    private double carbohydratesPerHundredGrams;
     @Column
-    private double proteinsPerGramInGram;
+    private double proteinsPerHundredGrams;
     @OneToMany(mappedBy = "product")
     @JsonIgnore
     private List<MacroDetail> macroDetails;
-    @JsonIgnore
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<MineralDetail> mineralDetails;
-    @JsonIgnore
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<VitaminDetail> vitaminDetails;
 
 

@@ -22,9 +22,9 @@ public class Diet {
     private String description;
     @ManyToMany
     @JoinTable(
-            name = "ailment_nutrition_label",
-            joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "nutrition_label_id")
+            name = "diet_nutrition_label",
+            joinColumns = @JoinColumn(name = "diet_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "id")
     )
     private List<NutritionLabel> allowedNutritionLabels;
     @Column

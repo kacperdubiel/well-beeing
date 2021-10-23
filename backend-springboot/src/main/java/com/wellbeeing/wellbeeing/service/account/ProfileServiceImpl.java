@@ -3,7 +3,7 @@ package com.wellbeeing.wellbeeing.service.account;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -23,11 +23,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile getProfileById(UUID profileId) throws NotFoundException {
-        Profile actProfile = profileDAO.findById(profileId).orElse(null);
-        if (actProfile != null)
-            return actProfile;
-        else throw new NotFoundException("Profile not found");
+    public Profile getProfileById(UUID profileId) {
+        return profileDAO.findById(profileId).orElse(null);
     }
 
     @Override
@@ -50,6 +47,6 @@ public class ProfileServiceImpl implements ProfileService {
             profileDAO.save(actProfile);
             return actProfile;
         }
-        throw new NotFoundException("Profile not found");
+        return null;
     }
 }

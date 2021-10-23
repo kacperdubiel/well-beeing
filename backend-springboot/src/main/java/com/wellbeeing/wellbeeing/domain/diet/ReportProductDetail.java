@@ -11,18 +11,18 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportProductDetail {
+public class ReportProductDetail extends ProductDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    /*@Column
     private double amount;
     @Enumerated(EnumType.STRING)
     @Column
-    private EWeightMeasure measureType;
-    @ManyToOne
+    private EWeightMeasure measureType;*/
+    /*@ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Product product;
+    private Product product;*/
     @ManyToOne
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     @JsonIgnore

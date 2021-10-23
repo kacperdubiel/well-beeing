@@ -13,22 +13,22 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DishProductDetail {
+public class DishProductDetail extends ProductDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Product product;*/
     @ManyToOne
     @JoinColumn(name = "dish_id")
     @JsonIgnore
     private Dish dish;
-    @Column
+    /*@Column
     private double amount;
     @Enumerated(EnumType.STRING)
     @Column
-    private EWeightMeasure measureType;
+    private EWeightMeasure measureType;*/
 
 
 }

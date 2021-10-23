@@ -9,7 +9,7 @@ import com.wellbeeing.wellbeeing.repository.diet.DietCalcMealCaloriesSuggestionD
 import com.wellbeeing.wellbeeing.repository.diet.DietCalcMealGlycemicIndexSuggestionDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
 import com.wellbeeing.wellbeeing.service.diet.calculation.ProfileDietCalculationService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,6 @@ public class ProfileCardServiceImpl implements ProfileCardService {
         this.profileDAO = profileDAO;
     }
 
-
     @Override
     public ProfileCard updateProfileCardById(ProfileCard newProfileCard, UUID profileCardId) throws NotFoundException {
         ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
@@ -45,7 +44,7 @@ public class ProfileCardServiceImpl implements ProfileCardService {
             profileDietCalculationService.updateDietCalculationByProfileCardId(profileCardId);
             return newProfileCard;
         }
-        throw new NotFoundException("Profile card not found");
+        throw new NotFoundException("Profile card with id: " + profileCardId + " not found");
     }
 
     @Override
@@ -53,7 +52,7 @@ public class ProfileCardServiceImpl implements ProfileCardService {
         ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
         if(profileCard != null)
             return profileCard;
-        else throw new NotFoundException("Profile card not found");
+        else throw new NotFoundException("Profile card with id: " + profileCardId + " not found");
     }
 
     @Override
@@ -62,7 +61,7 @@ public class ProfileCardServiceImpl implements ProfileCardService {
         if(actProfile != null){
             return profileCardDAO.findById(actProfile.getId()).orElse(null);
         }
-        throw new NotFoundException("Profile not found");
+        throw new NotFoundException("Profile with id: " + profileId + " not found");
     }
 
     @Override
@@ -70,6 +69,6 @@ public class ProfileCardServiceImpl implements ProfileCardService {
         Profile actProfile = profileDAO.findById(profileId).orElse(null);
         if(actProfile != null)
             return updateProfileCardById(profileCard, actProfile.getProfileCard().getId());
-        throw new NotFoundException("Profile not found");
+        throw new NotFoundException("Profile with id: " + profileId + " not found");
     }
 }
