@@ -1,11 +1,12 @@
 import {createApp} from "vue";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap'
 import App from '@/App';
 import store from '@/store';
 import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap'
+
 
 import Default from "@/layouts/Default";
 import Clean from "@/layouts/Clean";

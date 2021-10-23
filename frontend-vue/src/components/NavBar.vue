@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <nav class="navbar navbar-expand-lg fixed-top">
         <p>navbar</p>
-    </div>
+    </nav>
 </template>
 
 <script>
@@ -11,5 +11,7 @@ export default {
 </script>
 
 <style scoped>
-
+.navbar {
+    background-color: var(--DARK-YELLOW);
+}
 </style>

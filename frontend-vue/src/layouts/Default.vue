@@ -1,8 +1,10 @@
 <template>
-    <div>
-        <nav-bar />
-        <div class="container">
+    <div id="app-container">
+        <div class="container-fluid">
             <div class="row">
+                <nav-bar />
+            </div>
+            <div class="row content">
                 <div class="col-3">
                     <side-bar />
                 </div>
@@ -32,5 +34,11 @@ export default {
 </script>
 
 <style scoped>
+#app-container {
+    background-color: var(--DARK-YELLOW);
+}
 
+.content {
+    margin-top: 60px;
+}
 </style>

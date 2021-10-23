@@ -40,4 +40,14 @@
 #nav a.router-link-exact-active {
     color: #42b983;
 }
+
+.section-bg {
+    background-color: var(--GREY2);
+    border-radius: 40px;
+    color: white;
+}
+
+.sticky-top {
+    top: 60px;
+}
 </style>

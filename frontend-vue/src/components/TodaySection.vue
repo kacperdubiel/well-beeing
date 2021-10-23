@@ -1,6 +1,21 @@
 <template>
-    <div>
+    <div class="section-bg sticky-top">
         <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+        <p>today</p>
+
+
     </div>
 </template>
 

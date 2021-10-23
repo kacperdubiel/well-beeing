@@ -1,5 +1,18 @@
 <template>
-    <div>
+    <div class="section-bg sticky-top">
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
+        <p>sidebar</p>
         <p>sidebar</p>
     </div>
 </template>
