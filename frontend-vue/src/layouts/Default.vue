@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import NavBar from "@/components/NavBar";
-import SideBar from "@/components/SideBar";
-import TodaySection from "@/components/TodaySection";
+import NavBar from "@/components/layout/NavBar";
+import SideBar from "@/components/layout/SideBar";
+import TodaySection from "@/components/layout/TodaySection";
 export default {
     name: "Default",
     components: {

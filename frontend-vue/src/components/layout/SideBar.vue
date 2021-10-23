@@ -2,7 +2,7 @@
     <div class="section-bg sticky-top">
         <div>
             <router-link to="/">
-                <div class="row mx-4 py-2 sidebar-item">
+                <div class="row mx-4 pt-3 pb-2 sidebar-item">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'user']" />
                     </div>
@@ -117,7 +117,7 @@
         </div>
         <div>
             <router-link to="/">
-                <div class="row mx-4 py-2">
+                <div class="row mx-4 pt-2 pb-3">
                     <div class="col ps-2">
                         ZŁÓŻ PODANIE
                     </div>

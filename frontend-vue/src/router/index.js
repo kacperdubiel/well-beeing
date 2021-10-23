@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Feed from "@/views/Feed";
+import Feed from "@/views/social/Feed";
 
 const routes = [
   {

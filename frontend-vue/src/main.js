@@ -15,25 +15,30 @@ import Clean from "@/layouts/Clean";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+//sidebar
 import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faUserFriends } from '@fortawesome/free-solid-svg-icons'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { faComments } from '@fortawesome/free-solid-svg-icons'
-
 import { faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons'
 import { faBriefcaseMedical } from '@fortawesome/free-solid-svg-icons'
-
 library.add(faUserSecret)
 library.add(faUser)
 library.add(faUserFriends)
 library.add(faUsers)
 library.add(faComments)
-
 library.add(faUtensils)
 library.add(faDumbbell)
 library.add(faBriefcaseMedical)
+
+//navbar
+import { faBell } from '@fortawesome/free-regular-svg-icons'
+import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
+library.add(faBell)
+library.add(faUserCircle)
+
 
 const app = createApp(App).use(router);
 
