@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Feed from "@/views/social/Feed";
+import SocialView from "@/views/social/SocialView";
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     path: '/feed',
     name: 'Feed',
     component: Feed
+  },
+  {
+    path: '/social',
+    name: 'SovialView',
+    component: SocialView
   }
 ]
 

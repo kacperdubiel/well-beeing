@@ -5,13 +5,13 @@
                 <nav-bar />
             </div>
             <div class="row content">
-                <div class="col-md-3 d-none d-md-block">
+                <div class="col-md-3 d-none d-md-block px-4">
                     <side-bar />
                 </div>
-                <div class="col-md-6 col-sm-10">
+                <div class="col-md-6 col-sm-10 px-4">
                     <slot />
                 </div>
-                <div class="col-md-3 d-none d-md-block">
+                <div class="col-md-3 d-none d-md-block px-4">
                     <today-section />
                 </div>
             </div>

@@ -28,17 +28,8 @@
     color: #2c3e50;
 }
 
-#nav {
-    padding: 30px;
-}
-
-#nav a {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-    color: #42b983;
+.side-menu .router-link-exact-active, .side-menu .router-link-active {
+    color: var(--DARK-YELLOW);
 }
 
 .section-bg {
@@ -51,4 +42,39 @@
 .sticky-top {
     top: 100px;
 }
+
+.btn-white {
+    background-color: white;
+    color: var(--GREY3);
+    border-radius: 5px;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+}
+
+button[class^="btn-panel-"] {
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.btn-panel-telemedic {
+    background-color: var(--TELEMEDIC);
+}
+
+.btn-panel-sport {
+    background-color: var(--SPORT);
+}
+
+.btn-panel-diet {
+    background-color: var(--DIET);
+}
+
+.btn-panel-social {
+    background-color: var(--DARK-YELLOW);
+}
+
 </style>

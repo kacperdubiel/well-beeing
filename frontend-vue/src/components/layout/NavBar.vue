@@ -3,9 +3,12 @@
 <!--        <div class="container-fluid">-->
 <!--            <div class="row w-100">-->
                 <div class="col-1">
-                    <a href="/">
+                    <router-link to="/feed">
                         <img src="@/assets/bee.png" alt="Bee image" height="70">
-                    </a>
+                    </router-link>
+<!--                    <a href="/feed">-->
+<!--                        -->
+<!--                    </a>-->
 
                 </div>
                 <div class="col-md-8 col-sm-6 align-self-center">
