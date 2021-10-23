@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.Data;
 import lombok.Getter;
@@ -68,5 +69,11 @@ public class Training {
 
     public boolean removeExerciseFromTraining(long exerciseId) {
         return exerciseInTrainings.removeIf(e->e.getExercise().getExerciseId() == exerciseId);
+    }
+
+    public Set<SportLabel> getLabels() {
+        Set<SportLabel> labels = new HashSet<>();
+        exerciseInTrainings.forEach(e -> labels.addAll(e.getExercise().getLabels()));
+        return labels;
     }
 }
