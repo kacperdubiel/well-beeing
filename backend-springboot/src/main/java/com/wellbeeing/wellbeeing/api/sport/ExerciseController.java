@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.lang.reflect.Field;
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +54,6 @@ public class ExerciseController {
     @GetMapping(path = "")
     public ResponseEntity<?> getExercisesPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
                                                    @RequestParam(value = "size", defaultValue = "3") int size) {
-        try {
             List<Exercise> exercises;
             Pageable paging = PageRequest.of(page, size);
 
@@ -63,22 +61,18 @@ public class ExerciseController {
             pageExercises = exerciseService.getAllExercises(paging);
             exercises = pageExercises.getContent();
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("exercises", exercises);
-            response.put("currentPage", pageExercises.getNumber());
-            response.put("totalItems", pageExercises.getTotalElements());
-            response.put("totalPages", pageExercises.getTotalPages());
+        PaginatedResponse response = PaginatedResponse.builder()
+                        .objects(exercises)
+                        .currentPage(pageExercises.getNumber())
+                        .totalItems(pageExercises.getTotalElements())
+                        .totalPages(pageExercises.getTotalPages()).build();
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @PostMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
-    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) {
+    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) throws NotFoundException {
         Exercise createdExercise;
-        try {
             createdExercise = exerciseService.addExercise(request.getExercise(), principal.getName());
             request.getLabelsIds().forEach(labelId -> {
                 try {
@@ -87,13 +81,6 @@ public class ExerciseController {
                     e.printStackTrace();
                 }
             });
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }catch (Exception e) {
-            System.out.println("Exception message: "+e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-
-        }
         if (createdExercise == null) {
             return new ResponseEntity<>("Couldn't create exercise!", HttpStatus.CONFLICT);
         }
@@ -101,59 +88,43 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteExercise(@PathVariable(value = "id") Long exerciseId ) {
-        try {
-            exerciseService.deleteExercise(exerciseId);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<?> deleteExercise(@PathVariable(value = "id") Long exerciseId) throws NotFoundException {
+        exerciseService.deleteExercise(exerciseId);
         return new ResponseEntity<>("Successfully deleted exercise with id=" + exerciseId, HttpStatus.OK);
     }
 
     @RequestMapping("/{id}/label-to-exercise-name/{labelId}")
-    public ResponseEntity<?> addLabelToExerciseByLabelId(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelId") Long labelId) {
-        try {
-            exerciseService.addLabelToExerciseByLabelId(exerciseId, labelId);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<?> addLabelToExerciseByLabelId(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelId") Long labelId) throws NotFoundException {
+        exerciseService.addLabelToExerciseByLabelId(exerciseId, labelId);
         Exercise updatedExercise = exerciseService.getExercise(exerciseId);
         return new ResponseEntity<>(updatedExercise, HttpStatus.OK);
     }
 
     @RequestMapping("/{id}/label-to-exercise-name/{labelName}")
-    public ResponseEntity<?> addLabelToExerciseByLabelName(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelName") String labelName) {
-        try {
-            exerciseService.addLabelToExerciseByLabelName(exerciseId, labelName);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<?> addLabelToExerciseByLabelName(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelName") String labelName) throws NotFoundException {
+        exerciseService.addLabelToExerciseByLabelName(exerciseId, labelName);
         Exercise updatedExercise = exerciseService.getExercise(exerciseId);
         return new ResponseEntity<>(updatedExercise, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateExercise(@PathVariable(value = "id") Long exerciseId, @RequestBody @NonNull Exercise exercise) {
+    public ResponseEntity<?> updateExercise(@PathVariable(value = "id") Long exerciseId, @RequestBody @NonNull Exercise exercise) throws NotFoundException {
         exercise.setExerciseId(exerciseId);
-        try {
-            exerciseService.updateExercise(exercise);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }
+        exerciseService.updateExercise(exercise);
         return new ResponseEntity<>(exercise, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> partialUpdateExercise(@PathVariable(value = "id") Long exerciseId, @RequestBody Map<String, Object> fields) {
+    public ResponseEntity<?> partialUpdateExercise(@PathVariable(value = "id") Long exerciseId, @RequestBody Map<String, Object> fields) throws Exception {
         // Sanitize and validate the data
-        if (exerciseId <= 0 || fields == null || fields.isEmpty()){
+        if (exerciseId <= 0 || fields == null || fields.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 400 Invalid claim object received or invalid id or id does not match object
         }
 
         Exercise exercise = exerciseService.getExercise(exerciseId);
 
         // Does the object exist?
-        if( exercise == null){
+        if (exercise == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Claim object does not exist
         }
 
@@ -161,7 +132,6 @@ public class ExerciseController {
         // This is not necessary, you can just do it to save time on the reflection
         // loop used below since we checked the id above
         fields.remove("id");
-        try {
         fields.forEach((k, v) -> {
             // use reflection to get field k on object and set it to value v
             // Change Claim.class to whatver your object is: Object.class
@@ -171,12 +141,6 @@ public class ExerciseController {
                 v = EExerciseType.valueOf((String) v);
             ReflectionUtils.setField(field, exercise, v); // set given field for defined object to value V
         });
-
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "ILLEGAL ARGUMENT ERROR"), HttpStatus.CONFLICT);
-        } catch (Exception e ) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "OTHER ERROR"), HttpStatus.CONFLICT);
-        }
 
         Exercise updated = exerciseService.partialUpdateExercise(exercise);
         return new ResponseEntity<>(updated, HttpStatus.OK);
