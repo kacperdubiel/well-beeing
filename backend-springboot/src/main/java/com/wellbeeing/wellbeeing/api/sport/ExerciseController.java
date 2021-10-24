@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
@@ -75,11 +76,20 @@ public class ExerciseController {
 
     @PostMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
-    public ResponseEntity<?> addExercise(@RequestBody @NonNull Exercise exercise, Principal principal) {
+    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) {
         Exercise createdExercise;
         try {
-            createdExercise = exerciseService.addExercise(exercise, principal.getName());
-        } catch (Exception e) {
+            createdExercise = exerciseService.addExercise(request.getExercise(), principal.getName());
+            request.getLabelsIds().forEach(labelId -> {
+                try {
+                    exerciseService.addLabelToExerciseByLabelId(createdExercise.getExerciseId(), labelId);
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }catch (Exception e) {
             System.out.println("Exception message: "+e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
 
