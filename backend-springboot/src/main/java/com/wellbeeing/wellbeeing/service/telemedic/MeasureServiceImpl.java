@@ -1,6 +1,8 @@
 package com.wellbeeing.wellbeeing.service.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import com.wellbeeing.wellbeeing.repository.telemedic.MeasureDAO;
@@ -21,33 +23,49 @@ public class MeasureServiceImpl implements MeasureService {
     }
 
     @Override
-    public Measure getMeasureById(UUID measureId) {
-        return measureDAO.findById(measureId).orElse(null);
+    public Measure getMeasureById(UUID measureId) throws NotFoundException {
+        Measure measure = measureDAO.findById(measureId).orElse(null);
+        if(measure == null) {
+            throw new NotFoundException("Measure with id: " + measureId + " not found");
+        }
+
+        return measure;
     }
 
     @Override
     public List<Measure> getMeasuresByProfileAndMeasureType(Profile profile, MeasureType measureType) {
-        return measureDAO.findByOwner(profile);
+        return measureDAO.findByOwnerAndMeasureType(profile, measureType);
     }
 
     @Override
-    public Measure addMeasure(Measure measure) {
-        measure.setId(UUID.randomUUID());
+    public Measure addMeasure(Measure measure) throws ConflictException {
+        UUID measureId = measure.getId();
+        Measure measureResult = measureDAO.findById(measureId).orElse(null);
+        if(measureResult != null) {
+            throw new ConflictException("Measure with id: " + measureId + " already exists!");
+        }
 
         return measureDAO.save(measure);
     }
 
     @Override
-    public Measure updateMeasure(Measure updatedMeasure) {
+    public Measure updateMeasure(Measure updatedMeasure) throws NotFoundException {
+        UUID measureId = updatedMeasure.getId();
+        Measure measureResult = measureDAO.findById(measureId).orElse(null);
+        if(measureResult == null) {
+            throw new NotFoundException("Measure with id: " + measureId + " not found!");
+        }
+
         return measureDAO.save(updatedMeasure);
     }
 
     @Override
-    public boolean deleteMeasureById(UUID measureId) {
-        if(measureDAO.findById(measureId).isPresent()){
-            measureDAO.deleteById(measureId);
-            return true;
+    public void deleteMeasureById(UUID measureId) throws NotFoundException {
+        Measure measureResult = measureDAO.findById(measureId).orElse(null);
+        if(measureResult == null) {
+            throw new NotFoundException("Measure with id: " + measureId + " not found!");
         }
-        return false;
+
+        measureDAO.deleteById(measureId);
     }
 }

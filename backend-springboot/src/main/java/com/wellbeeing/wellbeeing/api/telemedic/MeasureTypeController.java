@@ -1,6 +1,8 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureTypeService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,48 +25,42 @@ public class MeasureTypeController {
     }
 
     @RequestMapping(path = "measure-types", method = RequestMethod.GET)
-    public ResponseEntity<List<MeasureType>> getMeasureTypes(){
+    public ResponseEntity<?> getMeasureTypes(){
         List<MeasureType> measureTypesResult = measureTypeService.getMeasureTypes();
-        if(measureTypesResult == null)
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else
-            return new ResponseEntity<>(measureTypesResult, HttpStatus.OK);
+        return new ResponseEntity<>(measureTypesResult, HttpStatus.OK);
     }
 
     @RequestMapping(path = "measure-types/{id}", method = RequestMethod.GET)
-    public ResponseEntity<MeasureType> getMeasureTypeById(@PathVariable("id") UUID id){
+    public ResponseEntity<MeasureType> getMeasureTypeById(@PathVariable("id") UUID id)
+            throws NotFoundException
+    {
         MeasureType measureTypeResult = measureTypeService.getMeasureTypeById(id);
-        if(measureTypeResult == null)
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else
-            return new ResponseEntity<>(measureTypeResult, HttpStatus.OK);
+        return new ResponseEntity<>(measureTypeResult, HttpStatus.OK);
     }
 
     @RolesAllowed(ERole.Name.ROLE_DOCTOR)
     @RequestMapping(path = "measure-types", method = RequestMethod.POST)
-    public ResponseEntity<MeasureType> addMeasureType(@RequestBody @NonNull MeasureType measureType){
+    public ResponseEntity<MeasureType> addMeasureType(@RequestBody @NonNull MeasureType measureType)
+            throws ConflictException
+    {
         MeasureType measureTypeResult = measureTypeService.addMeasureType(measureType);
         return new ResponseEntity<>(measureTypeResult, HttpStatus.CREATED);
     }
 
     @RolesAllowed(ERole.Name.ROLE_DOCTOR)
     @RequestMapping(path = "measure-types", method = RequestMethod.PUT)
-    public ResponseEntity<MeasureType> updateMeasureType(@RequestBody @NonNull MeasureType measureType){
+    public ResponseEntity<MeasureType> updateMeasureType(@RequestBody @NonNull MeasureType measureType)
+            throws NotFoundException
+    {
         MeasureType measureTypeResult = measureTypeService.updateMeasureType(measureType);
-        if(measureTypeResult != null)
-            return new ResponseEntity<>(measureTypeResult, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(measureTypeResult, HttpStatus.OK);
     }
 
     @RolesAllowed(ERole.Name.ROLE_DOCTOR)
     @RequestMapping(path = "measure-types/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteMeasureType(@PathVariable("id") UUID id){
-        boolean deleteResult = measureTypeService.deleteMeasureTypeById(id);
-        if(deleteResult)
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Boolean> deleteMeasureType(@PathVariable("id") UUID id) throws NotFoundException {
+        measureTypeService.deleteMeasureTypeById(id);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
 }
