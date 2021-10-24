@@ -1,6 +1,6 @@
 <template>
-    <div>
-
+    <div class="section-bg">
+    <p>Sport</p>
     </div>
 </template>
 
