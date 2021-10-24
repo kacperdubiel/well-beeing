@@ -1,10 +1,12 @@
 <template>
-    <p>siemka, zalogowałeś się</p>
+    <div>
+
+    </div>
 </template>
 
 <script>
 export default {
-    name: "Feed"
+    name: "TelemedicView"
 }
 </script>
 

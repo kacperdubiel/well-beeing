@@ -2,7 +2,7 @@
     <div id="login-page" class="container-fluid mw-100">
         <div class="row" id="logo">
             <div id="logo-rel">
-                <img id="bee-img" src="../assets/bee.png" alt="Bee image" >
+                <img id="bee-img" src="@/assets/bee.png" alt="Bee image" >
                 <h1 id="logo-text">Well-beeing</h1>
             </div>
         </div>
@@ -10,8 +10,8 @@
         <div class="row" id="content">
             <div class="col-md-7 col-sm-11" id="info">
                 <h1 id="info-text">Zadbaj z nami<br />o swoje zdrowie<br />i sylwetkę już dziś!</h1>
-                <img id="doctor-img" src="../assets/doctor.png" alt="Doctor image">
-                <img id="food-img" src="../assets/food.png" alt="Food image">
+                <img id="doctor-img" src="@/assets/doctor.png" alt="Doctor image">
+                <img id="food-img" src="@/assets/food.png" alt="Food image">
             </div>
             <div class="col-md-5 col-sm-11 ps-5 pt-5 mt-5">
                 <login-panel/>
