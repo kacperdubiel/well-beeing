@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getProductsWithNameLike(String namePart, int numberOfElements, int page) {
         return productDAO.findByNameStartingWith(namePart, PageRequest.of(page,
-                numberOfElements + numberOfElements, Sort.by("name")));
+                 numberOfElements, Sort.by("name")));
     }
 
     @Override

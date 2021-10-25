@@ -29,15 +29,15 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public Page<Dish> getAllDishes(int numberOfElements, int startIndex) {
-        return dishDAO.findAll(PageRequest.of(startIndex, startIndex + numberOfElements, Sort.by("name")));
+    public Page<Dish> getAllDishes(int numberOfElements, int page) {
+        return dishDAO.findAll(PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
 
 
     @Override
-    public Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int startIndex) {
+    public Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int page) {
         return dishDAO.findByNameStartingWith(namePart,
-                PageRequest.of(startIndex, startIndex + numberOfElements, Sort.by("name")));
+                PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
 
     @Override
