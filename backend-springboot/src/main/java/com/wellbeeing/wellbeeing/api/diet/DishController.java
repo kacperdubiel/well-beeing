@@ -26,17 +26,13 @@ public class DishController {
     @RequestMapping(path = "/dish/{dishId}", method = RequestMethod.GET)
     public ResponseEntity<?> getDishById(@PathVariable("dishId") UUID dishID) throws NotFoundException {
         Dish actDish = dishService.getDishById(dishID);
-        if (actDish == null)
-            throw new NotFoundException("Dish with id" + dishID.toString() + " not found");
         return new ResponseEntity<>(actDish, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/dish/{dishId}/update-derived", method = RequestMethod.GET)
     public ResponseEntity<?> updateDishDerivedById(@PathVariable("dishId") UUID dishID) throws NotFoundException {
         boolean resp = dishService.updateCaloriesAndMacrosByDishId(dishID);
-        if (!resp)
-            throw new NotFoundException("Dish with id" + dishID.toString() + " not found");
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/dish", method = RequestMethod.GET)

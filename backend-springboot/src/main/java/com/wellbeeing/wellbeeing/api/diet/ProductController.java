@@ -21,6 +21,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class ProductController {
+
     private ProductService productService;
 
     @Autowired
@@ -31,8 +32,6 @@ public class ProductController {
     @RequestMapping(path = "/product/{productId}", method = RequestMethod.GET)
     public ResponseEntity<?> getProductById(@PathVariable("productId") UUID productID) throws NotFoundException {
         Product actProduct = productService.getProductById(productID);
-        if(actProduct == null)
-            throw new NotFoundException("Product with id: " + productID + " not found");
         return new ResponseEntity<>(actProduct, HttpStatus.OK);
     }
 
@@ -67,32 +66,24 @@ public class ProductController {
     @RequestMapping(path = "/product/{productId}/detailed-macros", method = RequestMethod.GET)
     public ResponseEntity<?> getProductMacroDetailsByProductId(@PathVariable("productId") UUID productID) throws NotFoundException {
         List<MacroDetail> actMacros = productService.getProductMacroDetailsByProductId(productID);
-        if(actMacros == null)
-            throw new NotFoundException("Product with id: " + productID + " not found");
         return new ResponseEntity<>(actMacros, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/product/{productId}/minerals", method = RequestMethod.GET)
     public ResponseEntity<?> getProductMineralDetailsByProductId(@PathVariable("productId") UUID productID) throws NotFoundException {
         List<MineralDetail> actMacros = productService.getProductMineralDetailsByProductId(productID);
-        if(actMacros == null)
-            throw new NotFoundException("Product with id: " + productID + " not found");
         return new ResponseEntity<>(actMacros, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/product/{productId}/vitamins", method = RequestMethod.GET)
     public ResponseEntity<?> getProductVitaminDetailsByProductId(@PathVariable("productId") UUID productID) throws NotFoundException {
         List<VitaminDetail> actMacros = productService.getProductVitaminDetailsByProductId(productID);
-        if(actMacros == null)
-            throw new NotFoundException("Product with id: " + productID + " not found");
         return new ResponseEntity<>(actMacros, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/product/{productId}/details", method = RequestMethod.GET)
     public ResponseEntity<?> getProductAllDetailsByProductId(@PathVariable("productId") UUID productID) throws NotFoundException {
         Map<String, List<?>> result = productService.getAllProductDetails(productID);
-        if(result == null)
-            throw new NotFoundException("Product with id: " + productID + " not found");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

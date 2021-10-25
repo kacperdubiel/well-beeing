@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.Report;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
@@ -44,4 +45,6 @@ public class Profile {
     private Set<ActivityGoal> activityGoals = new HashSet<>();
     @OneToMany(mappedBy = "reportOwner", cascade = CascadeType.ALL)
     private List<Report> dietReports = new ArrayList<>();
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    private List<NutritionPlan> nutritionPlans = new ArrayList<>();
 }

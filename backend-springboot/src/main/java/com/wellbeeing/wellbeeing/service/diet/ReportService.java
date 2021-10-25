@@ -24,6 +24,4 @@ public interface ReportService {
     Map<String, Map<String, Double>> countDetailedElementsAmountsByReportId(UUID reportId) throws NotFoundException;
     List<Report> getReportByDateAndProfileId(Date date, UUID profileId) throws NotFoundException;
     List<Report> getReportsByProfileId(UUID profileId) throws NotFoundException;
-    boolean checkIfProfileReport(UUID profileId, UUID reportId);
-
 }

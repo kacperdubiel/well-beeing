@@ -1,8 +1,6 @@
 package com.wellbeeing.wellbeeing.api;
 
-import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
-import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.*;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +35,17 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<ErrorMessage> handleException(ForbiddenException e){
         return new ResponseEntity<>(new ErrorMessage("Forbidden: " + e.getMessage(),
                 "403"), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({NutritionPlanGenerationException.class})
+    public ResponseEntity<ErrorMessage> handleException(NutritionPlanGenerationException e){
+        return new ResponseEntity<>(new ErrorMessage("Nutrition plan generation failed: " + e.getMessage(),
+                "409"), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<ErrorMessage> handleException(UnauthorizedException e){
+        return new ResponseEntity<>(new ErrorMessage("Unauthorized: " + e.getMessage(),
+                "401"), HttpStatus.UNAUTHORIZED);
     }
 }

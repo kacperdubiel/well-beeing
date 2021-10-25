@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.diet.MacroDetail;
 import com.wellbeeing.wellbeeing.domain.diet.MineralDetail;
 import com.wellbeeing.wellbeeing.domain.diet.Product;
 import com.wellbeeing.wellbeeing.domain.diet.VitaminDetail;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.repository.diet.ProductDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,8 +28,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(UUID productId) {
-        return productDAO.findById(productId).orElse(null);
+    public Product getProductById(UUID productId) throws NotFoundException {
+        Product product = productDAO.findById(productId).orElse(null);
+        if(product != null)
+            return product;
+        throw new NotFoundException("Product with id: " + productId + "not found");
     }
 
     @Override
@@ -43,44 +47,31 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<MacroDetail> getProductMacroDetailsByProductId(UUID productId) {
+    public List<MacroDetail> getProductMacroDetailsByProductId(UUID productId) throws NotFoundException {
         Product product = getProductById(productId);
-        if(product != null)
-            return getProductById(productId).getMacroDetails();
-        else
-            return null;
+        return product.getMacroDetails();
 
     }
 
     @Override
-    public List<VitaminDetail> getProductVitaminDetailsByProductId(UUID productId) {
+    public List<VitaminDetail> getProductVitaminDetailsByProductId(UUID productId) throws NotFoundException {
         Product product = getProductById(productId);
-        if(product != null)
-            return getProductById(productId).getVitaminDetails();
-        else
-            return null;
+        return product.getVitaminDetails();
     }
 
 
     @Override
-    public List<MineralDetail> getProductMineralDetailsByProductId(UUID productId) {
+    public List<MineralDetail> getProductMineralDetailsByProductId(UUID productId) throws NotFoundException {
         Product product = getProductById(productId);
-        if(product != null)
-            return getProductById(productId).getMineralDetails();
-        else
-            return null;
+        return product.getMineralDetails();
     }
 
     @Override
-    public Map<String, List<?>> getAllProductDetails(UUID productID) {
-        Product product = getProductById(productID);
-        if(product != null){
-            Map<String, List<?>> result = new HashMap<>();
-            result.put("macroDetails", getProductMacroDetailsByProductId(productID));
-            result.put("minerals", getProductMineralDetailsByProductId(productID));
-            result.put("vitamins", getProductVitaminDetailsByProductId(productID));
-            return result;
-        }
-        return null;
+    public Map<String, List<?>> getAllProductDetails(UUID productID) throws NotFoundException {
+        Map<String, List<?>> result = new HashMap<>();
+        result.put("macroDetails", getProductMacroDetailsByProductId(productID));
+        result.put("minerals", getProductMineralDetailsByProductId(productID));
+        result.put("vitamins", getProductVitaminDetailsByProductId(productID));
+        return result;
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,61 +33,59 @@ public class ReportController {
     }
 
     @RequestMapping(path = "/report/{reportId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getReportById(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> getReportById(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            return new ResponseEntity<>(new ErrorMessage("Access forbidden", "403"), HttpStatus.FORBIDDEN);
-        }
         Report report  = reportService.getReportById(reportId);
+        if(!profileId.equals(report.getReportOwner().getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
+        }
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/report/{reportId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteReportById(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> deleteReportById(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            return new ResponseEntity<>(new ErrorMessage("Access forbidden", "403"), HttpStatus.FORBIDDEN);
+        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportDelAns  = reportService.deleteReportById(reportId);
-        return new ResponseEntity<>(reportDelAns, HttpStatus.OK);
+        boolean reportDelStatus  = reportService.deleteReportById(reportId);
+        return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/report/{reportId}/dish", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteDishesFromReportByReportId(Principal principal,
                                                               @PathVariable("reportId")UUID reportId,
-                                                              @RequestBody @NonNull List<UUID> dishes) throws NotFoundException {
+                                                              @RequestBody @NonNull List<UUID> dishes) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            return new ResponseEntity<>(new ErrorMessage("Access forbidden", "403"), HttpStatus.FORBIDDEN);
+        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportDelAns  = reportService.deleteDishesFromReportByReportId(reportId, dishes);
-        return new ResponseEntity<>(reportDelAns, HttpStatus.OK);
+        boolean reportDelStatus  = reportService.deleteDishesFromReportByReportId(reportId, dishes);
+        return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/report/{reportId}/product", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteProductsFromReportByReportId(Principal principal,
                                                               @PathVariable("reportId")UUID reportId,
-                                                              @RequestBody @NonNull List<UUID> products) throws NotFoundException {
+                                                              @RequestBody @NonNull List<UUID> products) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            return new ResponseEntity<>(new ErrorMessage("Access forbidden", "403"), HttpStatus.FORBIDDEN);
+        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportDelAns  = reportService.deleteProductsFromReportByReportId(reportId, products);
-        return new ResponseEntity<>(reportDelAns, HttpStatus.OK);
+        boolean reportDelStatus  = reportService.deleteProductsFromReportByReportId(reportId, products);
+        return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/report/{reportId}/dish", method = RequestMethod.POST)
     public ResponseEntity<?> addDishesToReportByReportId(Principal principal,
                                                               @PathVariable("reportId")UUID reportId,
-                                                              @RequestBody @NonNull List<String> dishes) throws NotFoundException, ForbiddenException {
+                                                              @RequestBody @NonNull List<UUID> dishes) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            throw new ForbiddenException("Report access for report with id: " + reportId + " forbidden");
+        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        List<UUID> dishUUIDS = new ArrayList<>();
-        dishes.forEach(d -> dishUUIDS.add(UUID.fromString(d)));
-        boolean reportDelAns  = reportService.addDishesToReportByReportId(dishUUIDS, reportId);
-        return new ResponseEntity<>(reportDelAns, HttpStatus.OK);
+        boolean reportAddStatus  = reportService.addDishesToReportByReportId(dishes, reportId);
+        return new ResponseEntity<>(reportAddStatus, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/report/{reportId}/product", method = RequestMethod.POST)
@@ -96,11 +93,11 @@ public class ReportController {
                                                                 @PathVariable("reportId")UUID reportId,
                                                                 @RequestBody @NonNull List<ReportProductDetail> products) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            throw new ForbiddenException("Report access for report with id: " + reportId + " forbidden");
+        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportDelAns  = reportService.addProductsToReportByReportId(products, reportId);
-        return new ResponseEntity<>(reportDelAns, HttpStatus.OK);
+        boolean reportAddStatus  = reportService.addProductsToReportByReportId(products, reportId);
+        return new ResponseEntity<>(reportAddStatus, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/report", method = RequestMethod.POST)
@@ -120,8 +117,8 @@ public class ReportController {
     @RequestMapping(path = "/report/{reportId}/details", method = RequestMethod.GET)
     public ResponseEntity<?> getReportDetailsByReportId(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            throw new ForbiddenException("Report access for report with id: " + reportId + " forbidden");
+        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
         return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
     }
@@ -129,13 +126,12 @@ public class ReportController {
     @RequestMapping(path = "/report/{reportId}/actualize", method = RequestMethod.GET)
     public ResponseEntity<?> updateReportDerivedByReportId(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(reportService.checkIfProfileReport(profileId, reportId)){
-            throw new ForbiddenException("Report access for report with id: " + reportId + " forbidden");
+        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
         reportService.updateReportDerivedElementsByReportId(reportId);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
-
     /*@RequestMapping(path = "/report/{date}", method = RequestMethod.GET)
     public ResponseEntity<?> getReportDetailsByDate(Principal principal, @PathVariable("date") String date){
         UUID profileId = userService.findUserIdByUsername(principal.getName());

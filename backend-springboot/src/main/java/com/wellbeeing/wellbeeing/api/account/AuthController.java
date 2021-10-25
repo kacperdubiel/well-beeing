@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Role;
+import com.wellbeeing.wellbeeing.domain.exception.UnauthorizedException;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationRequest;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationResponse;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
@@ -23,20 +24,21 @@ import java.util.ArrayList;
 @RestController
 public class AuthController {
 
-    @Autowired
     private AuthenticationManager authenticationManager;
     private UserDetailsService userService;
     private JwtUtil jwtUtil;
 
 
     public AuthController(@Qualifier("userService") UserDetailsService userService,
-                          @Qualifier("jwtUtil") JwtUtil jwtUtil){
+                          @Qualifier("jwtUtil") JwtUtil jwtUtil,
+                          AuthenticationManager authenticationManager){
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody @NonNull AuthenticationRequest authenticationRequest){
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody @NonNull AuthenticationRequest authenticationRequest) throws UnauthorizedException {
 
         final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getEmail());
         try {
@@ -45,7 +47,7 @@ public class AuthController {
                             authenticationRequest.getEmail(), authenticationRequest.getPassword(), userDetails.getAuthorities()));
         }
         catch (BadCredentialsException e){
-            return new ResponseEntity<>(new ErrorMessage("Unauthorized", "error"), HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException("Bad credentials");
         }
         final String jwt = jwtUtil.generateToken(userDetails);
         ArrayList<String> roles = new ArrayList<>();

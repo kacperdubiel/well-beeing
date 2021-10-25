@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface DishService {
-    Dish getDishById(UUID dishId);
+    Dish getDishById(UUID dishId) throws NotFoundException;
     Page<Dish> getAllDishes(int numberOfElements, int page);
     Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int page);
-    boolean updateCaloriesAndMacrosByDishId(UUID dishId);
+    boolean updateCaloriesAndMacrosByDishId(UUID dishId) throws NotFoundException;
 }

@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface ProductService {
-    Product getProductById(UUID productId);
+    Product getProductById(UUID productId) throws NotFoundException;
     Page<Product> getAllProducts(int numberOfElements, int page);
     Page<Product> getProductsWithNameLike(String namePart, int numberOfElements, int page);
-    List<MacroDetail> getProductMacroDetailsByProductId(UUID productID);
-    List<VitaminDetail> getProductVitaminDetailsByProductId(UUID productID);
-    List<MineralDetail> getProductMineralDetailsByProductId(UUID productID);
-    Map<String, List<?>> getAllProductDetails(UUID productID);
+    List<MacroDetail> getProductMacroDetailsByProductId(UUID productID) throws NotFoundException;
+    List<VitaminDetail> getProductVitaminDetailsByProductId(UUID productID) throws NotFoundException;
+    List<MineralDetail> getProductMineralDetailsByProductId(UUID productID) throws NotFoundException;
+    Map<String, List<?>> getAllProductDetails(UUID productID) throws NotFoundException;
 
 }

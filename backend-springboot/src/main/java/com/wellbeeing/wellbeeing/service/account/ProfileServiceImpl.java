@@ -23,30 +23,30 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile getProfileById(UUID profileId) {
-        return profileDAO.findById(profileId).orElse(null);
+    public Profile getProfileById(UUID profileId) throws NotFoundException {
+        Profile profile = profileDAO.findById(profileId).orElse(null);
+        if(profile != null)
+            return profile;
+        throw new NotFoundException("Profile with id: " + profileId + " not found");
     }
 
     @Override
-    public Profile updateProfile(Profile profile, UUID profileId) {
-        Profile actProfile = profileDAO.findById(profileId).orElse(null);
-        if (actProfile != null) {
-            if(profile.getProfileImgPath() != null) actProfile.setProfileImgPath(profile.getProfileImgPath());
-            if(profile.getFirstName() != null) actProfile.setFirstName(profile.getFirstName());
-            if(profile.getLastName() != null) actProfile.setLastName(profile.getLastName());
-            if(profile.getESex() != null) actProfile.setESex(profile.getESex());
-            if(profile.getDescription() != null) actProfile.setDescription(profile.getDescription());
-            if(profile.getBirthday() != null) actProfile.setBirthday(profile.getBirthday());
-            if(profile.getProfileUser() != null) actProfile.setProfileUser(profile.getProfileUser());
-            if(profile.getProfileCard() != null) actProfile.setProfileCard(profile.getProfileCard());
-            if(profile.getProfileCard() != null) actProfile.setProfileCard(profile.getProfileCard());
-            if(profile.getTrainingPlans() != null) actProfile.setTrainingPlans(profile.getTrainingPlans());
-            if(profile.getTrainingPlans() != null) actProfile.setTrainingPlans(profile.getTrainingPlans());
-            if(profile.getActivityGoals() != null) actProfile.setActivityGoals(profile.getActivityGoals());
-            if(profile.getDietReports() != null) actProfile.setDietReports(profile.getDietReports());
-            profileDAO.save(actProfile);
-            return actProfile;
-        }
-        return null;
+    public Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException {
+        Profile actProfile = getProfileById(profileId);
+        if(profile.getProfileImgPath() != null) actProfile.setProfileImgPath(profile.getProfileImgPath());
+        if(profile.getFirstName() != null) actProfile.setFirstName(profile.getFirstName());
+        if(profile.getLastName() != null) actProfile.setLastName(profile.getLastName());
+        if(profile.getESex() != null) actProfile.setESex(profile.getESex());
+        if(profile.getDescription() != null) actProfile.setDescription(profile.getDescription());
+        if(profile.getBirthday() != null) actProfile.setBirthday(profile.getBirthday());
+        actProfile.setProfileUser(profile.getProfileUser());
+        actProfile.setProfileCard(profile.getProfileCard());
+        actProfile.setProfileCard(profile.getProfileCard());
+        actProfile.setTrainingPlans(profile.getTrainingPlans());
+        actProfile.setTrainingPlans(profile.getTrainingPlans());
+        actProfile.setActivityGoals(profile.getActivityGoals());
+        actProfile.setDietReports(profile.getDietReports());
+        profileDAO.save(actProfile);
+        return actProfile;
     }
 }

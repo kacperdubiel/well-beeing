@@ -6,7 +6,7 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import java.util.UUID;
 
 public interface ProfileDietCalculationService {
-    ProfileDietCalculation calculateAllSuggestionsByProfileCardId(UUID profileCardId);
+    ProfileDietCalculation calculateAllSuggestionsByProfileCardId(UUID profileCardId) throws NotFoundException;
     ProfileDietCalculation getDietCalculationById(UUID dietCalculationId) throws NotFoundException;
     ProfileDietCalculation getDietCalculationByProfileCardId(UUID profileCardId) throws NotFoundException;
     ProfileDietCalculation updateDietCalculationByProfileCardId(UUID profileCardId) throws NotFoundException;

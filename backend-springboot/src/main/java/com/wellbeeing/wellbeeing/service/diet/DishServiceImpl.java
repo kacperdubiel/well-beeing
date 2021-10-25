@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.diet.*;
 import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
 import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -24,8 +25,11 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public Dish getDishById(UUID dishId) {
-        return dishDAO.findById(dishId).orElse(null);
+    public Dish getDishById(UUID dishId) throws NotFoundException {
+        Dish dish = dishDAO.findById(dishId).orElse(null);
+        if(dish != null)
+            return dish;
+        throw new NotFoundException("Dish with id" + dishId + " not found");
     }
 
     @Override
@@ -41,10 +45,8 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public boolean updateCaloriesAndMacrosByDishId(UUID dishId) {
+    public boolean updateCaloriesAndMacrosByDishId(UUID dishId) throws NotFoundException {
         Dish dish = getDishById(dishId);
-        if(dish == null)
-            return false;
         dish.setDerivedCalories(countDishCalories(dish));
         dish.setDerivedCarbohydrates(countDishCarbohydrates(dish));
         dish.setDerivedFats(countDishFats(dish));

@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.RoleToUserRequest;
 import com.wellbeeing.wellbeeing.service.account.UserService;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
+
+import javax.naming.ConfigurationException;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -20,16 +23,16 @@ public class UserController {
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> register(@RequestBody @NonNull User user){
+    public ResponseEntity<?> register(@RequestBody @NonNull User user) throws ConflictException {
         if(!userService.register(user))
-            return new ResponseEntity<>(new ErrorMessage("Account already exist", "error"), HttpStatus.CONFLICT);
+            throw new ConflictException("Account already exists");
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/addRoleToUser", method = RequestMethod.POST)
-    public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest){
+    public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest) throws ConflictException {
         if(!userService.addRoleToUser(roleToUserRequest.getUsername(), roleToUserRequest.getRole())) {
-            return new ResponseEntity<>(new ErrorMessage("Can't set this role to user!", "error"), HttpStatus.CONFLICT);
+            throw new ConflictException("Role cannot be assigned to user");
         }
         return new ResponseEntity<>("Roles updated", HttpStatus.OK);
     }

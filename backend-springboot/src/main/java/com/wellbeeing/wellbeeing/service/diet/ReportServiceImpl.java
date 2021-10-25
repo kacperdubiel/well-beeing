@@ -48,7 +48,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = reportDAO.findById(reportId).orElse(null);
         if(report != null)
             return report;
-        throw new NotFoundException("Report not found");
+        throw new NotFoundException("Report with id: " + reportId +" not found");
     }
 
     @Override
@@ -235,19 +235,5 @@ public class ReportServiceImpl implements ReportService {
         if(profile == null)
             throw new NotFoundException("Profile with id: " + profileId + " not found");
         return profile.getDietReports();
-    }
-
-    @Override
-    public boolean checkIfProfileReport(UUID profileId, UUID reportId) {
-        Profile profile = profileDAO.findById(profileId).orElse(null);
-        if(profile != null){
-            for(Report r : profile.getDietReports()){
-                if (r.getId().equals(reportId)) {
-                   return false;
-                }
-            }
-            return true;
-        }
-        return true;
     }
 }

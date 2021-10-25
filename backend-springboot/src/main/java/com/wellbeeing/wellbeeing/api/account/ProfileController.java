@@ -31,9 +31,6 @@ public class ProfileController {
     public ResponseEntity<?> getProfile(Principal principal) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         Profile profile = profileService.getProfileById(profileId);
-        if(profile == null){
-            throw new NotFoundException("Profile with id: " + profileId + " not found");
-        }
         return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
@@ -42,9 +39,6 @@ public class ProfileController {
                                                @NonNull @RequestBody Profile profile) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         Profile actProfile = profileService.updateProfile(profile, profileId);
-        if(profile == null){
-            throw new NotFoundException("Profile with id: " + profileId + " not found");
-        }
         return new ResponseEntity<>(actProfile, HttpStatus.OK);
     }
 }
