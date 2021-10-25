@@ -18,8 +18,8 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class ProfileController {
-    private ProfileService profileService;
-    private UserService userService;
+    private final ProfileService profileService;
+    private final UserService userService;
 
     @Autowired
     public ProfileController(@Qualifier("profileService") ProfileService profileService,
@@ -28,59 +28,18 @@ public class ProfileController {
         this.userService = userService;
     }
 
-    /*@RequestMapping(path = "/profile/{profileId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getProfileById(@PathVariable("profileId") UUID profileId){
-        try {
-            Profile profile = profileService.getProfileById(profileId);
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }*/
-
     @RequestMapping(path = "/profile", method = RequestMethod.GET)
-    public ResponseEntity<?> getProfile(Principal principal){
+    public ResponseEntity<?> getProfile(Principal principal) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        try {
-            Profile profile = profileService.getProfileById(profileId);
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Profile profile = profileService.getProfileById(profileId);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/profile", method = RequestMethod.PUT)
     public ResponseEntity<?> updateProfileById(Principal principal,
-                                               @NonNull @RequestBody Profile profile){
+                                               @NonNull @RequestBody Profile profile) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        try {
-            Profile actProfile = profileService.updateProfile(profile, profileId);
-            return new ResponseEntity<>(actProfile, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping(path = "/trainers")
-    public ResponseEntity<?> getTrainersProfiles() {
-        return new ResponseEntity<>(profileService.getTrainersProfiles(), HttpStatus.OK);
+        Profile actProfile = profileService.updateProfile(profile, profileId);
+        return new ResponseEntity<>(actProfile, HttpStatus.OK);
     }
 }

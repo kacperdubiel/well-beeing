@@ -91,12 +91,8 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteExercise(@PathVariable(value = "id") Long exerciseId ) {
-        try {
-            exerciseService.deleteExercise(exerciseId);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<?> deleteExercise(@PathVariable(value = "id") Long exerciseId ) throws NotFoundException {
+        exerciseService.deleteExercise(exerciseId);
         return new ResponseEntity<>("Successfully deleted exercise with id=" + exerciseId, HttpStatus.OK);
     }
 

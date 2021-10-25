@@ -97,6 +97,9 @@ public class Profile {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<Opinion> profileReceivedOpinions = new HashSet<>();
 
+    @OneToMany(mappedBy = "submitter", cascade = CascadeType.ALL)
+    private Set<RoleRequest> profileRoleRequests = new HashSet<>();
+
     public Profile(String firstName, String lastName, Date birthday, User profileUser) {
         System.out.println("Entered constructor");
         this.firstName = firstName;
