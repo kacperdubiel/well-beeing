@@ -20,4 +20,5 @@ public interface ProductService {
     List<VitaminDetail> getProductVitaminDetailsByProductId(UUID productID);
     List<MineralDetail> getProductMineralDetailsByProductId(UUID productID);
     Map<String, List<?>> getAllProductDetails(UUID productID);
+
 }

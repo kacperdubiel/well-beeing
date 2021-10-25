@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
 import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class DishServiceImpl implements DishService {
     public Page<Dish> getAllDishes(int numberOfElements, int startIndex) {
         return dishDAO.findAll(PageRequest.of(startIndex, startIndex + numberOfElements, Sort.by("name")));
     }
+
 
     @Override
     public Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int startIndex) {

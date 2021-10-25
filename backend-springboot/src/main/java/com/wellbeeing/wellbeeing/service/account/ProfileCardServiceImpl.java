@@ -2,12 +2,8 @@ package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.repository.diet.DietCalcMealCaloriesSuggestionDAO;
-import com.wellbeeing.wellbeeing.repository.diet.DietCalcMealGlycemicIndexSuggestionDAO;
-import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
 import com.wellbeeing.wellbeeing.service.diet.calculation.ProfileDietCalculationService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

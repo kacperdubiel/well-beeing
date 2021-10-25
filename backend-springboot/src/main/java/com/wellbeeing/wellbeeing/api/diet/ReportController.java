@@ -16,6 +16,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -76,15 +77,17 @@ public class ReportController {
         return new ResponseEntity<>(reportDelAns, HttpStatus.OK);
     }
 
-        @RequestMapping(path = "/report/{reportId}/dish", method = RequestMethod.POST)
+    @RequestMapping(path = "/report/{reportId}/dish", method = RequestMethod.POST)
     public ResponseEntity<?> addDishesToReportByReportId(Principal principal,
                                                               @PathVariable("reportId")UUID reportId,
-                                                              @RequestBody @NonNull List<UUID> dishes) throws NotFoundException, ForbiddenException {
+                                                              @RequestBody @NonNull List<String> dishes) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         if(reportService.checkIfProfileReport(profileId, reportId)){
             throw new ForbiddenException("Report access for report with id: " + reportId + " forbidden");
         }
-        boolean reportDelAns  = reportService.addDishesToReportByReportId(dishes, reportId);
+        List<UUID> dishUUIDS = new ArrayList<>();
+        dishes.forEach(d -> dishUUIDS.add(UUID.fromString(d)));
+        boolean reportDelAns  = reportService.addDishesToReportByReportId(dishUUIDS, reportId);
         return new ResponseEntity<>(reportDelAns, HttpStatus.OK);
     }
 
@@ -121,6 +124,16 @@ public class ReportController {
             throw new ForbiddenException("Report access for report with id: " + reportId + " forbidden");
         }
         return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/report/{reportId}/actualize", method = RequestMethod.GET)
+    public ResponseEntity<?> updateReportDerivedByReportId(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        if(reportService.checkIfProfileReport(profileId, reportId)){
+            throw new ForbiddenException("Report access for report with id: " + reportId + " forbidden");
+        }
+        reportService.updateReportDerivedElementsByReportId(reportId);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     /*@RequestMapping(path = "/report/{date}", method = RequestMethod.GET)

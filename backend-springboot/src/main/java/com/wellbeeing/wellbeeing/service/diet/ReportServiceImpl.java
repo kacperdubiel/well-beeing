@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.diet.*;
@@ -8,6 +9,7 @@ import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ProductDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ReportDAO;
+import com.wellbeeing.wellbeeing.repository.diet.ReportProductDetailDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class ReportServiceImpl implements ReportService {
     public ProfileDAO profileDAO;
     public DishDAO dishDAO;
     public ProductDAO productDAO;
+    public ReportProductDetailDAO reportProductDetailDAO;
 
     public DishService dishService;
 
@@ -29,12 +32,14 @@ public class ReportServiceImpl implements ReportService {
                              @Qualifier("dishDAO") DishDAO dishDAO,
                              @Qualifier("productDAO") ProductDAO productDAO,
                              @Qualifier("dishService") DishService dishService,
-                             @Qualifier("profileDAO") ProfileDAO profileDAO){
+                             @Qualifier("profileDAO") ProfileDAO profileDAO,
+                             @Qualifier("reportProductDetailDAO") ReportProductDetailDAO reportProductDetailDAO){
         this.dishDAO = dishDAO;
         this.reportDAO = reportDAO;
         this.productDAO = productDAO;
         this.dishService = dishService;
         this.profileDAO = profileDAO;
+        this.reportProductDetailDAO = reportProductDetailDAO;
 
     }
 
@@ -42,7 +47,7 @@ public class ReportServiceImpl implements ReportService {
     public Report getReportById(UUID reportId) throws NotFoundException {
         Report report = reportDAO.findById(reportId).orElse(null);
         if(report != null)
-            return null;
+            return report;
         throw new NotFoundException("Report not found");
     }
 
@@ -70,8 +75,15 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public boolean deleteProductsFromReportByReportId(UUID reportId, List<UUID> productsIds) throws NotFoundException {
         List<ReportProductDetail> products = getReportProductsByReportId(reportId);
+        for(ReportProductDetail rpd : products){
+            if(productsIds.contains(rpd.getId())){
+                Objects.requireNonNull(reportProductDetailDAO.findById(rpd.getId()).orElse(null)).setReport(null);
+                reportProductDetailDAO.save(rpd);
+                reportProductDetailDAO.deleteById(rpd.getId());
+            }
+        }
         List<ReportProductDetail> newProducts = products.stream().
-                filter(prod -> !productsIds.contains(prod.getProduct().getId())).collect(Collectors.toList());
+                filter(prod -> !productsIds.contains(prod.getId())).collect(Collectors.toList());
         Report report = getReportById(reportId);
         report.setProductDetailsList(newProducts);
         reportDAO.save(report);
@@ -93,7 +105,7 @@ public class ReportServiceImpl implements ReportService {
         if(profile == null)
             throw new NotFoundException("Profile with id:" + profileId + " not found");
         Report newReport = Report.builder().reportDate(new Date()).reportOwner(profile).build();
-        if(reportDAO.findByReportDate(newReport.getReportDate()).orElse(null) == null){
+        if(reportDAO.findByReportDate(newReport.getReportDate()).orElse(null) != null){
             throw new ConflictException("Report for this day already exists");
         }
         reportDAO.save(newReport);
@@ -114,6 +126,8 @@ public class ReportServiceImpl implements ReportService {
     public boolean addProductsToReportByReportId(List<ReportProductDetail> products, UUID reportId) throws NotFoundException {
         Report report = getReportById(reportId);
         for (ReportProductDetail prod : products) {
+                prod.setReport(report);
+                reportProductDetailDAO.save(prod);
                 report.getProductDetailsList().add(prod);
         }
         reportDAO.save(report);
@@ -135,10 +149,10 @@ public class ReportServiceImpl implements ReportService {
             fats += d.getDerivedFats();
         }
         for(ReportProductDetail p : report.getProductDetailsList()){
-            calories += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getCaloriesPerHundredGrams();
-            proteins += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getProteinsPerHundredGrams();
-            fats += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getFatsPerHundredGrams();
-            carbs += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getCarbohydratesPerHundredGrams();
+            calories += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getCaloriesPerHundredGrams()/100;
+            proteins += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getProteinsPerHundredGrams()/100;
+            fats += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getFatsPerHundredGrams()/100;
+            carbs += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getCarbohydratesPerHundredGrams()/100;
         }
         report.setDerivedCalories(calories);
         report.setDerivedCarbohydrates(carbs);
@@ -163,14 +177,14 @@ public class ReportServiceImpl implements ReportService {
         countProdDetails(dishProdDetails, reportMacroDetails, reportVitaminDetails, reportMineralDetails);
         countProdDetails(reportProdDetails, reportMacroDetails, reportVitaminDetails, reportMineralDetails);
 
-        result.put("macroDetails", reportMacroDetails);
-        result.put("vitamins", reportVitaminDetails);
-        result.put("minerals", reportMineralDetails);
+        result.put("macroDetailsGram", reportMacroDetails);
+        result.put("vitaminsMicroGram", reportVitaminDetails);
+        result.put("mineralsMilliGram", reportMineralDetails);
         return result;
     }
 
     private void countProdDetails(List<? extends ProductDetail> details, Map<String, Double> reportMacroDetails,
-                      Map<String, Double> reportVitaminDetails, Map<String, Double> reportMineralDetails){
+                                  Map<String, Double> reportVitaminDetails, Map<String, Double> reportMineralDetails){
         for(ProductDetail dpd : details){
             double actProductGrams = dpd.getAmount() * dpd.getMeasureType().getNumberOfGrams();
 
@@ -190,18 +204,18 @@ public class ReportServiceImpl implements ReportService {
                     .forEach(m -> reportMineralDetails.put(m.getMineralType().toString(), (
                             reportMineralDetails.get(m.getMineralType().toString()) == null
                                     ?
-                                    actProductGrams * m.getMeasureType().getNumberOfGrams()
+                                    actProductGrams * m.getMeasureType().getNumberOfGrams() / EWeightMeasure.MILLI_GRAM.getNumberOfGrams()
                                     :
                                     reportMineralDetails.get(m.getMineralType().toString())
-                                            + actProductGrams * m.getMeasureType().getNumberOfGrams())));
+                                            + actProductGrams * m.getMeasureType().getNumberOfGrams() / EWeightMeasure.MILLI_GRAM.getNumberOfGrams())));
             actualProductVitaminDetails
                     .forEach(v -> reportVitaminDetails.put(v.getVitaminType().toString(), (
                             reportVitaminDetails.get(v.getVitaminType().toString()) == null
                                     ?
-                                    actProductGrams * v.getMeasureType().getNumberOfGrams()
+                                    actProductGrams * v.getMeasureType().getNumberOfGrams() / EWeightMeasure.MICRO_GRAM.getNumberOfGrams()
                                     :
                                     reportVitaminDetails.get(v.getVitaminType().toString())
-                                            + actProductGrams * v.getMeasureType().getNumberOfGrams())));
+                                            + actProductGrams * v.getMeasureType().getNumberOfGrams() / EWeightMeasure.MICRO_GRAM.getNumberOfGrams())));
         }
     }
 

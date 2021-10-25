@@ -28,7 +28,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException {
+    public Profile updateProfile(Profile profile, UUID profileId) {
         Profile actProfile = profileDAO.findById(profileId).orElse(null);
         if (actProfile != null) {
             if(profile.getProfileImgPath() != null) actProfile.setProfileImgPath(profile.getProfileImgPath());

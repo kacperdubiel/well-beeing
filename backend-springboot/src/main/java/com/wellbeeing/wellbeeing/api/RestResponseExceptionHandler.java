@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Arrays;
+
 @ControllerAdvice
 public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorMessage> handleException(Exception e){
-        return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
+        return new ResponseEntity<>(new ErrorMessage("Server error: " + Arrays.toString(e.getStackTrace()),
                 "500"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -28,10 +30,10 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler({ConflictException.class})
     public ResponseEntity<ErrorMessage> handleException(ConflictException e){
         return new ResponseEntity<>(new ErrorMessage("Conflict: " + e.getMessage(),
-                "404"), HttpStatus.NOT_FOUND);
+                "409"), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({ConflictException.class})
+    @ExceptionHandler({ForbiddenException.class})
     public ResponseEntity<ErrorMessage> handleException(ForbiddenException e){
         return new ResponseEntity<>(new ErrorMessage("Forbidden: " + e.getMessage(),
                 "403"), HttpStatus.FORBIDDEN);

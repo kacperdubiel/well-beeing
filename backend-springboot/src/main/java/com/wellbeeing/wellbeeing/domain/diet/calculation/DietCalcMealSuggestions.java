@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.diet.calculation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DietCalcMealCaloriesSuggestion {
+public class DietCalcMealSuggestions {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -26,4 +27,6 @@ public class DietCalcMealCaloriesSuggestion {
     private EMealType mealType;
     @Column
     private double numberOfCalories;
+    @Column
+    private EGlycemicIndexLevel glycemicIndexLevel;
 }
