@@ -16,17 +16,17 @@ import java.util.UUID;
 public class ProfileCardServiceImpl implements ProfileCardService {
 
     private ProfileDietCalculationService profileDietCalculationService;
-    private ProfileDAO profileDAO;
+    private ProfileService profileService;
     private ProfileCardDAO profileCardDAO;
 
     @Autowired
     public ProfileCardServiceImpl(@Qualifier("profileDietCalculationService")
                                       ProfileDietCalculationService profileDietCalculationService,
                                   @Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO,
-                                  @Qualifier("profileDAO") ProfileDAO profileDAO){
+                                  @Qualifier("profileService") ProfileService profileService){
         this.profileDietCalculationService = profileDietCalculationService;
         this.profileCardDAO = profileCardDAO;
-        this.profileDAO = profileDAO;
+        this.profileService = profileService;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ProfileCardServiceImpl implements ProfileCardService {
             newProfileCard.setDietCalculations(profileCard.getDietCalculations());
             newProfileCard.setProfile(profileCard.getProfile());
             profileCardDAO.save(newProfileCard);
-            profileDietCalculationService.updateDietCalculationByProfileCardId(profileCardId);
+            profileDietCalculationService.updateDietCalculationByProfileId(profileCard.getProfile().getId());
             return newProfileCard;
         }
         throw new NotFoundException("Profile card with id: " + profileCardId + " not found");
@@ -53,18 +53,13 @@ public class ProfileCardServiceImpl implements ProfileCardService {
 
     @Override
     public ProfileCard getProfileCardByProfileId(UUID profileId) throws NotFoundException {
-        Profile actProfile = profileDAO.findById(profileId).orElse(null);
-        if(actProfile != null){
-            return profileCardDAO.findById(actProfile.getId()).orElse(null);
-        }
-        throw new NotFoundException("Profile with id: " + profileId + " not found");
+        Profile actProfile =  profileService.getProfileById(profileId);
+        return profileCardDAO.findById(actProfile.getId()).orElse(null);
     }
 
     @Override
     public ProfileCard updateProfileCardByProfileId(ProfileCard profileCard, UUID profileId) throws NotFoundException {
-        Profile actProfile = profileDAO.findById(profileId).orElse(null);
-        if(actProfile != null)
-            return updateProfileCardById(profileCard, actProfile.getProfileCard().getId());
-        throw new NotFoundException("Profile with id: " + profileId + " not found");
+        Profile actProfile =  profileService.getProfileById(profileId);
+        return updateProfileCardById(profileCard, actProfile.getProfileCard().getId());
     }
 }

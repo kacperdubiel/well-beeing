@@ -8,6 +8,7 @@ import com.wellbeeing.wellbeeing.domain.diet.type.EBMIResult;
 import com.wellbeeing.wellbeeing.domain.diet.type.EBasicMacro;
 import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
+import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.service.account.ProfileCardService;
@@ -24,9 +25,9 @@ import java.util.UUID;
 @Service("profileDietCalculationService")
 public class ProfileDietCalculationServiceImpl implements ProfileDietCalculationService {
 
-    private ProfileCardService profileCardService;
     private ProfileService profileService;
     private ProfileDietCalculationDAO profileDietCalculationDAO;
+    private ProfileCardDAO profileCardDAO;
 
     private BasicMetabolismStrategy basicMetabolismStrategy;
     private CompleteMetabolismStrategy completeMetabolismStrategy;
@@ -35,10 +36,10 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
 
 
     @Autowired
-    public ProfileDietCalculationServiceImpl(@Qualifier("profileCardService") ProfileCardService profileCardService,
+    public ProfileDietCalculationServiceImpl(@Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO,
                                              @Qualifier("profileDietCalculationDAO") ProfileDietCalculationDAO profileDietCalculationDAO,
                                              @Qualifier("profileService") ProfileService profileService){
-        this.profileCardService = profileCardService;
+        this.profileCardDAO = profileCardDAO;
         this.profileDietCalculationDAO = profileDietCalculationDAO;
         this.profileService = profileService;
 
@@ -90,8 +91,9 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
     }
 
     @Override
-    public ProfileDietCalculation calculateAllSuggestionsByProfileCardId(UUID profileCardId) throws NotFoundException {
-        ProfileCard profileCard = profileCardService.getProfileCardById(profileCardId);
+    public ProfileDietCalculation calculateAllSuggestionsByProfileId(UUID profileId) throws NotFoundException {
+        Profile profile = profileService.getProfileById(profileId);
+        ProfileCard profileCard = profile.getProfileCard();
         double bmi = countBmi(profileCard.getWeight(), profileCard.getHeight());
         EBMIResult bmiResultType = decideBmiResultType(bmi);
         double basicMetabolism = basicMetabolismStrategy.calculateBasicMetabolism(profileCard);
@@ -174,7 +176,7 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
         throw new NotFoundException("Profile diet calculation with id: " + profileDietCalculationId + " not found");
     }
 
-    @Override
+    /*@Override
     public ProfileDietCalculation getDietCalculationByProfileCardId(UUID profileCardId) throws NotFoundException {
         ProfileCard profileCard = profileCardService.getProfileCardById(profileCardId);
         return profileCard.getDietCalculations();
@@ -188,17 +190,23 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
         profileCard.setDietCalculations(calcForProfileCard);
         profileCardService.updateProfileCardById(profileCard, profileCardId);
         return calcForProfileCard;
-    }
+    }*/
 
     @Override
     public ProfileDietCalculation getDietCalculationByProfileId(UUID profileId) throws NotFoundException {
         Profile actProfile = profileService.getProfileById(profileId);
-        return getDietCalculationByProfileCardId(actProfile.getProfileCard().getId());
+        ProfileCard profileCard = actProfile.getProfileCard();
+        return profileCard.getDietCalculations();
     }
 
     @Override
     public ProfileDietCalculation updateDietCalculationByProfileId(UUID profileId) throws NotFoundException {
         Profile actProfile = profileService.getProfileById(profileId);
-        return updateDietCalculationByProfileCardId(actProfile.getProfileCard().getId());
+        ProfileCard profileCard = actProfile.getProfileCard();
+        ProfileDietCalculation calcForProfileCard = calculateAllSuggestionsByProfileId(profileId);
+        profileDietCalculationDAO.save(calcForProfileCard);
+        profileCard.setDietCalculations(calcForProfileCard);
+        profileCardDAO.save(profileCard);
+        return calcForProfileCard;
     }
 }
