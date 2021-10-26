@@ -1,15 +1,14 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.Conversation;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
-import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.telemedic.ConversationService;
-import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,116 +25,78 @@ public class ConversationController {
     private ConversationService conversationService;
     private UserService userService;
     private ProfileService profileService;
-    private ProfileConnectionService profileConnService;
 
     public ConversationController(
             @Qualifier("conversationService") ConversationService conversationService,
             @Qualifier("userService") UserService userService,
-            @Qualifier("profileService") ProfileService profileService,
-            @Qualifier("profileConnectionService") ProfileConnectionService profileConnService
+            @Qualifier("profileService") ProfileService profileService
     ){
         this.conversationService = conversationService;
         this.userService = userService;
         this.profileService = profileService;
-        this.profileConnService = profileConnService;
     }
 
     @RequestMapping(path = "conversations/type/{type}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserConversationsByType(@PathVariable("type") String type, Principal principal){
-        try {
-            EConnectionType connectionType = EConnectionType.valueOf(type);
-            UUID userId = userService.findUserIdByUsername(principal.getName());
-            Profile profile = profileService.getProfileById(userId);
+    public ResponseEntity<?> getUserConversationsByType(@PathVariable("type") String type, Principal principal)
+            throws NotFoundException
+    {
+        EConnectionType connectionType = EConnectionType.valueOf(type);
+        UUID userId = userService.findUserIdByUsername(principal.getName());
+        Profile profile = profileService.getProfileById(userId);
 
-            List<Conversation> conversations = conversationService.getConversationsByProfileAndConnectionType(profile, connectionType);
-            if(conversations == null)
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            else
-                return new ResponseEntity<>(conversations, HttpStatus.OK);
-
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ErrorMessage("Connection type not found",
-                    "404"), HttpStatus.NOT_FOUND);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Conversation> conversations = conversationService.getConversationsByProfileAndConnectionType(profile, connectionType);
+        return new ResponseEntity<>(conversations, HttpStatus.OK);
     }
 
     @RequestMapping(path = "conversations/profile/{profile_id}/type/{type}", method = RequestMethod.GET)
-    public ResponseEntity<?> getConversationByProfile(
+    public ResponseEntity<?> getConversationByProfileAndType(
             @PathVariable("profile_id") UUID otherProfileId,
             @PathVariable("type") String type,
             Principal principal
-    ){
-        try {
-            EConnectionType connectionType = EConnectionType.valueOf(type);
-            UUID userId = userService.findUserIdByUsername(principal.getName());
-            Profile userProfile = profileService.getProfileById(userId);
+        ) throws NotFoundException
+    {
+        EConnectionType connectionType = EConnectionType.valueOf(type);
+        UUID userId = userService.findUserIdByUsername(principal.getName());
+        Profile userProfile = profileService.getProfileById(userId);
 
-            Profile otherProfile = profileService.getProfileById(otherProfileId);
-            Conversation conversation = conversationService.getConversationByProfilesAndType(userProfile, otherProfile, connectionType);
-            return new ResponseEntity<>(conversation, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ErrorMessage("Connection type not found",
-                    "404"), HttpStatus.NOT_FOUND);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Profile otherProfile = profileService.getProfileById(otherProfileId);
+        Conversation conversation = conversationService.getConversationByProfilesAndType(userProfile, otherProfile, connectionType);
+        return new ResponseEntity<>(conversation, HttpStatus.OK);
     }
 
     @RequestMapping(path = "conversations", method = RequestMethod.POST)
-    public ResponseEntity<?> addConversation(@RequestBody @NonNull Conversation conversation, Principal principal){
-        // Check current user access rights
+    public ResponseEntity<?> addConversation(@RequestBody @NonNull Conversation conversation, Principal principal)
+            throws ForbiddenException, ConflictException, NotFoundException
+    {
         UUID userId = userService.findUserIdByUsername(principal.getName());
         UUID firstProfileId = conversation.getFirstProfile().getId();
         UUID secondProfileId = conversation.getSecondProfile().getId();
 
-        if(userId != firstProfileId && userId != secondProfileId){
-            return new ResponseEntity<>(new ErrorMessage("You do not have access rights to do that!",
-                    "403"), HttpStatus.FORBIDDEN);
+        if(!firstProfileId.equals(userId) && !secondProfileId.equals(userId)){
+            throw new ForbiddenException("You do not have access rights to do that!");
         }
 
-        // Check if conv already exists
-        Profile firstProfile = conversation.getFirstProfile();
-        Profile secondProfile = conversation.getSecondProfile();
-        EConnectionType connectionType = conversation.getConnectionType();
+        Conversation conversationResult = conversationService.addConversation(conversation);
+        return new ResponseEntity<>(conversationResult, HttpStatus.CREATED);
+    }
 
-        Conversation existingConversation = conversationService
-                .getConversationByProfilesAndType(firstProfile, secondProfile, connectionType);
+    @RequestMapping(path = "conversations/{id}/mark-as-read", method = RequestMethod.PUT)
+    public ResponseEntity<?> markConversationAsRead(@PathVariable("id") UUID id, Principal principal)
+            throws NotFoundException, ForbiddenException
+    {
+        UUID userId = userService.findUserIdByUsername(principal.getName());
+        Profile userProfile = profileService.getProfileById(userId);
+        Conversation conversation = conversationService.getConversationById(id);
 
-        if(existingConversation != null){
-            return new ResponseEntity<>(new ErrorMessage("Converastion already exists!",
-                    "409"), HttpStatus.CONFLICT);
+        UUID convFirstUserId = conversation.getFirstProfile().getId();
+        UUID convSecondUserId = conversation.getSecondProfile().getId();
+
+        if(!convFirstUserId.equals(userId) && !convSecondUserId.equals(userId)){
+            throw new ForbiddenException("You do not have access rights to do that!");
         }
 
-        // Check if user is on specialists user list
-        if(connectionType != EConnectionType.WITH_USER){
-            ProfileConnection pConn = profileConnService
-                    .getProfileConnectionByProfileAndConnectedWithAndType(firstProfile, secondProfile, connectionType);
-
-            if(pConn != null){
-                return new ResponseEntity<>(new ErrorMessage("You have to be on specialists user list!",
-                        "403"), HttpStatus.FORBIDDEN);
-            }
-        }
-
-        // Adding conversation
-        try {
-            Conversation conversationResult = conversationService.addConversation(conversation);
-            return new ResponseEntity<>(conversationResult, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        Conversation conversationResult = conversationService.updateReadStatus(conversation, userProfile, true);
+        return new ResponseEntity<>(conversationResult, HttpStatus.OK);
     }
 
 }

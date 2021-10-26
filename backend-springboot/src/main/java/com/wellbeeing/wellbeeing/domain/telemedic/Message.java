@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.telemedic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 
 import javax.persistence.*;
@@ -19,8 +20,6 @@ public class Message {
     private String data;
     @Column
     private Date createDate;
-    @Column
-    private boolean isRead;
 
     @ManyToOne
     private Profile sender;
@@ -57,14 +56,6 @@ public class Message {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    public boolean isRead() {
-        return isRead;
-    }
-
-    public void setRead(boolean read) {
-        isRead = read;
     }
 
     public Profile getSender() {
