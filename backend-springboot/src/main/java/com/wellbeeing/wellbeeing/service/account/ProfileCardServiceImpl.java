@@ -54,7 +54,7 @@ public class ProfileCardServiceImpl implements ProfileCardService {
     @Override
     public ProfileCard getProfileCardByProfileId(UUID profileId) throws NotFoundException {
         Profile actProfile =  profileService.getProfileById(profileId);
-        return profileCardDAO.findById(actProfile.getId()).orElse(null);
+        return profileCardDAO.findById(actProfile.getProfileCard().getId()).orElse(null);
     }
 
     @Override
