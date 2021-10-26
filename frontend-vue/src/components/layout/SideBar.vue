@@ -63,7 +63,7 @@
             </router-link>
         </div>
         <div class="side-menu">
-            <router-link to="/sport">
+            <router-link :to="{name:'SportView'}">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'dumbbell']" />

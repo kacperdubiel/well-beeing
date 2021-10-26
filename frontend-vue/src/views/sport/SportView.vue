@@ -1,6 +1,6 @@
 <template>
     <div>
-<sport-component/>
+        <sport-component/>
     </div>
 </template>
 

@@ -1,12 +1,22 @@
 <template>
     <div class="section-bg">
-    <p>Sport</p>
+        <p>hm</p>
+
     </div>
 </template>
 
 <script>
 export default {
-    name: "SportComponent"
+    name: "SportComponent",
+    components: {},
+    data () {
+        return {
+            field:''
+        }
+    },
+    methods: {
+
+    }
 }
 </script>
 

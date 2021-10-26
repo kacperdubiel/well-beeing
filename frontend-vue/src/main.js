@@ -41,7 +41,7 @@ library.add(faUserCircle)
 
 
 const app = createApp(App).use(router);
-
+app.config.globalProperties.apiURL = 'http://localhost:8090/'
 app.use(store)
 app.use(VueAxios, axios)
 app.component('font-awesome-icon', FontAwesomeIcon)

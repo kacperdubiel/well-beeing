@@ -170,7 +170,7 @@ export default {
                 "email": this.newEmail,
                 "password": this.newPassword
             }
-            this.axios.post('http://localhost:8090/' + 'register', data).then((response) => {
+            this.axios.post(this.apiURL + 'register', data).then((response) => {
                 console.log(response.data)
                 this.successRegister = true
                 this.clearInputs()
