@@ -5,15 +5,15 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
-import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
-import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
-import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
+import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
+import com.wellbeeing.wellbeeing.domain.telemedic.*;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureService;
 import com.wellbeeing.wellbeeing.service.telemedic.MeasureTypeService;
+import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -30,45 +30,70 @@ public class MeasureController {
     private MeasureTypeService measureTypeService;
     private UserService userService;
     private ProfileService profileService;
+    private ProfileConnectionService profileConnService;
 
     public MeasureController(@Qualifier("measureService") MeasureService measureService,
                              @Qualifier("measureTypeService") MeasureTypeService measureTypeService,
                              @Qualifier("userService") UserService userService,
-                             @Qualifier("profileService") ProfileService profileService
+                             @Qualifier("profileService") ProfileService profileService,
+                             @Qualifier("profileConnectionService") ProfileConnectionService profileConnService
     ){
         this.measureService = measureService;
         this.measureTypeService = measureTypeService;
         this.userService = userService;
         this.profileService = profileService;
+        this.profileConnService = profileConnService;
     }
 
-    @RequestMapping(path = "measures/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getMeasureById(@PathVariable("id") UUID id, Principal principal)
+    @RequestMapping(path = "measures/user/{user_id}/type/{type_id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserMeasuresByType(@PathVariable("type_id") UUID measureTypeId,
+                                                   @PathVariable("user_id") UUID measuresOwnerId, Principal principal,
+                                                   @RequestParam(value = "page", defaultValue = "0") String page,
+                                                   @RequestParam(value = "size", defaultValue = "10") String size)
             throws NotFoundException, ForbiddenException
     {
-        UUID userId = userService.findUserIdByUsername(principal.getName());
-        Measure measureResult = measureService.getMeasureById(id);
+        UUID authorizedUserId = userService.findUserIdByUsername(principal.getName());
+        Profile authorizedUser = profileService.getProfileById(authorizedUserId);
+        MeasureType measuresType = measureTypeService.getMeasureTypeById(measureTypeId);
+        Profile measuresOwner = profileService.getProfileById(measuresOwnerId);
 
-        if(!measureResult.getOwner().getId().equals(userId)){
-            throw new ForbiddenException("You do not have access rights to do that!");
+        if(!measuresOwnerId.equals(authorizedUserId)){
+            ProfileConnection pConnResult = profileConnService.getProfileConnectionByProfileAndConnectedWithAndType(
+                    measuresOwner, authorizedUser, EConnectionType.WITH_DOCTOR);
+
+            if(pConnResult == null || !pConnResult.isAccepted()){
+                throw new ForbiddenException("You do not have access rights to do that!");
+            }
         }
+        PaginatedResponse response = getPaginatedResponse(Integer.parseInt(page), Integer.parseInt(size),
+                measuresType, measuresOwner);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(measureResult, HttpStatus.OK);
+    private PaginatedResponse getPaginatedResponse(int page, int size, MeasureType measuresType, Profile measuresOwner) {
+        Page<Measure> measuresPage = measureService.getMeasuresByProfileAndMeasureType(measuresOwner, measuresType,
+                page, size);
+        return PaginatedResponse.builder()
+                .currentPage(measuresPage.getNumber())
+                .totalItems(measuresPage.getTotalElements())
+                .totalPages(measuresPage.getTotalPages())
+                .objects(measuresPage.getContent())
+                .build();
     }
 
     @RequestMapping(path = "measures/type/{type_id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserMeasures(@PathVariable("type_id") UUID measureTypeId, Principal principal)
+    public ResponseEntity<?> getMeasuresByType(@PathVariable("type_id") UUID measureTypeId, Principal principal,
+                                               @RequestParam(value = "page", defaultValue = "0") String page,
+                                               @RequestParam(value = "size", defaultValue = "10") String size)
             throws NotFoundException
     {
         MeasureType measuresType = measureTypeService.getMeasureTypeById(measureTypeId);
         UUID userId = userService.findUserIdByUsername(principal.getName());
         Profile measuresOwner = profileService.getProfileById(userId);
 
-        List<Measure> measuresResult = measureService.getMeasuresByProfileAndMeasureType(measuresOwner, measuresType);
-
-        // Sorted by measure date DESC
-        measuresResult.sort((Measure m1, Measure m2) -> (-1 * (m1.getMeasureDate().compareTo(m2.getMeasureDate()))));
-        return new ResponseEntity<>(measuresResult, HttpStatus.OK);
+        PaginatedResponse response = getPaginatedResponse(Integer.parseInt(page), Integer.parseInt(size),
+                measuresType, measuresOwner);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(path = "measures", method = RequestMethod.POST)

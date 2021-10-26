@@ -14,7 +14,7 @@ public class MeasureType {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "unit")
     private String unit;
