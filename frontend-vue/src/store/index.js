@@ -4,7 +4,9 @@ export default createStore({
     state () {
         return {
             // SOCIAL
-            token: ""
+            token: "",
+            firstName: "",
+            lastName: ""
             // PHYSICAL ACTIVITY
 
             // NUTRITION
@@ -15,11 +17,24 @@ export default createStore({
     mutations: {
         setToken (state, value) {
             state.token = value;
+        },
+        setFirstName (state, value) {
+            state.firstName = value;
+        },
+        setLastName (state, value) {
+            state.lastName = value;
         }
     },
     getters: {
         getToken (state) {
             return state.token;
+        },
+        getFirstName (state) {
+            return state.firstName;
+        },
+        getLastName (state) {
+            return state.lastName;
         }
+
     }
 });

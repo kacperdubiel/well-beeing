@@ -26,7 +26,7 @@
                     <font-awesome-icon :icon="['far', 'user-circle']" size="3x" class="navbar-icon"/>
                     <div class="dropdown">
                         <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-profile" data-bs-toggle="dropdown" aria-expanded="false">
-                            Cześć, Klaudia!
+                            Cześć, {{this.$store.getters.getFirstName}}!
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdown-profile">
                             <li><a class="dropdown-item" href="#">Ustawienia</a></li>
@@ -44,7 +44,23 @@
 
 <script>
 export default {
-    name: "NavBar"
+    name: "NavBar",
+    methods: {
+        getUserInfo () {
+            const url = `${this.apiURL}profile`
+            this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
+                this.$store.commit('setFirstName', response.data['firstName']);
+                this.$store.commit('setLastName', response.data['lastName']);
+                console.log(this.$store.getters.getFirstName)
+                console.log(this.$store.getters.getLastName)
+            }).catch(error => {
+                console.log(error.response);
+            });
+        }
+    },
+    mounted() {
+        this.getUserInfo()
+    }
 }
 </script>
 

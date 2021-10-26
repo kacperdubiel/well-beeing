@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class MyRunner implements CommandLineRunner {
@@ -97,10 +99,8 @@ public class MyRunner implements CommandLineRunner {
         profileDAO.save(abcUserProfile);
         TrainerProfile trainerAbcUserProfile = new TrainerProfile(abcUserProfile);
         trainerDAO.save(trainerAbcUserProfile);
-
         TrainingPlan trainingPlan_1 = new TrainingPlan(abcUserProfile, 2021, 33, "Do details", abcUserProfile);
         trainingPlanDAO.save(trainingPlan_1);
-
         trainingPositionDAO.save(new TrainingPosition(training_a, trainingPlan_1, new Date()));
         trainingPositionDAO.save(new TrainingPosition(training_b, trainingPlan_1, new Date()));
         System.out.println("Print trainings " + exercise_1.getExerciseInTrainings());
@@ -111,11 +111,22 @@ public class MyRunner implements CommandLineRunner {
 
         System.out.println("Calories from exercise 1 for 80kg person " + exercise_1.countCaloriesPerHour(80));
         System.out.println("Calories from training_a for 80kg person " + training_a.caloriesBurned(80));
-
 //        training_a.removeExerciseFromTraining(exercise_1.getExercise_id());
 //        exercise_1.removeTrainingFromExercise(training_a.getTraining_id());
 //        trainingDAO.save(training_a);
 //        exerciseDAO.save(exercise_1);
 //        exerciseInTrainingDAO.delete(exerciseInTrainingDAO.getExerciseInTrainingByExerciseAndTraining(exercise_1,training_a));
+
+        System.out.println("--------------------------------------");
+        User klaudia = userDAO.findUserByEmail("admin@").orElse(null);
+        System.out.println("Klaudia" + klaudia);
+        assert klaudia != null;
+        klaudia.getRoles().forEach(r -> System.out.println(r.getRole()));
+        System.out.println(klaudia.getAuthorities());
+        System.out.println(klaudia.getRoles());
+        System.out.println(klaudia.getProfile().getFirstName());
+        System.out.println(klaudia.getProfile().getLastName());
+//        Profile klaudiaUserProfile = new Profile("Klaudia", "Laskowska", new Date(), ESportTag.NONE, ENutritionTag.NONE, klaudia);
+//        profileDAO.save(klaudiaUserProfile);
     }
 }

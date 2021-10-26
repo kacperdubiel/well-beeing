@@ -146,7 +146,8 @@ export default {
                 "email": this.email,
                 "password": this.password
             }
-            this.axios.post('http://localhost:8090/' + 'authenticate', data).then((response) => {
+            const url = `${this.apiURL}authenticate`
+            this.axios.post(url, data).then((response) => {
                 this.$store.commit('setToken', response.data['jwt']);
                 console.log(this.$store.getters.getToken)
                 this.clearInputs()
@@ -170,7 +171,8 @@ export default {
                 "email": this.newEmail,
                 "password": this.newPassword
             }
-            this.axios.post('http://localhost:8090/' + 'register', data).then((response) => {
+            const url = `${this.apiURL}register`
+            this.axios.post(url, data).then((response) => {
                 console.log(response.data)
                 this.successRegister = true
                 this.clearInputs()
