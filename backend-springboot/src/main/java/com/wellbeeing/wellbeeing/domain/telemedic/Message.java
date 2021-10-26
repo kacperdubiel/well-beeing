@@ -13,9 +13,9 @@ public class Message {
     @GeneratedValue
     private UUID id;
 
-    @Column
+    @Column(nullable = false)
     private EMessageType messageType;
-    @Column
+    @Column(nullable = false)
     private String data;
     @Column
     private Date createDate;

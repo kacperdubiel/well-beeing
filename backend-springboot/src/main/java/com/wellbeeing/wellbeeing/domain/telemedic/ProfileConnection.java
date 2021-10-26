@@ -13,7 +13,7 @@ public class ProfileConnection {
     @GeneratedValue
     private UUID id;
 
-    @Column
+    @Column(nullable = false)
     private EConnectionType connectionType;
     @Column
     private boolean isAccepted;

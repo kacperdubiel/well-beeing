@@ -13,6 +13,9 @@ public class Conversation {
     @GeneratedValue
     private UUID id;
 
+    @Column(nullable = false)
+    private EConnectionType connectionType;
+
     @Column
     private EConnectionType connectionType;
 

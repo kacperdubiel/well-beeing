@@ -14,9 +14,9 @@ public class Measure {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "value")
+    @Column(name = "value", nullable = false)
     private double value;
-    @Column(name = "measure_date")
+    @Column(name = "measure_date", nullable = false)
     private Date measureDate;
 
     @ManyToOne
