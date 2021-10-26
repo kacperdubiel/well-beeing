@@ -41,4 +41,9 @@ public class ProfileController {
         Profile actProfile = profileService.updateProfile(profile, profileId);
         return new ResponseEntity<>(actProfile, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/trainers")
+    public ResponseEntity<?> getTrainersProfiles() {
+        return new ResponseEntity<>(profileService.getTrainersProfiles(), HttpStatus.OK);
+    }
 }

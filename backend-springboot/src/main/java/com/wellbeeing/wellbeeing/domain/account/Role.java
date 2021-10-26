@@ -17,6 +17,7 @@ public class Role implements GrantedAuthority {
     public static final String DIETICIAN_USER = "DIETICIAN_USER";
 
     @Id
+    @GeneratedValue
     private UUID role_id;
     @Enumerated(EnumType.STRING)
     @Column(name = "authority", unique = true, nullable = false)
@@ -30,7 +31,7 @@ public class Role implements GrantedAuthority {
     }
 
     public Role(@JsonProperty("name") ERole role_name){
-        this.role_id = UUID.randomUUID();
+//        this.role_id = UUID.randomUUID();
         this.name = role_name;
     }
     public ERole getRole() {

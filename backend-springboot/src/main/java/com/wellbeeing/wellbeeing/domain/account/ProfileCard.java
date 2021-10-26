@@ -51,6 +51,9 @@ public class ProfileCard {
     @Enumerated(EnumType.STRING)
     @Column
     private EActivityLevel activityLevel;
+//    @OneToOne(mappedBy = "profileCard", fetch = FetchType.EAGER, optional = false)
+//    @JsonIgnore
+//    private Profile profile;
     @Column
     private int trainingActivityTimePerWeek;
     @Enumerated(EnumType.STRING)
@@ -63,6 +66,12 @@ public class ProfileCard {
     @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
     @JsonIgnore
     private ProfileDietCalculation dietCalculations;
+
+    public ProfileCard(int weight, int age, Profile profile) {
+        this.weight = weight;
+        this.age = age;
+        this.profile = profile;
+    }
 }
 
 

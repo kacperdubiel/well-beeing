@@ -1,23 +1,32 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class TrainingPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long trainingPlan_id;
+    private long trainingPlanId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
-    private TrainerProfile creator;
+    private Profile creator;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner")
     private Profile owner;
@@ -30,13 +39,11 @@ public class TrainingPlan {
 
     @Column(name = "details")
     private String details;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EPlanStatus planStatus = EPlanStatus.SCRATCH;
     @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL)
     private Set<TrainingPosition> trainingPositions = new HashSet<>();
-
-    public TrainingPlan () {
-
-    }
 
     public TrainingPlan(Profile owner, int year, int week, String details) {
         this.owner = owner;
@@ -45,7 +52,7 @@ public class TrainingPlan {
         this.details = details;
     }
 
-    public TrainingPlan(Profile owner, int year, int week, String details, TrainerProfile creator) {
+    public TrainingPlan(Profile owner, int year, int week, String details, Profile creator) {
         this.owner = owner;
         this.year = year;
         this.week = week;
@@ -53,11 +60,5 @@ public class TrainingPlan {
         this.creator = creator;
     }
 
-    public long getTrainingPlan_id() {
-        return trainingPlan_id;
-    }
 
-    public void setTrainingPlan_id(long trainingPlan_id) {
-        this.trainingPlan_id = trainingPlan_id;
-    }
 }

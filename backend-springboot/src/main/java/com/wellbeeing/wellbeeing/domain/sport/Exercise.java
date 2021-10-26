@@ -1,23 +1,30 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 //import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Data
 @Entity
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long exercise_id;
+    private long exerciseId;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
     @Enumerated(EnumType.STRING)
@@ -27,95 +34,34 @@ public class Exercise {
     private String description;
     @Column(name = "instruction")
     private String instruction;
-
+    @Column(name = "isPrivate")
+    private boolean isPrivate = false;
     @Column(name = "metabolic_eqv_of_task")
-    private float met;
+    private double met;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator")
+    @JsonIgnore
+    private Profile creator;
+    @JsonProperty
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="exercise_labels",
-            joinColumns = @JoinColumn(name = "exercise_id"),
-            inverseJoinColumns = @JoinColumn(name = "label_id")
+            joinColumns = @JoinColumn(name = "exerciseId"),
+            inverseJoinColumns = @JoinColumn(name = "sportLabelId")
     )
     private Set<SportLabel> labels = new HashSet<>();
-
+    @JsonIgnore
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings;
 
-    public Exercise(String name, float met) { //, ExerciseInTraining... exerciseInTrainings
+    public Exercise(String name, double met) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;
         this.met = met;
         this.exerciseType = EExerciseType.OTHER;
         this.exerciseInTrainings = new HashSet<>();
 //        for(ExerciseInTraining exerciseInTraining : exerciseInTrainings) exerciseInTraining.setExercise(this);
 //        this.exerciseInTrainings = Stream.of(exerciseInTrainings).collect(Collectors.toSet());
-    }
-
-    public Exercise() {
-    }
-
-    public long getExercise_id() {
-        return exercise_id;
-    }
-
-    public void setExercise_id(long exercise_id) {
-        this.exercise_id = exercise_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public EExerciseType getExerciseType() {
-        return exerciseType;
-    }
-
-    public void setExerciseType(EExerciseType exerciseType) {
-        this.exerciseType = exerciseType;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getInstruction() {
-        return instruction;
-    }
-
-    public void setInstruction(String instruction) {
-        this.instruction = instruction;
-    }
-
-    public float getMet() {
-        return met;
-    }
-
-    public void setMet(float met) {
-        this.met = met;
-    }
-
-    public Set<SportLabel> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(Set<SportLabel> labels) {
-        this.labels = labels;
-    }
-
-    public Set<ExerciseInTraining> getExerciseInTrainings() {
-        return exerciseInTrainings;
-    }
-
-    public void setExerciseInTrainings(Set<ExerciseInTraining> exerciseInTrainings) {
-        this.exerciseInTrainings = exerciseInTrainings;
     }
 
     public int countCaloriesPerHour(int user_weight) {
@@ -127,14 +73,20 @@ public class Exercise {
         exerciseInTrainings.add(training);
     }
 
+    public boolean removeTrainingFromExercise(long trainingId) {
+        return exerciseInTrainings.removeIf(e->e.getTraining().getTrainingId() == trainingId);
+    }
+
+    public void addLabelToExercise(SportLabel sportLabel) {this.labels.add(sportLabel);}
     @Override
     public String toString() {
         return "Exercise{" +
-                "exercise_id=" + exercise_id +
+                "exercise_id=" + exerciseId +
                 ", name='" + name + '\'' +
                 ", exerciseType=" + exerciseType +
                 ", description='" + description + '\'' +
                 ", met=" + met +
                 '}';
     }
+
 }

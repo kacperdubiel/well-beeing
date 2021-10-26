@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.ConfigurationException;
-
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class UserController {

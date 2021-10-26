@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,18 +12,20 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"exercise_id", "training_id"})})
 @Entity
 public class ExerciseInTraining {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "training_id")
+    @JsonIgnore
     private Training training;
     @Column(name = "reps")
     private int repetitions;
@@ -41,14 +44,6 @@ public class ExerciseInTraining {
         this.exercise.addTrainingToExercise(this);
     }
 
-    public int getSeries() {
-        return series;
-    }
-
-    public void setSeries(int series) {
-        this.series = series;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,42 +57,10 @@ public class ExerciseInTraining {
 
     @Override
     public int hashCode() {
-        return Objects.hash(training.getName(), exercise.getName(), repetitions, time_seconds);
+        return Objects.hash(this.id, repetitions, time_seconds);
     }
 
-    public Exercise getExercise() {
-        return exercise;
-    }
-
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
-    }
-
-    public Training getTraining() {
-        return training;
-    }
-
-    public void setTraining(Training training) {
-        this.training = training;
-    }
-
-    public int getRepetitions() {
-        return repetitions;
-    }
-
-    public void setRepetitions(int repetitions) {
-        this.repetitions = repetitions;
-    }
-
-    public int getTime_seconds() {
-        return time_seconds;
-    }
-
-    public void setTime_seconds(int time_seconds) {
-        this.time_seconds = time_seconds;
-    }
-
-    public int countCaloriesPerExerciseDuration(int user_weight) {
+    public int countCaloriesPerExerciseDuration(double user_weight) {
         //METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute
         return (int) ((time_seconds*series)/3600d*(exercise.getMet()*3.5*user_weight/200));
     }
