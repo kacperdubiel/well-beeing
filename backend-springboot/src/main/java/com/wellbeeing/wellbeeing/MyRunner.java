@@ -12,6 +12,7 @@ import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
+import com.wellbeeing.wellbeeing.util.DataFromApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,10 +113,8 @@ public class MyRunner implements CommandLineRunner {
         System.out.println("Calories from exercise 1 for 80kg person " + exercise_1.countCaloriesPerHour(80));
         System.out.println("Calories from training_a for 80kg person " + training_a.caloriesBurned(80));
 
-//        training_a.removeExerciseFromTraining(exercise_1.getExercise_id());
-//        exercise_1.removeTrainingFromExercise(training_a.getTraining_id());
-//        trainingDAO.save(training_a);
-//        exerciseDAO.save(exercise_1);
-//        exerciseInTrainingDAO.delete(exerciseInTrainingDAO.getExerciseInTrainingByExerciseAndTraining(exercise_1,training_a));
+
+//        DataFromApi.getExerciseDataRapid();
+//        DataFromApi.getExerciseDataWger();
     }
 }
