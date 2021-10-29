@@ -67,6 +67,11 @@
                                 />
                             </div>
                             <div class="row mt-3">
+                                <p class="form-label">Etykiety</p>
+                                <v-select multiple v-model="values" :options=labels :reduce="name => name.sportLabelId" label="name"/>
+                                <p class="form-label">{{ values }}</p>
+                            </div>
+                            <div class="row mt-3">
                                 <p class="form-label">Opis</p>
                                 <textarea
                                     placeholder=" Opis"
@@ -125,10 +130,16 @@ import ExercisesListComponent from "@/components/sport/exercise/ExercisesListCom
 import ExercisesGridComponent from "@/components/sport/exercise/ExercisesGridComponent";
 export default {
     name: "ExercisesComponent",
-    components: {ExercisesGridComponent, ExercisesListComponent},
+    components: {
+        ExercisesGridComponent,
+        ExercisesListComponent,
+    },
     data () {
         return {
+            values: [],
+            options: ['Select option', 'options', 'selected', 'mulitple', 'label', 'searchable', 'clearOnSelect', 'hideSelected', 'maxHeight', 'allowEmpty', 'showLabels', 'onChange', 'touched'],
             exercises: [],
+            labels: [],
             name: "",
             type: "",
             met: 0.0,
@@ -146,8 +157,19 @@ export default {
             const token = this.$store.getters.getToken;
             console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.exercises = response.data['exercises']
+                this.exercises = response.data['objects']
                 console.log(this.exercises)
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        async getLabels () {
+            const url = `${this.apiURL}sport/exercise/labels`
+            const token = this.$store.getters.getToken;
+            console.log('token ', token);
+            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.labels = response.data
+                console.log(this.labels)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -185,7 +207,7 @@ export default {
                     "description": this.description,
                     "instruction": this.instruction
                 },
-                "labelsIds": []
+                "labelsIds": this.values
             }
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
@@ -193,6 +215,7 @@ export default {
                 console.log(response.data)
                 this.successCreateExercise = true
                 this.clearInputs()
+                this.getExercises()
             }).catch(error => {
                 if (error.response.status === 409) {
                     this.nameTaken = true
@@ -221,6 +244,7 @@ export default {
     },
     mounted() {
         this.getExercises();
+        this.getLabels();
     }
 
 }

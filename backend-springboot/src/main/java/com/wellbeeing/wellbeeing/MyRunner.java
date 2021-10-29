@@ -114,12 +114,15 @@ public class MyRunner implements CommandLineRunner {
 //
 //        System.out.println("Calories from exercise 1 for 80kg person " + exercise_1.countCaloriesPerHour(80));
 //        System.out.println("Calories from training_a for 80kg person " + training_a.caloriesBurned(80));
-//        List<SportLabel> labels = new ArrayList<SportLabel>() {
-//            {
-//                add(SportLabel.builder().build());
-//            }
-//        };
-//        sportLabelDAO.saveAll()
+        List<SportLabel> labels = new ArrayList<SportLabel>() {
+            {
+                add(SportLabel.builder().name("Obciąża nogi").build());
+                add(SportLabel.builder().name("Obciąża ręce").build());
+                add(SportLabel.builder().name("Regenruje nogi").build());
+                add(SportLabel.builder().name("Wzmacnia kondycję").build());
+            }
+        };
+        sportLabelDAO.saveAll(labels);
 
 //        DataFromApi.getExerciseDataRapid();
 //        DataFromApi.getExerciseDataWger();

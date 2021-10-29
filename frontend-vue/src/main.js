@@ -6,7 +6,7 @@ import store from '@/store';
 import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
-
+import vSelect from 'vue-select'
 
 import Default from "@/layouts/Default";
 import Clean from "@/layouts/Clean";
@@ -52,6 +52,8 @@ app.use(VueAxios, axios)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)
 app.component('clean-layout', Clean)
+
+app.component('v-select', vSelect)
 
 app.mount('#app');
 

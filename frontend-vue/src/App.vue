@@ -8,7 +8,7 @@
 
 <script>
     const defaultLayout = "default";
-
+    import 'vue-select/dist/vue-select.css';
     export default {
         computed: {
             layout() {

@@ -57,7 +57,7 @@ public class ExerciseController {
     @GetMapping(path = "")
     public ResponseEntity<?> getExercisesPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
                                                    @RequestParam(value = "size", defaultValue = "25") int size,
-                                                    Principal principal) {
+                                                    Principal principal) throws NotFoundException {
             List<Exercise> exercises;
             Pageable paging = PageRequest.of(page, size);
 
