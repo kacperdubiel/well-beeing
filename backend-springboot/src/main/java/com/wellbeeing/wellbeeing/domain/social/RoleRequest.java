@@ -1,7 +1,9 @@
 package com.wellbeeing.wellbeeing.domain.social;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class RoleRequest {
     @Id
@@ -19,9 +22,9 @@ public class RoleRequest {
     private long roleReqId;
 
     @Column
-    private Date addedDate;
+    private Date addedDate = new Date();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "submitter_id")
     private Profile submitter;
 
@@ -34,8 +37,21 @@ public class RoleRequest {
 
     @Enumerated(EnumType.STRING)
     @Column
-    private EStatus status;
+    private EStatus status = EStatus.PENDING;
 
     @Column
-    private String comment;
+    private String comment ="";
+
+    @Override
+    public String toString() {
+        return "RoleRequest{" +
+                "roleReqId=" + roleReqId +
+                ", addedDate=" + addedDate +
+                ", submitter=" + submitter +
+                ", role=" + role +
+                ", documentImgPath='" + documentImgPath + '\'' +
+                ", status=" + status +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }
