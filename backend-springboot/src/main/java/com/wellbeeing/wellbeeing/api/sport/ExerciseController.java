@@ -2,12 +2,12 @@ package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.PaginatedResponse;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;

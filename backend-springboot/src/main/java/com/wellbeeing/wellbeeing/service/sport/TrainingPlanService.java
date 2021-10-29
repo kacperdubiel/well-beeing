@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.sport.*;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 
 import java.util.Date;
 import java.util.List;

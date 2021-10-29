@@ -1,9 +1,9 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import javafx.scene.control.Pagination;
-import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

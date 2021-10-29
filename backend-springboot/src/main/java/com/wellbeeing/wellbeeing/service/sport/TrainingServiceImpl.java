@@ -9,7 +9,7 @@ import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -10,7 +10,7 @@ import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

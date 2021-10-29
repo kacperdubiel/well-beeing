@@ -14,11 +14,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<ErrorMessage> handleException(Exception e){
-        return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler({Exception.class})
+//    public ResponseEntity<ErrorMessage> handleException(Exception e){
+//        return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
+//                "500"), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<ErrorMessage> handleException(NotFoundException e){

@@ -2,13 +2,13 @@ package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.SportLabelDAO;
 import javafx.scene.control.Pagination;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

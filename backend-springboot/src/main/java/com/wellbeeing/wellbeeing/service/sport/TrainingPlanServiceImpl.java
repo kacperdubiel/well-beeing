@@ -7,7 +7,7 @@ import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
