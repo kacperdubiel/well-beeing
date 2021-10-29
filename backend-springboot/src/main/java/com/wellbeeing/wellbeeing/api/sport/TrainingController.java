@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
+import com.wellbeeing.wellbeeing.domain.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseToTrainingRequest;
@@ -10,7 +11,7 @@ import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -55,12 +56,11 @@ public class TrainingController {
             Page<Training> pageTrainings;
             pageTrainings = trainingService.getAllTrainings(paging);
             trainings = pageTrainings.getContent();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("trainings", trainings);
-            response.put("currentPage", pageTrainings.getNumber());
-            response.put("totalItems", pageTrainings.getTotalElements());
-            response.put("totalPages", pageTrainings.getTotalPages());
+            PaginatedResponse response = PaginatedResponse.builder()
+                    .objects(trainings)
+                    .currentPage(pageTrainings.getNumber())
+                    .totalItems(pageTrainings.getTotalElements())
+                    .totalPages(pageTrainings.getTotalPages()).build();
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,38 +94,27 @@ public class TrainingController {
     }
 
     @PatchMapping("/{id}/remove-exercise/{exerciseId}")
-    public ResponseEntity<?> removeExerciseFromTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, Principal principal) {
-        try {
-            trainingService.removeExerciseFromTraining(trainingId, exerciseId, principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<?> removeExerciseFromTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, Principal principal) throws NotFoundException {
+
+        trainingService.removeExerciseFromTraining(trainingId, exerciseId, principal.getName());
         return new ResponseEntity<>(String.format("Successfully removed exercise %d from training with id=%d", exerciseId, trainingId), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/add-exercise/{exerciseId}")
-    public ResponseEntity<?> addExerciseToTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, @RequestBody @NonNull AddExerciseToTrainingRequest request, Principal principal) {
+    public ResponseEntity<?> addExerciseToTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, @RequestBody @NonNull AddExerciseToTrainingRequest request, Principal principal) throws NotFoundException {
         ExerciseInTraining addedExercise = null;
-        try {
             addedExercise = trainingService.addExerciseToTraining(trainingId, exerciseId, request.getReps(),
                                                     request.getTime_seconds(), request.getSeries(),
                                                     principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
         if (addedExercise == null) {
             return new ResponseEntity<>(new ErrorMessage(String.format("Couldn't add exercise %d to training with id=%d",exerciseId, trainingId), "Error"), HttpStatus.OK);
         }
         return new ResponseEntity<>(addedExercise, HttpStatus.OK);
     }
     @GetMapping("/calories-burned/{trainingId}")
-    public ResponseEntity<?> getCaloriesBurnedFromClient(@PathVariable(value = "trainingId") long trainingId, Principal principal) {
+    public ResponseEntity<?> getCaloriesBurnedFromClient(@PathVariable(value = "trainingId") long trainingId, Principal principal) throws NotFoundException {
         double caloriesBurned;
-        try {
             caloriesBurned = trainingService.getCaloriesBurnedFromUser(trainingId, principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
         if (caloriesBurned == -1) {
             return new ResponseEntity<>(new ErrorMessage("",""), HttpStatus.CONFLICT);
         }

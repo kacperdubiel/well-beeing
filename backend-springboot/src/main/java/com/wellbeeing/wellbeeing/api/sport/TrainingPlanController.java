@@ -10,7 +10,7 @@ import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,13 +63,7 @@ public class TrainingPlanController {
     @RolesAllowed({ERole.Name.ROLE_TRAINER, ERole.Name.ROLE_BASIC_USER})
     public ResponseEntity<?> addTrainingPlan(@RequestBody @NonNull AddTrainingPlanWithOwnerRequest request, Principal principal) {
         TrainingPlan createdTrainingPlan;
-        try {
             createdTrainingPlan = trainingPlanService.addTrainingPlan(request.getTrainingPlan(), principal.getName(), request.getOwnerId());
-        } catch (Exception e) {
-            System.out.println("Exception message: "+e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-
-        }
         if (createdTrainingPlan == null) {
             return new ResponseEntity<>("Couldn't create training plan!", HttpStatus.CONFLICT);
         }
@@ -77,35 +71,25 @@ public class TrainingPlanController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTrainingPlan(@PathVariable(value = "id") Long trainingPlanId ) {
-        try {
+    public ResponseEntity<?> deleteTrainingPlan(@PathVariable(value = "id") Long trainingPlanId ) throws NotFoundException {
             trainingPlanService.deleteTrainingPlan(trainingPlanId);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.OK);
-        }
         return new ResponseEntity<>("Successfully deleted training plan with id=" + trainingPlanId, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/add-position")
-    public ResponseEntity<?> addPositionToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @RequestBody @NonNull AddTrainingToPlanRequest request, Principal principal) {
+    public ResponseEntity<?> addPositionToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @RequestBody @NonNull AddTrainingToPlanRequest request, Principal principal) throws NotFoundException {
         TrainingPosition trainingPosition = null;
-        try {
-            trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+        trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
+
 
         return new ResponseEntity<>(trainingPosition, HttpStatus.OK);
 
     }
 
     @PatchMapping("/{id}/remove-position/{positionId}")
-    public ResponseEntity<?> removePositionFromTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @PathVariable(value = "positionId")Long positionId, Principal principal) {
-        try {
-            trainingPlanService.removePositionFromTrainingPlan(trainingPlanId, positionId, principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<?> removePositionFromTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @PathVariable(value = "positionId")Long positionId, Principal principal) throws NotFoundException {
+
+        trainingPlanService.removePositionFromTrainingPlan(trainingPlanId, positionId, principal.getName());
         return new ResponseEntity<>("Position removed!", HttpStatus.OK);
 
     }
@@ -131,48 +115,31 @@ public class TrainingPlanController {
     }
 
     @PostMapping("/send-request")
-    public ResponseEntity<?> sendRequestToTrainer(@RequestBody @NonNull MakeRequestToCreateTrainingPlanRequest request, Principal principal) {
+    public ResponseEntity<?> sendRequestToTrainer(@RequestBody @NonNull MakeRequestToCreateTrainingPlanRequest request, Principal principal) throws NotFoundException {
         TrainingPlanRequest newRequest;
-        try {
-            newRequest = trainingPlanService.sendRequestToTrainer(request.getTrainerId(), principal.getName(), request.getMessage());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+        newRequest = trainingPlanService.sendRequestToTrainer(request.getTrainerId(), principal.getName(), request.getMessage());
         return new ResponseEntity<>(newRequest, HttpStatus.OK);
     }
 
     @GetMapping("/get-my-requests")
-    public ResponseEntity<?> getUserRequests(Principal principal) {
+    public ResponseEntity<?> getUserRequests(Principal principal) throws NotFoundException {
         List<TrainingPlanRequest> newRequest;
-        try {
-            newRequest = trainingPlanService.getMyRequests(principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+        newRequest = trainingPlanService.getMyRequests(principal.getName());
         return new ResponseEntity<>(newRequest, HttpStatus.OK);
     }
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
     @GetMapping("/get-trainer-requests")
-    public ResponseEntity<?> getTrainerRequests(Principal principal) {
+    public ResponseEntity<?> getTrainerRequests(Principal principal) throws NotFoundException {
         List<TrainingPlanRequest> newRequest;
-        try {
-            newRequest = trainingPlanService.getTrainersRequests(principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+        newRequest = trainingPlanService.getTrainersRequests(principal.getName());
         return new ResponseEntity<>(newRequest, HttpStatus.OK);
     }
 
     @PatchMapping("/request")
-    public ResponseEntity<?> updateRequestStatus(@RequestBody @NonNull ChangeTrainingPlanRequestStatusRequest request, Principal principal) {
+    public ResponseEntity<?> updateRequestStatus(@RequestBody @NonNull ChangeTrainingPlanRequestStatusRequest request, Principal principal) throws NotFoundException {
         TrainingPlanRequest editedRequest;
-        try {
-            editedRequest = trainingPlanService.changeTrainingPlanRequestStatus(principal.getName(), request.getRequestId(), request.getNewStatus());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+        editedRequest = trainingPlanService.changeTrainingPlanRequestStatus(principal.getName(), request.getRequestId(), request.getNewStatus());
+
         return new ResponseEntity<>(editedRequest, HttpStatus.OK);
     }
 

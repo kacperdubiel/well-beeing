@@ -69,6 +69,16 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode</groupId>
+			<artifactId>google-api-translate-java</artifactId>
+			<version>0.92</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
