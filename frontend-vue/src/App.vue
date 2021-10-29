@@ -77,4 +77,17 @@ button[class^="btn-panel-"] {
     background-color: var(--DARK-YELLOW);
 }
 
+
+#search-input {
+    border-radius: 40px;
+    height: 50px;
+    border: none;
+}
+.test {
+    background-color: #D83D68;
+}
+input{
+    text-indent: 10px;
+}
+
 </style>

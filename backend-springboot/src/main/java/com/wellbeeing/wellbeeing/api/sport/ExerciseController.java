@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
@@ -53,7 +54,8 @@ public class ExerciseController {
 
     @GetMapping(path = "")
     public ResponseEntity<?> getExercisesPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                   @RequestParam(value = "size", defaultValue = "3") int size) {
+                                                   @RequestParam(value = "size", defaultValue = "25") int size,
+                                                    Principal principal) {
         try {
             List<Exercise> exercises;
             Pageable paging = PageRequest.of(page, size);
@@ -62,6 +64,12 @@ public class ExerciseController {
             pageExercises = exerciseService.getAllExercises(paging);
             exercises = pageExercises.getContent();
 
+            Map<Long, Integer> calories = exerciseService.getCaloriesBurnedFromUser(exercises, principal.getName());
+
+            for (Exercise exercise:
+                 exercises) {
+                exercise.setCaloriesBurned(calories.get(exercise.getExerciseId()));
+            }
             Map<String, Object> response = new HashMap<>();
             response.put("exercises", exercises);
             response.put("currentPage", pageExercises.getNumber());
@@ -75,10 +83,13 @@ public class ExerciseController {
 
     @PostMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
-    public ResponseEntity<?> addExercise(@RequestBody @NonNull Exercise exercise, Principal principal) {
+    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) {
         Exercise createdExercise;
         try {
-            createdExercise = exerciseService.addExercise(exercise, principal.getName());
+            createdExercise = exerciseService.addExercise(request.getExercise(), principal.getName());
+            for (Long l : request.getLabelsIds()) {
+                exerciseService.addLabelToExerciseByLabelId(createdExercise.getExerciseId(), l);
+            }
         } catch (Exception e) {
             System.out.println("Exception message: "+e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
@@ -90,6 +101,10 @@ public class ExerciseController {
         return new ResponseEntity<>(createdExercise, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/labels")
+    public ResponseEntity<?> getLabels() {
+        return new ResponseEntity<>(exerciseService.getAllSportLabels(), HttpStatus.OK);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteExercise(@PathVariable(value = "id") Long exerciseId ) {
         try {

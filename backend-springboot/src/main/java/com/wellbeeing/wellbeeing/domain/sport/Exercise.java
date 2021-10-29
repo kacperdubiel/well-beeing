@@ -36,6 +36,9 @@ public class Exercise {
     @Column(name = "metabolic_eqv_of_task")
     private double met;
 
+    @Transient
+    private int caloriesBurned;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
     @JsonIgnore

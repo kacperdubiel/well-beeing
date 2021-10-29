@@ -4,20 +4,20 @@ import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
+import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.SportLabelDAO;
-import javafx.scene.control.Pagination;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+
 @Service("exerciseService")
 public class ExerciseServiceImpl implements ExerciseService {
     private final ExerciseDAO exerciseDAO;
@@ -37,6 +37,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         System.out.println("Print id:" + user.getId());
         exercise.setCreator(user.getProfile());
         if (exerciseDAO.findAllByName(exercise.getName()).isEmpty()) {
+            System.out.println("Pront name: "+exercise.getName());
             if (exercise.getName() == null || Objects.equals(exercise.getName(), ""))
             {
                 throw new NotFoundException("Exercise must have a name!");
@@ -105,6 +106,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
+    public List<SportLabel> getAllSportLabels() {
+        return sportLabelDAO.findAll(Sort.by("name"));
+    }
+
+    @Override
     public Page<Exercise> getAllExercises(Pageable pageable) {
         return exerciseDAO.findAll(pageable);
     }
@@ -135,5 +141,21 @@ public class ExerciseServiceImpl implements ExerciseService {
     public Exercise partialUpdateExercise(Exercise exercise) {
         exerciseDAO.save(exercise);
         return exercise;
+    }
+
+    @Override
+    public Map<Long, Integer> getCaloriesBurnedFromUser(List<Exercise> exercises, String userName) throws NotFoundException {
+        Map<Long, Integer> caloriesMap = new HashMap<>();
+        User user = userDAO.findUserByEmail(userName).orElse(null);
+        if (user == null)
+            throw new NotFoundException("There's no user with email=" + userName);
+
+        double weight  = user.getProfile().getProfileCard().getWeight();
+        for (Exercise ex: exercises
+             ) {
+            caloriesMap.put(ex.getExerciseId(), ex.countCaloriesPerHour((int) weight));
+        }
+        System.out.println("User weight: " + weight);
+        return caloriesMap;
     }
 }

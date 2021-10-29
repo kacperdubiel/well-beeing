@@ -16,7 +16,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 //sidebar
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import {faInfo, faPencilAlt, faPlusCircle, faTrash, faUserSecret} from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faUserFriends } from '@fortawesome/free-solid-svg-icons'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
@@ -39,6 +39,11 @@ import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 library.add(faBell)
 library.add(faUserCircle)
 
+//sport
+library.add(faPencilAlt)
+library.add(faInfo)
+library.add(faTrash)
+library.add(faPlusCircle)
 
 const app = createApp(App).use(router);
 app.config.globalProperties.apiURL = 'http://localhost:8090/'

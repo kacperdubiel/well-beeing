@@ -22,7 +22,9 @@ name: "TrainingPlanDay",
             year:2021
         }
     },
-    props: ['day']
+    props: {
+        day: String
+    }
 }
 </script>
 
