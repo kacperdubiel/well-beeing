@@ -11,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service("profileConnectionService")
@@ -45,6 +43,11 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     public Page<ProfileConnection> getProfileConnectionsByProfileAndTypeAndIsAccepted(
             Profile profile, EConnectionType connectionType, boolean isAccepted, int page, int size)
     {
+        if(connectionType == EConnectionType.WITH_USER){
+            return profileConnectionDAO.findByProfileOrConnectedWithAndConnectionTypeAndIsAccepted(
+                    profile, connectionType, isAccepted, PageRequest.of(page, size));
+        }
+
         return profileConnectionDAO.findByProfileAndConnectionTypeAndIsAccepted(profile, connectionType, isAccepted,
                 PageRequest.of(page, size));
     }
@@ -53,6 +56,11 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     public Page<ProfileConnection> getProfileConnectionsByConnectedWithAndTypeAndIsAccepted(Profile connectedWith,
             EConnectionType connectionType, boolean isAccepted, int page, int size)
     {
+        if(connectionType == EConnectionType.WITH_USER){
+            return profileConnectionDAO.findByProfileOrConnectedWithAndConnectionTypeAndIsAccepted(
+                    connectedWith, connectionType, isAccepted, PageRequest.of(page, size));
+        }
+
         return profileConnectionDAO.findByConnectedWithAndConnectionTypeAndIsAccepted(connectedWith, connectionType, isAccepted,
                 PageRequest.of(page, size));
     }
