@@ -20,7 +20,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -98,12 +97,11 @@ public class MeasureController {
 
     @RequestMapping(path = "measures", method = RequestMethod.POST)
     public ResponseEntity<?> addMeasure(@RequestBody @NonNull Measure measure, Principal principal)
-            throws ForbiddenException, ConflictException
+            throws ConflictException, NotFoundException
     {
         UUID userId = userService.findUserIdByUsername(principal.getName());
-        if(!measure.getOwner().getId().equals(userId)){
-            throw new ForbiddenException("You do not have access rights to do that!");
-        }
+        Profile owner = profileService.getProfileById(userId);
+        measure.setOwner(owner);
 
         Measure measureResult = measureService.addMeasure(measure);
         return new ResponseEntity<>(measureResult, HttpStatus.CREATED);
@@ -114,11 +112,14 @@ public class MeasureController {
             throws ForbiddenException, NotFoundException
     {
         UUID userId = userService.findUserIdByUsername(principal.getName());
-        if(!measure.getOwner().getId().equals(userId)){
+        Measure measureResult = measureService.getMeasureById(measure.getId());
+        if(!measureResult.getOwner().getId().equals(userId)){
             throw new ForbiddenException("You do not have access rights to do that!");
         }
 
-        Measure measureResult = measureService.updateMeasure(measure);
+        measureResult.setValue(measure.getValue());
+        measureResult.setMeasureDate(measure.getMeasureDate());
+        measureResult = measureService.updateMeasure(measureResult);
         return new ResponseEntity<>(measureResult, HttpStatus.OK);
     }
 

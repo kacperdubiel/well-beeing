@@ -37,9 +37,11 @@ public class MeasureTypeServiceImpl implements MeasureTypeService {
     @Override
     public MeasureType addMeasureType(MeasureType measureType) throws ConflictException {
         UUID measureTypeId = measureType.getId();
-        MeasureType measureTypeResult = measureTypeDAO.findById(measureTypeId).orElse(null);
-        if(measureTypeResult != null) {
-            throw new ConflictException("Measure type with id: " + measureTypeId + " already exists!");
+        if(measureTypeId != null) {
+            MeasureType measureTypeResult = measureTypeDAO.findById(measureTypeId).orElse(null);
+            if (measureTypeResult != null) {
+                throw new ConflictException("Measure type with id: " + measureTypeId + " already exists!");
+            }
         }
 
         return measureTypeDAO.save(measureType);
@@ -48,6 +50,11 @@ public class MeasureTypeServiceImpl implements MeasureTypeService {
     @Override
     public MeasureType updateMeasureType(MeasureType updatedMeasureType) throws NotFoundException {
         UUID measureTypeId = updatedMeasureType.getId();
+
+        if(measureTypeId == null) {
+            throw new NotFoundException("Specify measure id!");
+        }
+
         MeasureType measureTypeResult = measureTypeDAO.findById(measureTypeId).orElse(null);
         if(measureTypeResult == null) {
             throw new NotFoundException("Measure type with id: " + measureTypeId + " not found!");
