@@ -1,0 +1,384 @@
+<template>
+    <div>
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-10 col-md-7">
+                    <select class="form-select" v-model="selectedMeasureType">
+                        <option v-for="measureType in measureTypes" :value="measureType" :key="measureType.id">
+                            {{ measureType.name }}
+                        </option>
+                    </select>
+                </div>
+                <div v-if="isModificationAllowed" class="col-2  pt-1">
+                    <font-awesome-icon :icon="['fa', 'plus-circle']" size="2x" class="telemedic-icon"
+                                       data-bs-toggle="modal" data-bs-target="#addMeasureModal"/>
+                </div>
+            </div>
+
+            <!-- Modal - AddMeasure -->
+            <div v-if="isModificationAllowed" class="modal fade" id="addMeasureModal" tabindex="-1" aria-labelledby="addMeasureModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title ms-2" id="addMeasureModalLabel"> Podaj wynik pomiaru </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="col-11 mx-auto">
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            v-model="measureValue"
+                                            class="form-control"
+                                            min="0" max="1000"
+                                            step="0.5"/>
+                                        <span class="input-group-text">
+                                                    {{ selectedMeasureType.unit }}
+                                                </span>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <Datepicker v-model="measureDate"
+                                                    uid="add"
+                                                    locale="pl" cancelText="Anuluj" selectText="Wybierz"
+                                                    format="dd/MM/yyyy, HH:mm"
+                                                    maxDate="new Date()"
+                                                    altPosition
+                                        ></Datepicker>
+                                    </div>
+
+                                    <div class="row justify-content-end mt-3">
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="clearInputs">Anuluj</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="addMeasure">Dodaj</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal - EditMeasure -->
+            <div v-if="isModificationAllowed" class="modal fade" id="editMeasureModal" tabindex="-1" aria-labelledby="editMeasureModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title ms-2" id="editMeasureModalLabel"> Edytuj wynik pomiaru </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid" id="modal-container">
+                                <div class="col-11 mx-auto">
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            v-model="measureValue"
+                                            class="form-control"
+                                            min="0" max="1000"
+                                            step="0.5"/>
+                                        <span class="input-group-text">
+                                                    {{ selectedMeasureType.unit }}
+                                                </span>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <Datepicker v-model="measureDate"
+                                                    uid="edit"
+                                                    locale="pl" cancelText="Anuluj" selectText="Wybierz"
+                                                    format="dd/MM/yyyy, HH:mm"
+                                                    maxDate="new Date()"
+                                        ></Datepicker>
+                                    </div>
+
+                                    <div class="row justify-content-end mt-3">
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="clearInputs">Anuluj</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="editMeasure">Zmień</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal - DeleteMeasure -->
+            <div v-if="isModificationAllowed" class="modal fade" id="deleteMeasureModal" tabindex="-1" aria-labelledby="deleteMeasureModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title ms-2" id="deleteMeasureModalLabel"> Usuń pomiar </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="col-11 mx-auto">
+                                    <div class="row">
+                                        Czy na pewno chcesz usunąć ten pomiar?
+                                    </div>
+
+                                    <div class="row justify-content-end mt-3">
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="deleteMeasure">Usuń</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <table class="table measures-table">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="w-15">Data</th>
+                            <th scope="col" class="w-15">Godzina</th>
+                            <th scope="col">Wartość</th>
+                            <th scope="col" class="w-25" v-if="this.isModificationAllowed"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="measure in measures" v-bind:key="measure.id">
+                            <td>{{ formatDate(measure.measureDate) }}</td>
+                            <td>{{ formatTime(measure.measureDate) }}</td>
+                            <td>{{ measure.value }} {{ measure.measureType.unit }}</td>
+                            <td v-if="this.isModificationAllowed">
+                                <button class="btn-white m-r-5 btn-hover"
+                                        data-bs-toggle="modal" data-bs-target="#editMeasureModal"
+                                        @click="selectMeasure(measure)">
+                                    <font-awesome-icon :icon="['fa', 'pen']" />
+                                </button>
+                                <button class="btn-white btn-hover"
+                                        data-bs-toggle="modal" data-bs-target="#deleteMeasureModal"
+                                        @click="selectMeasure(measure)">
+                                    <font-awesome-icon :icon="['fa', 'trash']" />
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import Datepicker from "vue3-date-time-picker";
+import moment from "moment";
+
+export default {
+    name: 'MeasuresComponent',
+    components: {
+        Datepicker
+    },
+    props: {
+        userId: String
+    },
+    data() {
+        return {
+            measureTypes: {},
+            selectedMeasureType: null,
+            measures: {},
+            measuresPage: {},
+            measureDate: new Date(),
+            measureValue: 0,
+            selectedMeasure: {},
+            isModificationAllowed: false
+        }
+    },
+    watch: {
+        selectedMeasureType: function() {
+            this.getMeasures();
+        },
+        userId: function() {
+            if(this.selectedMeasureType) {
+                this.getMeasures();
+            }
+        }
+    },
+    methods: {
+        getProfile(){
+            this.axios.get('http://localhost:8090/profile', {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    if(this.userId === response.data.id){
+                        this.isModificationAllowed = true;
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
+        getMeasureTypes() {
+            this.axios.get('http://localhost:8090/measure-types', {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    this.measureTypes = response.data;
+                    if(response.data.length > 0){
+                        this.selectedMeasureType = response.data[0];
+                    }
+                    // console.log(response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
+        getMeasures() {
+            if(this.userId && this.userId.length > 0){
+                this.axios.get(`http://localhost:8090/measures/user/${this.userId}/type/${this.selectedMeasureType.id}`, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$store.getters.getToken
+                    }
+                })
+                    .then(response => {
+                        this.measuresPage = response.data;
+                        this.measures = response.data.objects;
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    })
+            }
+        },
+        selectMeasure(measure){
+            this.selectedMeasure = measure;
+            this.measureValue = measure.value;
+            this.measureDate = measure.measureDate;
+        },
+        addMeasure() {
+            const data = {
+                "value": this.measureValue,
+                "measureType": {
+                    "id": this.selectedMeasureType.id,
+                },
+                "measureDate": this.measureDate,
+            }
+            // console.log("DATA: " + JSON.stringify(data));
+
+            this.axios({
+                method: 'post',
+                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                url: `http://localhost:8090/measures`,
+                data: data
+            })
+                .then(() => {
+                    this.getMeasures();
+                    this.clearInputs();
+                }).catch(e => {
+                    console.log(e);
+                })
+        },
+        editMeasure() {
+            const data = {
+                "id": this.selectedMeasure.id,
+                "value": this.measureValue,
+                "measureDate": this.measureDate,
+            }
+
+            this.axios({
+                method: 'put',
+                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                url: `http://localhost:8090/measures`,
+                data: data
+            })
+                .then(() => {
+                    this.getMeasures();
+                    this.clearInputs();
+                }).catch(e => {
+                    console.log(e);
+                })
+        },
+        deleteMeasure(){
+            this.axios({
+                method: 'delete',
+                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                url: `http://localhost:8090/measures/${this.selectedMeasure.id}`,
+            })
+                .then(() => {
+                    this.getMeasures();
+                    this.clearInputs();
+                }).catch(e => {
+                    console.log(e);
+                })
+        },
+        formatDate(date){
+            if (date) {
+                return moment(String(date)).format('DD/MM/YYYY')
+            }
+        },
+        formatTime(date){
+            if (date) {
+                return moment(String(date)).format('HH:mm')
+            }
+        },
+        clearInputs(){
+            this.measureDate = new Date();
+            this.measureValue = 0;
+        }
+    },
+    created(){
+        this.getMeasureTypes();
+        this.getProfile();
+    },
+}
+</script>
+
+<style scoped>
+    .m-r-5 {
+        margin-right: 5px
+    }
+    .w-15 {
+        width: 15%;
+    }
+
+    .telemedic-icon {
+        color: white;
+        cursor: pointer;
+    }
+
+    .telemedic-icon:hover {
+        color: var(--TELEMEDIC);
+    }
+
+    .btn-hover:hover {
+        color: var(--GREY1);
+    }
+
+    .modal-header, .modal-body {
+        color: black;
+    }
+
+    .modal-dialog-centered {
+        min-height: calc(60% - 3.5rem);
+    }
+
+    .measures-table {
+        color: white;
+        margin-top: 20px;
+    }
+
+    .measures-table tbody tr:hover {
+        background-color: var(--TELEMEDIC);
+    }
+</style>

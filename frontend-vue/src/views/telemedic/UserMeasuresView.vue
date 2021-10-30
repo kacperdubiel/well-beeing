@@ -5,17 +5,19 @@
 
         </header>
         <section>
-
+            <measures-component :user-id="this.userId"/>
         </section>
     </div>
 </template>
 
 <script>
 import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
+import MeasuresComponent from "@/components/telemedic/MeasuresComponent";
 
 export default {
     name: 'UserMeasuresView',
     components: {
+        MeasuresComponent,
         TelemedicNavbar
     },
     data() {
