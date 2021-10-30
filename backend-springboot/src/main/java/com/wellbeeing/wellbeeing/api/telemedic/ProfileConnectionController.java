@@ -113,7 +113,7 @@ public class ProfileConnectionController {
 
         EConnectionType connectionType = profileConnection.getConnectionType();
         if(connectionType != EConnectionType.WITH_USER){
-            Profile specialistProfile = profileService.getProfileById(profileConnection.getProfile().getId());
+            Profile specialistProfile = profileService.getProfileById(profileConnection.getConnectedWith().getId());
 
             if(!hasConnectionTypeRole(specialistProfile, connectionType)){
                 throw new ForbiddenException("The specialist does not have a corresponding role.");
