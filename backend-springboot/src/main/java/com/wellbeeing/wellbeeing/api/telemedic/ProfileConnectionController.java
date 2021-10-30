@@ -54,7 +54,8 @@ public class ProfileConnectionController {
         return new ResponseEntity<>(pConnectionResult, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "profile-connections/to/type/{type}/accepted/{value}", method = RequestMethod.GET)
+    // My connections
+    @RequestMapping(path = "profile-connections/my/type/{type}/accepted/{value}", method = RequestMethod.GET)
     public ResponseEntity<?> getProfileConnectionsToType(@PathVariable("type") String connectionTypeText,
                                                          @PathVariable("value") boolean isAccepted, Principal principal,
                                                          @RequestParam(value = "page", defaultValue = "0") String page,
@@ -77,7 +78,8 @@ public class ProfileConnectionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "profile-connections/from/type/{type}/accepted/{value}", method = RequestMethod.GET)
+    // Connected to me
+    @RequestMapping(path = "profile-connections/to-me/type/{type}/accepted/{value}", method = RequestMethod.GET)
     public ResponseEntity<?> getProfileConnectionsFromType(@PathVariable("type") String connectionTypeText,
                                                            @PathVariable("value") boolean isAccepted, Principal principal,
                                                            @RequestParam(value = "page", defaultValue = "0") String page,
