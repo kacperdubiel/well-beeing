@@ -21,7 +21,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -90,7 +89,6 @@ public class ProfileConnectionController {
         Profile connectedWith = profileService.getProfileById(userId);
         EConnectionType connectionType = EConnectionType.valueOf(connectionTypeText);
 
-
         Page<ProfileConnection> profileConnsPage = profileConnectionService
                 .getProfileConnectionsByConnectedWithAndTypeAndIsAccepted(connectedWith, connectionType, isAccepted,
                         Integer.parseInt(page), Integer.parseInt(size));
@@ -109,11 +107,9 @@ public class ProfileConnectionController {
             throws ForbiddenException, NotFoundException, ConflictException
     {
         UUID userId = userService.findUserIdByUsername(principal.getName());
-        Profile userProfile = profileService.getProfileById(profileConnection.getProfile().getId());
+        Profile userProfile = profileService.getProfileById(userId);
 
-        if(!userProfile.getId().equals(userId)){
-            throw new ForbiddenException("You do not have access rights to do that!");
-        }
+        profileConnection.setProfile(userProfile);
 
         EConnectionType connectionType = profileConnection.getConnectionType();
         if(connectionType != EConnectionType.WITH_USER){
