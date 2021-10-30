@@ -20,6 +20,7 @@
 
 <style>
 @import "./assets/colors.css";
+
 #app {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -88,6 +89,25 @@ button[class^="btn-panel-"] {
 }
 input{
     text-indent: 10px;
+}
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+    border-color: rgb(133, 133, 133);
+    text-transform: lowercase;
+    font-variant: small-caps;
+}
+
+.style-chooser .vs__clear,
+.style-chooser .vs__open-indicator {
+    fill: #394066;
+}
+.style-chooser .vs__selected {
+    background-color: var(--SPORT);
+    background-blend-mode: color;
+}
+.style-chooser .vs__deselect {
+    fill: var(--GREY3);
 }
 
 </style>

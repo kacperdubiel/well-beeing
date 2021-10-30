@@ -3,17 +3,17 @@
         <ul class="nav nav-tabs sport-tabs">
             <li class="nav-item">
                 <router-link :to="{ name: 'SportView' }">
-                    <span class="nav-link active" aria-current="page" >Plany treningowe</span>
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainingPlansView' }">Plany treningowe</span>
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{ name: 'SportView' }">
-                    <span class="nav-link">Ćwiczenia</span>
+                <router-link :to="{ name: 'ExerciseView' }">
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'ExerciseView' }">Ćwiczenia</span>
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{ name: 'SportView' }">
-                    <span class="nav-link">Treningi</span>
+                <router-link :to="{ name: 'TrainingView' }">
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainingView' }">Treningi</span>
                 </router-link>
             </li>
             <li class="nav-item">
@@ -32,17 +32,15 @@
                 </router-link>
             </li>
         </ul>
-        <TrainingPlans></TrainingPlans>
-        <ExercisesComponent></ExercisesComponent>
+<!--        <p>{{this.$route.name}}</p>-->
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-import TrainingPlans from "@/components/sport/TrainingPlansComponent";
-import ExercisesComponent from "@/components/sport/exercise/ExercisesComponent";
 export default {
-    name: "SportComponent",
-    components: {ExercisesComponent, TrainingPlans},
+    name: "SportView",
+    components: {},
     data () {
         return {
             week:43,

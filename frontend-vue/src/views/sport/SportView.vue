@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SportComponent from "@/components/sport/SportComponent";
+import SportComponent from "@/components/sport/SportView";
 export default {
     name: "SportView",
   components: {SportComponent}

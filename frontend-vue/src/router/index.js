@@ -3,6 +3,9 @@ import Home from '../views/Home.vue'
 import Feed from "@/views/social/Feed";
 import SocialView from "@/views/social/SocialView";
 import SportView from "@/views/sport/SportView";
+import TrainingView from "@/components/sport/training/TrainingView";
+import ExerciseView from "@/components/sport/exercise/ExerciseView";
+import TrainingPlansView from "@/components/sport/TrainingPlansView";
 
 const routes = [
   {
@@ -31,9 +34,28 @@ const routes = [
   },
   {
     path: '/sport',
+    redirect: {name: 'TrainingPlansView'},
     name: 'SportView',
-    component: SportView
-  }
+    component: SportView,
+    children: [
+      {
+        path: 'training',
+        name: 'TrainingView',
+        component: TrainingView,
+      },
+      {
+        path: 'exercise',
+        name: 'ExerciseView',
+        component: ExerciseView
+      },
+      {
+        path: 'training-plans',
+        name: 'TrainingPlansView',
+        component: TrainingPlansView
+      }
+    ]
+  },
+
 ]
 
 const router = createRouter({

@@ -31,6 +31,7 @@ public class Training {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
+    @JsonIgnore
     private Profile creator;
 
     @Column(name = "isPrivate")

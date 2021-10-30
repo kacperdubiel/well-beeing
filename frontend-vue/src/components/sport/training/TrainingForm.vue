@@ -1,19 +1,9 @@
 <template>
-<div>
-    <div class="add-exercise row my-2 align-items-center">
-        <span class="h3 col-8 offset-2 text-end">Dodaj</span>
-        <span class="col-2 float-end">
-            <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" data-bs-target="#addExerciseModal" />
-        </span>
-    </div>
-    <ExercisesListComponent :exercises-source="exercises"/>
-    <ExercisesGridComponent :exercises-source="exercises"/>
-    <!--Modal-->
     <div class="modal fade" id="addExerciseModal" tabindex="-1" aria-labelledby="addExerciseModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title ms-2" id="addExerciseModalLabel">Dodawanie nowego ćwiczenia</h5>
+                    <h5 class="modal-title ms-2" id="addExerciseModalLabel">Dodawanie nowego treningu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs(); clearStatusWithTimeout()"></button>
                 </div>
                 <div class="modal-body">
@@ -23,53 +13,34 @@
                                 <p class="form-label">Nazwa</p>
                                 <input
                                     type="text"
-                                    placeholder="Nazwa ćwiczenia"
+                                    placeholder="Nazwa treningu"
                                     v-model="name"
                                     id="name-form"
                                     class="register-input p-2"
-                                    :class="{ 'has-error': submittingCreateExercise && invalidName || nameTaken}"
+                                    :class="{ 'has-error': submittingCreateTraining && invalidName || nameTaken}"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"
                                 />
                             </div>
                             <div class="row text-end">
                                 <p v-if="nameTaken" class="has-error m-0">
-                                    Istnieje już ćwiczenie o takiej nazwie!
+                                    Istnieje już trening o takiej nazwie!
                                 </p>
                             </div>
                             <div class="row mt-3">
-                                <p class="form-label">Typ</p>
+                                <p class="form-label">Trudność</p>
                                 <select
-                                    v-model="type"
+                                    v-model="trainingDifficulty"
                                     class="register-input p-2"
-                                    :class="{ 'has-error': submittingCreateExercise && invalidType}"
+                                    :class="{ 'has-error': submittingCreateTraining && invalidDifficultyLevel}"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"
                                 >
-                                    <option disabled value="">Wybierz typ</option>
-                                    <option>OTHER</option>
-                                    <option>STRENGTH</option>
-                                    <option>CARDIO</option>
+                                    <option disabled value="">Wybierz trudność</option>
+                                    <option>EASY</option>
+                                    <option>MEDIUM</option>
+                                    <option>HARD</option>
                                 </select>
-                            </div>
-                            <div class="row mt-3">
-                                <p class="form-label">MET</p>
-                                <input
-                                    type="number"
-                                    placeholder="MET"
-                                    v-model="met"
-                                    class="register-input p-2"
-                                    min=0.0
-                                    max=30.0
-                                    :class="{ 'has-error': submittingCreateExercise && invalidMet}"
-                                    @focus="clearStatus"
-                                    @keypress="clearStatus"
-                                />
-                            </div>
-                            <div class="row mt-3">
-                                <p class="form-label">Etykiety</p>
-                                <v-select multiple v-model="values" :options=labels :reduce="name => name.sportLabelId" label="name"/>
-                                <p class="form-label">{{ values }}</p>
                             </div>
                             <div class="row mt-3">
                                 <p class="form-label">Opis</p>
@@ -77,35 +48,41 @@
                                     placeholder=" Opis"
                                     v-model="description"
                                     class="register-input p-2"
-                                    :class="{ 'has-error': submittingCreateExercise && invalidDescription}"
+                                    :class="{ 'has-error': submittingCreateTraining && invalidDescription}"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"
                                 />
                             </div>
                             <div class="row mt-3">
-                                <p class="form-label">Instrukcja</p>
+                                <p class="form-label">Wskazówki</p>
                                 <textarea
-                                    placeholder=" Instrukcja"
+                                    placeholder=" Wskazówki"
                                     v-model="instruction"
                                     class="register-input p-2"
-                                    :class="{ 'has-error': submittingCreateExercise && invalidInstruction}"
+                                    :class="{ 'has-error': submittingCreateTraining && invalidInstruction}"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"
                                 />
                             </div>
-                            <div v-if="errorCreateExercise" class="row text-end">
+                            <div v-if="errorCreateTraining" class="row text-end">
                                 <p class="has-error m-0">
                                     Proszę uzupełnić wszystkie dane poprawnie!
                                 </p>
+                            </div>
+                            <div class="row justify-self-end mt-3">
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button class="register-btn grey-btn py-2" @click="createTraining()">Zatwierdź i dodaj ćwiczenia</button>
+                                </div>
                             </div>
                             <div class="row justify-content-end mt-3">
                                 <div class="col-4">
                                     <button class="register-btn grey-btn p-2" @click="clearInputs(); clearStatusWithTimeout()" data-bs-dismiss="modal">Anuluj</button>
                                 </div>
                                 <div class="col-4">
-                                    <button class="register-btn btn-panel-sport p-2" @click="addExercise">Dodaj</button>
+                                    <button class="register-btn btn-panel-sport p-2" @click="createTraining">Dodaj</button>
                                 </div>
                             </div>
+
                         </div>
 
                         <div v-if="successRegister" class="col-11 mx-auto">
@@ -122,58 +99,35 @@
             </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
-import ExercisesListComponent from "@/components/sport/exercise/ExercisesListComponent";
-import ExercisesGridComponent from "@/components/sport/exercise/ExercisesGridComponent";
 export default {
-    name: "ExercisesComponent",
-    components: {
-        ExercisesGridComponent,
-        ExercisesListComponent,
-    },
+    name: "TrainingForm",
     data () {
         return {
             values: [],
-            options: ['Select option', 'options', 'selected', 'mulitple', 'label', 'searchable', 'clearOnSelect', 'hideSelected', 'maxHeight', 'allowEmpty', 'showLabels', 'onChange', 'touched'],
-            exercises: [],
-            labels: [],
+            trainingId:-1,
             name: "",
-            type: "",
+            trainingDifficulty: "",
             met: 0.0,
             description: "",
             instruction: "",
-            errorCreateExercise: false,
-            successCreateExercise: false,
+            errorCreateTraining: false,
+            successCreateTraining: false,
             nameTaken: false,
-            submittingCreateExercise: false
+            submittingCreateTraining: false,
+            reps:15,
+            time:60,
+            timeUnits:"min", //min, h, s
+            series:1
         }
     },
+    props: {
+        labelsSource: Object,
+        exercisesSource: Object,
+    },
     methods: {
-        async getExercises () {
-            const url = `${this.apiURL}sport/exercise`
-            const token = this.$store.getters.getToken;
-            console.log('token ', token);
-            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.exercises = response.data['objects']
-                console.log(this.exercises)
-            }).catch(error => {
-                console.log(error.response);
-            });
-        },
-        async getLabels () {
-            const url = `${this.apiURL}sport/exercise/labels`
-            const token = this.$store.getters.getToken;
-            console.log('token ', token);
-            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.labels = response.data
-                console.log(this.labels)
-            }).catch(error => {
-                console.log(error.response);
-            });
-        },
         clearStatusWithTimeout() {
             setTimeout(() => {
                 this.clearStatus()
@@ -187,16 +141,77 @@ export default {
             this.instruction = ""
         },
         clearStatus() {
-            this.errorCreateExercise = false
-            this.successCreateExercise = false
+            this.errorCreateTraining = false
+            this.successCreateTraining = false
             this.nameTaken = false
         },
-        addExercise() {
+        createTraining() {
+            console.log('name: ' + this.name + ' difficulty: ' + this.trainingDifficulty)
+            this.submittingCreateTraining = true
+            this.clearStatus()
+            if (this.invalidName || this.invalidDifficultyLevel || this.invalidDescription || this.invalidInstruction) {
+                this.errorCreateTraining = true
+                return
+            }
+            const data = {
+                    "name": this.name,
+                    "trainingDifficulty": this.trainingDifficulty,
+                    "description": this.description,
+                    "instruction": this.instruction
+            }
+
+
+            const url = `${this.apiURL}sport/training`
+            const token = this.$store.getters.getToken;
+            this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.successCreateTraining = true
+                this.clearInputs()
+                this.$emit('get:trainings')
+            }).catch(error => {
+                if (error.response.status === 409) {
+                    this.nameTaken = true
+                }
+            });
+            this.submittingCreateTraining = false
+            document.getElementsByClassName('')
+        },
+        addExerciseToTraining (exerciseId) {
+            const url = `${this.apiURL}sport/training/${this.trainingId}/add-exercise/${exerciseId}`
+            const token = this.$store.getters.getToken;
+            let time_seconds = 0;
+            switch (this.timeUnits) {
+                case "s":
+                    time_seconds = this.time;
+                    break;
+                case "min":
+                    time_seconds = this.time*60;
+                    break;
+                case "h":
+                    time_seconds = this.time*3600;
+                    break;
+            }
+            const data = {
+                "reps":this.reps,
+                "time_seconds":time_seconds,
+                "series":3
+            }
+            this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                // this.successCreateTraining = true
+                // this.clearInputs()
+            }).catch(error => {
+                if (error.response.status === 409) {
+                    this.nameTaken = true
+                }
+            });
+        },
+        handleSubmit() {
             console.log('name: ' + this.name + ' type: ' + this.type + ' met: ' + this.met)
-            this.submittingCreateExercise = true
+            this.submittingCreateTraining = true
             this.clearStatus()
             if (this.invalidName || this.invalidType || this.invalidMet || this.invalidDescription || this.invalidInstruction) {
-                this.errorCreateExercise = true
+                this.errorCreateTraining = true
                 return
             }
             const data = {
@@ -209,31 +224,30 @@ export default {
                 },
                 "labelsIds": this.values
             }
+
+
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
             this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
-                this.successCreateExercise = true
+                this.successCreateTraining = true
                 this.clearInputs()
-                this.getExercises()
+                this.$emit('get:exercises')
             }).catch(error => {
                 if (error.response.status === 409) {
                     this.nameTaken = true
                 }
             });
-            this.submittingCreateExercise = false
+            this.submittingCreateTraining = false
             document.getElementsByClassName('')
-        },
+        }
     },
     computed: {
         invalidName() {
             return this.name === ''
         },
-        invalidType() {
-            return this.type === ''
-        },
-        invalidMet() {
-            return this.met <= 0.0 || this.met >= 30.0;
+        invalidDifficultyLevel() {
+            return this.trainingDifficulty === ''
         },
         invalidDescription() {
             return this.description === ''
@@ -242,18 +256,10 @@ export default {
             return this.instruction === ''
         }
     },
-    mounted() {
-        this.getExercises();
-        this.getLabels();
-    }
-
 }
 </script>
 
 <style scoped>
-.icon {
-    font-size: 30px;
-}
 .pink-btn {
     background: var(--INTENSE-PINK);
 }
@@ -282,5 +288,20 @@ p.has-error {
 .register-btn {
     color: white;
     font-weight: bold;
+}
+
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+    background: #dfe5fb;
+    border: none;
+    color: #394066;
+    text-transform: lowercase;
+    font-variant: small-caps;
+}
+
+.style-chooser .vs__clear,
+.style-chooser .vs__open-indicator {
+    fill: #394066;
 }
 </style>

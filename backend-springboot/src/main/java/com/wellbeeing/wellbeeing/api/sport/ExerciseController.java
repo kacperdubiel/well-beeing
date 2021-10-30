@@ -106,7 +106,7 @@ public class ExerciseController {
         return new ResponseEntity<>("Successfully deleted exercise with id=" + exerciseId, HttpStatus.OK);
     }
 
-    @RequestMapping("/{id}/label-to-exercise-name/{labelId}")
+    @RequestMapping("/{id}/label-to-exercise-id/{labelId}")
     public ResponseEntity<?> addLabelToExerciseByLabelId(@PathVariable(value = "id") Long exerciseId, @PathVariable(value = "labelId") Long labelId) throws NotFoundException {
         exerciseService.addLabelToExerciseByLabelId(exerciseId, labelId);
         Exercise updatedExercise = exerciseService.getExercise(exerciseId);

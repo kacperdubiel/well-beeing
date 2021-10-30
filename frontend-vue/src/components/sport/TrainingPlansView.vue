@@ -19,7 +19,7 @@
 <script>
 import TrainingPlanDay from "@/components/sport/TrainingPlanDayComponent";
 export default {
-    name: "TrainingPlans",
+    name: "TrainingPlansView",
     components: {TrainingPlanDay},
     data () {
         return {
