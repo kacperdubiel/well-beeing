@@ -6,7 +6,8 @@ export default createStore({
             // SOCIAL
             token: "",
             firstName: "",
-            lastName: ""
+            lastName: "",
+            roles: []
             // PHYSICAL ACTIVITY
 
             // NUTRITION
@@ -23,6 +24,12 @@ export default createStore({
         },
         setLastName (state, value) {
             state.lastName = value;
+        },
+        addRole (state, value) {
+            state.roles.push(value);
+        },
+        setRoles (state, value) {
+            state.roles = value;
         }
     },
     getters: {
@@ -34,6 +41,9 @@ export default createStore({
         },
         getLastName (state) {
             return state.lastName;
+        },
+        getRoles (state) {
+            return state.roles;
         }
 
     }

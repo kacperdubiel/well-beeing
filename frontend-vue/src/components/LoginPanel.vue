@@ -151,6 +151,7 @@ export default {
                 this.$store.commit('setToken', response.data['jwt']);
                 console.log(this.$store.getters.getToken)
                 this.clearInputs()
+                this.getUserInfo()
                 this.$router.push({name: 'Feed'})
             }).catch(error => {
                 console.log(error.response);
@@ -183,6 +184,25 @@ export default {
             });
             this.submittingRegister = false
             document.getElementsByClassName('')
+        },
+        getUserInfo () {
+            const url = `${this.apiURL}profile`
+
+            this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
+                this.$store.commit('setFirstName', response.data['firstName']);
+                this.$store.commit('setLastName', response.data['lastName']);
+                console.log(this.$store.getters.getFirstName)
+                console.log(this.$store.getters.getLastName)
+                let roles = []
+                response.data['roles'].forEach((e) => {
+                    console.log(e['role'])
+                    roles.push(e['role'])
+                })
+                this.$store.commit('setRoles', roles);
+                console.log('role', this.$store.getters.getRoles)
+            }).catch(error => {
+                console.log(error.response);
+            });
         },
         clearStatus() {
             this.errorLogin = false

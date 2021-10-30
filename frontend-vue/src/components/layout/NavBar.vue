@@ -46,20 +46,7 @@
 export default {
     name: "NavBar",
     methods: {
-        getUserInfo () {
-            const url = `${this.apiURL}profile`
-            this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
-                this.$store.commit('setFirstName', response.data['firstName']);
-                this.$store.commit('setLastName', response.data['lastName']);
-                console.log(this.$store.getters.getFirstName)
-                console.log(this.$store.getters.getLastName)
-            }).catch(error => {
-                console.log(error.response);
-            });
-        }
-    },
-    mounted() {
-        this.getUserInfo()
+
     }
 }
 </script>
