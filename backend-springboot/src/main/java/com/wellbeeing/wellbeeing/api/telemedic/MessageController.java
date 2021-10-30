@@ -1,11 +1,13 @@
 package com.wellbeeing.wellbeeing.api.telemedic;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.telemedic.Conversation;
 import com.wellbeeing.wellbeeing.domain.telemedic.Message;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.telemedic.ConversationService;
 import com.wellbeeing.wellbeeing.service.telemedic.MessageService;
@@ -25,13 +27,16 @@ public class MessageController {
     private MessageService messageService;
     private UserService userService;
     private ConversationService conversationService;
+    private ProfileService profileService;
 
     public MessageController(@Qualifier("messageService") MessageService messageService,
                              @Qualifier("userService") UserService userService,
-                             @Qualifier("conversationService") ConversationService conversationService){
+                             @Qualifier("conversationService") ConversationService conversationService,
+                             @Qualifier("profileService") ProfileService profileService){
         this.messageService = messageService;
         this.userService = userService;
         this.conversationService = conversationService;
+        this.profileService = profileService;
     }
 
     @RequestMapping(path = "conversation/{id}/messages", method = RequestMethod.GET)
@@ -79,10 +84,8 @@ public class MessageController {
             throws ForbiddenException, ConflictException, NotFoundException
     {
         UUID userId = userService.findUserIdByUsername(principal.getName());
-
-        if(!message.getSender().getId().equals(userId)){
-            throw new ForbiddenException("You do not have access rights to do that!");
-        }
+        Profile sender = profileService.getProfileById(userId);
+        message.setSender(sender);
 
         UUID conversationId = message.getConversation().getId();
         Conversation conversation = conversationService.getConversationById(conversationId);

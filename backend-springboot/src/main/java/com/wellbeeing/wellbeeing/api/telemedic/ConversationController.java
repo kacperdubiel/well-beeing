@@ -69,12 +69,8 @@ public class ConversationController {
             throws ForbiddenException, ConflictException, NotFoundException
     {
         UUID userId = userService.findUserIdByUsername(principal.getName());
-        UUID firstProfileId = conversation.getFirstProfile().getId();
-        UUID secondProfileId = conversation.getSecondProfile().getId();
-
-        if(!firstProfileId.equals(userId) && !secondProfileId.equals(userId)){
-            throw new ForbiddenException("You do not have access rights to do that!");
-        }
+        Profile userProfile = profileService.getProfileById(userId);
+        conversation.setFirstProfile(userProfile);
 
         Conversation conversationResult = conversationService.addConversation(conversation);
         return new ResponseEntity<>(conversationResult, HttpStatus.CREATED);
