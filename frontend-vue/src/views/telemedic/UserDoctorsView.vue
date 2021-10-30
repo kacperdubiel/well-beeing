@@ -5,18 +5,20 @@
 
         </header>
         <section>
-
+            <user-connections-component connection-type="WITH_DOCTOR"/>
         </section>
     </div>
 </template>
 
 <script>
 import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
+import UserConnectionsComponent from "@/components/telemedic/UserConnectionsComponent";
 
 export default {
     name: 'UserDoctorsView',
     components: {
-        TelemedicNavbar
+        TelemedicNavbar,
+        UserConnectionsComponent
     },
     data() {
         return {
