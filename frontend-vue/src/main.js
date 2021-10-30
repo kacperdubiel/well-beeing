@@ -39,6 +39,13 @@ import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 library.add(faBell)
 library.add(faUserCircle)
 
+//telemedic
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+library.add(faPlusCircle)
+library.add(faPen)
+library.add(faTrash)
 
 const app = createApp(App).use(router);
 
