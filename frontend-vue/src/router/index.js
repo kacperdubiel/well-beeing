@@ -2,6 +2,10 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Feed from "@/views/social/Feed";
 import SocialView from "@/views/social/SocialView";
+import UserMeasuresView from "@/views/telemedic/UserMeasuresView";
+import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
+import UserCommunicatorView from "@/views/telemedic/UserCommunicatorView";
+import AnalysisView from "@/views/telemedic/AnalysisView";
 
 const routes = [
   {
@@ -27,6 +31,26 @@ const routes = [
     path: '/social',
     name: 'SovialView',
     component: SocialView
+  },
+  {
+    path: '/telemedic/measures',
+    name: 'UserMeasuresView',
+    component: UserMeasuresView
+  },
+  {
+    path: '/telemedic/userdoctors',
+    name: 'UserDoctorsView',
+    component: UserDoctorsView
+  },
+  {
+    path: '/telemedic/usercommunicator',
+    name: 'UserCommunicatorView',
+    component: UserCommunicatorView
+  },
+  {
+    path: '/telemedic/analysis',
+    name: 'AnalysisView',
+    component: AnalysisView
   }
 ]
 
