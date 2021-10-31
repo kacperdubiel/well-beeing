@@ -6,6 +6,7 @@ import store from '@/store';
 import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
+import vSelect from 'vue-select'
 
 
 import Default from "@/layouts/Default";
@@ -25,6 +26,7 @@ import { faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons'
 import { faBriefcaseMedical } from '@fortawesome/free-solid-svg-icons'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
+import 'vue-select/dist/vue-select.css';
 
 library.add(faUserSecret)
 library.add(faUser)
@@ -49,6 +51,7 @@ app.config.globalProperties.$func_global = func_global
 
 app.use(store)
 app.use(VueAxios, axios)
+app.component('v-select', vSelect)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)
 app.component('clean-layout', Clean)

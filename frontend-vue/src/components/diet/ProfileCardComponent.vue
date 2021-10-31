@@ -6,18 +6,20 @@
             </div>
             <hr/>
             <div class="col-lg-8">
-                <p class="card-elem-container-row">{{weight}} kg. </p>
+                <p  v-if="weight > 0" class="card-elem-container-row">{{weight}} kg. </p>
+                <p  v-if="weight <= 0" class="card-elem-container-row">Brak informacji</p>
             </div>
         </div>
         <div class="card-elem-container">
             <div class="col-lg-8">
                 <p class="card-elem-container-row">Wzrost </p>
             </div>
-            <div class="col-lg-8">
-                <p class="card-elem-container-row">{{height}} cm. </p>
+            <div  class="col-lg-8">
+                <p v-if="height > 0" class="card-elem-container-row">{{height}} cm. </p>
+                <p v-if="height <= 0" class="card-elem-container-row"> Brak informacji </p>
             </div>
         </div>
-        <div class="card-elem-container">
+        <div v-if="age > 0" class="card-elem-container">
            <div class="col-lg-8">
                 <p class="card-elem-container-row">Wiek </p>
             </div>
@@ -97,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <profile-card-form-component :formCardData="dataToObject()"></profile-card-form-component>
+        <profile-card-form-component @save:card="updateCardData" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
     </div>
 </template>
 
@@ -113,33 +115,32 @@ export default {
     },
     data(){
         return {
-            weight: Number,
-            height: Number,
-            age: Number,
-            sex: String,
-            ailments: Array,
-            isVegan: Boolean,
-            isVegetarian: Boolean,
-            activityLevel: String,
-            trainingActivity: Number,
-            dietGoal: String,
-            modalData: Object
+            weight: 0,
+            height: 0,
+            age: 0,
+            sex: '',
+            ailments: [],
+            isVegan: false,
+            isVegetarian: false,
+            activityLevel: '',
+            trainingActivity: 0,
+            dietGoal: '',
+            modalData: Object,
+            allAilments: []
         }
     },
     mounted(){
         this.getProfileCardData()
+        this.getAilmentsData()
     },
     methods: {
         getProfileCardData(){
-            console.log("no tu:)")
-            console.log(localStorage.getItem('token'))
             axios.get('http://localhost:8090/profile-card', {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 }
             })
             .then(data => {
-                    console.log(data)
                     this.weight = data.data.weight
                     this.height = data.data.height
                     this.age = data.data.age
@@ -152,9 +153,42 @@ export default {
                     this.ailments = data.data.ailments
                 }).catch(e => alert(e))
         },
+        getAilmentsData(){
+            axios.get('http://localhost:8090/ailment', {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(data => {
+                this.allAilments = data.data
+            }).catch(e => alert(e))
+        },
+        updateCardData(profileCard){
+            axios({
+                method: 'put',
+                headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
+                url: "http://localhost:8090/profile-card",
+                data: {
+                    id: profileCard.id,
+                    height: profileCard.height,
+                    weight: profileCard.weight,
+                    age: profileCard.age,
+                    ailments: profileCard.ailments,
+                    activityLevel: profileCard.activityLevel,
+                    trainingActivityTimePerWeek: profileCard.trainingActivity,
+                    dietGoal: profileCard.dietGoal,
+                    vegan: profileCard.isVegan,
+                    vegetarian: profileCard.isVegetarian,
+                    esex: profileCard.sex
+                }
+            })
+            .then((response) => {this.getProfileCardData(); console.log(response)})
+            .catch(e => {console.log(e);})
+        },
         showModal(ailment){
             this.modalData = ailment
         },
+
         dataToObject(){
             return {
                 weight: this.weight,

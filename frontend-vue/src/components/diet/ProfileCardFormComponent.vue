@@ -18,6 +18,8 @@
                                             style="width: 60px;"
                                             id="weightInput"
                                             type="number"
+                                            min="1"
+                                            max="999"
                                             v-model="this.formCardData.weight"
                                         />
                                     </div>
@@ -31,6 +33,8 @@
                                             style="width: 60px;"
                                             id="heightInput"
                                             type="number"
+                                            min=1
+                                            max=300
                                             v-model="this.formCardData.height"
                                         />
                                     </div>
@@ -44,6 +48,8 @@
                                             style="width: 60px;"
                                             id="ageInput"
                                             type="number"
+                                            min=1
+                                            max=150
                                             v-model="this.formCardData.age"
                                         />
                                     </div>
@@ -57,6 +63,7 @@
                                             style="width: 60px;"
                                             id="activityTrainingInput"
                                             type="number"
+                                            min=0
                                             v-model="this.formCardData.trainingActivity"
                                         />
                                     </div>
@@ -92,7 +99,7 @@
                                         <label class="black-text form-check-label" for="activityLevelInput">Poziom aktywności</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-5">
-                                        <select id="activityLevelInput" v-model="this.formCardData.activityLevel" style="width: 260px;" class="form-select" aria-label="Default select example">
+                                        <select id="activityLevelInput" v-model="this.formCardData.activityLevel" class="form-select" aria-label="Default select example">
                                             <option value="VERY_LOW">{{this.$func_global.mapActivity("VERY_LOW")}}</option>
                                             <option value="LOW">{{this.$func_global.mapActivity("LOW")}}</option>
                                             <option value="MEDIUM">{{this.$func_global.mapActivity("MEDIUM")}}</option>
@@ -106,7 +113,7 @@
                                         <label class="black-text form-check-label" for="dietGoalInput">Cel</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-5">
-                                        <select id="dietGoalInput" v-model="this.formCardData.dietGoal" style="width: 260px;" class="form-select" aria-label="Default select example">
+                                        <select id="dietGoalInput" v-model="this.formCardData.dietGoal" class="form-select" aria-label="Default select example">
                                             <option value="FAST_LOSE_WEIGHT">{{this.$func_global.mapDietGoal("FAST_LOSE_WEIGHT")}}</option>
                                             <option value="LOSE_WEIGHT">{{this.$func_global.mapDietGoal("LOSE_WEIGHT")}}</option>
                                             <option value="KEEP_WEIGHT">{{this.$func_global.mapDietGoal("KEEP_WEIGHT")}}</option>
@@ -121,13 +128,30 @@
                                         <label class="black-text form-check-label" for="sexInput">Płeć</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-5">
-                                        <select id="sexInput" v-model="this.formCardData.sex" style="width: 260px;" class="form-select" aria-label="Default select example">
+                                        <select id="sexInput" v-model="this.formCardData.sex" class="form-select" aria-label="Default select example">
                                             <option value="WOMAN">{{this.$func_global.mapSex("WOMAN")}}</option>
                                             <option value="MAN">{{this.$func_global.mapSex("MAN")}}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <hr/>
+                                <div class="row align-items-start">
+                                    <div style="align-items: flex-start; display: flex; margin-bottom: 10px;">
+                                        <label class="black-text form-check-label" for="sexInput">Dolegliwości i stan fizyczny</label>
+                                    </div>
+                                    <div style="margin-bottom: 10px;">
+                                        <v-select
+                                            class=" register-form style-chooser px-0 py-2"
+                                            multiple v-model="chosenAilmentsSource"
+                                            :options="ailmentsSource"
+                                            :reduce="name => name.id"
+                                            label="name"/>
+                                    </div>
+                                 </div>
+                                <hr/>
+                            </div>
+                            <div style="justify-content: flex-end; flex-direction: row; display: flex;">
+                                <button class="btn-card-panel-diet" @click="saveData" data-bs-dismiss="modal">Zapisz</button>
                             </div>
                         </div>
                     </div>
@@ -142,9 +166,25 @@ export default {
     props:{
         formCardData: {
             type: Object
+        },
+        chosenAilmentsSource: {
+            type: Array
+        },
+        ailmentsSource: {
+            type: Array
+        }
+    },
+    methods: {
+        saveData(){
+            let ailmentsObjectsArray = []
+            this.chosenAilmentsSource.forEach((elem) => ailmentsObjectsArray.push({id: elem}))
+            this.formCardData.ailments = ailmentsObjectsArray
+            console.log(this.formCardData)
+            this.$emit('save:card', this.formCardData)
         }
     }
 }
+
 </script>
 
 <style scoped>

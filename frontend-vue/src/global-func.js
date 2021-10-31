@@ -5,13 +5,13 @@ export const func_global = {
         else if(sex == 'MAN')
             return "Mężczyzna"
         else
-            "Nieznany"
+            return 'Brak informacji'
     },
     mapBoolean(state){
         if(state)
-            return "Aktywna"
+            return "Tak"
         else
-            return "Nieaktywna"
+            return "Nie"
     },
     mapActivity(activity){
         if(activity == 'VERY_LOW')
@@ -25,7 +25,7 @@ export const func_global = {
         else if(activity == "VERY_HIGH")
             return "Bardzo wysoka"
         else
-            return "Nieznany"
+            return "Brak informacji"
     },
     mapDietGoal(goal){
         if(goal == 'FAST_LOSE_WEIGHT')
@@ -41,7 +41,7 @@ export const func_global = {
         else if(goal == "GAIN_MUSCLES")
             return "Budowa masy mięśniowej"
         else
-            return "Nieznany"
+            return "Brak informacji"
     },
     mapAilmentType(ailmentType){
         if(ailmentType == 'ALLERGY')
@@ -53,6 +53,6 @@ export const func_global = {
         else if(ailmentType == "PHYSICAL_CONDITION")
             return "Stan fizyczny"
         else
-            return "Nieznany"
+            return "Brak informacji"
     }
  }
