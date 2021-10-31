@@ -34,7 +34,7 @@
 
 .section-bg {
     background-color: var(--GREY2);
-    border-radius: 40px;
+    border-radius: 35px;
     color: white;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
@@ -61,8 +61,34 @@ button[class^="btn-panel-"] {
     font-weight: bold;
 }
 
+button[class^="btn-icon-panel-"] {
+    color: white;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    width: 27px;
+    height: 27px;
+    margin-left: 5px;
+}
+
+button[class^="btn-card-panel-"] {
+    color: white;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    margin-left: 5px;
+    padding: 0.2rem 0.5rem;
+}
+
+
 .btn-panel-telemedic {
     background-color: var(--TELEMEDIC);
+}
+
+.tab {
+    background-color: var(--GREY2);
+    border-radius: 5px;
+    color: white;
 }
 
 .btn-panel-sport {
@@ -70,6 +96,14 @@ button[class^="btn-panel-"] {
 }
 
 .btn-panel-diet {
+    background-color: var(--DIET);
+}
+
+.btn-icon-panel-diet {
+    background-color: var(--DIET);
+}
+
+.btn-card-panel-diet {
     background-color: var(--DIET);
 }
 

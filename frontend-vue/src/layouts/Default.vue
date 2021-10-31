@@ -36,6 +36,7 @@ export default {
 <style scoped>
 #app-container {
     background-color: var(--DARK-YELLOW);
+    min-height: 100vh;
 }
 
 .content {

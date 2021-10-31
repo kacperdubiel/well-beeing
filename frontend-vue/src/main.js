@@ -24,6 +24,8 @@ import { faComments } from '@fortawesome/free-solid-svg-icons'
 import { faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons'
 import { faBriefcaseMedical } from '@fortawesome/free-solid-svg-icons'
+import { faInfo } from '@fortawesome/free-solid-svg-icons'
+
 library.add(faUserSecret)
 library.add(faUser)
 library.add(faUserFriends)
@@ -32,21 +34,23 @@ library.add(faComments)
 library.add(faUtensils)
 library.add(faDumbbell)
 library.add(faBriefcaseMedical)
+library.add(faInfo)
 
 //navbar
 import { faBell } from '@fortawesome/free-regular-svg-icons'
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
+import { func_global} from './global-func.js'
+
 library.add(faBell)
 library.add(faUserCircle)
 
-
 const app = createApp(App).use(router);
+app.config.globalProperties.$func_global = func_global
 
 app.use(store)
 app.use(VueAxios, axios)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)
 app.component('clean-layout', Clean)
-
 app.mount('#app');
 

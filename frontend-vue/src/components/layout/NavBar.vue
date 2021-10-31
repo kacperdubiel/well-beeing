@@ -30,7 +30,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdown-profile">
                             <li><a class="dropdown-item" href="#">Ustawienia</a></li>
-                            <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
+                            <li><a @click="handleLogout" class="dropdown-item" href="#">Wyloguj się</a></li>
                         </ul>
                     </div>
                 </div>
@@ -44,7 +44,12 @@
 
 <script>
 export default {
-    name: "NavBar"
+    name: "NavBar",
+    methods:{
+        handleLogout(){
+            localStorage.removeItem('token');
+        }
+    }
 }
 </script>
 

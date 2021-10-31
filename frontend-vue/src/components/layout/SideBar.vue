@@ -51,7 +51,7 @@
             </router-link>
         </div>
         <div class="mt-4 side-menu">
-            <router-link to="/">
+            <router-link to="/diet">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'utensils']" />

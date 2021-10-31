@@ -12,7 +12,6 @@
             @focus="clearStatus"
             @keypress="clearStatus"
             />
-
         </div>
         <div class="row w-80">
             <input
@@ -148,6 +147,7 @@ export default {
             }
             this.axios.post('http://localhost:8090/' + 'authenticate', data).then((response) => {
                 this.$store.commit('setToken', response.data['jwt']);
+                localStorage.setItem('token', response.data.jwt)
                 console.log(this.$store.getters.getToken)
                 this.clearInputs()
                 this.$router.push({name: 'Feed'})
