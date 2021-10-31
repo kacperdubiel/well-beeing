@@ -78,10 +78,6 @@
             </div>
         </div>
 
-
-
-        <button @click="downloadFile">Pobierz</button>
-
     </div>
 </template>
 
@@ -99,7 +95,6 @@ export default {
                 documentImgPath: ""
             },
             roleRequests: [],
-            requestId:0,
             submittingRequest: false,
             errorRequest: false,
             successRequest: false
@@ -136,18 +131,7 @@ export default {
 
             this.submittingRequest = false
         },
-        downloadFile () {
-            const url = `${this.apiURL}role-request/export/${this.requestId}`
-            const token = this.$store.getters.getToken;
-            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'}, responseType: 'arraybuffer'}).then((response) => {
-                console.log(response.data)
-                const blob = new Blob([response.data], { type: 'application/pdf' })
-                const objectUrl = window.URL.createObjectURL(blob)
-                window.open(objectUrl)
-            }).catch(error => {
-                console.log(error.response.status)
-            });
-        },
+
         importData() {
             let myfile = this.$refs.myfile;
             let files = myfile.files;
@@ -188,8 +172,6 @@ export default {
             return !(this.roleRequest.role === 'ROLE_DOCTOR' || this.roleRequest.role === 'ROLE_DIETICIAN' || this.roleRequest.role === 'ROLE_TRAINER')
         },
         invalidFile() {
-            // return this.$refs.myfile.files[0] === null
-            // return document.getElementById("formFile").files.length === 0
             return this.roleRequest.documentImgPath === ""
         }
     },
