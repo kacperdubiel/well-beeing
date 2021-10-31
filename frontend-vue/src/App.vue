@@ -59,6 +59,8 @@ button[class^="btn-panel-"] {
     padding: 0.5rem 1rem;
     font-size: 1.25rem;
     font-weight: bold;
+    background-color: var(--GREY1);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
 .btn-panel-telemedic {

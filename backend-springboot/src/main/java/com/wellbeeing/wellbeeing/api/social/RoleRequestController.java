@@ -8,21 +8,31 @@ import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.social.RoleRequestService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.nio.Buffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(path = "/role-request")
@@ -91,5 +101,40 @@ public class RoleRequestController {
         roleRequestService.processRoleRequest(roleRequest);
         RoleRequest processedRoleRequest = roleRequestService.getRoleRequest(roleRequestId);
         return new ResponseEntity<>(processedRoleRequest, HttpStatus.OK);
+    }
+
+    SimpleDateFormat sdf = new SimpleDateFormat("/yyyy/MM/dd/");
+    @PostMapping("/import/{requestId}")
+    public ResponseEntity<?> importData(MultipartFile file, @PathVariable long requestId) throws IOException, NotFoundException {
+        String format = sdf.format(new Date());
+        boolean created = false;
+        File folder = new File("backend-springboot/upload/role-requests" + format);
+        if (!folder.exists()) {
+            created = folder.mkdirs();
+        }
+        String oldName = file.getOriginalFilename();
+        String newName = UUID.randomUUID() + oldName.substring(oldName.lastIndexOf("."));
+        Path path = Paths.get("backend-springboot/upload/role-requests" + format + newName).toAbsolutePath().normalize();
+        Files.copy(file.getInputStream(), path);
+        String url = path.toString();
+        System.out.println(url);
+        RoleRequest roleRequest = roleRequestService.getRoleRequest(requestId);
+        roleRequest.setDocumentImgPath(url);
+        roleRequestService.updateRoleRequest(roleRequest);
+
+        return new ResponseEntity<>("Sent", HttpStatus.OK);
+    }
+
+    @GetMapping("/export/{requestId}")
+    public ResponseEntity<?> exportData(@PathVariable long requestId) throws IOException {
+        RoleRequest roleRequest = roleRequestService.getRoleRequest(requestId);
+        String path = roleRequest.getDocumentImgPath();
+        File preFile = new File(path);
+
+        InputStreamResource file = new InputStreamResource(new ByteArrayInputStream(FileUtils.readFileToByteArray(preFile)));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "request")
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(file);
     }
 }

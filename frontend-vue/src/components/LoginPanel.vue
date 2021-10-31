@@ -195,7 +195,6 @@ export default {
                 console.log(this.$store.getters.getLastName)
                 let roles = []
                 response.data['roles'].forEach((e) => {
-                    console.log(e['role'])
                     roles.push(e['role'])
                 })
                 this.$store.commit('setRoles', roles);
