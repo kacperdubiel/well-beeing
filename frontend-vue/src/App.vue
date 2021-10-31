@@ -64,19 +64,27 @@ button[class^="btn-panel-"] {
 }
 
 .btn-panel-telemedic {
-    background-color: var(--TELEMEDIC);
+    background-color: var(--TELEMEDIC) !important;
 }
 
 .btn-panel-sport {
-    background-color: var(--SPORT);
+    background-color: var(--SPORT) !important;
 }
 
 .btn-panel-diet {
-    background-color: var(--DIET);
+    background-color: var(--DIET) !important;
 }
 
 .btn-panel-social {
-    background-color: var(--DARK-YELLOW);
+    background-color: var(--DARK-YELLOW) !important;
+}
+
+p.has-error {
+    color: var(--INTENSE-PINK);
+}
+
+input.has-error {
+    border: 1px solid var(--INTENSE-PINK);
 }
 
 </style>
