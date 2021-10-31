@@ -74,7 +74,7 @@
 
         <div class="row justify-content-center" v-if="roleRequests.length !== 0">
             <div class="col-11">
-                <role-requests-table :role-requests-source="roleRequests" :key="roleRequests"/>
+                <role-requests-table :role-requests-source="roleRequests" :key="roleRequests" @cancel:roleRequest="cancelRoleRequest"/>
             </div>
         </div>
 
@@ -158,13 +158,24 @@ export default {
             this.roleRequest.role = ""
             document.getElementById("formFile").value = ""
         },
-         async getMyRoleRequests() {
+        getMyRoleRequests() {
             const url = `${this.apiURL}role-request/my`
             const token = this.$store.getters.getToken;
-            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
                 this.roleRequests = response.data
             })
+        },
+        cancelRoleRequest(id) {
+            const url = `${this.apiURL}role-request/${id}/cancel`
+            const token = this.$store.getters.getToken;
+            console.log('tu jestem')
+            this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.getMyRoleRequests()
+            }).catch(error => {
+                console.log(error.response.status)
+            });
         }
     },
     computed: {

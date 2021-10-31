@@ -40,7 +40,11 @@ library.add(faUserCircle)
 
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
+import { faInfo } from '@fortawesome/free-solid-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 library.add(faFilePdf)
+library.add(faInfo)
+library.add(faPen)
 
 const app = createApp(App).use(router);
 

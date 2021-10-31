@@ -21,6 +21,17 @@
                         </button>
                     </td>
                     <td>{{ req.status }}</td>
+                    <td class="text-end">
+                        <button class="btn-white mx-1" @click="handleCancel(req.roleReqId)" v-if="req.status === 'PENDING'">
+                            Anuluj
+                        </button>
+                        <button class="btn-white mx-1" v-if="req.status === 'PENDING'">
+                            <font-awesome-icon :icon="['fa', 'pen']" size="1x" class="navbar-icon" />
+                        </button>
+                        <button class="btn-white mx-1">
+                            <font-awesome-icon :icon="['fa', 'info']" size="1x" class="navbar-icon" />
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -52,6 +63,13 @@ export default {
                 console.log(error.response.status)
             });
         },
+        handleCancel (id) {
+            if (confirm('Na pewno chcesz anulować prośbę?')) {
+                this.$emit('cancel:roleRequest', id)
+            } else {
+                console.log('Anuluj')
+            }
+        }
     }
 }
 </script>

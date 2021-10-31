@@ -89,7 +89,7 @@ public class RoleRequestController {
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> updateRoleRequest(@PathVariable(value = "id") Long roleRequestId) throws NotFoundException {
+    public ResponseEntity<?> cancelRoleRequest(@PathVariable(value = "id") Long roleRequestId) throws NotFoundException {
         roleRequestService.cancelRoleRequest(roleRequestId);
         RoleRequest cancelledRoleRequest = roleRequestService.getRoleRequest(roleRequestId);
         return new ResponseEntity<>(cancelledRoleRequest, HttpStatus.OK);
