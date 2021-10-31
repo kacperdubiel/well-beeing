@@ -5,7 +5,7 @@ import SocialView from "@/views/social/SocialView";
 import SportView from "@/views/sport/SportView";
 import TrainingView from "@/components/sport/training/TrainingView";
 import ExerciseView from "@/components/sport/exercise/ExerciseView";
-import TrainingPlansView from "@/components/sport/TrainingPlansView";
+import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView";
 
 const routes = [
   {

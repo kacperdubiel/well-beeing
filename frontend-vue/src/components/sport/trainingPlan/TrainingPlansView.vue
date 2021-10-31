@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import TrainingPlanDay from "@/components/sport/TrainingPlanDayComponent";
+import TrainingPlanDay from "@/components/sport/trainingPlan/TrainingPlanDayComponent";
 export default {
     name: "TrainingPlansView",
     components: {TrainingPlanDay},

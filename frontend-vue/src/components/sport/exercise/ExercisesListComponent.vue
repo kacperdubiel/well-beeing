@@ -32,7 +32,7 @@
                     <td>{{ ex.caloriesBurned }}</td>
                     <td>{{ ex.owner }}</td>
                     <td>
-                        <button class="btn-white mx-2">
+                        <button class="btn-white mx-2" @click="openInfoModal(ex.exerciseId)" data-bs-toggle="modal" data-bs-target="#infoExerciseModal">
                             <font-awesome-icon :icon="['fa', 'info']" />
                         </button>
                         <button class="btn-white">
@@ -46,12 +46,15 @@
             </tbody>
         </table>
     </div>
+    <ExerciseDetails ref="datailsModal"/>
 </div>
 </template>
 
 <script>
+import ExerciseDetails from "@/components/sport/exercise/ExerciseDetails";
 export default {
     name: "ExercisesListComponent",
+    components: {ExerciseDetails},
     data () {
         return {
             exercises: [this.exercise],
@@ -67,6 +70,12 @@ export default {
     },
     props: {
         exercisesSource: Array
+    },
+    methods: {
+        openInfoModal(id) {
+            this.$store.commit('setExerciseId', id);
+            this.$refs.datailsModal.getExercise();
+        }
     }
 }
 </script>

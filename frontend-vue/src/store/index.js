@@ -4,9 +4,9 @@ export default createStore({
     state () {
         return {
             // SOCIAL
-            token: ""
+            token: "",
             // PHYSICAL ACTIVITY
-
+            exerciseId: 0
             // NUTRITION
 
             // TELEMEDICINE
@@ -15,11 +15,17 @@ export default createStore({
     mutations: {
         setToken (state, value) {
             state.token = value;
+        },
+        setExerciseId (state, value) {
+            state.exerciseId = value;
         }
     },
     getters: {
         getToken (state) {
             return state.token;
+        },
+        getExerciseId (state) {
+            return state.exerciseId;
         }
     }
 });

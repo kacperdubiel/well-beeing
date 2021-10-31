@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import TrainingInPlan from "@/components/sport/TrainingInPlanComponent";
+import TrainingInPlan from "@/components/sport/trainingPlan/TrainingInPlanComponent";
 export default {
 name: "TrainingPlanDay",
     components: {TrainingInPlan},
