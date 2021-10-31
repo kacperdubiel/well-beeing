@@ -4,16 +4,18 @@ import com.wellbeeing.wellbeeing.domain.diet.MacroDetail;
 import com.wellbeeing.wellbeeing.domain.diet.MineralDetail;
 import com.wellbeeing.wellbeeing.domain.diet.Product;
 import com.wellbeeing.wellbeeing.domain.diet.VitaminDetail;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.diet.ProductService;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.util.CsvProductImporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,6 +27,10 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
+    @Qualifier("csvProductImporter")
+    private CsvProductImporter csvProductImporter;
+
+    @Autowired
     public ProductController(@Qualifier("productService") ProductService productService){
         this.productService = productService;
     }
@@ -33,6 +39,12 @@ public class ProductController {
     public ResponseEntity<?> getProductById(@PathVariable("productId") UUID productID) throws NotFoundException {
         Product actProduct = productService.getProductById(productID);
         return new ResponseEntity<>(actProduct, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/product/import", method = RequestMethod.POST)
+    public ResponseEntity<?> importProducts() throws Exception {
+        csvProductImporter.readProductsFromCsv("C:\\Users\\User\\Desktop\\well-beeing\\well-beeing\\backend-springboot\\src\\main\\java\\com\\wellbeeing\\wellbeeing\\MyFoodData-Nutrition-Facts-SpreadSheet-Detailed-Release-1-0.csv");
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/product", method = RequestMethod.GET)
@@ -87,5 +99,18 @@ public class ProductController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/product", method = RequestMethod.POST)
+    public ResponseEntity<?> addProduct(@RequestBody @NonNull Product product)  {
+        return new ResponseEntity<>(productService.addProduct(product), HttpStatus.OK);
+    }
 
+    @RequestMapping(path = "/product/{productId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> addProduct(@RequestBody @NonNull Product product, @PathVariable("productId") UUID productId)  {
+        return new ResponseEntity<>(productService.updateProduct(product, productId), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/product/{productId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> addProduct(@PathVariable("productId") UUID productId)  {
+        return new ResponseEntity<>(productService.deleteProduct(productId), HttpStatus.OK);
+    }
 }

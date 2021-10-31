@@ -21,13 +21,13 @@ public class VitaminDetail extends ProductDetail {
     @Enumerated(EnumType.STRING)
     @Column
     private EVitamin vitaminType;
-    /*@Column
+    @Column
     private double amount;
     @Enumerated(EnumType.STRING)
     @Column
-    private EWeightMeasure measureType;*/
-   /* @ManyToOne
+    private EWeightMeasure measureType;
+    @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonIgnore
-    private Product product;*/
+    private Product product;
 }

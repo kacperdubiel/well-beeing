@@ -1,9 +1,8 @@
 package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
-import com.wellbeeing.wellbeeing.service.account.ProfileCardService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.service.account.ProfileCardService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

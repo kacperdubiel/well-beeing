@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository("productDAO")
-public interface ProductDAO extends PagingAndSortingRepository<Product, Integer> {
-    Page<Product> findByNameStartingWith(String name, Pageable pageable);
+public interface ProductDAO extends PagingAndSortingRepository<Product, UUID> {
+    Page<Product> findByNameStartingWithIgnoreCase(String name, Pageable pageable);
     Optional<Product> findById(UUID productId);
     Page<Product> findAll(Pageable pageable);
 }

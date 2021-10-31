@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> getProductsWithNameLike(String namePart, int numberOfElements, int page) {
-        return productDAO.findByNameStartingWith(namePart, PageRequest.of(page,
+        return productDAO.findByNameStartingWithIgnoreCase(namePart, PageRequest.of(page,
                  numberOfElements, Sort.by("name")));
     }
 
@@ -73,5 +74,27 @@ public class ProductServiceImpl implements ProductService {
         result.put("minerals", getProductMineralDetailsByProductId(productID));
         result.put("vitamins", getProductVitaminDetailsByProductId(productID));
         return result;
+    }
+
+    @Override
+    public Product addProduct(Product product) {
+        productDAO.save(product);
+        product.getMineralDetails().forEach(md -> md.setProduct(product));
+        product.getMacroDetails().forEach(md -> md.setProduct(product));
+        product.getVitaminDetails().forEach(md -> md.setProduct(product));
+        return productDAO.save(product);
+    }
+
+    @Override
+    public Product updateProduct(Product product, UUID productId) {
+        product.setId(productId);
+        addProduct(product);
+        return product;
+    }
+
+    @Override
+    public boolean deleteProduct(UUID productId) {
+        productDAO.deleteById(productId);
+        return true;
     }
 }

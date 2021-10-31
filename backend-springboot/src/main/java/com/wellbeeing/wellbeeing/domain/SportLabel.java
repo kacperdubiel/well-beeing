@@ -3,11 +3,11 @@ package com.wellbeeing.wellbeeing.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
-import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class SportLabel {
     @JsonIgnore
     @ManyToMany(mappedBy = "labels")
     private Set<Exercise> exercises;
-    @ManyToMany(mappedBy = "allowedLabels")
+    @ManyToMany(mappedBy = "allowedSportLabels")
     private List<Ailment> labeledAilments;
 
     public void addLabeledExercise(Exercise exercise) {this.exercises.add(exercise);}

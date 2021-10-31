@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.domain.diet;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,4 +20,6 @@ public class NutritionLabel {
     private String description;
     @Column(unique = true)
     private String name;
+    @ManyToMany(mappedBy = "allowedForNutritionLabels" )
+    List<Dish> labelledDishes;
 }

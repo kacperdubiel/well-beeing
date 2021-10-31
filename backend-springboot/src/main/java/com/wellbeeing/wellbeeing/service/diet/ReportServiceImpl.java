@@ -1,20 +1,16 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.diet.*;
 import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.diet.*;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
-import com.wellbeeing.wellbeeing.repository.diet.ProductDAO;
-import com.wellbeeing.wellbeeing.repository.diet.ReportDAO;
-import com.wellbeeing.wellbeeing.repository.diet.ReportProductDetailDAO;
+import com.wellbeeing.wellbeeing.repository.diet.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
 import java.util.stream.Collectors;
 
 @Service("reportService")
@@ -25,6 +21,7 @@ public class ReportServiceImpl implements ReportService {
     public DishDAO dishDAO;
     public ProductDAO productDAO;
     public ReportProductDetailDAO reportProductDetailDAO;
+    public ReportDishDetailDAO reportDishDetailDAO;
 
     public DishService dishService;
 
@@ -33,13 +30,15 @@ public class ReportServiceImpl implements ReportService {
                              @Qualifier("productDAO") ProductDAO productDAO,
                              @Qualifier("dishService") DishService dishService,
                              @Qualifier("profileDAO") ProfileDAO profileDAO,
-                             @Qualifier("reportProductDetailDAO") ReportProductDetailDAO reportProductDetailDAO){
+                             @Qualifier("reportProductDetailDAO") ReportProductDetailDAO reportProductDetailDAO,
+                             @Qualifier("reportDishDetailDAO") ReportDishDetailDAO reportDishDetailDAO){
         this.dishDAO = dishDAO;
         this.reportDAO = reportDAO;
         this.productDAO = productDAO;
         this.dishService = dishService;
         this.profileDAO = profileDAO;
         this.reportProductDetailDAO = reportProductDetailDAO;
+        this.reportDishDetailDAO = reportDishDetailDAO;
 
     }
 
@@ -57,16 +56,24 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<Dish> getReportDishesByReportId(UUID reportId) throws NotFoundException {
-        return getReportById(reportId).getDishList();
+    public List<ReportDishDetail> getReportDishesByReportId(UUID reportId) throws NotFoundException {
+        return getReportById(reportId).getDishDetailsList();
     }
 
     @Override
     public boolean deleteDishesFromReportByReportId(UUID reportId, List<UUID> dishesIds) throws NotFoundException {
-        List<Dish> dishes = getReportDishesByReportId(reportId);
-        List<Dish> newDishes = dishes.stream().filter(dish -> !dishesIds.contains(dish.getId())).collect(Collectors.toList());
+        List<ReportDishDetail> dishes = getReportDishesByReportId(reportId);
+        for(ReportDishDetail rdd : dishes){
+            if(dishesIds.contains(rdd.getId())){
+                Objects.requireNonNull(reportDishDetailDAO.findById(rdd.getId()).orElse(null)).setReport(null);
+                reportDishDetailDAO.save(rdd);
+                reportDishDetailDAO.deleteById(rdd.getId());
+            }
+        }
+        List<ReportDishDetail> newDishes = dishes.stream().
+                filter(dish -> !dishesIds.contains(dish.getId())).collect(Collectors.toList());
         Report report = getReportById(reportId);
-        report.setDishList(newDishes);
+        report.setDishDetailsList(newDishes);
         reportDAO.save(report);
         updateReportDerivedElementsByReportId(reportId);
         return true;
@@ -113,10 +120,12 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public boolean addDishesToReportByReportId(List<UUID> dishesId, UUID reportId) throws NotFoundException {
+    public boolean addDishesToReportByReportId(List<ReportDishDetail> dishes, UUID reportId) throws NotFoundException {
         Report report = getReportById(reportId);
-        for (UUID dishId : dishesId) {
-            dishDAO.findById(dishId).ifPresent(dish -> report.getDishList().add(dish));
+        for (ReportDishDetail dish : dishes) {
+            dish.setReport(report);
+            reportDishDetailDAO.save(dish);
+            report.getDishDetailsList().add(dish);
         }
         reportDAO.save(report);
         return true;
@@ -142,11 +151,11 @@ public class ReportServiceImpl implements ReportService {
         double proteins = 0;
         double carbs = 0;
         double fats = 0;
-        for(Dish d : report.getDishList()){
-            calories += d.getDerivedCalories();
-            proteins += d.getDerivedProteins();
-            carbs += d.getDerivedCarbohydrates();
-            fats += d.getDerivedFats();
+        for(ReportDishDetail d : report.getDishDetailsList()){
+            calories += d.getDish().getDerivedCalories() * d.getPortions();
+            proteins += d.getDish().getDerivedProteins() * d.getPortions();
+            carbs += d.getDish().getDerivedCarbohydrates() * d.getPortions();
+            fats += d.getDish().getDerivedFats() * d.getPortions();
         }
         for(ReportProductDetail p : report.getProductDetailsList()){
             calories += p.getAmount() * p.getMeasureType().getNumberOfGrams() * p.getProduct().getCaloriesPerHundredGrams()/100;
@@ -167,7 +176,12 @@ public class ReportServiceImpl implements ReportService {
         Map<String, Map<String, Double>> result = new HashMap<>();
 
         List<DishProductDetail> dishProdDetails = new ArrayList<>();
-        report.getDishList().forEach(d -> dishProdDetails.addAll(d.getDishProductDetails()));
+        //report.getDishDetailsList().forEach(d -> dishProdDetails.addAll(d.getDish().getDishProductDetails()));
+        for(ReportDishDetail rdd : report.getDishDetailsList()){
+            for(int i = 0; i < rdd.getPortions(); i++){
+                dishProdDetails.addAll(rdd.getDish().getDishProductDetails());
+            }
+        }
         List<ReportProductDetail> reportProdDetails = report.getProductDetailsList();
 
         Map<String, Double> reportMacroDetails = new HashMap<>();

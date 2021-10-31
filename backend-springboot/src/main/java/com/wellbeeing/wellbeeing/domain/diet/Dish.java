@@ -25,9 +25,9 @@ public class Dish {
     private String description;
     @Column
     private String recipe;
-    @OneToMany(mappedBy = "dish")
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
     List<DishProductDetail> dishProductDetails;
-    @OneToMany(mappedBy = "dish")
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
     @JsonIgnore
     List<DishMealType> dishMealTypes;
     @ManyToMany

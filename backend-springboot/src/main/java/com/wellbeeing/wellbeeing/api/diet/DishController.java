@@ -1,16 +1,18 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.Dish;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.diet.DishService;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -60,5 +62,25 @@ public class DishController {
                     .objects(dishesPage.getContent())
                     .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/dish", method = RequestMethod.POST)
+    public ResponseEntity<?> addDish(@RequestBody @NonNull Dish dish)  {
+        return new ResponseEntity<>(dishService.addDish(dish), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/dish/{dishId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> addProduct(@RequestBody @NonNull Dish dish, @PathVariable("dishId") UUID dishId)  {
+        return new ResponseEntity<>(dishService.updateDish(dish, dishId), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/dish/{dishId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> addProduct(@PathVariable("dishId") UUID dishId)  {
+        return new ResponseEntity<>(dishService.deleteDish(dishId), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/dish/labeled", method = RequestMethod.POST)
+    public ResponseEntity<?> getLabeledDishes(@RequestBody @NonNull List<UUID> labelsIds)  {
+        return new ResponseEntity<>(dishService.getLabeledDishes(labelsIds), HttpStatus.OK);
     }
 }

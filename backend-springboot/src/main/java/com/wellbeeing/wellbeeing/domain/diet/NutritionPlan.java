@@ -25,11 +25,11 @@ public class NutritionPlan {
     @Column
     private boolean isMain;
     @ManyToOne
-    @JoinColumn(name = "profile_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "profile_id")
     private Profile profile;
     @OneToMany(mappedBy = "nutritionPlan")
     private List<NutritionPlanPosition> nutritionPlanPositions;
     @OneToOne
-    @JoinColumn(name = "diet_id", nullable = true)
+    @JoinColumn(name = "diet_id")
     private Diet diet;
 }

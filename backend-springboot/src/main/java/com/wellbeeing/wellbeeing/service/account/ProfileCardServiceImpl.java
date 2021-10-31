@@ -2,14 +2,17 @@ package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
-import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.service.diet.calculation.ProfileDietCalculationService;
+import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
+import com.wellbeeing.wellbeeing.repository.diet.AilmentDAO;
+import com.wellbeeing.wellbeeing.service.diet.calculation.ProfileDietCalculationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service("profileCardService")
@@ -18,15 +21,18 @@ public class ProfileCardServiceImpl implements ProfileCardService {
     private ProfileDietCalculationService profileDietCalculationService;
     private ProfileService profileService;
     private ProfileCardDAO profileCardDAO;
+    private AilmentDAO ailmentDAO;
 
     @Autowired
     public ProfileCardServiceImpl(@Qualifier("profileDietCalculationService")
                                       ProfileDietCalculationService profileDietCalculationService,
                                   @Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO,
-                                  @Qualifier("profileService") ProfileService profileService){
+                                  @Qualifier("profileService") ProfileService profileService,
+                                  @Qualifier("ailmentDAO") AilmentDAO ailmentDAO){
         this.profileDietCalculationService = profileDietCalculationService;
         this.profileCardDAO = profileCardDAO;
         this.profileService = profileService;
+        this.ailmentDAO = ailmentDAO;
     }
 
     @Override
@@ -36,6 +42,9 @@ public class ProfileCardServiceImpl implements ProfileCardService {
             newProfileCard.setId(profileCardId);
             newProfileCard.setDietCalculations(profileCard.getDietCalculations());
             newProfileCard.setProfile(profileCard.getProfile());
+            List<Ailment> ailments = new ArrayList<>();
+            newProfileCard.getAilments().forEach(a -> ailments.add(ailmentDAO.findById(a.getId()).orElse(null)));
+            newProfileCard.setAilments(ailments);
             profileCardDAO.save(newProfileCard);
             profileDietCalculationService.updateDietCalculationByProfileId(profileCard.getProfile().getId());
             return newProfileCard;

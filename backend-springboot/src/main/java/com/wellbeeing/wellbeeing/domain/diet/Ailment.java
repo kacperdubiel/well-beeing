@@ -18,6 +18,8 @@ public class Ailment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column
+    private String name;
+    @Column
     private String description;
     @Enumerated(EnumType.STRING)
     @Column

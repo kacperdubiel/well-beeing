@@ -1,10 +1,10 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.*;
-import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
-import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
+import com.wellbeeing.wellbeeing.domain.diet.Dish;
+import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import org.aspectj.weaver.ast.Not;
+import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
+import com.wellbeeing.wellbeeing.repository.diet.NutritionLabelDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -12,16 +12,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service("dishService")
 public class DishServiceImpl implements DishService {
     private DishDAO dishDAO;
+    private NutritionLabelDAO nutritionLabelDAO;
 
     @Autowired
-    public DishServiceImpl(@Qualifier("dishDAO") DishDAO dishDAO){
+    public DishServiceImpl(@Qualifier("dishDAO") DishDAO dishDAO,
+                           @Qualifier("nutritionLabelDAO") NutritionLabelDAO nutritionLabelDAO){
         this.dishDAO = dishDAO;
+        this.nutritionLabelDAO = nutritionLabelDAO;
     }
 
     @Override
@@ -53,6 +57,36 @@ public class DishServiceImpl implements DishService {
         dish.setDerivedProteins(countDishProteins(dish));
         dishDAO.save(dish);
         return true;
+    }
+
+    @Override
+    public Dish addDish(Dish dish) {
+        dishDAO.save(dish);
+        dish.getDishProductDetails().forEach(d -> d.setDish(dish));
+        dish.getDishMealTypes().forEach(m -> m.setDish(dish));
+        return dishDAO.save(dish);
+    }
+
+    @Override
+    public Dish updateDish(Dish dish, UUID dishId) {
+        dish.setId(dishId);
+        return addDish(dish);
+    }
+
+    @Override
+    public boolean deleteDish(UUID dishId) {
+        dishDAO.deleteById(dishId);
+        return true;
+    }
+
+    @Override
+    public List<Dish> getLabeledDishes(List<UUID> labelIds) {
+        List<Dish> resultDishes = new ArrayList<>();
+        List<NutritionLabel> labels = nutritionLabelDAO.findAllById(labelIds);
+        for(NutritionLabel label : labels){
+            resultDishes.addAll(label.getLabelledDishes());
+        }
+        return resultDishes;
     }
 
     private double countDishCalories(Dish dish) {

@@ -19,7 +19,7 @@ public class DishMealType {
     private UUID id;
     @ManyToOne
     @JoinColumn(name = "dish_id")
-    //@JsonIgnore
+    @JsonIgnore
     private Dish dish;
     @Enumerated(EnumType.STRING)
     @Column

@@ -1,8 +1,8 @@
 package com.wellbeeing.wellbeeing.domain.diet;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,21 +27,10 @@ public class Product {
     private double carbohydratesPerHundredGrams;
     @Column
     private double proteinsPerHundredGrams;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<MacroDetail> macroDetails = new ArrayList<>();
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
-    private List<MacroDetail> macroDetails;
+    private List<MineralDetail> mineralDetails =  new ArrayList<>();
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
-    private List<MineralDetail> mineralDetails;
-    @OneToMany(mappedBy = "product")
-    @JsonIgnore
-    private List<VitaminDetail> vitaminDetails;
-
-
-
-
-
-
-
-
+    private List<VitaminDetail> vitaminDetails = new ArrayList<>();
 }

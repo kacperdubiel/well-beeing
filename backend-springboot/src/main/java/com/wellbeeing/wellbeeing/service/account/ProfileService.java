@@ -2,9 +2,7 @@ package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import javassist.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
-import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

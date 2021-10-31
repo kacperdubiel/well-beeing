@@ -8,16 +8,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Arrays;
-
 @ControllerAdvice
 public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({Exception.class})
+    /*@ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorMessage> handleException(Exception e){
         return new ResponseEntity<>(new ErrorMessage("Server error: " + Arrays.toString(e.getStackTrace()),
                 "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    }*/
 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<ErrorMessage> handleException(NotFoundException e){

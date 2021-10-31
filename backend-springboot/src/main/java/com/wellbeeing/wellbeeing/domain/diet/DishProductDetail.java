@@ -1,7 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +28,7 @@ public class DishProductDetail extends ProductDetail {
     @Enumerated(EnumType.STRING)
     @Column
     private EWeightMeasure measureType;*/
+
 
 
 }

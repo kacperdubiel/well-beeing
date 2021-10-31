@@ -13,22 +13,19 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportProductDetail extends ProductDetail {
+public class ReportDishDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    /*@Column
-    private double amount;
-    @Enumerated(EnumType.STRING)
-    @Column
-    private EWeightMeasure measureType;
     @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Product product;*/
+    @JoinColumn(name = "dish_id", referencedColumnName = "id")
+    private Dish dish;
     @ManyToOne
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     @JsonIgnore
     private Report report;
     @Column
     private LocalDateTime consumingTime;
+    @Column
+    private double portions;
 }

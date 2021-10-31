@@ -5,7 +5,6 @@ import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.Report;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
@@ -104,31 +103,4 @@ public class Profile {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<Opinion> profileReceivedOpinions = new HashSet<>();
-
-    public Profile(String firstName, String lastName, Date birthday, User profileUser) {
-        System.out.println("Entered constructor");
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.profileUser = profileUser;
-        this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
-        profileUser.setProfile(this);
-        this.id = profileUser.getId();
-        System.out.println("Escaped constructor");
-    }
-
-
-    public Profile(String firstName, String lastName, Date birthday, ESportTag eSportTag, ENutritionTag eNutritionTag, User profileUser) {
-        System.out.println("Entered constructor");
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.eSportTag = eSportTag;
-        this.eNutritionTag = eNutritionTag;
-        this.profileUser = profileUser;
-        this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
-        profileUser.setProfile(this);
-        this.id = profileUser.getId();
-        System.out.println("Escaped constructor");
-    }
 }

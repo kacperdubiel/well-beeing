@@ -1,13 +1,13 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.Report;
+import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
 import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.diet.ReportService;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,7 +80,7 @@ public class ReportController {
     @RequestMapping(path = "/report/{reportId}/dish", method = RequestMethod.POST)
     public ResponseEntity<?> addDishesToReportByReportId(Principal principal,
                                                               @PathVariable("reportId")UUID reportId,
-                                                              @RequestBody @NonNull List<UUID> dishes) throws NotFoundException, ForbiddenException {
+                                                              @RequestBody @NonNull List<ReportDishDetail> dishes) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         if(!profileId.equals(reportService.getReportById(reportId).getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
@@ -132,9 +133,10 @@ public class ReportController {
         reportService.updateReportDerivedElementsByReportId(reportId);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
-    /*@RequestMapping(path = "/report/{date}", method = RequestMethod.GET)
-    public ResponseEntity<?> getReportDetailsByDate(Principal principal, @PathVariable("date") String date){
+
+    @RequestMapping(path = "/report/{date}", method = RequestMethod.GET)
+    public ResponseEntity<?> getReportByDate(Principal principal, @PathVariable("date") Date date) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
-    }*/
+        return new ResponseEntity<>(reportService.getReportByDateAndProfileId(date, profileId), HttpStatus.OK);
+    }
 }

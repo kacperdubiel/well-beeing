@@ -6,7 +6,6 @@ import com.wellbeeing.wellbeeing.domain.diet.Product;
 import com.wellbeeing.wellbeeing.domain.diet.VitaminDetail;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -20,5 +19,7 @@ public interface ProductService {
     List<VitaminDetail> getProductVitaminDetailsByProductId(UUID productID) throws NotFoundException;
     List<MineralDetail> getProductMineralDetailsByProductId(UUID productID) throws NotFoundException;
     Map<String, List<?>> getAllProductDetails(UUID productID) throws NotFoundException;
-
+    Product addProduct(Product product);
+    Product updateProduct(Product product, UUID productId);
+    boolean deleteProduct(UUID productId);
 }

@@ -66,12 +66,6 @@ public class ProfileCard {
     @JoinColumn(name = "diet_calculations_id", referencedColumnName = "id")
     @JsonIgnore
     private ProfileDietCalculation dietCalculations;
-
-    public ProfileCard(int weight, int age, Profile profile) {
-        this.weight = weight;
-        this.age = age;
-        this.profile = profile;
-    }
 }
 
 
