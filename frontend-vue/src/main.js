@@ -7,7 +7,6 @@ import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
 
-
 import Default from "@/layouts/Default";
 import Clean from "@/layouts/Clean";
 
@@ -39,6 +38,9 @@ import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 library.add(faBell)
 library.add(faUserCircle)
 
+//role request
+import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
+library.add(faFilePdf)
 
 const app = createApp(App).use(router);
 

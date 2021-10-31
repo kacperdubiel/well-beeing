@@ -72,20 +72,33 @@
 
         </div>
 
+        <div class="row justify-content-center" v-if="roleRequests.length !== 0">
+            <div class="col-11">
+                <role-requests-table :role-requests-source="roleRequests" :key="roleRequests"/>
+            </div>
+        </div>
+
+
+
         <button @click="downloadFile">Pobierz</button>
 
     </div>
 </template>
 
 <script>
+import RoleRequestsTable from "@/components/social/RoleRequestsTable";
 export default {
     name: "RoleRequestView",
+    components: {
+        RoleRequestsTable
+    },
     data () {
         return {
             roleRequest: {
                 role: "",
-                documentImgPath: "path"
+                documentImgPath: ""
             },
+            roleRequests: [],
             requestId:0,
             submittingRequest: false,
             errorRequest: false,
@@ -99,7 +112,10 @@ export default {
         submitRoleRequest () {
             this.submittingRequest = true
             this.clearStatus()
-            console.log(document.getElementById("formFile").value === "")
+            console.log(this.$refs.myfile.files[0])
+            if (this.$refs.myfile.files.length > 0) {
+                this.roleRequest.documentImgPath = this.$refs.myfile.files[0].name
+            }
             if (this.invalidRole || this.invalidFile) {
                 this.errorRequest = true
                 console.log("wielbłąd")
@@ -113,6 +129,7 @@ export default {
                 this.requestId = response.data['roleReqId']
                 this.importData()
                 this.clearInputs()
+                this.getMyRoleRequests()
             }).catch(error => {
                 console.log(error.response.status)
             });
@@ -156,6 +173,14 @@ export default {
         clearInputs () {
             this.roleRequest.role = ""
             document.getElementById("formFile").value = ""
+        },
+         async getMyRoleRequests() {
+            const url = `${this.apiURL}role-request/my`
+            const token = this.$store.getters.getToken;
+            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.roleRequests = response.data
+            })
         }
     },
     computed: {
@@ -164,8 +189,12 @@ export default {
         },
         invalidFile() {
             // return this.$refs.myfile.files[0] === null
-            return document.getElementById("formFile").value === ""
+            // return document.getElementById("formFile").files.length === 0
+            return this.roleRequest.documentImgPath === ""
         }
+    },
+    mounted() {
+        this.getMyRoleRequests()
     }
 }
 </script>

@@ -87,4 +87,8 @@ input.has-error {
     border: 1px solid var(--INTENSE-PINK);
 }
 
+.table-dark {
+    --bs-table-bg: var(--GREY2);
+}
+
 </style>
