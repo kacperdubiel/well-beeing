@@ -19,6 +19,7 @@ public interface ExerciseService {
     boolean addLabelToExerciseByLabelName(long exerciseId, String labelName) throws NotFoundException;
     boolean deleteExercise(long exerciseId) throws NotFoundException;
     Exercise getExercise(long exerciseId);
+    Exercise getExercise(long exerciseId, String userName) throws NotFoundException;
     List<Exercise> getAllExercises();
     List<SportLabel> getAllSportLabels();
     Page<Exercise> getAllExercises(Pageable pageable);

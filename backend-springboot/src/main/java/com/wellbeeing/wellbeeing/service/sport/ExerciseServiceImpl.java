@@ -102,6 +102,24 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
+    public Exercise getExercise(long exerciseId, String userName) throws NotFoundException {
+        Exercise foundExercise = exerciseDAO.findById(exerciseId).orElse(null);
+        if (foundExercise == null)
+            throw new NotFoundException("There's no exercise with id=" + userName);
+        User user = userDAO.findUserByEmail(userName).orElse(null);
+        if (user == null)
+            throw new NotFoundException("There's no user with email=" + userName);
+        double weight = 0;
+        try {
+            weight = user.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        foundExercise.setCaloriesBurned(foundExercise.countCaloriesPerHour(weight));
+        return foundExercise;
+    }
+
+    @Override
     public List<Exercise> getAllExercises() {
         return exerciseDAO.findAll();
     }

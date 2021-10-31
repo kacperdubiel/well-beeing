@@ -64,7 +64,7 @@ public class Exercise {
 //        this.exerciseInTrainings = Stream.of(exerciseInTrainings).collect(Collectors.toSet());
     }
 
-    public int countCaloriesPerHour(int user_weight) {
+    public int countCaloriesPerHour(double user_weight) {
         //METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute
         return (int) (60*(met*3.5*user_weight/200));
     }

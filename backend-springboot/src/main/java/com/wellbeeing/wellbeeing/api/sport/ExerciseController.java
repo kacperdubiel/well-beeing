@@ -45,8 +45,9 @@ public class ExerciseController {
     }
 
     @RequestMapping(path = "/{id}")
-    public ResponseEntity<?> getExerciseId(@PathVariable(value = "id") Long exerciseId) {
-        return new ResponseEntity<>(exerciseService.getExercise(exerciseId), HttpStatus.OK);
+    public ResponseEntity<?> getExerciseId(@PathVariable(value = "id") Long exerciseId, Principal principal) throws NotFoundException {
+        Exercise foundExercise = exerciseService.getExercise(exerciseId, principal.getName());
+        return new ResponseEntity<>(foundExercise, HttpStatus.OK);
     }
 
 //    @GetMapping(path = "")
