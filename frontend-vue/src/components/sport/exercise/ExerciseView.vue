@@ -6,8 +6,16 @@
                 <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" data-bs-target="#addExerciseModal" />
             </span>
         </div>
-        <ExercisesListComponent :exercises-source="exercises"/>
-        <ExercisesGridComponent :exercises-source="exercises"/>
+        <div class="row my-2 align-items-center justify-content-end">
+            <span class="col-2 float-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
+                <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
+            </span>
+            <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
+                <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
+            </span>
+        </div>
+        <ExercisesListComponent v-if="isListView" :exercises-source="exercises"/>
+        <ExercisesGridComponent v-if="!isListView" :exercises-source="exercises"/>
         <!--Modal-->
         <ExerciseForm :labels-source="labels" @get:exercises="getExercises"/>
     </div>
@@ -28,6 +36,7 @@ export default {
         return {
             exercises: [],
             labels: [],
+            isListView: true
         }
     },
     methods: {
@@ -52,6 +61,10 @@ export default {
             }).catch(error => {
                 console.log(error.response);
             });
+        },
+        setListView(value) {
+            console.log(value)
+            this.isListView = value
         }
     },
     mounted() {
@@ -72,5 +85,8 @@ export default {
 }
 .sport-tabs {
     border-bottom-color: var(--SPORT);
+}
+.active-view {
+    color: var(--SPORT);
 }
 </style>

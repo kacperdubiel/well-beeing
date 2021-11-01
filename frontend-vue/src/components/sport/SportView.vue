@@ -59,8 +59,22 @@ export default {
 .sport-tabs .active{
     background-color: var(--SPORT);
     border-color: var(--SPORT);
+    color: white;
 }
 .sport-tabs {
     border-bottom-color: var(--SPORT);
+}
+a {
+    color: white;
+    text-decoration: none;
+}
+.nav-link {
+    color: white;
+    border-color: var(--SPORT);
+
+}
+.nav-link:hover {
+    background-color: var(--SPORT);
+    border-color: var(--SPORT);
 }
 </style>

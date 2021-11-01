@@ -53,12 +53,13 @@
                             </div>
                             <div class="row mt-3">
                                 <p class="form-label">Etykiety</p>
-                                <div class="container labels-container px-1 py-1">
+                                <div class="container labels-container px-1 py-1" v-if="exercise.labels != null && exercise.labels.length > 0">
                                     <div class="form-label label-node p-2 mx-1 my-1"
                                        :style="{backgroundColor: randomColor()}"
                                         v-for="label in exercise.labels" :key="label.sportLabelId">{{label.name}}</div>
 
                                 </div>
+                                <p v-else class="info-value">Brak etykiet</p>
                             </div>
                             <div class="row mt-3">
                                 <p class="form-label">Wydatek energetyczny (intensywność)</p>
