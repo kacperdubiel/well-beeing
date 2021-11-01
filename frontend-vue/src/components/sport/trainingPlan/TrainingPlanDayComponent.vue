@@ -8,8 +8,12 @@
 
             </TrainingInPlan>
         </div>
-    <div class="col " v-if="positions.length === 0">
-            <p>Brak treningów</p>
+    <div class="col " v-if="positions.length === 0 && !create">
+        <p>Brak treningów</p>
+    </div>
+
+    <div v-if="create">
+        <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" data-bs-target="#addTrainingToPlanModal" />
     </div>
 </div>
 </template>
@@ -27,7 +31,8 @@ name: "TrainingPlanDay",
     },
     props: {
         day: String,
-        positions: Array
+        positions: Array,
+        create: Boolean
     }
 }
 </script>
@@ -36,5 +41,9 @@ name: "TrainingPlanDay",
 .day-name {
     font-size: 20px;
     font-weight: bold;
+}
+
+.icon {
+    font-size: 40px;
 }
 </style>

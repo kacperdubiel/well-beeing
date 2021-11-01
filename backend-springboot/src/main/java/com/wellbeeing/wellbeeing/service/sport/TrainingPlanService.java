@@ -19,7 +19,7 @@ public interface TrainingPlanService {
     List<TrainingPosition> getPositionsFromTrainingPlan(long trainingPlanId) throws NotFoundException;
     List<TrainingPlan> getTrainingPlansByCreatorId(UUID creatorId);
     List<TrainingPlan> getTrainingPlansByOwnerId(UUID ownerId);
-    List<TrainingPlan> getMyTrainingPlans(String ownerName);
+    List<TrainingPlan> getMyTrainingPlans(String ownerName) throws NotFoundException;
     List<TrainingPlanRequest> getMyRequests(String userName) throws NotFoundException;
     List<TrainingPlanRequest> getTrainersRequests(String trainerName) throws NotFoundException;
     TrainingPlanRequest changeTrainingPlanRequestStatus(String userName, long requestId, String newStatus) throws NotFoundException;

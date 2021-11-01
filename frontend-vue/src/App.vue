@@ -96,6 +96,7 @@ input{
     border-color: rgb(133, 133, 133);
     text-transform: lowercase;
     font-variant: small-caps;
+    background-color: white;
 }
 
 .style-chooser .vs__clear,
@@ -104,6 +105,7 @@ input{
 }
 .style-chooser .vs__selected {
     background-color: var(--SPORT);
+    color: white;
     background-blend-mode: color;
 }
 .style-chooser .vs__deselect {

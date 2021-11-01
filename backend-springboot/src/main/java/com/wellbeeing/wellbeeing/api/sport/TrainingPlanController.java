@@ -45,7 +45,7 @@ public class TrainingPlanController {
     }
 
     @GetMapping(path = "/my")
-    public ResponseEntity<?> getMyTrainingPlans(Principal principal) {
+    public ResponseEntity<?> getMyTrainingPlans(Principal principal) throws NotFoundException {
         return new ResponseEntity<>(trainingPlanService.getMyTrainingPlans(principal.getName()), HttpStatus.OK);
     }
 

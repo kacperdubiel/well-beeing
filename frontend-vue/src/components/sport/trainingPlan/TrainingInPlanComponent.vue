@@ -5,12 +5,12 @@
                             <div class="col-5 offset-3 training-time-day text-uppercase text-center ">{{trainingPosition.timeOfDay}}
                             </div>
                             <div class="col-3 form-switch justify-content-end">
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" :checked="trainingPosition.trainingStatus === 'COMPLETED'">
                             </div>
                     </div>
                     <div class="training-name">{{trainingPosition.training.name}}</div>
                     <div class="training-descr">{{trainingPosition.training.description}}</div>
-                    <div class="training-additional">3 min | 0 kcal</div>
+                    <div class="training-additional">{{getTotalTime(trainingPosition)}} | {{trainingPosition.training.caloriesBurned}} kcal</div>
                 </div>
             </div>
 
@@ -29,11 +29,29 @@ export default {
                 duration:"10 min",
                 kcal:"325",
                 isCompleted: false
-            }
+            },
+            timeUnits: "mins"
         }
     },
     props: {
         trainingPosition: Object
+    },
+    methods: {
+        getTotalTime(position) {
+            let seconds = position.training.totalTrainingTimeSeconds;
+            console.log(seconds)
+            if (seconds < 60) {
+                return seconds + ' s'
+            }
+            else if (seconds < 3600) {
+                return Math.floor(seconds/60) + ' min'
+            }
+            else if (seconds >= 3600) {
+                let hours = Math.floor(seconds/3600)
+                let minutes = Math.floor((seconds - hours*3600)/60)
+                return hours + ' h ' + (minutes !== 0 ? minutes + ' min': '')
+            }
+        }
     }
 
 }

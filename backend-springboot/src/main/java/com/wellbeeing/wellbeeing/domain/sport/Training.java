@@ -34,6 +34,9 @@ public class Training {
     @JsonIgnore
     private Profile creator;
 
+    @Transient
+    private int caloriesBurned;
+
     @Column(name = "isPrivate")
     private boolean isPrivate = false;
 
@@ -52,6 +55,10 @@ public class Training {
 
     public int caloriesBurned(double user_weight) {
         return this.exerciseInTrainings.stream().map(ex -> ex.countCaloriesPerExerciseDuration(user_weight)).mapToInt(num -> num).sum();
+    }
+
+    public int getTotalTrainingTimeSeconds() {
+        return this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries()).mapToInt(num -> num).sum();
     }
 
     @Override

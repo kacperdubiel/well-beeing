@@ -45,8 +45,10 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     public TrainingPlan addTrainingPlan(TrainingPlan trainingPlan, String creatorName, UUID ownerId) {
         User creator = userDAO.findUserByEmail(creatorName).orElse(null); // user null?
         User owner = userDAO.findUserById(ownerId).orElse(null); // user null?
-        if ( creator == null || owner == null)
+        if ( creator == null)
             return null;
+        if (owner == null)
+            owner = creator;
         System.out.println("Print id:" + creator.getId());
         trainingPlan.setPlanStatus(EPlanStatus.SCRATCH);
         trainingPlan.setOwner(owner.getProfile());
@@ -143,7 +145,21 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
-    public List<TrainingPlan> getMyTrainingPlans(String ownerName) {
+    public List<TrainingPlan> getMyTrainingPlans(String ownerName) throws NotFoundException {
+        User owner = userDAO.findUserByEmail(ownerName).orElse(null);
+        if (owner == null)
+            throw new NotFoundException(String.format("User with name=%s doesn't exist", ownerName));
+        double weight = 0;
+        try {
+            weight = owner.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        List<TrainingPlan> myPlans = trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName);
+        double finalWeight = weight;
+        myPlans.forEach(plan -> plan.getTrainingPositions().forEach(
+                pos -> pos.getTraining().setCaloriesBurned(pos.getTraining().caloriesBurned(finalWeight))
+        ));
         return trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName);
     }
 

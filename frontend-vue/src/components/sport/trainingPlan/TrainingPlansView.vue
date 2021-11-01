@@ -3,13 +3,55 @@
         <div class="m-3 mx-4 header">
             <span >Aktualny plan treningowy </span>
             <span class="week">({{this.getDateRangeOfWeek(week)}})</span>
+            <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
         </div>
-        <div class="container align-items-start" style="overflow: auto">
+        <div class="container align-items-start" style="overflow: auto" v-if="activePlan.trainingPlanId != null">
             <div class="row-fluid d-flex align-items-start">
                 <div v-for="day in days" :key="day.num" class="col-4 day mx-1  mb-3 p-3">
                     <TrainingPlanDay :day=day.name :positions="activePlan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
 
                     </TrainingPlanDay>
+                </div>
+            </div>
+        </div>
+        <div class="m-3 mx-4 header">
+            <span >Tworzenie nowego planu </span>
+        </div>
+        <div class="m-3 mx-4 row-fluid justify-content-center">
+            <span class="mx-3">
+                <button type="button" class="new-plan-option-btn dark-grey-btn" @click="setNewPlanCreationMethod(true)" v-bind:class="{'active-create': createAuto}">Automatyczne</button>
+            </span>
+            <span class="mx-3">
+                <button type="button" class="new-plan-option-btn dark-grey-btn" @click="setNewPlanCreationMethod(false)" v-bind:class="{'active-create': createManual}">Ręczne</button>
+            </span>
+        </div>
+        <div v-if="createAuto">
+            AUTO
+        </div>
+        <div v-if="createManual">
+            <div class="row mt-3 mx-4">
+                <div class="col-4">
+                    <p class="form-label text-start">Tydzień</p>
+                    <v-select
+                        class="style-chooser pb-2"
+                        v-model="newPlan.week"
+                        :options=generateNWeeks(10)
+                        :reduce="range => range.weekNo"
+                        label="range"
+                    />
+                    <button type="button" class="new-plan-option-btn dark-grey-btn" @click="createNewPlan">Utwórz</button>
+
+                    <p class="form-label">{{ newPlan.week }}</p>
+                </div>
+            </div>
+            <!--Plan-->
+            <div class="container align-items-start" style="overflow: auto" v-if="activePlan.trainingPlanId != null">
+                <div class="row-fluid d-flex align-items-start">
+                    <div v-for="day in days" :key="day.num" class="col-4 day mx-1  mb-3 p-3">
+                        <TrainingPlanDay :create="true" :day=day.name :positions="newCreatedPlan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
+
+                        </TrainingPlanDay>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,20 +115,67 @@ export default {
             activePlan:
                 {
                     trainingPositions: []
-                }
+                },
+            createAuto: false,
+            createManual: false,
+            newPlan: {
+                trainingPlanId: -1,
+                week: 0,
+                year: 2021,
+                details:"",
+                planStatus:"",
+                trainingPositions: []
+            },
+            newCreatedPlan: {
+                trainingPositions: []
+            }
         }
     },
     methods: {
+        generateNWeeks(n) {
+            let weekArray = []
+            for (let i = 0; i < n; i++) {
+                weekArray.push({
+                    weekNo: this.week+i,
+                    range:this.getDateRangeOfWeek(this.week + i)})
+            }
+            return weekArray;
+        },
         async getMyTrainingPlans () {
             const url = `${this.apiURL}sport/training-plan/my`
             const token = this.$store.getters.getToken;
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.myTrainingPlans = response.data
-                console.log(this.exercises)
                 this.setActivePlan()
             }).catch(error => {
                 console.log(error.response);
             });
+        },
+        async createNewPlan () {
+            const url = `${this.apiURL}sport/training-plan`
+            const token = this.$store.getters.getToken;
+            console.log('here')
+            const data = {
+                trainingPlan: {
+                    week: this.newPlan.week,
+                    year: new Date().getFullYear(),
+                    // details: this.newPlan.details,
+                    details: "Nowy plan"
+                }
+            }
+            await this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.newPlan.trainingPlanId = response.data.trainingPlanId
+                this.newCreatedPlan = response.data
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        async addTrainingToPlan() {
+
+        },
+        setNewPlanCreationMethod (isAuto) {
+            this.createAuto = isAuto;
+            this.createManual = !isAuto;
         },
         setActivePlan() {
           let plan = this.myTrainingPlans.find(plan => plan.week === this.week);
@@ -106,8 +195,6 @@ export default {
             return rangeIsFrom + " - "+rangeIsTo;
         },
         matchesDayOfTheWeek(position, day) {
-            console.log(position.trainingDate)
-            console.log(new Date(position.trainingDate).getDay())
             return new Date(position.trainingDate).getDay() === day;
         }
     },
@@ -149,5 +236,28 @@ Date.prototype.getWeek = function() {
     background-color: var(--GREY3);
     border-radius: 5px;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+p.week {
+    color: var(--SPORT);
+}
+
+.dark-grey-btn {
+    background: var(--GREY3);
+}
+.new-plan-option-btn {
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 0.25rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    width: 180px;
+}
+.active-create {
+    border: solid;
+    border-color: var(--SPORT);
+    border-radius: 5px;
+    border-width: 2px;
 }
 </style>
