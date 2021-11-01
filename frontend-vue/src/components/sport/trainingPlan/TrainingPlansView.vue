@@ -4,10 +4,10 @@
             <span >Aktualny plan treningowy </span>
             <span class="week">({{this.getDateRangeOfWeek(week)}})</span>
         </div>
-        <div class="container" style="overflow: auto">
-            <div class="row-fluid">
-                <div v-for="day in days" :key="day" class="col-4 day mx-1  mb-3 p-3">
-                    <TrainingPlanDay :day=day>
+        <div class="container align-items-start" style="overflow: auto">
+            <div class="row-fluid d-flex align-items-start">
+                <div v-for="day in days" :key="day.num" class="col-4 day mx-1  mb-3 p-3">
+                    <TrainingPlanDay :day=day.name :positions="activePlan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
 
                     </TrainingPlanDay>
                 </div>
@@ -25,10 +25,74 @@ export default {
         return {
             week: 43,
             year: 2021,
-            days: ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
+            days: [
+                    {
+                        num:1,
+                        name: 'Poniedziałek'
+                    },
+                    {
+                        num:2,
+                        name: 'Wtorek'
+                    },
+                    {
+                        num:3,
+                        name: 'Środa'
+                    },
+                    {
+                        num:4,
+                        name: 'Czwartek'
+                    },
+                    {
+                        num:5,
+                        name: 'Piątek'
+                    },
+                    {
+                        num:6,
+                        name: 'Sobota'
+                    },
+                    {
+                        num:0,
+                        'name': 'Niedziela'
+                    }
+                ],
+            myTrainingPlans: [],
+            trainingPlan :{
+                "trainingPlanId": 27,
+                "year": 2021,
+                "week": 33,
+                "details": "Do details",
+                "planStatus": "SCRATCH",
+            },
+            trainingPosition: {
+                "trainingPositionId": 54,
+                "training": Object,
+                "trainingDate": "2021-10-28T22:25:50.339+00:00",
+                "trainingStatus": "SCRATCH",
+                "timeOfDay": null
+            },
+            activePlan:
+                {
+                    trainingPositions: []
+                }
         }
     },
     methods: {
+        async getMyTrainingPlans () {
+            const url = `${this.apiURL}sport/training-plan/my`
+            const token = this.$store.getters.getToken;
+            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.myTrainingPlans = response.data
+                console.log(this.exercises)
+                this.setActivePlan()
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        setActivePlan() {
+          let plan = this.myTrainingPlans.find(plan => plan.week === this.week);
+          if (plan != null)
+              this.activePlan = plan;
+        },
         getDateRangeOfWeek(weekNo){
             var d1 = new Date();
             var numOfdaysPastSinceLastMonday = eval(d1.getDay()- 1);
@@ -40,7 +104,16 @@ export default {
             d1.setDate(d1.getDate() + 6);
             var rangeIsTo = d1.getDate().toString().padStart(2, '0') + '.' + eval(d1.getMonth()+1).toString().padStart(2, '0');
             return rangeIsFrom + " - "+rangeIsTo;
+        },
+        matchesDayOfTheWeek(position, day) {
+            console.log(position.trainingDate)
+            console.log(new Date(position.trainingDate).getDay())
+            return new Date(position.trainingDate).getDay() === day;
         }
+    },
+    mounted() {
+        this.week = new Date().getWeek()
+        this.getMyTrainingPlans()
     }
 }
 Date.prototype.getWeek = function() {

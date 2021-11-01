@@ -3,11 +3,14 @@
     <div class="m-2 day-name text-uppercase">
         {{day}}
     </div>
-        <div v-for="numa in [1,2,3]" v-bind:key="numa" class="row my-3">
-            <TrainingInPlan>
+        <div v-for="position in positions" v-bind:key="position.trainingPositionId" class="row my-3">
+            <TrainingInPlan :trainingPosition="position">
 
             </TrainingInPlan>
         </div>
+    <div class="col " v-if="positions.length === 0">
+            <p>Brak treningów</p>
+    </div>
 </div>
 </template>
 
@@ -23,7 +26,8 @@ name: "TrainingPlanDay",
         }
     },
     props: {
-        day: String
+        day: String,
+        positions: Array
     }
 }
 </script>
