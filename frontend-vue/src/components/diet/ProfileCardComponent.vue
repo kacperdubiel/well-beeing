@@ -142,7 +142,7 @@ export default {
             })
             .then(data => {
                     this.weight = data.data.weight
-                    this.height = data.data.height
+                    this.height = data.data.height * 100
                     this.age = data.data.age
                     this.sex = data.data.esex
                     this.isVegan = data.data.vegan
@@ -152,12 +152,6 @@ export default {
                     this.dietGoal = data.data.dietGoal
                     this.ailments = data.data.ailments
                 }).catch(e => alert(e))
-            .then((response) => {
-                if(response.status == 401 || response.status == 403){
-                    localStorage.removeItem('token')
-                    this.$router.push(this.$route.query.redirect || '/')
-                }
-            })
         },
         getAilmentsData(){
             axios.get('http://localhost:8090/ailment', {
@@ -168,12 +162,6 @@ export default {
             .then(data => {
                 this.allAilments = data.data
             }).catch(e => alert(e))
-            .then((response) => {
-                if(response.status == 401 || response.status == 403){
-                    localStorage.removeItem('token')
-                    this.$router.push(this.$route.query.redirect || '/')
-                }
-            })
         },
         showModal(ailment){
             this.modalData = ailment

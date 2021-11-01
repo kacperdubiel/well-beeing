@@ -54,5 +54,56 @@ export const func_global = {
             return "Stan fizyczny"
         else
             return "Brak informacji"
+    },
+    mapBMIResult(result){
+        if(result == 'SEVERELY_UNDERWEIGHT')
+            return "Wychudzenie"
+        else if(result == 'UNDERWEIGHT')
+            return "Niedowaga"
+        else if(result == "HEALTHY_WEIGHT")
+            return "Waga w normie"
+        else if(result == "OVERWEIGHT")
+            return "Nadwaga"
+        else if(result == "OBESE")
+            return "Otyłość"
+        else
+            return "Nieznany"
+    },
+    mapMeal(meal){
+        if(meal == 'BREAKFAST')
+            return "Śniadanie"
+        else if(meal == 'LUNCH')
+            return "Drugie śniadanie"
+        else if(meal == "DINNER")
+            return "Obiad"
+        else if(meal == "SNACK")
+            return "Przekąska"
+        else if(meal == "SUPPER")
+            return "Kolacja"
+        else
+            return "Nieznany"
+    },
+    mapGlycemicIndex(index){
+        if(index == 'LOW')
+            return "Niski"
+        else if(index == 'MEDIUM')
+            return "Średni"
+        else if(index == "HIGH")
+            return "Wysoki"
+        else if(index == "ANY_RECOMMENDED")
+            return "Niski/średni"
+        else if(index == "ANY")
+            return "Dowolny"
+        else
+            return "Nieznany"
+    },
+    proteinCalories(){
+        return 4
+    },
+    fatCalories(){
+        return 9
+    },
+    carbCalories(){
+        return 4
     }
  }

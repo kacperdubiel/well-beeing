@@ -225,7 +225,7 @@ export default {
                 url: "http://localhost:8090/profile-card",
                 data: {
                     id: this.formCardData.id,
-                    height: this.formCardData.height,
+                    height: this.formCardData.height / 100,
                     weight: this.formCardData.weight,
                     age: this.formCardData.age,
                     ailments: this.formCardData.ailments,
@@ -239,12 +239,6 @@ export default {
             })
             .then((response) => {this.$emit('save:card'); console.log(response); this.successForm = true})
             .catch(e => {this.errorForm = true;console.log(e);})
-            .then((response) => {
-                if(response.status == 401 || response.status == 403){
-                    localStorage.removeItem('token')
-                    this.$router.push(this.$route.query.redirect || '/')
-                }
-            })
             this.submittingForm = false;
         },
         invalidWeight(){
