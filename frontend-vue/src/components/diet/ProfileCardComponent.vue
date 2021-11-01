@@ -99,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <profile-card-form-component @save:card="updateCardData" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
+        <profile-card-form-component @save:card="getProfileCardData" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
     </div>
 </template>
 
@@ -152,6 +152,12 @@ export default {
                     this.dietGoal = data.data.dietGoal
                     this.ailments = data.data.ailments
                 }).catch(e => alert(e))
+            .then((response) => {
+                if(response.status == 401 || response.status == 403){
+                    localStorage.removeItem('token')
+                    this.$router.push(this.$route.query.redirect || '/')
+                }
+            })
         },
         getAilmentsData(){
             axios.get('http://localhost:8090/ailment', {
@@ -162,33 +168,16 @@ export default {
             .then(data => {
                 this.allAilments = data.data
             }).catch(e => alert(e))
-        },
-        updateCardData(profileCard){
-            axios({
-                method: 'put',
-                headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
-                url: "http://localhost:8090/profile-card",
-                data: {
-                    id: profileCard.id,
-                    height: profileCard.height,
-                    weight: profileCard.weight,
-                    age: profileCard.age,
-                    ailments: profileCard.ailments,
-                    activityLevel: profileCard.activityLevel,
-                    trainingActivityTimePerWeek: profileCard.trainingActivity,
-                    dietGoal: profileCard.dietGoal,
-                    vegan: profileCard.isVegan,
-                    vegetarian: profileCard.isVegetarian,
-                    esex: profileCard.sex
+            .then((response) => {
+                if(response.status == 401 || response.status == 403){
+                    localStorage.removeItem('token')
+                    this.$router.push(this.$route.query.redirect || '/')
                 }
             })
-            .then((response) => {this.getProfileCardData(); console.log(response)})
-            .catch(e => {console.log(e);})
         },
         showModal(ailment){
             this.modalData = ailment
         },
-
         dataToObject(){
             return {
                 weight: this.weight,

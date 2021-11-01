@@ -4,14 +4,14 @@
                 <div class="modal-content card-form-modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title black-text ms2" id="cardModalLabel">Zmień dane karty</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" @click="clearStatus" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid">
                             <div>
                                 <div class="row align-items-start">
                                     <div style="align-items: flex-start; display: flex;" class="col-md-8">
-                                        <label class="black-text" for="weightInput">Waga [kg]</label>
+                                        <label class="black-text" for="weightInput">Waga [kg]*</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-4">
                                         <input
@@ -21,12 +21,14 @@
                                             min="1"
                                             max="999"
                                             v-model="this.formCardData.weight"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
                                         />
                                     </div>
                                 </div>
                                 <div class="row align-items-start">
                                     <div style="align-items: flex-start; display: flex;" class="col-md-8">
-                                        <label class="black-text" for="heightInput">Wzrost [cm]</label>
+                                        <label class="black-text" for="heightInput">Wzrost [cm]*</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-4">
                                         <input
@@ -36,12 +38,14 @@
                                             min=1
                                             max=300
                                             v-model="this.formCardData.height"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
                                         />
                                     </div>
                                 </div>
                                 <div class="row align-items-start">
                                     <div style="align-items: flex-start; display: flex;" class="col-md-8">
-                                        <label class="black-text" for="ageInput">Wiek [lata]</label>
+                                        <label class="black-text" for="ageInput">Wiek [lata]*</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-4">
                                         <input
@@ -51,12 +55,14 @@
                                             min=1
                                             max=150
                                             v-model="this.formCardData.age"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
                                         />
                                     </div>
                                 </div>
                                 <div class="row align-items-start">
                                     <div style="align-items: flex-start; display: flex;" class="col-md-8">
-                                        <label class="black-text" for="activityTraining">Treningi [minuty/tydzień]</label>
+                                        <label class="black-text" for="activityTraining">Treningi [minuty/tydzień]*</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-4">
                                         <input
@@ -65,6 +71,8 @@
                                             type="number"
                                             min=0
                                             v-model="this.formCardData.trainingActivity"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
                                         />
                                     </div>
                                 </div>
@@ -78,6 +86,8 @@
                                             id="veganInput"
                                             type="checkbox"
                                             v-model="this.formCardData.isVegan"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
                                         />
                                     </div>
                                 </div>
@@ -90,16 +100,18 @@
                                             id="vegetarianInput"
                                             type="checkbox"
                                             v-model="this.formCardData.isVegetarian"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
                                         />
                                     </div>
                                 </div>
                                 <hr/>
                                 <div class="row align-items-start">
                                     <div style="align-items: flex-start; display: flex;" class="col-md-7">
-                                        <label class="black-text form-check-label" for="activityLevelInput">Poziom aktywności</label>
+                                        <label class="black-text form-check-label" for="activityLevelInput">Poziom aktywności*</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-5">
-                                        <select id="activityLevelInput" v-model="this.formCardData.activityLevel" class="form-select" aria-label="Default select example">
+                                        <select id="activityLevelInput" @focus="clearStatus" @keypress="clearStatus" v-model="this.formCardData.activityLevel" class="form-select" aria-label="Default select example">
                                             <option value="VERY_LOW">{{this.$func_global.mapActivity("VERY_LOW")}}</option>
                                             <option value="LOW">{{this.$func_global.mapActivity("LOW")}}</option>
                                             <option value="MEDIUM">{{this.$func_global.mapActivity("MEDIUM")}}</option>
@@ -110,10 +122,10 @@
                                 </div>
                                 <div class="row align-items-start">
                                     <div style="align-items: flex-start; display: flex;" class="col-md-7">
-                                        <label class="black-text form-check-label" for="dietGoalInput">Cel</label>
+                                        <label class="black-text form-check-label" for="dietGoalInput">Cel*</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-5">
-                                        <select id="dietGoalInput" v-model="this.formCardData.dietGoal" class="form-select" aria-label="Default select example">
+                                        <select id="dietGoalInput" @focus="clearStatus" @keypress="clearStatus" v-model="this.formCardData.dietGoal" class="form-select" aria-label="Default select example">
                                             <option value="FAST_LOSE_WEIGHT">{{this.$func_global.mapDietGoal("FAST_LOSE_WEIGHT")}}</option>
                                             <option value="LOSE_WEIGHT">{{this.$func_global.mapDietGoal("LOSE_WEIGHT")}}</option>
                                             <option value="KEEP_WEIGHT">{{this.$func_global.mapDietGoal("KEEP_WEIGHT")}}</option>
@@ -125,10 +137,10 @@
                                 </div>
                                 <div class="row align-items-start">
                                     <div style="align-items: flex-start; display: flex;" class="col-md-7">
-                                        <label class="black-text form-check-label" for="sexInput">Płeć</label>
+                                        <label class="black-text form-check-label" for="sexInput">Płeć*</label>
                                     </div>
                                     <div style="margin-bottom: 10px;" class="col-md-5">
-                                        <select id="sexInput" v-model="this.formCardData.sex" class="form-select" aria-label="Default select example">
+                                        <select id="sexInput" @focus="clearStatus" @keypress="clearStatus" v-model="this.formCardData.sex" class="form-select" aria-label="Default select example">
                                             <option value="WOMAN">{{this.$func_global.mapSex("WOMAN")}}</option>
                                             <option value="MAN">{{this.$func_global.mapSex("MAN")}}</option>
                                         </select>
@@ -145,13 +157,21 @@
                                             multiple v-model="chosenAilmentsSource"
                                             :options="ailmentsSource"
                                             :reduce="name => name.id"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
                                             label="name"/>
                                     </div>
                                  </div>
                                 <hr/>
                             </div>
                             <div style="justify-content: flex-end; flex-direction: row; display: flex;">
-                                <button class="btn-card-panel-diet" @click="saveData" data-bs-dismiss="modal">Zapisz</button>
+                                <button class="btn-card-panel-diet" @click="updateCardData">Zapisz</button>
+                            </div>
+                            <div style="justify-content: flex-end; flex-direction: row; display: flex;">
+                                <p class="has-error" v-if="this.errorForm">Upewnij się, że poprawnie uzupełniłeś oznaczone gwiazdką dane!</p>
+                            </div>
+                            <div style="justify-content: flex-end; flex-direction: row; display: flex;">
+                                <p class="no-error" v-if="this.successForm">Zaktualizowano dane</p>
                             </div>
                         </div>
                     </div>
@@ -161,6 +181,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name: "ProfileCardFormComponent",
     props:{
@@ -174,15 +195,80 @@ export default {
             type: Array
         }
     },
-    methods: {
-        saveData(){
-            let ailmentsObjectsArray = []
-            this.chosenAilmentsSource.forEach((elem) => ailmentsObjectsArray.push({id: elem}))
-            this.formCardData.ailments = ailmentsObjectsArray
-            console.log(this.formCardData)
-            this.$emit('save:card', this.formCardData)
+    data(){
+        return{
+            submittingForm: false,
+            successForm: false,
+            errorForm: false
         }
-    }
+    },
+    methods: {
+        clearStatus(){
+            this.successForm = false,
+            this.errorForm = false
+        },
+        updateCardData(){
+            this.submittingForm = true
+            this.clearStatus()
+            if(this.invalidWeight() || this.invalidHeight() || this.invalidAge() || this.invalidTrainingActivity() || this.invalidActivityLevel() || this.invalidDietGoal() || this.invalidSex()){
+                console.log(this.formCardData.weight)
+                console.log(this.invalidWeight())
+                this.errorForm = true
+                return
+            }
+            let ailmentsObjectsArray = []
+            this.chosenAilmentsSource.forEach((elem) => {ailmentsObjectsArray.push({id: (typeof elem != 'object') ? elem : elem.id})})
+            this.formCardData.ailments = ailmentsObjectsArray
+            axios({
+                method: 'put',
+                headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
+                url: "http://localhost:8090/profile-card",
+                data: {
+                    id: this.formCardData.id,
+                    height: this.formCardData.height,
+                    weight: this.formCardData.weight,
+                    age: this.formCardData.age,
+                    ailments: this.formCardData.ailments,
+                    activityLevel: this.formCardData.activityLevel,
+                    trainingActivityTimePerWeek: this.formCardData.trainingActivity,
+                    dietGoal: this.formCardData.dietGoal,
+                    vegan: this.formCardData.isVegan,
+                    vegetarian: this.formCardData.isVegetarian,
+                    esex: this.formCardData.sex
+                }
+            })
+            .then((response) => {this.$emit('save:card'); console.log(response); this.successForm = true})
+            .catch(e => {this.errorForm = true;console.log(e);})
+            .then((response) => {
+                if(response.status == 401 || response.status == 403){
+                    localStorage.removeItem('token')
+                    this.$router.push(this.$route.query.redirect || '/')
+                }
+            })
+            this.submittingForm = false;
+        },
+        invalidWeight(){
+            return this.formCardData.weight === '' || this.formCardData.weight <= 0.0
+        },
+        invalidHeight(){
+            return this.formCardData.height === '' || this.formCardData.height <= 0.0
+        },
+        invalidAge(){
+            return this.formCardData.age === '' || this.formCardData.age <= 0.0 
+        },
+        invalidTrainingActivity(){
+            return this.formCardData.trainingActivity === '' || this.formCardData.trainingActivity < 0.0
+        },
+        invalidActivityLevel(){
+            return this.formCardData.activityLevel === '' || (this.$func_global.mapActivity(this.formCardData.activityLevel) === 'Brak informacji')
+        },
+        invalidDietGoal(){
+            return this.formCardData.dietGoal === '' || (this.$func_global.mapDietGoal(this.formCardData.dietGoal) === 'Brak informacji')
+        },
+        invalidSex(){
+            return this.formCardData.sex === '' || (this.$func_global.mapSex(this.formCardData.sex) === 'Brak informacji')
+        }
+    },
 }
 
 </script>
@@ -196,5 +282,11 @@ export default {
      color: black;
      border-radius: 25px;
      padding: 15px;
+ }
+ p.has-error {
+    color: var(--INTENSE-PINK);
+ }
+ p.no-error {
+    color: green
  }
 </style>
