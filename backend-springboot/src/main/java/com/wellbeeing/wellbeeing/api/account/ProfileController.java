@@ -1,12 +1,14 @@
 package com.wellbeeing.wellbeeing.api.account;
 
+import com.wellbeeing.wellbeeing.domain.account.DoctorProfile;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -77,6 +79,22 @@ public class ProfileController {
             return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
                     "500"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping(path = "/doctors")
+    public ResponseEntity<?> getDoctorsProfiles(@RequestParam(value = "page", defaultValue = "0") String page,
+                                                @RequestParam(value = "size", defaultValue = "10") String size) {
+
+        Page<DoctorProfile> doctorsPage = profileService.getDoctorsProfiles(Integer.parseInt(page), Integer.parseInt(size));
+        PaginatedResponse response = PaginatedResponse.builder()
+                .currentPage(doctorsPage.getNumber())
+                .totalItems(doctorsPage.getTotalElements())
+                .totalPages(doctorsPage.getTotalPages())
+                .objects(doctorsPage.getContent())
+                .build();
+
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/trainers")

@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 public class DoctorProfile extends SpecialistProfile {
-    @Column(nullable = false)
+    @Column()
     private EDoctorSpecialization specialization;
 
 }
