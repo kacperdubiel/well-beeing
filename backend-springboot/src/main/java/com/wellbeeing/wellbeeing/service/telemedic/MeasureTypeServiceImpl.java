@@ -22,7 +22,7 @@ public class MeasureTypeServiceImpl implements MeasureTypeService {
 
     @Override
     public List<MeasureType> getMeasureTypes(){
-        return measureTypeDAO.findAll();
+        return measureTypeDAO.findAllByOrderByNameAsc();
     }
 
     @Override

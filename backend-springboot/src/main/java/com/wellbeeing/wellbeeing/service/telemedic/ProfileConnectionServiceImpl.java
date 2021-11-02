@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -49,7 +50,7 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
         }
 
         return profileConnectionDAO.findByProfileAndConnectionTypeAndIsAccepted(profile, connectionType, isAccepted,
-                PageRequest.of(page, size));
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "requestDate")));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
         }
 
         return profileConnectionDAO.findByConnectedWithAndConnectionTypeAndIsAccepted(connectedWith, connectionType, isAccepted,
-                PageRequest.of(page, size));
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "requestDate")));
     }
 
     @Override
