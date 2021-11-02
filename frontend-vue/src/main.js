@@ -43,9 +43,11 @@ library.add(faUserCircle)
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
 library.add(faPlusCircle)
 library.add(faPen)
 library.add(faTrash)
+library.add(faCalendarCheck)
 
 const app = createApp(App).use(router);
 

@@ -32,19 +32,27 @@
                                             v-model="measureValue"
                                             class="form-control"
                                             min="0" max="1000"
-                                            step="0.5"/>
+                                            step="0.5"
+                                        />
                                         <span class="input-group-text">
-                                                    {{ selectedMeasureType.unit }}
-                                                </span>
+                                            {{ selectedMeasureType.unit }}
+                                        </span>
                                     </div>
                                     <div class="row mt-3">
-                                        <Datepicker v-model="measureDate"
-                                                    uid="add"
-                                                    locale="pl" cancelText="Anuluj" selectText="Wybierz"
-                                                    format="dd/MM/yyyy, HH:mm"
-                                                    maxDate="new Date()"
-                                                    altPosition
-                                        ></Datepicker>
+                                        <date-picker v-model="measureDate" mode="dateTime" is24hr>
+                                            <template v-slot="{ inputValue, inputEvents }">
+                                                <div class="input-group">
+                                                    <input
+                                                        class="form-control"
+                                                        :value="inputValue"
+                                                        v-on="inputEvents"
+                                                    />
+                                                    <span class="input-group-text">
+                                                        <font-awesome-icon :icon="['far', 'calendar-check']" />
+                                                    </span>
+                                                </div>
+                                            </template>
+                                        </date-picker>
                                     </div>
 
                                     <div class="row justify-content-end mt-3">
@@ -86,12 +94,20 @@
                                                 </span>
                                     </div>
                                     <div class="row mt-3">
-                                        <Datepicker v-model="measureDate"
-                                                    uid="edit"
-                                                    locale="pl" cancelText="Anuluj" selectText="Wybierz"
-                                                    format="dd/MM/yyyy, HH:mm"
-                                                    maxDate="new Date()"
-                                        ></Datepicker>
+                                        <date-picker v-model="measureDate" mode="dateTime" is24hr>
+                                            <template v-slot="{ inputValue, inputEvents }">
+                                                <div class="input-group">
+                                                    <input
+                                                        class="form-control"
+                                                        :value="inputValue"
+                                                        v-on="inputEvents"
+                                                    />
+                                                    <span class="input-group-text">
+                                                        <font-awesome-icon :icon="['far', 'calendar-check']" />
+                                                    </span>
+                                                </div>
+                                            </template>
+                                        </date-picker>
                                     </div>
 
                                     <div class="row justify-content-end mt-3">
@@ -179,13 +195,13 @@
 </template>
 
 <script>
-import Datepicker from "vue3-date-time-picker";
+import { DatePicker } from 'v-calendar';
 import moment from "moment";
 
 export default {
     name: 'MeasuresComponent',
     components: {
-        Datepicker
+        DatePicker,
     },
     props: {
         userId: String
