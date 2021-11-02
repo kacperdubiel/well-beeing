@@ -7,6 +7,7 @@ import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
 import UserCommunicatorView from "@/views/telemedic/UserCommunicatorView";
 import AnalysisView from "@/views/telemedic/AnalysisView";
 import DoctorUsersView from "@/views/telemedic/DoctorUsersView";
+import DoctorUserProfileView from "@/views/telemedic/DoctorUserProfileView";
 
 const routes = [
   {
@@ -57,6 +58,11 @@ const routes = [
     path: '/doctor/users',
     name: 'DoctorUsersView',
     component: DoctorUsersView
+  },
+  {
+    path: '/doctor/users/:userId',
+    name: 'DoctorUserProfileView',
+    component: DoctorUserProfileView
   },
 ]
 
