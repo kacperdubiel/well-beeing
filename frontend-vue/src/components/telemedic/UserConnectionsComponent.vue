@@ -67,33 +67,33 @@
                 <div class="col-12">
                     <table class="table specialists-table">
                         <thead>
-                        <tr>
-                            <th scope="col">Imię i nazwisko</th>
-<!--                            <th v-if="connectionType === 'WITH_DOCTOR'" scope="col" class="w-15">Specjalizacja</th>-->
-                            <th scope="col" class="w-15"></th>
-                        </tr>
+                            <tr>
+                                <th scope="col">Imię i nazwisko</th>
+    <!--                            <th v-if="connectionType === 'WITH_DOCTOR'" scope="col" class="w-15">Specjalizacja</th>-->
+                                <th scope="col" class="w-15"></th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="connection in userConnections" v-bind:key="connection.id">
-                            <td v-if="connection.profile.id !== userId">
-                                {{ connection.profile.firstName }} {{ connection.profile.lastName }}
-                            </td>
-                            <td v-else>
-                                {{ connection.connectedWith.firstName }} {{ connection.connectedWith.lastName }}
-                            </td>
+                            <tr v-for="connection in userConnections" v-bind:key="connection.id">
+                                <td v-if="connection.profile.id !== userId">
+                                    {{ connection.profile.firstName }} {{ connection.profile.lastName }}
+                                </td>
+                                <td v-else>
+                                    {{ connection.connectedWith.firstName }} {{ connection.connectedWith.lastName }}
+                                </td>
 
-<!--                            <td v-if="connectionType === 'WITH_DOCTOR'">{{ connection.connectedWith.SPECIALISATION?? }}</td>-->
-                            <td>
-                                <button class="btn-white m-r-5 btn-hover">
-                                    <font-awesome-icon :icon="['fa', 'comments']" />
-                                </button>
-                                <button class="btn-white btn-hover"
-                                        data-bs-toggle="modal" data-bs-target="#deleteUserConnectionModal"
-                                        @click="selectUserConnection(connection)">
-                                    <font-awesome-icon :icon="['fa', 'trash']" />
-                                </button>
-                            </td>
-                        </tr>
+    <!--                            <td v-if="connectionType === 'WITH_DOCTOR'">{{ connection.connectedWith.SPECIALISATION?? }}</td>-->
+                                <td>
+                                    <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover">
+                                        <font-awesome-icon :icon="['fa', 'comments']" />
+                                    </button>
+                                    <button class="btn-white btn-hover"
+                                            data-bs-toggle="modal" data-bs-target="#deleteUserConnectionModal"
+                                            @click="selectUserConnection(connection)">
+                                        <font-awesome-icon :icon="['fa', 'trash']" />
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -163,7 +163,7 @@ export default {
             if(this.selectedUserConnection){
                 this.axios({
                     method: 'delete',
-                    url: "http://localhost:8090/profile-connections/" + this.selectedUserConnection.id,
+                    url: `http://localhost:8090/profile-connections/${this.selectedSpecialistConnection.id}`,
                     headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
                 }).then(() => {
                     this.getUserConnections();

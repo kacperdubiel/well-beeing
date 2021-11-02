@@ -6,6 +6,7 @@ import UserMeasuresView from "@/views/telemedic/UserMeasuresView";
 import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
 import UserCommunicatorView from "@/views/telemedic/UserCommunicatorView";
 import AnalysisView from "@/views/telemedic/AnalysisView";
+import DoctorUsersView from "@/views/telemedic/DoctorUsersView";
 
 const routes = [
   {
@@ -51,7 +52,12 @@ const routes = [
     path: '/telemedic/analysis',
     name: 'AnalysisView',
     component: AnalysisView
-  }
+  },
+  {
+    path: '/doctor/users',
+    name: 'DoctorUsersView',
+    component: DoctorUsersView
+  },
 ]
 
 const router = createRouter({

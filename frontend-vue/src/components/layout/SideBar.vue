@@ -107,7 +107,7 @@
             </router-link>
         </div>
         <div class="side-menu">
-            <router-link to="/">
+            <router-link :to="{ name: 'DoctorUsersView' }">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col ps-2">
                         PANEL LEKARZA
