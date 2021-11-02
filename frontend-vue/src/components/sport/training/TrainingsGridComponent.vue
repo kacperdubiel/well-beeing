@@ -26,8 +26,11 @@
                 <div class="row justify-content-center mw-100 mt-3">
                     <div class="col-lg-12 col-md-9 col-sm-7 col-10">
                         <div class="row align-content-center">
-                            <div class="col-xl-3 col-lg-4 col-md-6 col-12 px-2 py-2 mx-0 section-bg training" v-for="tr in trainingsSource" :key="tr.trainingId">
-                                <training-node :training-source="tr"/>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-12 px-2 py-2 mx-0 section-bg training"
+                                 v-for="tr in trainingsSource" :key="tr.trainingId"
+                                 v-bind:class="{'selected-training' : (mode === 'toPlan' && this.$store.getters.getTrainingId === tr.trainingId) }"
+                                 v-on:click="mode === 'toPlan' ? this.$store.commit('setTrainingId', tr.trainingId) : null">
+                                <training-node :mode="mode" :training-source="tr"/>
                             </div>
                         </div>
                     </div>
@@ -57,7 +60,8 @@ export default {
 
     },
     props: {
-        trainingsSource: Array
+        trainingsSource: Array,
+        mode: String
     }
 }
 </script>
@@ -69,5 +73,8 @@ export default {
     text-align: left;
     border-radius: 2px;
     background-color: var(--GREY3);
+}
+.selected-training {
+    background-color: var(--SPORT);
 }
 </style>

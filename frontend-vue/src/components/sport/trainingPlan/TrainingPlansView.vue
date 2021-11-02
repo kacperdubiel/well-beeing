@@ -5,15 +5,8 @@
             <span class="week">({{this.getDateRangeOfWeek(week)}})</span>
             <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
         </div>
-        <div class="container align-items-start" style="overflow: auto" v-if="activePlan.trainingPlanId != null">
-            <div class="row-fluid d-flex align-items-start">
-                <div v-for="day in days" :key="day.num" class="col-4 day mx-1  mb-3 p-3">
-                    <TrainingPlanDay :day=day.name :positions="activePlan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
-
-                    </TrainingPlanDay>
-                </div>
-            </div>
-        </div>
+        <!--Active plan-->
+        <TrainingPlanWeek :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
         <div class="m-3 mx-4 header">
             <span >Tworzenie nowego planu </span>
         </div>
@@ -39,30 +32,24 @@
                         :reduce="range => range.weekNo"
                         label="range"
                     />
+                </div>
+                <div class="col-4">
                     <button type="button" class="new-plan-option-btn dark-grey-btn" @click="createNewPlan">Utwórz</button>
-
-                    <p class="form-label">{{ newPlan.week }}</p>
                 </div>
             </div>
-            <!--Plan-->
-            <div class="container align-items-start" style="overflow: auto" v-if="activePlan.trainingPlanId != null">
-                <div class="row-fluid d-flex align-items-start">
-                    <div v-for="day in days" :key="day.num" class="col-4 day mx-1  mb-3 p-3">
-                        <TrainingPlanDay :create="true" :day=day.name :positions="newCreatedPlan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
-
-                        </TrainingPlanDay>
-                    </div>
-                </div>
-            </div>
+            <!--New plan-->
+            <TrainingPlanWeek :plan="newCreatedPlan" :week-dates="getDatesArrayOfWeek(newCreatedPlan.week)" :plan-type="'create'" :days="days" v-if="activePlan.trainingPlanId != null"/>
+            <AddTrainingToPlanModal :trainings-source="trainings" :training-plan-id="newCreatedPlan.trainingPlanId" @new-plan="refreshNewPlan"/>
         </div>
     </div>
 </template>
 
 <script>
-import TrainingPlanDay from "@/components/sport/trainingPlan/TrainingPlanDayComponent";
+import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
+import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
 export default {
     name: "TrainingPlansView",
-    components: {TrainingPlanDay},
+    components: {AddTrainingToPlanModal, TrainingPlanWeek,},
     data () {
         return {
             week: 43,
@@ -128,7 +115,8 @@ export default {
             },
             newCreatedPlan: {
                 trainingPositions: []
-            }
+            },
+            trainings: [],
         }
     },
     methods: {
@@ -147,6 +135,17 @@ export default {
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.myTrainingPlans = response.data
                 this.setActivePlan()
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        async refreshNewPlan () {
+            const url = `${this.apiURL}sport/training-plan/${this.newPlan.trainingPlanId}`
+            const token = this.$store.getters.getToken;
+            console.log('here')
+            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                // this.newPlan.trainingPlanId = response.data.trainingPlanId
+                this.newCreatedPlan = response.data
             }).catch(error => {
                 console.log(error.response);
             });
@@ -194,14 +193,48 @@ export default {
             var rangeIsTo = d1.getDate().toString().padStart(2, '0') + '.' + eval(d1.getMonth()+1).toString().padStart(2, '0');
             return rangeIsFrom + " - "+rangeIsTo;
         },
+        getDatesArrayOfWeek(weekNo){
+            var d1 = new Date();
+            var numOfdaysPastSinceLastMonday = eval(d1.getDay()- 1);
+            d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
+            var weekNoToday = d1.getWeek();
+            var weeksInTheFuture = eval( weekNo - weekNoToday );
+            d1.setDate(d1.getDate() + eval( 7 * weeksInTheFuture ));
+            let weekDays = []
+            for (let i = 0; i < 7; i++) {
+                weekDays.push({
+                    day: this.days[i],
+                    date: d1.addDays(i)
+                })
+            }
+            return weekDays;
+        },
         matchesDayOfTheWeek(position, day) {
             return new Date(position.trainingDate).getDay() === day;
-        }
+        },
+        async getTrainings () {
+            const url = `${this.apiURL}sport/training`
+            const token = this.$store.getters.getToken;
+            console.log('token ', token);
+            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.trainings = response.data['objects']
+                console.log(this.trainings)
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
     },
     mounted() {
         this.week = new Date().getWeek()
         this.getMyTrainingPlans()
+        this.getTrainings()
     }
+
+}
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
 }
 Date.prototype.getWeek = function() {
     var date = new Date(this.getTime());

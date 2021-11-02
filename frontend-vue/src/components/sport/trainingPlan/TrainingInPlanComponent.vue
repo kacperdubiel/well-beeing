@@ -5,7 +5,7 @@
                             <div class="col-5 offset-3 training-time-day text-uppercase text-center ">{{trainingPosition.timeOfDay}}
                             </div>
                             <div class="col-3 form-switch justify-content-end">
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" :checked="trainingPosition.trainingStatus === 'COMPLETED'">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" :disabled="trainingPosition.trainingStatus === 'COMPLETED'" :checked="trainingPosition.trainingStatus === 'COMPLETED'">
                             </div>
                     </div>
                     <div class="training-name">{{trainingPosition.training.name}}</div>
@@ -77,5 +77,9 @@ export default {
 }
 .test {
     background-color: red;
+}
+#flexSwitchCheckDefault:checked {
+    background-color: var(--SPORT);
+    border-color: var(--SPORT);
 }
 </style>

@@ -35,10 +35,10 @@
                         <button class="btn-white mx-2" @click="openInfoModal(ex.exerciseId)" data-bs-toggle="modal" data-bs-target="#infoExerciseModal">
                             <font-awesome-icon :icon="['fa', 'info']" />
                         </button>
-                        <button class="btn-white">
+                        <button class="btn-white" v-if="enableButtons">
                             <font-awesome-icon :icon="['fa', 'pencil-alt']" />
                         </button>
-                        <button class="btn-white mx-2">
+                        <button class="btn-white mx-2" v-if="enableButtons">
                             <font-awesome-icon :icon="['fa', 'trash']" />
                         </button>
                     </td>
@@ -64,7 +64,8 @@ export default {
                 exerciseType:"Siłowe",
                 caloriesBurned:345,
                 owner:""
-            }
+            },
+            enableButtons: false
         }
 
     },

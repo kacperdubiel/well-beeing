@@ -1,5 +1,7 @@
 <template>
-    <div class="exercise" :id="trainingSource.exerciseId">
+    <div
+         :id="trainingSource.trainingId"
+    >
         <div class="row mt-2">
             <div class="col-8">
                 <p>{{trainingSource.name}}</p>
@@ -30,6 +32,7 @@ export default {
     name: "TrainingNode",
     props: {
         trainingSource: Object,
+        mode: String
     },
 }
 </script>
@@ -40,5 +43,8 @@ export default {
 }
 .additional {
     font-size: 12px;
+}
+.btn-white {
+    font-size: x-small;
 }
 </style>

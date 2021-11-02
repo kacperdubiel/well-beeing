@@ -3,6 +3,9 @@
     <div class="m-2 day-name text-uppercase">
         {{day}}
     </div>
+    <div class="m-2 text-uppercase">
+        ({{date != null ? this.$func_global.dateDayMonth(date.date) : ""}})
+    </div>
         <div v-for="position in positions" v-bind:key="position.trainingPositionId" class="row my-3">
             <TrainingInPlan :trainingPosition="position">
 
@@ -12,9 +15,9 @@
         <p>Brak treningów</p>
     </div>
 
-    <div v-if="create">
-        <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" data-bs-target="#addTrainingToPlanModal" />
-    </div>
+    <button v-if="create" @click="openAddTrainingToPlanModal(date.date)" data-bs-toggle="modal" data-bs-target="#addTrainingToPlanModal" >
+        <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']"  />
+    </button>
 </div>
 </template>
 
@@ -32,7 +35,14 @@ name: "TrainingPlanDay",
     props: {
         day: String,
         positions: Array,
-        create: Boolean
+        create: Boolean,
+        date: {} // {day:, date:}
+    },
+    methods: {
+        openAddTrainingToPlanModal(date) {
+            console.log(date)
+            this.$store.commit('setTrainingPositionDate', date);
+        }
     }
 }
 </script>
