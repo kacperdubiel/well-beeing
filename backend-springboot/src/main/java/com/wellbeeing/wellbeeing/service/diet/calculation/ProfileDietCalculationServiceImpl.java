@@ -1,17 +1,16 @@
 package com.wellbeeing.wellbeeing.service.diet.calculation;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.DietCalcMealSuggestions;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
 import com.wellbeeing.wellbeeing.domain.diet.type.EBMIResult;
 import com.wellbeeing.wellbeeing.domain.diet.type.EBasicMacro;
 import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.service.account.ProfileCardService;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -71,7 +70,7 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
 
     private EBMIResult decideBmiResultType(double bmiValue){
             if(bmiValue < EBMIResult.SEVERELY_UNDERWEIGHT.getHigherRange())
-                return EBMIResult.UNDERWEIGHT;
+                return EBMIResult.SEVERELY_UNDERWEIGHT;
             if(bmiValue < EBMIResult.UNDERWEIGHT.getHigherRange())
                 return EBMIResult.UNDERWEIGHT;
             if(bmiValue < EBMIResult.HEALTHY.getHigherRange())
