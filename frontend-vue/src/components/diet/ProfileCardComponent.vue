@@ -99,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <profile-card-form-component @save:card="getProfileCardData" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
+        <profile-card-form-component @save:card="saveEditedCard" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
     </div>
 </template>
 
@@ -152,6 +152,10 @@ export default {
                     this.dietGoal = data.data.dietGoal
                     this.ailments = data.data.ailments
                 }).catch(e => alert(e))
+        },
+        saveEditedCard(){
+            this.getProfileCardData()
+            this.$emit('card:updated')
         },
         getAilmentsData(){
             axios.get('http://localhost:8090/ailment', {

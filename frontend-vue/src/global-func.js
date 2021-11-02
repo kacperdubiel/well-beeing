@@ -60,7 +60,7 @@ export const func_global = {
             return "Wychudzenie"
         else if(result == 'UNDERWEIGHT')
             return "Niedowaga"
-        else if(result == "HEALTHY_WEIGHT")
+        else if(result == "HEALTHY")
             return "Waga w normie"
         else if(result == "OVERWEIGHT")
             return "Nadwaga"

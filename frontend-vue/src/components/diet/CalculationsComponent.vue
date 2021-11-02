@@ -1,13 +1,25 @@
 <template>
     <div class="calculations-container">
-        <div>
-            <p> BMI <span>{{Math.round(this.calculations.bmi * 100) / 100}}</span></p>
-            <p> BMI RESULT  <span>{{this.$func_global.mapBMIResult(this.calculations.bmiResultType)}}</span></p>
-            <p> BASIC METABOLISM <span>{{Math.round(this.calculations.basicMetabolism)}} </span> </p>
-            <p> CALORIES <span>{{Math.round(this.calculations.suggestedCalories)}} </span> </p>
+        <hr style="margin-top: 0px;" class="title-line"/>
+        <div style="align-items: flex-start; display: flex">
+            <h6 class="title">SUGEROWANE SPOŻYCIE KALORII</h6>
         </div>
-        <hr/>
-        <br/>
+        <div style="align-items: center;">
+            <h2>{{Math.round(this.calculations.suggestedCalories)}} kcal </h2>
+            <p> BMR <span>{{Math.round(this.calculations.basicMetabolism)}} kcal <button class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#basicMetabolismModal"><font-awesome-icon :icon="['fa', 'info']"/></button></span></p>    
+        </div>
+        <hr class="title-line"/>
+        <div style="align-items: flex-start; display: flex">
+            <h6 class="title">BMI</h6>
+        </div>
+        <div style="align-items: center;">
+            <h2 :class="{bad: this.calculations.bmiResultType != 'HEALTHY'}"> BMI <span>{{Math.round(this.calculations.bmi * 100) / 100}} kg/m<sup>2</sup> </span></h2>
+            <p  :class="{bad: this.calculations.bmiResultType != 'HEALTHY'}">{{this.$func_global.mapBMIResult(this.calculations.bmiResultType)}} <button class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#bmiModal"><font-awesome-icon :icon="['fa', 'info']"/></button></p>
+        </div>
+        <hr class="title-line"/>
+        <div style="align-items: flex-start; display: flex">
+            <h6 class="title">MAKROELEMENTY</h6>
+        </div>
         <div class="row">
             <div style="align-items: center; display: flex;" class="col-sm-5">
                 <table style="color: white; text-align: start;" class="table">
@@ -47,9 +59,10 @@
                 </vue3-chart-js>
             </div>
         </div>
-        <br/>
-        <hr/>
-        <br/>
+        <hr class="title-line"/>
+        <div style="align-items: flex-start; display: flex">
+            <h6 class="title">POSIŁKI</h6>
+        </div>
         <div>
             <table class="table table-rounded">
                 <thead class="thead-dark">
@@ -68,6 +81,59 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div id="basicMetabolismModal" class="modal fade" tabindex="-1" aria-labelledby="basicMetabolismModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-bmr-content">
+                    <h3>Podstawowy metabolizm</h3>
+                    <span style="text-align: left;">Wskaźnik podstawowej przemiany materii – Basal metabolic rate (BMR) jest miarą wydatku energii przez organizm w stanie odpoczynku. Określa on ile kalorii trzeba spożyć każdego dnia, aby utrzymać lub zmniejszyć wagę. Jest to liczba kalorii potrzebnych organizmowi do prawidłowego działania podstawowych funkcji życiowych.</span>
+                </div>
+            </div>
+        </div>
+        <div id="bmiModal" class="modal fade" tabindex="-1" aria-labelledby="bmiModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-bmr-content">
+                    <h3>BMI</h3>
+                    <span style="text-align: left;">Wskaźnik masy ciała, wskaźnik Queteleta II – współczynnik powstały przez podzielenie masy ciała podanej w kilogramach przez kwadrat wysokości podanej w metrach. Klasyfikacja wskaźnika BMI została opracowana wyłącznie dla dorosłych i nie może być stosowana u dzieci.</span>
+                    <br/>
+                    <table class="table table-rounded">
+                        <thead>
+                            <tr>
+                                <th scope="col">Wynik</th>
+                                <th scope="col">Min</th>
+                                <th scope="col">Max</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Wychudzenie</th>
+                                <td>0</td>
+                                <td>16</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Niedowaga</th>
+                                <td>16</td>
+                                <td>18.5</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Waga w normie</th>
+                                <td>18.5</td>
+                                <td>25</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Nadwaga</th>
+                                <td>25</td>
+                                <td>30</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Otyłość</th>
+                                <td>30</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                </table>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -99,7 +165,7 @@ export default {
             }
         }
         const updateChart = (a, b, c) => {
-            doughnutChart.data.labels = ['Proteins [g]', 'Carbohydrates[g]', 'Fats [g]']
+            doughnutChart.data.labels = ['Białka [kcal]', 'Węglowodany[kcal]', 'Tłuszcze [kcal]']
             doughnutChart.data.datasets = [
                 {
                     backgroundColor: [
@@ -110,10 +176,6 @@ export default {
                     data: [a, b, c]
                 }
             ]
-            var canvas = document.getElementById("doughnut");
-            var ctx = canvas.getContext("2d");
-            ctx.font = "30px Arial";
-            ctx.fillText("2137KCAL", 10, 50);
             chartRef.value.update()
         }
 
@@ -132,9 +194,9 @@ export default {
             })
             .then(data => {
                 this.calculations = data.data
-                this.updateChart(Math.round(this.calculations.suggestedProteins),
-                                 Math.round(this.calculations.suggestedCarbohydrates),
-                                 Math.round(this.calculations.suggestedFats))
+                this.updateChart(Math.round(this.calculations.suggestedProteins) * this.$func_global.proteinCalories(),
+                                 Math.round(this.calculations.suggestedCarbohydrates) * this.$func_global.carbCalories(),
+                                 Math.round(this.calculations.suggestedFats) * this.$func_global.fatCalories())
             })
             .catch(e => alert(e))
         }
@@ -144,14 +206,14 @@ export default {
 
 <style scoped>
 .table-rounded {
-    border-radius: 10px;
+    border-radius: 20px;
     background-color: whitesmoke;
     color: var(--GREY2);
     width: 100%;
 }
 
 .table tr:last-child {
-    border-bottom-color: var(--GREY2);
+    border-bottom-color: transparent;
 }
 
 .calculations-container{
@@ -161,5 +223,31 @@ export default {
     width: 100%;
 }
 
+.modal-bmr-content {
+       background-color: white;
+       color: black;
+       width: 100%;
+       height: 100%;
+       border-radius: 25px;
+       display: flex;
+       flex-direction: column;
+       align-content: flex-start;
+       align-items: flex-start;
+       padding: 30px;
+}
+.title-line {
+    margin-bottom: 2px
+}
+
+.title {
+    color: rgb(173, 171, 171);
+    margin-top: 1px;
+    margin-bottom: 20px;
+    font-size: 10pt;
+}
+
+.bad {
+    color: red
+}
 
 </style>

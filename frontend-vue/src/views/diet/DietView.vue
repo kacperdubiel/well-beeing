@@ -2,10 +2,10 @@
     <div class="section-bg">
         <tab-wrapper-component>
             <tab-component title="Karta">
-                <profile-card-component></profile-card-component>
+                <profile-card-component @card:updated="onCardUpdated"></profile-card-component>
             </tab-component>
             <tab-component title="Kalkulacje">
-                <calculations-component></calculations-component>
+                <calculations-component :key="calcChanger"></calculations-component>
             </tab-component>
             <tab-component title="Raporty">Hejo content 3</tab-component>
             <tab-component title="Dania">Hejo content 4</tab-component>
@@ -21,6 +21,11 @@ import ProfileCardComponent from '../../components/diet/ProfileCardComponent.vue
 import CalculationsComponent from '../../components/diet/CalculationsComponent.vue'
 export default {
     name: "DietView",
+    data(){
+        return {
+            calcChanger: false
+        }
+    },
     components: {
         TabComponent,
         TabWrapperComponent,
@@ -37,6 +42,10 @@ export default {
                 return true;
             }
             return false;
+        },
+        onCardUpdated(){
+            console.log("NO WYEMITOWALEM XD")
+            this.calcChanger = !this.calcChanger
         }
     }
 }
