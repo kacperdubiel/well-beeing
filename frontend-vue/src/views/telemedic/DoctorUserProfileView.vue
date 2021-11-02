@@ -6,10 +6,10 @@
         <section>
             <div class="row mb-4">
                 <div class="col-2">
-                    <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" />
+                    <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
                 </div>
                 <div class="col">
-                    <h3 v-if="user" class="user-name">
+                    <h3 v-if="user" class="align-left">
                         {{ user.firstName }} {{ user.lastName }}
                     </h3>
                 </div>
@@ -56,11 +56,5 @@ export default {
 </script>
 
 <style scoped>
-.telemedic-section {
-    padding: 20px;
-}
 
-.user-name {
-    text-align: left;
-}
 </style>

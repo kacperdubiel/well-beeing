@@ -32,7 +32,5 @@ export default {
 </script>
 
 <style scoped>
-.telemedic-section {
-    padding: 20px;
-}
+
 </style>

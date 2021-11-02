@@ -77,4 +77,20 @@ button[class^="btn-panel-"] {
     background-color: var(--DARK-YELLOW);
 }
 
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.telemedic-section {
+    padding: 20px;
+}
+
 </style>

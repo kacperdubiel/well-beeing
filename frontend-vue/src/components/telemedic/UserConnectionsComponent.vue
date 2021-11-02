@@ -70,7 +70,7 @@
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
     <!--                            <th v-if="connectionType === 'WITH_DOCTOR'" scope="col" class="w-15">Specjalizacja</th>-->
-                                <th scope="col" class="w-15"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,7 +83,7 @@
                                 </td>
 
     <!--                            <td v-if="connectionType === 'WITH_DOCTOR'">{{ connection.connectedWith.SPECIALISATION?? }}</td>-->
-                                <td>
+                                <td class="align-right">
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
                                     </button>
@@ -195,9 +195,6 @@ export default {
 .m-r-5 {
     margin-right: 5px
 }
-.w-15 {
-    width: 15%;
-}
 
 .btn-panel-telemedic{
     font-size: medium;
@@ -223,6 +220,11 @@ export default {
 
 .specialists-table tbody tr:hover {
     background-color: var(--TELEMEDIC);
+}
+
+a {
+    color: white;
+    text-decoration: none;
 }
 
 </style>

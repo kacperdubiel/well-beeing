@@ -93,7 +93,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
-                                <th scope="col" class="w-15"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -107,7 +107,7 @@
                                     {{ connection.profile.firstName }} {{ connection.profile.lastName }}
                                 </td>
 
-                                <td>
+                                <td class="align-right">
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
                                     </button>
@@ -236,9 +236,6 @@ export default {
 
 .m-r-5 {
     margin-right: 5px
-}
-.w-15 {
-    width: 15%;
 }
 
 .btn-panel-telemedic{

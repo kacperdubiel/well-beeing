@@ -165,7 +165,7 @@
                             <th scope="col" class="w-15">Data</th>
                             <th scope="col" class="w-15">Godzina</th>
                             <th scope="col">Wartość</th>
-                            <th scope="col" class="w-25" v-if="this.isModificationAllowed"></th>
+                            <th scope="col" v-if="this.isModificationAllowed"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -173,7 +173,7 @@
                             <td>{{ formatDate(measure.measureDate) }}</td>
                             <td>{{ formatTime(measure.measureDate) }}</td>
                             <td>{{ measure.value }} {{ measure.measureType.unit }}</td>
-                            <td v-if="this.isModificationAllowed">
+                            <td v-if="this.isModificationAllowed" class="align-right">
                                 <button class="btn-white m-r-5 btn-hover"
                                         data-bs-toggle="modal" data-bs-target="#editMeasureModal"
                                         @click="selectMeasure(measure)">
@@ -397,4 +397,5 @@ export default {
     .measures-table tbody tr:hover {
         background-color: var(--TELEMEDIC);
     }
+
 </style>
