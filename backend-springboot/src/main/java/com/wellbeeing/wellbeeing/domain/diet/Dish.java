@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,10 +27,10 @@ public class Dish {
     @Column
     private String recipe;
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
-    List<DishProductDetail> dishProductDetails;
+    List<DishProductDetail> dishProductDetails = new ArrayList<>();
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<DishMealType> dishMealTypes;
+    List<DishMealType> dishMealTypes = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "dish_nutrition_label",
@@ -45,6 +46,4 @@ public class Dish {
     double derivedProteins;
     @Column
     double derivedFats;
-
-
 }

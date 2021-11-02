@@ -15,5 +15,5 @@ public interface DishService {
     Dish addDish(Dish dish);
     Dish updateDish(Dish dish, UUID dishId);
     boolean deleteDish(UUID dishId);
-    List<Dish> getLabeledDishes(List<UUID> labelIds);
+    Page<Dish> getLabeledDishes(List<UUID> labelIds, int numberOfElements, int page, String namePart);
 }

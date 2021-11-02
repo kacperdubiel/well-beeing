@@ -48,9 +48,9 @@ public class ProductController {
     }
 
     @RequestMapping(path = "/product", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllProductsPaginated(@RequestParam(value = "page", defaultValue = "0") String page,
-                                                     @RequestParam(value = "size", defaultValue = "10") String size){
-        Page<Product> productsPage = productService.getAllProducts(Integer.parseInt(size), Integer.parseInt(page));
+    public ResponseEntity<?> getAllProductsPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                     @RequestParam(value = "size", defaultValue = "10") int size){
+        Page<Product> productsPage = productService.getAllProducts(size, page);
         PaginatedResponse response = PaginatedResponse.builder()
                 .currentPage(productsPage.getNumber())
                 .totalItems(productsPage.getTotalElements())
@@ -64,7 +64,10 @@ public class ProductController {
     @RequestMapping(path = "/product/search", method = RequestMethod.GET)
     public ResponseEntity<?> getProductsWithNameLike(@RequestParam(value = "page", defaultValue = "0") int page,
                                                      @RequestParam(value = "size", defaultValue = "10") int size,
-                                                     @RequestParam(value = "nameLike", defaultValue = "a") String nameLike){
+                                                     @RequestParam(value = "nameLike", defaultValue = "") String nameLike){
+        if(nameLike.equals("")){
+            return getAllProductsPaginated(page, size);
+        }
         Page<Product> productsPage = productService.getProductsWithNameLike(nameLike, size, page);
         PaginatedResponse response = PaginatedResponse.builder()
                 .currentPage(productsPage.getNumber())

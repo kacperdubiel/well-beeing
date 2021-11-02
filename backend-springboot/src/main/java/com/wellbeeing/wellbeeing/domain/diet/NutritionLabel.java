@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class NutritionLabel {
     private String description;
     @Column(unique = true)
     private String name;
+    @JsonIgnore
     @ManyToMany(mappedBy = "allowedForNutritionLabels" )
     List<Dish> labelledDishes;
 }

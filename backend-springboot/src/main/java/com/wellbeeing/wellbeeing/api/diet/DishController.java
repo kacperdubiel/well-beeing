@@ -70,7 +70,7 @@ public class DishController {
     }
 
     @RequestMapping(path = "/dish/{dishId}", method = RequestMethod.PUT)
-    public ResponseEntity<?> addProduct(@RequestBody @NonNull Dish dish, @PathVariable("dishId") UUID dishId)  {
+    public ResponseEntity<?> updateDish(@RequestBody @NonNull Dish dish, @PathVariable("dishId") UUID dishId)  {
         return new ResponseEntity<>(dishService.updateDish(dish, dishId), HttpStatus.OK);
     }
 
@@ -80,7 +80,17 @@ public class DishController {
     }
 
     @RequestMapping(path = "/dish/labeled", method = RequestMethod.POST)
-    public ResponseEntity<?> getLabeledDishes(@RequestBody @NonNull List<UUID> labelsIds)  {
-        return new ResponseEntity<>(dishService.getLabeledDishes(labelsIds), HttpStatus.OK);
+    public ResponseEntity<?> getLabeledDishes(@RequestBody @NonNull List<UUID> labelsIds,
+                                              @RequestParam(value = "page", defaultValue = "0") int page,
+                                              @RequestParam(value = "size", defaultValue = "10") int size,
+                                              @RequestParam(value = "nameLike", defaultValue = "") String nameLike)  {
+        Page<Dish> dishesPage = dishService.getLabeledDishes(labelsIds, size, page, nameLike);
+        PaginatedResponse response = PaginatedResponse.builder()
+                .currentPage(dishesPage.getNumber())
+                .totalItems(dishesPage.getTotalElements())
+                .totalPages(dishesPage.getTotalPages())
+                .objects(dishesPage.getContent())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

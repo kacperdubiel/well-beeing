@@ -44,7 +44,9 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int page) {
-        return dishDAO.findByNameStartingWith(namePart,
+        if(namePart.equals(""))
+            return getAllDishes(numberOfElements, page);
+        return dishDAO.findByNameLikeIgnoreCase(namePart,
                 PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
 
@@ -80,13 +82,21 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public List<Dish> getLabeledDishes(List<UUID> labelIds) {
-        List<Dish> resultDishes = new ArrayList<>();
-        List<NutritionLabel> labels = nutritionLabelDAO.findAllById(labelIds);
-        for(NutritionLabel label : labels){
-            resultDishes.addAll(label.getLabelledDishes());
+    public Page<Dish> getLabeledDishes(List<UUID> labelIds, int numberOfElements, int page, String namePart) {
+        if (labelIds.isEmpty()){
+            return getDishesWithNameLike(namePart, numberOfElements, page);
         }
-        return resultDishes;
+        List<Dish> allDishes = dishDAO.findAll();
+        List<UUID> resultDishes = new ArrayList<>();
+        for(Dish dish : allDishes){
+            List <NutritionLabel> dishLabels = dish.getAllowedForNutritionLabels();
+            List <UUID> dishLabelsIds = new ArrayList<>();
+            dishLabels.forEach(l -> dishLabelsIds.add(l.getId()));
+            if(dishLabelsIds.containsAll(labelIds)){
+                resultDishes.add(dish.getId());
+            }
+        }
+        return dishDAO.findByDishIds(resultDishes, namePart, PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
 
     private double countDishCalories(Dish dish) {
