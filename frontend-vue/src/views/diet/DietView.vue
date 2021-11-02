@@ -8,7 +8,9 @@
                 <calculations-component :key="calcChanger"></calculations-component>
             </tab-component>
             <tab-component title="Raporty">Hejo content 3</tab-component>
-            <tab-component title="Dania">Hejo content 4</tab-component>
+            <tab-component title="Dania">
+                <dish-browser-component></dish-browser-component>
+            </tab-component>
             <tab-component title="Dietetycy">Hejo content 5</tab-component>
         </tab-wrapper-component>
     </div>
@@ -19,6 +21,7 @@ import TabComponent from '../../components/diet/TabComponent.vue'
 import TabWrapperComponent from '../../components/diet/TabWrapperComponent.vue'
 import ProfileCardComponent from '../../components/diet/ProfileCardComponent.vue'
 import CalculationsComponent from '../../components/diet/CalculationsComponent.vue'
+import DishBrowserComponent from '../../components/diet/DishBrowserComponent.vue'
 export default {
     name: "DietView",
     data(){
@@ -30,7 +33,8 @@ export default {
         TabComponent,
         TabWrapperComponent,
         ProfileCardComponent,
-        CalculationsComponent
+        CalculationsComponent,
+        DishBrowserComponent
     },
     mounted(){
         this.redirectIfLogout()

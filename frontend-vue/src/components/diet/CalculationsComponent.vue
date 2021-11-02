@@ -14,7 +14,7 @@
         </div>
         <div style="align-items: center;">
             <h2 :class="{bad: this.calculations.bmiResultType != 'HEALTHY'}"> BMI <span>{{Math.round(this.calculations.bmi * 100) / 100}} kg/m<sup>2</sup> </span></h2>
-            <p  :class="{bad: this.calculations.bmiResultType != 'HEALTHY'}">{{this.$func_global.mapBMIResult(this.calculations.bmiResultType)}} <button class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#bmiModal"><font-awesome-icon :icon="['fa', 'info']"/></button></p>
+            <p  :class="{bad: this.calculations.bmiResultType != 'HEALTHY'}"><span>{{this.$func_global.mapBMIResult(this.calculations.bmiResultType)}} <button class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#bmiModal"><font-awesome-icon :icon="['fa', 'info']"/></button></span></p>
         </div>
         <hr class="title-line"/>
         <div style="align-items: flex-start; display: flex">
@@ -240,7 +240,7 @@ export default {
 }
 
 .title {
-    color: rgb(173, 171, 171);
+    color: var(--GREY1);
     margin-top: 1px;
     margin-bottom: 20px;
     font-size: 10pt;

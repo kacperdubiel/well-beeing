@@ -97,6 +97,18 @@ export const func_global = {
         else
             return "Nieznany"
     },
+    mapMeasure(measure){
+        if(measure == 'GRAM')
+            return "g"
+        else if(measure == 'MILLI_GRAM')
+            return "mg"
+        else if(measure == "MICRO_GRAM")
+            return "mcg"
+        else if(measure == "KILO_GRAM")
+            return "kg"
+        else
+            return "Nieznana"
+    },
     proteinCalories(){
         return 4
     },

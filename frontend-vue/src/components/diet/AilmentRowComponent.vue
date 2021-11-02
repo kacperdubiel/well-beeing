@@ -1,6 +1,6 @@
 <template>
     <div class="ailment-row">
-        <div class="col-lg-3 ailment-name-column">
+        <div class="col-lg-4 ailment-name-column">
             <span>{{ailment.name}}</span>
         </div>
         <div class="col-lg-1">

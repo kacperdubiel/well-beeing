@@ -76,7 +76,7 @@ button[class^="btn-card-panel-"] {
     border-radius: 5px;
     border: none;
     font-weight: bold;
-    margin-left: 5px;
+    margin: 5px;
     padding: 0.2rem 0.5rem;
 }
 
