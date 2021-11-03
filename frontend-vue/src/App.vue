@@ -25,7 +25,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: var(--GREY3);
+}
+
+body {
+    color: var(--GREY3);
 }
 
 .side-menu .router-link-exact-active, .side-menu .router-link-active {
@@ -89,6 +93,11 @@ input.has-error {
 
 .table-dark {
     --bs-table-bg: var(--GREY2);
+}
+
+.no-bg {
+    background-color: transparent;
+    border: none;
 }
 
 </style>

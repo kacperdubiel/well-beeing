@@ -28,20 +28,30 @@
                         <button class="btn-white mx-1" v-if="req.status === 'PENDING'">
                             <font-awesome-icon :icon="['fa', 'pen']" size="1x" class="navbar-icon" />
                         </button>
-                        <button class="btn-white mx-1">
-                            <font-awesome-icon :icon="['fa', 'info']" size="1x" class="navbar-icon" />
+                        <button class="btn-white mx-1" v-if="req.status === 'REJECTED'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestDetailsModal">
+                            <font-awesome-icon :icon="['fa', 'question']" size="1x" class="navbar-icon" />
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <RoleRequestDetails :role-request-source="roleRequest" :key="roleRequest"  @download:file="downloadFile"/>
     </div>
 </template>
 
 <script>
 import moment from 'moment'
+import RoleRequestDetails from "@/components/social/RoleRequestDetails";
 export default {
     name: "RoleRequestsTable",
+    components: {
+        RoleRequestDetails
+    },
+    data () {
+        return {
+            roleRequest: Object
+        }
+    },
     props: {
         roleRequestsSource: Array
     },
@@ -69,15 +79,15 @@ export default {
             } else {
                 console.log('Anuluj')
             }
+        },
+        handleGet(req) {
+            this.roleRequest = req
         }
     }
 }
 </script>
 
 <style scoped>
-.no-bg {
-    background-color: transparent;
-    border: none;
-}
+
 
 </style>
