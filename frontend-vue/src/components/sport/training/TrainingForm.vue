@@ -1,10 +1,10 @@
 <template>
-    <div class="modal fade" id="addExerciseModal" tabindex="-1" aria-labelledby="addExerciseModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addTrainingModal" tabindex="-1" aria-labelledby="addTrainingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title ms-2" id="addExerciseModalLabel">Dodawanie nowego treningu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs(); clearStatusWithTimeout()"></button>
+                    <h5 class="modal-title ms-2" id="addTrainingModalLabel">Dodawanie nowego treningu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid" id="modal-container">
@@ -74,36 +74,153 @@
                                     <button class="register-btn grey-btn py-2" @click="createTraining()">Zatwierdź i dodaj ćwiczenia</button>
                                 </div>
                             </div>
+<!--                        <div v-if="successRegister" class="col-11 mx-auto">-->
+<!--                            <p>-->
+<!--                                Rejestracja przebiegła pomyślnie!-->
+<!--                            </p>-->
+<!--                            <p>-->
+<!--                                Możesz zalogować się swoimi danymi.-->
+<!--                            </p>-->
+<!--                        </div>-->
+
+                    </div>
+                        <div class="row mt-3">
+                            <div class="col-12 text-black text-start">
+                                Cwiczenia w treningu
+                            </div>
+                            <div class="col-12" >
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Nazwa</th>
+                                        <th scope="col">Typ</th>
+                                        <th scope="col">kcal/h</th>
+                                        <th scope="col">Powt</th>
+                                        <th scope="col">Serie</th>
+                                        <th scope="col">Czas</th>
+                                        <th scope="col"></th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="ex in this.createdTraining.exerciseInTrainings" :key="ex.exercise.exerciseId">
+                                        <td>{{ ex.exercise.exerciseId }}</td>
+                                        <td>{{ ex.exercise.name }}</td>
+                                        <td>{{ ex.exercise.exerciseType }}</td>
+                                        <td>{{ ex.exercise.caloriesBurned }}</td>
+                                        <td>{{ ex.repetitions }}</td>
+                                        <td>{{ ex.series }}</td>
+                                        <td>{{ ex.time_seconds }}</td>
+                                        <td>
+                                            <button class="btn-white mx-2" @click="openInfoModal(ex.exercise.exerciseId)" data-bs-toggle="modal" data-bs-target="#infoExerciseModal">
+                                                <font-awesome-icon :icon="['fa', 'info']" />
+                                            </button>
+                                            <button class="btn-white" v-if="enableButtons">
+                                                <font-awesome-icon :icon="['fa', 'pencil-alt']" />
+                                            </button>
+                                            <button class="btn-white mx-2" v-if="enableButtons">
+                                                <font-awesome-icon :icon="['fa', 'trash']" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div v-if="showExercises" class="section-bg">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr class="text-start">
+                                    <th scope="col" >Nazwa</th>
+                                    <th scope="col">Powt</th>
+                                    <th scope="col">Serie</th>
+                                    <th scope="col">Czas</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-start">
+                                            <span class="form-label white">
+                                                {{currentExercise.exercise != null ? currentExercise.exercise.name : ''}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                v-model="currentExercise.repetitions"
+                                                id="reps-form"
+                                                class="register-input p-2 col-8 d-flex justify-self-start"
+                                                :class="{ 'has-error': submittingCreateTraining }"
+                                                @focus="null"
+                                                @keypress="null"
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                v-model="currentExercise.series"
+                                                id="series-form"
+                                                class="register-input p-2 col-8 d-flex justify-self-start"
+                                                :class="{ 'has-error': submittingCreateTraining }"
+                                                @focus="null"
+                                                @keypress="null"
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                v-model="currentExercise.time"
+                                                id="time-form"
+                                                class="p-2 col-8 d-flex justify-self-start"
+                                                :class="{ 'has-error': submittingCreateTraining }"
+                                                @focus="null"
+                                                @keypress="null"
+                                            />
+                                        </td>
+                                        <td>
+                                            <button class="register-btn btn-panel-sport p-2" @click="addExerciseToTraining(currentExercise.exercise.exerciseId)">+</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <div class="row justify-content-end mt-3">
                                 <div class="col-4">
-                                    <button class="register-btn grey-btn p-2" @click="clearInputs(); clearStatusWithTimeout()" data-bs-dismiss="modal">Anuluj</button>
-                                </div>
-                                <div class="col-4">
-                                    <button class="register-btn btn-panel-sport p-2" @click="createTraining">Dodaj</button>
+                                    <button class="register-btn btn-panel-sport p-2" @click="setCurrent">Dodaj</button>
                                 </div>
                             </div>
-
+                            <div class="row my-2 align-items-center justify-content-end">
+                                    <span class="col-2 float-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
+                                        <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
+                                    </span>
+                                <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
+                                        <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
+                                    </span>
+                            </div>
+                            <ExercisesListComponent :mode="'toTraining'" v-if="isListView" :exercises-source="exercisesSource"/>
+                            <ExercisesGridComponent :mode="'toTraining'" v-if="!isListView" :exercises-source="exercisesSource"/>
                         </div>
-
-                        <div v-if="successRegister" class="col-11 mx-auto">
-                            <p>
-                                Rejestracja przebiegła pomyślnie!
-                            </p>
-                            <p>
-                                Możesz zalogować się swoimi danymi.
-                            </p>
-                        </div>
-
                     </div>
                 </div>
             </div>
         </div>
+        <ExerciseDetails ref="detailsModali"/>
     </div>
 </template>
 
 <script>
+import ExercisesListComponent from "@/components/sport/exercise/ExercisesListComponent";
+import ExercisesGridComponent from "@/components/sport/exercise/ExercisesGridComponent";
+import ExerciseDetails from "@/components/sport/exercise/ExerciseDetails";
+
 export default {
     name: "TrainingForm",
+    components: {
+        ExercisesListComponent,
+        ExercisesGridComponent,
+        ExerciseDetails
+    },
     data () {
         return {
             values: [],
@@ -117,10 +234,23 @@ export default {
             successCreateTraining: false,
             nameTaken: false,
             submittingCreateTraining: false,
-            reps:15,
+            repetitions:15,
             time:60,
             timeUnits:"min", //min, h, s
-            series:1
+            series:1,
+            currentExercise : {
+                exercise: null,
+                repetitions:20,
+                time:30,
+                timeUnits:"min", //min, h, s
+                series:2,
+            },
+            createdTraining: {
+
+            },
+            showExercises:false,
+            isListView: true,
+            enableButtons: false
         }
     },
     props: {
@@ -133,6 +263,13 @@ export default {
                 this.clearStatus()
             }, 500)
         },
+        setCurrent() {
+            this.currentExercise.exercise = this.exercisesSource.find(ex => ex.exerciseId === this.$store.getters.getExerciseToTrainingId)
+        },
+        openInfoModal(id) {
+            this.$store.commit('setExerciseId', id);
+            this.$refs.detailsModali.getExercise();
+        },
         clearInputs() {
             this.name = ""
             this.type = ""
@@ -144,6 +281,10 @@ export default {
             this.errorCreateTraining = false
             this.successCreateTraining = false
             this.nameTaken = false
+        },
+        setListView(value) {
+            console.log(value)
+            this.isListView = value
         },
         createTraining() {
             console.log('name: ' + this.name + ' difficulty: ' + this.trainingDifficulty)
@@ -165,7 +306,9 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
+                this.createdTraining = response.data
                 this.successCreateTraining = true
+                this.showExercises = true
                 this.clearInputs()
                 this.$emit('get:trainings')
             }).catch(error => {
@@ -177,27 +320,28 @@ export default {
             document.getElementsByClassName('')
         },
         addExerciseToTraining (exerciseId) {
-            const url = `${this.apiURL}sport/training/${this.trainingId}/add-exercise/${exerciseId}`
+            const url = `${this.apiURL}sport/training/${this.createdTraining.trainingId}/add-exercise/${exerciseId}`
             const token = this.$store.getters.getToken;
             let time_seconds = 0;
-            switch (this.timeUnits) {
+            switch (this.currentExercise.timeUnits) {
                 case "s":
-                    time_seconds = this.time;
+                    time_seconds = this.currentExercise.time;
                     break;
                 case "min":
-                    time_seconds = this.time*60;
+                    time_seconds = this.currentExercise.time*60;
                     break;
                 case "h":
-                    time_seconds = this.time*3600;
+                    time_seconds = this.currentExercise.time*3600;
                     break;
             }
             const data = {
-                "reps":this.reps,
+                "reps":this.currentExercise.repetitions,
                 "time_seconds":time_seconds,
-                "series":3
+                "series":this.currentExercise.series
             }
             this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
+                this.refreshCreatedTraining()
                 // this.successCreateTraining = true
                 // this.clearInputs()
             }).catch(error => {
@@ -240,6 +384,19 @@ export default {
             });
             this.submittingCreateTraining = false
             document.getElementsByClassName('')
+        },
+        refreshCreatedTraining() {
+            const url = `${this.apiURL}sport/training/${this.createdTraining.trainingId}`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.createdTraining = response.data
+                this.$emit('get:trainings')
+            }).catch(error => {
+                if (error.response.status === 409) {
+                    this.nameTaken = true
+                }
+            });
         }
     },
     computed: {
@@ -260,6 +417,12 @@ export default {
 </script>
 
 <style scoped>
+.modal:nth-of-type(even) {
+    z-index: 1062 !important;
+}
+.modal-backdrop.show:nth-of-type(even) {
+    z-index: 1061 !important;
+}
 .pink-btn {
     background: var(--INTENSE-PINK);
 }
@@ -285,23 +448,21 @@ p.has-error {
     text-align: left;
     padding-left: 0;
 }
+.form-label.white {
+     color: white;
+ }
 .register-btn {
     color: white;
     font-weight: bold;
 }
-
-.style-chooser .vs__search::placeholder,
-.style-chooser .vs__dropdown-toggle,
-.style-chooser .vs__dropdown-menu {
-    background: #dfe5fb;
-    border: none;
-    color: #394066;
-    text-transform: lowercase;
-    font-variant: small-caps;
+.modal-dialog {
+    max-width: 800px;
+    width: 40%;
 }
-
-.style-chooser .vs__clear,
-.style-chooser .vs__open-indicator {
-    fill: #394066;
+.active-view {
+    color: var(--SPORT);
+}
+.modal-body .section-bg {
+    border-radius: 2px;
 }
 </style>

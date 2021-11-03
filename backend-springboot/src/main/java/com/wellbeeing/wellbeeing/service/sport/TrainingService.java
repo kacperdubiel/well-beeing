@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TrainingService {
-    Training getTraining(long trainingId);
+    Training getTraining(long trainingId, String userName) throws NotFoundException;
     List<Training> getAllTrainings();
-    Page<Training> getAllTrainings(Pageable pageable);
+    Page<Training> getAllTrainings(Pageable pageable, String userName);
     List<ExerciseInTraining> getExercisesFromTraining(long trainingId) throws NotFoundException;
     Training addTraining(Training training, String creatorName) throws NotFoundException;
     Training addTrainingWithExercises(Training training, String creatorName, List<ExerciseInTraining> exercisesInTraining) throws NotFoundException;

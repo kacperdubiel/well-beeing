@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 //sidebar
 import {
+    faDownload,
     faInfo,
     faListUl,
     faPencilAlt,
@@ -55,6 +56,7 @@ library.add(faTrash)
 library.add(faPlusCircle)
 library.add(faTh)
 library.add(faListUl)
+library.add(faDownload)
 
 const app = createApp(App).use(router);
 app.config.globalProperties.apiURL = 'http://localhost:8090/'

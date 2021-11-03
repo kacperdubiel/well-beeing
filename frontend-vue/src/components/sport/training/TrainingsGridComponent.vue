@@ -28,40 +28,41 @@
                         <div class="row align-content-center">
                             <div class="col-xl-3 col-lg-4 col-md-6 col-12 px-2 py-2 mx-0 section-bg training"
                                  v-for="tr in trainingsSource" :key="tr.trainingId"
-                                 v-bind:class="{'selected-training' : (mode === 'toPlan' && this.$store.getters.getTrainingId === tr.trainingId) }"
-                                 v-on:click="mode === 'toPlan' ? this.$store.commit('setTrainingId', tr.trainingId) : null">
-                                <training-node :mode="mode" :training-source="tr"/>
+                                 v-bind:class="{'selected-training' : (mode === 'toPlan' && this.$store.getters.getPlanTrainingId === tr.trainingId) }"
+                                 v-on:click="mode === 'toPlan' ? this.$store.commit('setPlanTrainingId', tr.trainingId) : null">
+                                <training-node :mode="mode" :training-source="tr" @set:training="setTraining"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <TrainingDetails :training="training"/>
     </div>
 </template>
 
 <script>
 import TrainingNode from "@/components/sport/training/TrainingNode";
+import TrainingDetails from "@/components/sport/training/TrainingDetails";
 
 export default {
     name: "TrainingsGridComponent",
-    components: {TrainingNode},
+    components: {TrainingDetails, TrainingNode},
     data () {
         return {
             exercises: [this.exercise],
-            exercise: {
-                exerciseId:453,
-                name:"Martwy ciąg",
-                exerciseType:"Siłowe",
-                caloriesBurned:345,
-                owner:""
-            }
+            training: Object
         }
 
     },
     props: {
         trainingsSource: Array,
         mode: String
+    },
+    methods: {
+        setTraining(training) {
+            this.training = training
+        }
     }
 }
 </script>

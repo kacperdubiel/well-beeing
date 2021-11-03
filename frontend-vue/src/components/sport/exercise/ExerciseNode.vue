@@ -5,7 +5,7 @@
                 <p>{{exerciseSource.name}}</p>
             </div>
             <div class="col-4">
-                <button class="btn-white mx-2" @click="openInfoModal(exerciseSource.exerciseId)" data-bs-toggle="modal" data-bs-target="#infoExerciseModal">
+                <button class="btn-white mx-2" @click="openInfoModal(exerciseSource)" data-bs-toggle="modal" data-bs-target="#infoExerciseModal">
                     <font-awesome-icon :icon="['fa', 'info']" />
                 </button>
             </div>
@@ -25,11 +25,11 @@ export default {
     name: "ExerciseNode",
     props: {
         exerciseSource: Object,
+        mode: String,
     },
     methods: {
-        openInfoModal(id) {
-            this.$store.commit('setExerciseId', id);
-            this.$refs.datailsModal.getExercise();
+        openInfoModal(exercise) {
+            this.$emit('set:exercise', exercise)
         }
     }
 }

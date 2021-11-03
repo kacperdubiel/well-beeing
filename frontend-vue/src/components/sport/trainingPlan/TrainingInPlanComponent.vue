@@ -1,6 +1,6 @@
 <template>
             <div class="col ">
-                <div class="section-bg p-2 training">
+                <div class="section-bg p-2 training" @click="openInfoModal(trainingPosition.training)" data-bs-toggle="modal" data-bs-target="#infoTrainingModal">
                     <div class="row justify-content-center align-items-center">
                             <div class="col-5 offset-3 training-time-day text-uppercase text-center ">{{trainingPosition.timeOfDay}}
                             </div>
@@ -10,7 +10,7 @@
                     </div>
                     <div class="training-name">{{trainingPosition.training.name}}</div>
                     <div class="training-descr">{{trainingPosition.training.description}}</div>
-                    <div class="training-additional">{{getTotalTime(trainingPosition)}} | {{trainingPosition.training.caloriesBurned}} kcal</div>
+                    <div class="training-additional">{{this.$func_global.getTimePrettyFromSeconds(trainingPosition.training.totalTrainingTimeSeconds)}} | {{trainingPosition.training.caloriesBurned}} kcal</div>
                 </div>
             </div>
 
@@ -19,6 +19,7 @@
 <script>
 export default {
     name: "TrainingInPlan",
+    components: {},
     data() {
         return {
             training: {
@@ -37,9 +38,8 @@ export default {
         trainingPosition: Object
     },
     methods: {
-        getTotalTime(position) {
+        getTimePrettyFromSeconds(position) {
             let seconds = position.training.totalTrainingTimeSeconds;
-            console.log(seconds)
             if (seconds < 60) {
                 return seconds + ' s'
             }
@@ -51,6 +51,10 @@ export default {
                 let minutes = Math.floor((seconds - hours*3600)/60)
                 return hours + ' h ' + (minutes !== 0 ? minutes + ' min': '')
             }
+        },
+        openInfoModal(training) {
+            console.log('Dotarł 0', training)
+            this.$emit('set:training', training)
         }
     }
 

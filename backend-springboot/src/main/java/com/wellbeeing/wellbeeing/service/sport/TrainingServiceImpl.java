@@ -80,8 +80,22 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Training getTraining(long trainingId) {
-        return trainingDAO.findById(trainingId).orElse(null);
+    public Training getTraining(long trainingId, String userName) throws NotFoundException {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Training training = trainingDAO.findById(trainingId).orElse(null);
+        if (training == null)
+        {
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exist", trainingId));
+        }
+        training.setCaloriesBurned(training.caloriesBurned(finalWeight));
+        return training;
     }
 
     @Override
@@ -131,8 +145,18 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Page<Training> getAllTrainings(Pageable pageable) {
-        return trainingDAO.findAll(pageable);
+    public Page<Training> getAllTrainings(Pageable pageable, String userName) {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Page<Training> trainingPage = trainingDAO.findAll(pageable);
+        trainingPage.getContent().forEach(training -> training.setCaloriesBurned(training.caloriesBurned(finalWeight)));
+        return trainingPage;
     }
 
     @Override

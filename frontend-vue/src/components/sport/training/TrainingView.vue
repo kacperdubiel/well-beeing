@@ -3,7 +3,7 @@
         <div class="add-exercise row my-2 align-items-center">
             <span class="h3 col-8 offset-2 text-end">Dodaj</span>
             <span class="col-2 float-end">
-                <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" data-bs-target="#addExerciseModal" />
+                <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" href="#addTrainingModal" />
             </span>
         </div>
         <div class="row my-2 align-items-center justify-content-end">
@@ -17,9 +17,8 @@
         <TrainingsListComponent v-if="isListView" :trainings-source="trainings"/>
         <TrainingsGridComponent v-if="!isListView" :trainings-source="trainings"/>
         <!--Modal-->
-        <TrainingForm :labels-source="labels" :exercise-source="exercises" @get:exercises="getExercises" @get:trainings="getTrainings"/>
+        <TrainingForm :labels-source="labels" :exercises-source="exercises" @get:exercises="getExercises" @get:trainings="getTrainings"/>
     </div>
-<!--</div>-->
 </template>
 
 <script>
@@ -103,5 +102,11 @@ export default {
 }
 .active-view {
     color: var(--SPORT);
+}
+.modal:nth-of-type(even) {
+    z-index: 1062 !important;
+}
+.modal-backdrop.show:nth-of-type(even) {
+    z-index: 1061 !important;
 }
 </style>

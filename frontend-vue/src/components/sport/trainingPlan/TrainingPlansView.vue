@@ -5,8 +5,24 @@
             <span class="week">({{this.getDateRangeOfWeek(week)}})</span>
             <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
         </div>
+        <div class="row justify-content-start">
+            <div class="col-2">
+                <p>Treningi/Treningi ogółem</p>
+            </div>
+            <div class="col-2">
+                <p>Progress bar</p>
+            </div>
+            <div class="col-2">
+                <p>Kalorie/Kalorie ogółem</p>
+            </div>
+            <div class="col-6 d-flex justify-content-end">
+                <button class="btn-primary mx-2" @click="null">
+                    <font-awesome-icon :icon="['fa', 'download']" />
+                </button>
+            </div>
+        </div>
         <!--Active plan-->
-        <TrainingPlanWeek :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
+        <TrainingPlanWeek @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
         <div class="m-3 mx-4 header">
             <span >Tworzenie nowego planu </span>
         </div>
@@ -15,41 +31,60 @@
                 <button type="button" class="new-plan-option-btn dark-grey-btn" @click="setNewPlanCreationMethod(true)" v-bind:class="{'active-create': createAuto}">Automatyczne</button>
             </span>
             <span class="mx-3">
-                <button type="button" class="new-plan-option-btn dark-grey-btn" @click="setNewPlanCreationMethod(false)" v-bind:class="{'active-create': createManual}">Ręczne</button>
+                <button type="button" class="new-plan-option-btn dark-grey-btn" @click="setNewPlanCreationMethod(false); getScratchPlan();" v-bind:class="{'active-create': createManual}">Ręczne</button>
             </span>
         </div>
         <div v-if="createAuto">
             AUTO
         </div>
         <div v-if="createManual">
-            <div class="row mt-3 mx-4">
-                <div class="col-4">
-                    <p class="form-label text-start">Tydzień</p>
-                    <v-select
-                        class="style-chooser pb-2"
-                        v-model="newPlan.week"
-                        :options=generateNWeeks(10)
-                        :reduce="range => range.weekNo"
-                        label="range"
-                    />
+            <div class="row my-3 mx-3">
+                <div class="col-6 ">
+                    <div class="row">
+                        <div class="col-6 ">
+                            <p class="form-label text-start">Tydzień</p>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-7 justify-content-start">
+                            <select
+                                v-model="newPlan.week"
+                                class=" p-2"
+                                style="border-radius: 5px"
+                                @change="updateWeek()"
+                            >
+                                <option disabled value="">Wybierz tydzień</option>
+                                <option v-for="range in generateNWeeks(10)" :key="range.weekNo" :value="range.weekNo">{{ range.range }}</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <button type="button" class="new-plan-option-btn dark-grey-btn" @click="createNewPlan">Utwórz</button>
-                </div>
+<!--                <div class="col-4">-->
+<!--                    <button type="button" class="new-plan-option-btn dark-grey-btn" @click="createNewPlan">Utwórz</button>-->
+<!--                </div>-->
             </div>
             <!--New plan-->
-            <TrainingPlanWeek :plan="newCreatedPlan" :week-dates="getDatesArrayOfWeek(newCreatedPlan.week)" :plan-type="'create'" :days="days" v-if="activePlan.trainingPlanId != null"/>
-            <AddTrainingToPlanModal :trainings-source="trainings" :training-plan-id="newCreatedPlan.trainingPlanId" @new-plan="refreshNewPlan"/>
+            <TrainingPlanWeek @set:training="setTraining" :plan="newCreatedPlan" :week-dates="getDatesArrayOfWeek(newCreatedPlan.week)" :plan-type="'create'" :days="days" v-if="activePlan.trainingPlanId != null"/>
+
+            <div class="row mt-3 mx-4">
+                <div class="col-12">
+                    <button type="button" class="btn-panel-sport " @click="savePlanStatus('PLANNED')">Zapisz</button>
+                </div>
+            </div>
         </div>
+        <TrainingDetails :training="infoTraining"/>
+        <AddTrainingToPlanModal :trainings-source="trainings" :training-plan-id="newCreatedPlan.trainingPlanId" @new:plan="refreshNewPlan"/>
+
     </div>
 </template>
 
 <script>
 import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
+import TrainingDetails from "@/components/sport/training/TrainingDetails";
 import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
 export default {
     name: "TrainingPlansView",
-    components: {AddTrainingToPlanModal, TrainingPlanWeek,},
+    components: {AddTrainingToPlanModal, TrainingDetails,  TrainingPlanWeek,},
     data () {
         return {
             week: 43,
@@ -117,9 +152,42 @@ export default {
                 trainingPositions: []
             },
             trainings: [],
+            infoTraining: {}
         }
     },
     methods: {
+        async updateWeek () {
+            console.log('New week: ', this.newPlan.week)
+            const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
+            const token = this.$store.getters.getToken;
+            let data = {
+                week: this.newPlan.week
+            }
+            await this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                // Dodać zmianę dat w pozycjach treningowych
+                this.refreshNewPlan()
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        async savePlanStatus (status) {
+            const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
+            const token = this.$store.getters.getToken;
+            let data = {
+                planStatus: status
+            }
+            await this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                // Dodać zmianę dat w pozycjach treningowych
+                this.refreshNewPlan()
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        setTraining(training) {
+            this.infoTraining = training
+        },
         generateNWeeks(n) {
             let weekArray = []
             for (let i = 0; i < n; i++) {
@@ -149,6 +217,18 @@ export default {
             }).catch(error => {
                 console.log(error.response);
             });
+        },
+        async getScratchPlan () {
+            await this.getMyTrainingPlans()
+            let scratchPlan = this.myTrainingPlans.find(plan => plan.planStatus === 'SCRATCH')
+            if (scratchPlan == null) {
+               await this.createNewPlan()
+            }
+            else {
+                this.newCreatedPlan = scratchPlan;
+                this.newPlan.week = this.newCreatedPlan.week;
+                this.newPlan.trainingPlanId = this.newCreatedPlan.trainingPlanId
+            }
         },
         async createNewPlan () {
             const url = `${this.apiURL}sport/training-plan`
@@ -292,5 +372,8 @@ p.week {
     border-color: var(--SPORT);
     border-radius: 5px;
     border-width: 2px;
+}
+.btn-panel-sport {
+    width: 50%;
 }
 </style>

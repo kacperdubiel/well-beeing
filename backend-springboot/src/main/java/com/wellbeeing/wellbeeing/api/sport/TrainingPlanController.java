@@ -1,26 +1,28 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.*;
-import com.wellbeeing.wellbeeing.domain.sport.Training;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlanRequest;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
+import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.lang.reflect.Field;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -35,8 +37,8 @@ public class TrainingPlanController {
     }
 
     @RequestMapping(path = "/{id}")
-    public ResponseEntity<?> getTrainingPlanById(@PathVariable(value = "id") Long trainingPlanId) {
-        return new ResponseEntity<>(trainingPlanService.getTrainingPlan(trainingPlanId), HttpStatus.OK);
+    public ResponseEntity<?> getTrainingPlanById(@PathVariable(value = "id") Long trainingPlanId, Principal principal) throws NotFoundException {
+        return new ResponseEntity<>(trainingPlanService.getTrainingPlan(trainingPlanId, principal.getName()), HttpStatus.OK);
     }
 
     @GetMapping(path = "")
@@ -77,9 +79,9 @@ public class TrainingPlanController {
     }
 
     @PatchMapping("/{id}/add-position")
-    public ResponseEntity<?> addPositionToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @RequestBody @NonNull AddTrainingToPlanRequest request, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> addPositionToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @RequestBody @NonNull AddTrainingToPlanRequest request, Principal principal) throws NotFoundException, IllegalArgumentException {
         TrainingPosition trainingPosition = null;
-        trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
+        trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), request.getTimeOfDay(), principal.getName());
 
 
         return new ResponseEntity<>(trainingPosition, HttpStatus.OK);
@@ -99,8 +101,8 @@ public class TrainingPlanController {
         for (AddTrainingToPlanRequest request:requests) {
             TrainingPosition trainingPosition;
             try {
-                trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
-            } catch (NotFoundException e) {
+                trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), request.getTimeOfDay(), principal.getName());
+            } catch (NotFoundException | IllegalArgumentException e) {
                 return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
             }
             addedPositions.add(trainingPosition);
@@ -141,6 +143,39 @@ public class TrainingPlanController {
         editedRequest = trainingPlanService.changeTrainingPlanRequestStatus(principal.getName(), request.getRequestId(), request.getNewStatus());
 
         return new ResponseEntity<>(editedRequest, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> partialUpdateTrainingPlan(@PathVariable(value = "id") Long trainingPlanId, @RequestBody Map<String, Object> fields, Principal principal) throws Exception {
+        // Sanitize and validate the data
+        if (trainingPlanId <= 0 || fields == null || fields.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 400 Invalid claim object received or invalid id or id does not match object
+        }
+
+        TrainingPlan trainingPlan = trainingPlanService.getTrainingPlan(trainingPlanId, principal.getName());
+
+        // Does the object exist?
+        if (trainingPlan == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Claim object does not exist
+        }
+
+        // Remove id from request, we don't ever want to change the id.
+        // This is not necessary, you can just do it to save time on the reflection
+        // loop used below since we checked the id above
+        fields.remove("trainingPlanId");
+        fields.remove("trainingPositions");
+        fields.forEach((k, v) -> {
+            // use reflection to get field k on object and set it to value v
+            // Change Claim.class to whatver your object is: Object.class
+            Field field = ReflectionUtils.findField(TrainingPlan.class, k); // find field in the object class
+            field.setAccessible(true);
+            if (field.getType() == EPlanStatus.class)
+                v = EPlanStatus.valueOf((String) v);
+            ReflectionUtils.setField(field, trainingPlan, v); // set given field for defined object to value V
+        });
+
+        TrainingPlan updated = trainingPlanService.partialUpdateTrainingPlan(trainingPlan);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
 }

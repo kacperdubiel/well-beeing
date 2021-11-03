@@ -7,7 +7,7 @@
         ({{date != null ? this.$func_global.dateDayMonth(date.date) : ""}})
     </div>
         <div v-for="position in positions" v-bind:key="position.trainingPositionId" class="row my-3">
-            <TrainingInPlan :trainingPosition="position">
+            <TrainingInPlan :trainingPosition="position" @set:training="setTraining">
 
             </TrainingInPlan>
         </div>
@@ -42,6 +42,10 @@ name: "TrainingPlanDay",
         openAddTrainingToPlanModal(date) {
             console.log(date)
             this.$store.commit('setTrainingPositionDate', date);
+        },
+        setTraining(training) {
+            console.log('Dotarł 1', training)
+            this.$emit('set:training', training)
         }
     }
 }

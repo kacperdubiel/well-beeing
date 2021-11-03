@@ -1,17 +1,17 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 public class TrainingPosition {
     @Id
@@ -31,17 +31,11 @@ public class TrainingPosition {
     private Date trainingDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ETrainingStatus trainingStatus;
+    private ETrainingStatus trainingStatus = ETrainingStatus.SCRATCH;
     @Enumerated(EnumType.STRING)
     @Column(name = "time_of_day")
-    private ETimeOfDay timeOfDay;;
+    private ETimeOfDay timeOfDay = ETimeOfDay.EVENING;
 
-    public TrainingPosition(Training training, TrainingPlan trainingPlan, Date trainingDate) {
-        this.training = training;
-        this.trainingPlan = trainingPlan;
-        this.trainingDate = trainingDate;
-        this.trainingStatus = ETrainingStatus.SCRATCH;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -25,14 +25,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="tr in trainingsSource" :key="tr.name">
+                <tr v-for="tr in trainingsSource" :key="tr.name"
+                    v-bind:class="{'selected-training' : (mode === 'toPlan' && this.$store.getters.getPlanTrainingId === tr.trainingId) }"
+                    v-on:click="mode === 'toPlan' ? this.$store.commit('setPlanTrainingId', tr.trainingId) : null">
                     <td>{{ tr.trainingId }}</td>
                     <td>{{ tr.name }}</td>
-                    <td>{{ tr.time }}</td>
+                    <td>{{ this.$func_global.getTimePrettyFromSeconds(tr.totalTrainingTimeSeconds) }}</td>
                     <td>{{ tr.trainingDifficulty }}</td>
-                    <td>{{ tr.owner }}</td>
+                    <td>{{ tr.caloriesBurned }}</td>
                     <td>
-                        <button class="btn-white mx-2">
+                        <button class="btn-white mx-2" @click="openInfoModal(tr)" data-bs-toggle="modal" href="#infoTrainingModal">
                             <font-awesome-icon :icon="['fa', 'info']" />
                         </button>
                         <button class="btn-white" v-if="enableButtons">
@@ -46,28 +48,43 @@
             </tbody>
         </table>
     </div>
+    <TrainingDetails :training="training"/>
 </div>
 </template>
 
 <script>
+import TrainingDetails from "@/components/sport/training/TrainingDetails";
 export default {
     name: "TrainingsListComponent",
+    components: {TrainingDetails},
     data () {
         return {
-            exercise: {
-                trainingId:453,
-                name:"Martwy ciąg",
-                difficultyLevel:"Siłowe",
-                time:345,
-                caloriesBurned:345,
-                owner:""
-            },
+            training: {},
             enableButtons: false
         }
 
     },
     props: {
-        trainingsSource: Array
+        trainingsSource: Array,
+        mode: String
+    },
+    methods: {
+        getTimePrettyFromSeconds(seconds) {
+            if (seconds < 60) {
+                return seconds + ' s'
+            }
+            else if (seconds < 3600) {
+                return Math.floor(seconds/60) + ' min'
+            }
+            else if (seconds >= 3600) {
+                let hours = Math.floor(seconds/3600)
+                let minutes = Math.floor((seconds - hours*3600)/60)
+                return hours + ' h ' + (minutes !== 0 ? minutes + ' min': '')
+            }
+        },
+        openInfoModal(training) {
+            this.training = training
+        }
     }
 }
 </script>
@@ -85,5 +102,8 @@ table {
     --bs-table-hover-color: none;
     color: white;
     border-bottom: none;
+}
+.selected-training {
+    background-color: var(--SPORT);
 }
 </style>

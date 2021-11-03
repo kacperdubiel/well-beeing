@@ -5,10 +5,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title ms-2" id="infoExerciseModalLabel">Szczegóły ćwiczenia</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs(); clearStatusWithTimeout()"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid" id="modal-container">
+                    <div class="container-fluid" id="modal-container"  v-if="exercise != null">
                         <div class="col-11 mx-auto form-group">
                             <div class="row justify-content-between">
                                 <div class="col-4 px-0 ">
@@ -55,7 +55,7 @@
                                 <p class="form-label">Etykiety</p>
                                 <div class="container labels-container px-1 py-1" v-if="exercise.labels != null && exercise.labels.length > 0">
                                     <div class="form-label label-node p-2 mx-1 my-1"
-                                       :style="{backgroundColor: randomColor()}"
+                                       :style="{backgroundColor: randomColor(label.sportLabelId)}"
                                         v-for="label in exercise.labels" :key="label.sportLabelId">{{label.name}}</div>
 
                                 </div>
@@ -119,14 +119,14 @@
 <!--                            </div>-->
                         </div>
 
-                        <div v-if="successRegister" class="col-11 mx-auto">
-                            <p>
-                                Rejestracja przebiegła pomyślnie!
-                            </p>
-                            <p>
-                                Możesz zalogować się swoimi danymi.
-                            </p>
-                        </div>
+<!--                        <div v-if="successRegister" class="col-11 mx-auto">-->
+<!--                            <p>-->
+<!--                                Rejestracja przebiegła pomyślnie!-->
+<!--                            </p>-->
+<!--                            <p>-->
+<!--                                Możesz zalogować się swoimi danymi.-->
+<!--                            </p>-->
+<!--                        </div>-->
 
                     </div>
                 </div>
@@ -142,7 +142,6 @@ export default {
     data () {
         return {
             edit: false,
-            exercise: Object,
             values: [],
             name: "",
             type: "",
@@ -159,7 +158,8 @@ export default {
         }
     },
     props: {
-        exerciseId: Number
+        exerciseId: Number,
+        exercise: Object
     },
     methods: {
         async getExercise () {
@@ -186,10 +186,10 @@ export default {
             this.successEditExercise = false
             this.nameTaken = false
         },
-        randomColor() {
-            const r = () => Math.floor(256 * Math.random());
-
-            return `rgb(${r()}, ${r()}, ${r()})`;
+        randomColor(seed) {
+            let availableColors = ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392']
+            return availableColors[seed % availableColors.length];
+            // return `rgb(${r()}, ${r()}, ${r()})`;
         }
     },
     computed: {

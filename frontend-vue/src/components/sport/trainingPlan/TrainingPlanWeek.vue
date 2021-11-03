@@ -2,7 +2,7 @@
     <div class="container align-items-start" style="overflow: auto" v-if="plan.trainingPlanId != null">
         <div class="row-fluid d-flex align-items-start">
             <div v-for="day in days" :key="day.num" class="col-4 day mx-1  mb-3 p-3">
-                <TrainingPlanDay :date="weekDates.find(d => d.day.num === day.num)" :day=day.name :create="planType === 'create'" :positions="plan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
+                <TrainingPlanDay @set:training="setTraining" :date="weekDates.find(d => d.day.num === day.num)" :day=day.name :create="planType === 'create'" :positions="plan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
 
                 </TrainingPlanDay>
             </div>
@@ -21,13 +21,17 @@ export default {
             trainingPositions: []
         },
         planType: String, // active, create, other, editable,
-        days: [],
-        weekDates: []
+        days: Array,
+        weekDates: Array
     },
     methods: {
-    matchesDayOfTheWeek(position, day) {
-        return new Date(position.trainingDate).getDay() === day;
-    }
+        matchesDayOfTheWeek(position, day) {
+            return new Date(position.trainingDate).getDay() === day;
+        },
+        setTraining(training) {
+            console.log('Dotarł 2', training)
+            this.$emit('set:training', training)
+        }
     }
 }
 </script>

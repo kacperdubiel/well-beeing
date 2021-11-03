@@ -25,14 +25,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="ex in exercisesSource" :key="ex.name">
+                <tr v-for="ex in exercisesSource" :key="ex.name"
+                    v-bind:class="{'selected-exercise' : (mode === 'toTraining' && this.$store.getters.getExerciseToTrainingId === ex.exerciseId) }"
+                    v-on:click="mode === 'toTraining' ? this.$store.commit('setExerciseToTrainingId', ex.exerciseId) : null">
                     <td>{{ ex.exerciseId }}</td>
                     <td>{{ ex.name }}</td>
                     <td>{{ ex.exerciseType }}</td>
                     <td>{{ ex.caloriesBurned }}</td>
                     <td>{{ ex.owner }}</td>
                     <td>
-                        <button class="btn-white mx-2" @click="openInfoModal(ex.exerciseId)" data-bs-toggle="modal" data-bs-target="#infoExerciseModal">
+                        <button class="btn-white mx-2" @click="openInfoModal(ex)" data-bs-toggle="modal" href="#infoExerciseModal">
                             <font-awesome-icon :icon="['fa', 'info']" />
                         </button>
                         <button class="btn-white" v-if="enableButtons">
@@ -46,7 +48,7 @@
             </tbody>
         </table>
     </div>
-    <ExerciseDetails ref="datailsModal"/>
+    <ExerciseDetails :exercise="exercise"/>
 </div>
 </template>
 
@@ -70,12 +72,14 @@ export default {
 
     },
     props: {
-        exercisesSource: Array
+        exercisesSource: Array,
+        mode: String
     },
     methods: {
-        openInfoModal(id) {
-            this.$store.commit('setExerciseId', id);
-            this.$refs.datailsModal.getExercise();
+        openInfoModal(exercise) {
+            this.exercise = exercise
+            // this.$store.commit('setExerciseId', id);
+            // this.$refs.datailsModal.getExercise();
         }
     }
 }
@@ -88,11 +92,14 @@ export default {
     font-weight: bold;
 }
 th, td {
-    color: var(--bs-white);
+    color: white;
 }
 table {
     --bs-table-hover-color: none;
     color: white;
     border-bottom: none;
+}
+.selected-exercise {
+    background-color: var(--SPORT);
 }
 </style>

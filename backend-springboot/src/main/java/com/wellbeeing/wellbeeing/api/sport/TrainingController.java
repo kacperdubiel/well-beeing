@@ -41,20 +41,21 @@ public class TrainingController {
         this.trainingService = trainingService;
     }
     @RequestMapping(path = "/{id}")
-    public ResponseEntity<?> getTrainingById(@PathVariable(value = "id") Long trainingId) {
-        return new ResponseEntity<>(trainingService.getTraining(trainingId), HttpStatus.OK);
+    public ResponseEntity<?> getTrainingById(@PathVariable(value = "id") Long trainingId, Principal principal) throws NotFoundException {
+        return new ResponseEntity<>(trainingService.getTraining(trainingId, principal.getName()), HttpStatus.OK);
     }
 
     @GetMapping(path = "")
     public ResponseEntity<?> getTrainings(@RequestParam(value = "page", defaultValue = "0") int page,
-                                          @RequestParam(value = "size", defaultValue = "3") int size) {
+                                          @RequestParam(value = "size", defaultValue = "20") int size,
+                                          Principal principal) {
 //        return new ResponseEntity<>(trainingService.getAllTrainings(), HttpStatus.OK);
         try {
             List<Training> trainings;
             Pageable paging = PageRequest.of(page, size);
 
             Page<Training> pageTrainings;
-            pageTrainings = trainingService.getAllTrainings(paging);
+            pageTrainings = trainingService.getAllTrainings(paging, principal.getName());
             trainings = pageTrainings.getContent();
             PaginatedResponse response = PaginatedResponse.builder()
                     .objects(trainings)

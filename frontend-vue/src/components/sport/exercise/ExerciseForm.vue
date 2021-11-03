@@ -97,7 +97,7 @@
                             </div>
                             <div class="row justify-content-end mt-3">
                                 <div class="col-4">
-                                    <button class="register-btn grey-btn p-2" @click="clearInputs(); clearStatusWithTimeout()" data-bs-dismiss="modal">Anuluj</button>
+                                    <button class="register-btn grey-btn p-2" @click="clearInputs()" data-bs-dismiss="modal">Anuluj</button>
                                 </div>
                                 <div class="col-4">
                                     <button class="register-btn btn-panel-sport p-2" @click="handleSubmit">Dodaj</button>
@@ -105,14 +105,14 @@
                             </div>
                         </div>
 
-                        <div v-if="successRegister" class="col-11 mx-auto">
-                            <p>
-                                Rejestracja przebiegła pomyślnie!
-                            </p>
-                            <p>
-                                Możesz zalogować się swoimi danymi.
-                            </p>
-                        </div>
+<!--                        <div v-if="successRegister" class="col-11 mx-auto">-->
+<!--                            <p>-->
+<!--                                Rejestracja przebiegła pomyślnie!-->
+<!--                            </p>-->
+<!--                            <p>-->
+<!--                                Możesz zalogować się swoimi danymi.-->
+<!--                            </p>-->
+<!--                        </div>-->
 
                     </div>
                 </div>
