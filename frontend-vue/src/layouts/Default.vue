@@ -5,10 +5,10 @@
                 <nav-bar />
             </div>
             <div class="row content">
-                <div class="col-md-3 d-none d-md-block px-4">
+                <div class="col-md-2 d-none d-md-block px-2">
                     <side-bar />
                 </div>
-                <div class="col-md-6 col-sm-10 px-4">
+                <div class="col-md-7 col-sm-10 px-4">
                     <slot />
                 </div>
                 <div class="col-md-3 d-none d-md-block px-4">

@@ -1,7 +1,7 @@
 <template>
     <div class="container align-items-start" style="overflow: auto" v-if="plan.trainingPlanId != null">
         <div class="row-fluid d-flex align-items-start">
-            <div v-for="day in days" :key="day.num" class="col-4 day mx-1  mb-3 p-3">
+            <div v-for="day in days" :key="day.num" class="col-3 day mx-1  mb-3 p-3">
                 <TrainingPlanDay @set:training="setTraining" :date="weekDates.find(d => d.day.num === day.num)" :day=day.name :create="planType === 'create'" :positions="plan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
 
                 </TrainingPlanDay>
@@ -40,10 +40,10 @@ export default {
 .row-fluid{
     white-space: nowrap;
 }
-.row-fluid .col-4{
+.row-fluid .col-3{
     display: inline-block;
 }
-.col-4 { white-space: normal; }
+.col-3 { white-space: normal; }
 .day {
     background-color: var(--GREY3);
     border-radius: 5px;

@@ -5,18 +5,39 @@
             <span class="week">({{this.getDateRangeOfWeek(week)}})</span>
             <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
         </div>
-        <div class="row justify-content-start">
-            <div class="col-2">
-                <p>Treningi/Treningi ogółem</p>
+        <div class="row justify-content-between mx-1 my-2 day">
+            <div class="col-3">
+                <p>Zrealizowane treningi</p>
+                <div class="progress-text">
+                    {{this.activePlanProgress.trainingsCompleted}}/{{this.activePlanProgress.trainingsTotal}}
+                </div>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         :style="{width: this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100 + '%'}"
+                         aria-valuenow="{{this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100}}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        {{this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100}}%
+                    </div>
+                </div>
             </div>
-            <div class="col-2">
-                <p>Progress bar</p>
+            <div class="col-3">
+                <p>Spalone kalorie</p>
+                <div class="progress-text">
+                    {{this.activePlanProgress.caloriesBurned}}/{{this.activePlanProgress.caloriesTotal}} kcal
+                </div>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         :style="{width: this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100 + '%'}"
+                         aria-valuenow="{{this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100}}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        {{Math.floor(this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100)}}%
+                    </div>
+                </div>
             </div>
-            <div class="col-2">
-                <p>Kalorie/Kalorie ogółem</p>
-            </div>
-            <div class="col-6 d-flex justify-content-end">
-                <button class="btn-primary mx-2" @click="null">
+            <div class="col-2 d-flex justify-content-end">
+                <button class="btn-primary mx-2" @click="downloadPlan">
                     <font-awesome-icon :icon="['fa', 'download']" />
                 </button>
             </div>
@@ -138,6 +159,13 @@ export default {
                 {
                     trainingPositions: []
                 },
+            activePlanProgress: {
+                progressPercent: 79,
+                caloriesBurned: 0,
+                caloriesTotal: 0,
+                trainingsCompleted: 0,
+                trainingsTotal: 0,
+            },
             createAuto: false,
             createManual: false,
             newPlan: {
@@ -156,6 +184,9 @@ export default {
         }
     },
     methods: {
+        async downloadPlan () {
+          //TODO Download Plan
+        },
         async updateWeek () {
             console.log('New week: ', this.newPlan.week)
             const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
@@ -187,6 +218,23 @@ export default {
         },
         setTraining(training) {
             this.infoTraining = training
+        },
+        calculateProgress() {
+            let caloriesTotal = 0;
+            let caloriesCompleted = 0;
+            let trainingsCompleted = 0;
+            this.activePlan.trainingPositions.forEach(pos => {
+                caloriesTotal += pos.training.caloriesBurned
+                if (pos.trainingStatus === 'COMPLETED') {
+                    caloriesCompleted += pos.training.caloriesBurned
+                    trainingsCompleted += 1
+                }
+            })
+            let trainingsTotal = this.activePlan.trainingPositions.length
+            this.activePlanProgress.caloriesBurned = caloriesCompleted
+            this.activePlanProgress.caloriesTotal = caloriesTotal
+            this.activePlanProgress.trainingsCompleted = trainingsCompleted
+            this.activePlanProgress.trainingsTotal = trainingsTotal
         },
         generateNWeeks(n) {
             let weekArray = []
@@ -258,8 +306,10 @@ export default {
         },
         setActivePlan() {
           let plan = this.myTrainingPlans.find(plan => plan.week === this.week);
-          if (plan != null)
+          if (plan != null) {
               this.activePlan = plan;
+              this.calculateProgress()
+          }
         },
         getDateRangeOfWeek(weekNo){
             var d1 = new Date();
@@ -375,5 +425,13 @@ p.week {
 }
 .btn-panel-sport {
     width: 50%;
+}
+.progress .progress-bar {
+    background-color: var(--SPORT);
+}
+.progress {
+    height: 20%;
+    font-size: medium;
+    font-weight: bold;
 }
 </style>
