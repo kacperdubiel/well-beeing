@@ -48,7 +48,7 @@ public class RoleRequestServiceImpl implements RoleRequestService {
 
     @Override
     public List<RoleRequest> getMyRoleRequests(String ownerName) {
-        return roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmail(ownerName);
+        return roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailOrderByAddedDateDesc(ownerName);
     }
 
     @Override

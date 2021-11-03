@@ -25,27 +25,30 @@
                         <button class="btn-white mx-1" @click="handleCancel(req.roleReqId)" v-if="req.status === 'PENDING'">
                             Anuluj
                         </button>
-                        <button class="btn-white mx-1" v-if="req.status === 'PENDING'">
+                        <button class="btn-white mx-1" v-if="req.status === 'PENDING'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestEditModal2">
                             <font-awesome-icon :icon="['fa', 'pen']" size="1x" class="navbar-icon" />
                         </button>
-                        <button class="btn-white mx-1" v-if="req.status === 'REJECTED'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestDetailsModal">
+                        <button class="btn-white mx-1"  @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestDetailsModal">
                             <font-awesome-icon :icon="['fa', 'question']" size="1x" class="navbar-icon" />
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <RoleRequestDetails :role-request-source="roleRequest" :key="roleRequest"  @download:file="downloadFile"/>
+        <RoleRequestEdit :role-request-source="roleRequest" v-if="roleRequest" @download:file="downloadFile"/>
+        <RoleRequestDetails :role-request-source="roleRequest" v-if="roleRequest"  @download:file="downloadFile"/>
     </div>
 </template>
 
 <script>
 import moment from 'moment'
-import RoleRequestDetails from "@/components/social/RoleRequestDetails";
+import RoleRequestDetails from "@/components/social/role-requests/RoleRequestDetails";
+import RoleRequestEdit from "@/components/social/role-requests/RoleRequestEdit";
 export default {
     name: "RoleRequestsTable",
     components: {
-        RoleRequestDetails
+        RoleRequestDetails,
+        RoleRequestEdit
     },
     data () {
         return {
@@ -82,6 +85,8 @@ export default {
         },
         handleGet(req) {
             this.roleRequest = req
+            console.log('Table req ', this.roleRequest)
+            // this.$refs.editmodal.checkPossibleRoles()
         }
     }
 }

@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import RoleRequestsTable from "@/components/social/RoleRequestsTable";
+import RoleRequestsTable from "@/components/social/role-requests/RoleRequestsTable";
 export default {
     name: "RoleRequestView",
     components: {

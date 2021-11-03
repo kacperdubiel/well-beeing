@@ -15,6 +15,6 @@ import java.util.UUID;
 @Repository("roleRequestDAO")
 public interface RoleRequestDAO extends JpaRepository<RoleRequest, Long> {
 //    Page<RoleRequest> findAllBySubmitterId(UUID submitter_id, Pageable pageable);
-    List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmail(String userName);
+    List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmailOrderByAddedDateDesc(String userName);
 
 }

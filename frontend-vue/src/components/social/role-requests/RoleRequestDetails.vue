@@ -87,4 +87,13 @@ export default {
     color: var(--GREY3)
 }
 
+.modal-body {
+    color: var(--GREY3);
+    text-align: left;
+}
+
+.modal-header {
+    color: var(--GREY3);
+}
+
 </style>
