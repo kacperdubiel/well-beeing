@@ -6,6 +6,7 @@ import store from '@/store';
 import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
+import { func_global } from "./global-func"
 
 import Default from "@/layouts/Default";
 import Clean from "@/layouts/Clean";
@@ -51,6 +52,7 @@ library.add(faQuestion)
 const app = createApp(App).use(router);
 
 app.config.globalProperties.apiURL = 'http://localhost:8090/'
+app.config.globalProperties.$func_global = func_global
 
 app.use(store)
 app.use(VueAxios, axios)

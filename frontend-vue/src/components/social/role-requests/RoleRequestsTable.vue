@@ -35,7 +35,7 @@
                 </tr>
             </tbody>
         </table>
-        <RoleRequestEdit :role-request-source="roleRequest" v-if="roleRequest" @download:file="downloadFile"/>
+        <RoleRequestEdit :role-request-source="roleRequest" :refresh="openingModal" v-if="roleRequest" @download:file="downloadFile"/>
         <RoleRequestDetails :role-request-source="roleRequest" v-if="roleRequest"  @download:file="downloadFile"/>
     </div>
 </template>
@@ -52,7 +52,8 @@ export default {
     },
     data () {
         return {
-            roleRequest: Object
+            roleRequest: Object,
+            openingModal: 0
         }
     },
     props: {
@@ -85,6 +86,7 @@ export default {
         },
         handleGet(req) {
             this.roleRequest = req
+            this.openingModal += 1
             console.log('Table req ', this.roleRequest)
             // this.$refs.editmodal.checkPossibleRoles()
         }

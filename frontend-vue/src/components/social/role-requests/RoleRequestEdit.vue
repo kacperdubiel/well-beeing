@@ -1,10 +1,10 @@
 <template>
     <div class="modal fade" id="roleRequestEditModal2" tabindex="-1" aria-labelledby="roleRequestEditModal2Label" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="roleRequestEditModal2Label">Edycja prośby</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" id="modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
@@ -41,9 +41,23 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <button class="no-bg" @click="handleDownloadFile(this.roleRequestSource.roleReqId)">
-                                    <font-awesome-icon id="document-icon" :icon="['far', 'file-pdf']" size="2x" class="navbar-icon" />
-                                </button>
+                                <div v-if="!editFile">
+                                    <button class="no-bg" @click="handleDownloadFile(this.roleRequestSource.roleReqId)">
+                                        <font-awesome-icon id="document-icon" :icon="['far', 'file-pdf']" size="2x" class="navbar-icon" />
+                                    </button>
+                                    <button class="btn-white" @click="deleteFile">
+                                        Usuń plik
+                                    </button>
+                                </div>
+
+                                <input v-else
+                                    class="form-control"
+                                    type="file"
+                                    ref="editfile"
+                                    id="formFile"
+                                    accept="application/pdf"
+                                    @focus="clearStatus"
+                                >
                             </div>
                             <div class="col">
                                 {{ this.roleRequestSource.status }}
@@ -57,6 +71,14 @@
                             <div class="col-12">
                                 {{ this.roleRequestSource.comment === "" ? "-" : this.roleRequestSource.comment }}
                             </div>
+                            <div class="col-12">
+                                <button class="btn-panel-social" @click="updateRoleRequest">Uaktualnij prośbę</button>
+                            </div>
+                        </div>
+                        <div v-if="errorRequest" class="row mt-3 text-start ms-4">
+                            <p class="has-error m-0">
+                                Proszę uzupełnić wszystkie dane!
+                            </p>
                         </div>
 
                     </div>
@@ -74,15 +96,20 @@ export default {
     data () {
         return {
             possibleRoles: [],
-            selected: "",
             editedRoleRequest: {
                 role: "",
                 documentImgPath: ""
             },
+            editFile: false,
+
+            updatingRequest: false,
+            errorRequest: false,
+            requestId: 0
         }
     },
     props: {
-        roleRequestSource: Object
+        roleRequestSource: Object,
+        refresh: Number
     },
     methods: {
         formatDate(date) {
@@ -103,29 +130,68 @@ export default {
                 }
             })
             this.possibleRoles = roles
-            // console.log('roles: ', roles)
-            //
-            // console.log(this.possibleRoles)
-            //
-            // console.log('source role', this.roleRequestSource.role)
-            // console.log('new role pre', this.editedRoleRequest.role)
+
             this.editedRoleRequest.role = this.roleRequestSource.role
-            // console.log('new role post', this.editedRoleRequest.role)
+            this.editedRoleRequest.documentImgPath = this.roleRequestSource.documentImgPath
+            this.editFile = false
+        },
+        deleteFile() {
+            this.editFile = true
+        },
+        updateRoleRequest() {
+            this.updatingRequest = true
+            this.clearStatus()
+            console.log(this.$refs.editfile.files[0])
+            if (this.$refs.editfile.files.length > 0) {
+                this.editedRoleRequest.documentImgPath = this.$refs.editfile.files[0].name
+            }
+            if (this.invalidRole || this.invalidFile) {
+                this.errorRequest = true
+                // console.log("wielbłąd")
+                return
+            }
+            //clearinputs
+            const url = `${this.apiURL}role-request/${this.roleRequestSource.roleReqId}`
+            const token = this.$store.getters.getToken;
+            this.axios.put(url, this.editedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response)
+                this.$func_global.importData(this.roleRequestSource.roleReqId, this.$refs.editfile, this.$store.getters.getToken)
+                // this.clearInputs()
+                this.$parent.$parent.getMyRoleRequests()
+                document.getElementById('modal-close').click();
+            }).catch(error => {
+                console.log(error.response)
+            });
+
+            this.submittingRequest = false
+        },
+        clearStatus() {
+            this.updatingRequest = false
+            this.errorRequest = false
         },
 
     },
     watch: {
-        roleRequestSource: function() { // watch it
+        roleRequestSource: function() {
             this.checkPossibleRoles()
-            // console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+        },
+        refresh: function () {
+            this.checkPossibleRoles()
+        }
+    },
+    computed: {
+        invalidRole() {
+            return !(this.editedRoleRequest.role === 'ROLE_DOCTOR' || this.editedRoleRequest.role === 'ROLE_DIETICIAN' || this.editedRoleRequest.role === 'ROLE_TRAINER')
+        },
+        invalidFile() {
+            return this.editedRoleRequest.documentImgPath === ""
         }
     },
     created() {
         this.checkPossibleRoles()
-        // this.possibleRoles = ["ROLE_DIETICIAN", "ROLE_TRAINER", "ROLE_DOCTOR"]
-        // this.editedRoleRequest= this.roleRequestSource
-        // console.log('source', this.editedRoleRequest)
-
+    },
+    mounted() {
+        this.editFile = false
     }
 }
 </script>

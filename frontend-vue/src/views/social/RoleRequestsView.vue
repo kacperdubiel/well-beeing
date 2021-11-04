@@ -97,7 +97,8 @@ export default {
             roleRequests: [],
             submittingRequest: false,
             errorRequest: false,
-            successRequest: false
+            successRequest: false,
+            requestId: 0
         }
     },
     methods: {
@@ -113,42 +114,26 @@ export default {
             }
             if (this.invalidRole || this.invalidFile) {
                 this.errorRequest = true
-                console.log("wielbłąd")
+                // console.log("wielbłąd")
                 return
             }
             //clearinputs
             const url = `${this.apiURL}role-request`
             const token = this.$store.getters.getToken;
             this.axios.post(url, this.roleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response.data)
                 this.requestId = response.data['roleReqId']
-                this.importData()
+                this.$func_global.importData(this.requestId, this.$refs.myfile, this.$store.getters.getToken)
                 this.clearInputs()
                 this.getMyRoleRequests()
             }).catch(error => {
-                console.log(error.response.status)
+                console.log(error.response)
             });
 
             this.submittingRequest = false
         },
 
-        importData() {
-            let myfile = this.$refs.myfile;
-            let files = myfile.files;
-            let file = files[0];
-            var formData = new FormData();
-            formData.append("file", file);
-            this.uploadFileRequest(formData)
-        },
-        uploadFileRequest (data) {
-            const url = `${this.apiURL}role-request/import/${this.requestId}/`
-            const token = this.$store.getters.getToken;
-            this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
-                console.log(response.data)
-            }).catch(error => {
-                    console.log(error.response.status)
-            });
-        },
+
+
         clearStatus() {
             this.submittingRequest = false
             this.errorRequest = false
