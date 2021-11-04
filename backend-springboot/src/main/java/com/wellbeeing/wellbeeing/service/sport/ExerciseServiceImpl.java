@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
+import com.wellbeeing.wellbeeing.domain.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
@@ -12,8 +13,10 @@ import com.wellbeeing.wellbeeing.repository.sport.SportLabelDAO;
 import javafx.scene.control.Pagination;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
@@ -132,6 +135,24 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public Page<Exercise> getAllExercises(Pageable pageable) {
         return exerciseDAO.findAll(pageable);
+    }
+
+    @Override
+    public Page<Exercise> getAllExercisesFiltered(Specification<Exercise> exerciseSpec, Pageable pageable, String userName) throws NotFoundException {
+
+        List<Exercise> exercises;
+
+        Page<Exercise> pageExercises;
+        pageExercises = exerciseDAO.findAll(exerciseSpec, pageable);
+        exercises = pageExercises.getContent();
+        Map<Long, Integer> calories = this.getCaloriesBurnedFromUser(exercises, userName);
+
+        for (Exercise exercise:
+                pageExercises.getContent()) {
+            exercise.setCaloriesBurned(calories.get(exercise.getExerciseId()));
+        }
+
+        return pageExercises;
     }
 
 

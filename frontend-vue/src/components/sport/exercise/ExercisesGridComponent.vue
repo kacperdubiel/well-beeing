@@ -2,17 +2,6 @@
     <div class="container my-3">
 
         <div class="row justify-content-center">
-            <div class="col-md-7 col-sm-6 align-self-center">
-                <input
-                    type="text"
-                    placeholder="Wyszukaj..."
-                    id="search-input"
-                    class="w-100 shadow"
-                />
-            </div>
-            <div class="col-md-5 col-sm-6 align-self-center">
-                FILTRY
-            </div>
             <div class="col-12">
 <!--                <div class="row mb-3 px-3 mt-3 mw-100">-->
 <!--                    <div class="col-md-6 search-info">-->

@@ -22,7 +22,7 @@ import {
     faInfo,
     faListUl,
     faPencilAlt,
-    faPlusCircle,
+    faPlusCircle, faSearch,
     faTh,
     faTrash,
     faUserSecret
@@ -57,6 +57,7 @@ library.add(faPlusCircle)
 library.add(faTh)
 library.add(faListUl)
 library.add(faDownload)
+library.add(faSearch)
 
 const app = createApp(App).use(router);
 app.config.globalProperties.apiURL = 'http://localhost:8090/'

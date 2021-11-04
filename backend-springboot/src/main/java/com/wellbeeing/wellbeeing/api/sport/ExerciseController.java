@@ -10,11 +10,20 @@ import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.JoinFetch;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,34 +59,41 @@ public class ExerciseController {
         return new ResponseEntity<>(foundExercise, HttpStatus.OK);
     }
 
-//    @GetMapping(path = "")
-//    public ResponseEntity<?> getExercises() {
-//        return new ResponseEntity<>(exerciseService.getAllExercises(), HttpStatus.OK);
-//    }
-
     @GetMapping(path = "")
-    public ResponseEntity<?> getExercisesPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                   @RequestParam(value = "size", defaultValue = "25") int size,
-                                                    Principal principal) throws NotFoundException {
-            List<Exercise> exercises;
-            Pageable paging = PageRequest.of(page, size);
-
-            Page<Exercise> pageExercises;
-            pageExercises = exerciseService.getAllExercises(paging);
-            exercises = pageExercises.getContent();
-            Map<Long, Integer> calories = exerciseService.getCaloriesBurnedFromUser(exercises, principal.getName());
-
-            for (Exercise exercise:
-                    exercises) {
-                exercise.setCaloriesBurned(calories.get(exercise.getExerciseId()));
-            }
-        PaginatedResponse response = PaginatedResponse.builder()
-                        .objects(exercises)
-                        .currentPage(pageExercises.getNumber())
-                        .totalItems(pageExercises.getTotalElements())
-                        .totalPages(pageExercises.getTotalPages()).build();
-            return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<?> getExercisesFiltered(
+            @Join(path = "labels", alias = "ls")
+            @And({
+                @Spec(path = "exerciseType", spec = Equal.class),
+                @Spec(path = "name", spec = LikeIgnoreCase.class),
+                @Spec(path = "ls.name", params="label", spec = Like.class)
+            }) Specification<Exercise> exerciseSpec,
+            @PageableDefault(sort = {"name"}, size = 20) Pageable pageable, Principal principal) throws NotFoundException {
+        return new ResponseEntity<>(exerciseService.getAllExercisesFiltered(exerciseSpec, pageable, principal.getName()), HttpStatus.OK);
     }
+
+//    @GetMapping(path = "")
+//    public ResponseEntity<?> getExercisesPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
+//                                                   @RequestParam(value = "size", defaultValue = "25") int size,
+//                                                    Principal principal) throws NotFoundException {
+//            List<Exercise> exercises;
+//            Pageable paging = PageRequest.of(page, size);
+//
+//            Page<Exercise> pageExercises;
+//            pageExercises = exerciseService.getAllExercises(paging);
+//            exercises = pageExercises.getContent();
+//            Map<Long, Integer> calories = exerciseService.getCaloriesBurnedFromUser(exercises, principal.getName());
+//
+//            for (Exercise exercise:
+//                    exercises) {
+//                exercise.setCaloriesBurned(calories.get(exercise.getExerciseId()));
+//            }
+//        PaginatedResponse response = PaginatedResponse.builder()
+//                        .objects(exercises)
+//                        .currentPage(pageExercises.getNumber())
+//                        .totalItems(pageExercises.getTotalElements())
+//                        .totalPages(pageExercises.getTotalPages()).build();
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
 
     @PostMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_TRAINER)

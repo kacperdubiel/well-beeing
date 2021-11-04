@@ -7,6 +7,7 @@ import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import javafx.scene.control.Pagination;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Dictionary;
 import java.util.List;
@@ -23,6 +24,8 @@ public interface ExerciseService {
     List<Exercise> getAllExercises();
     List<SportLabel> getAllSportLabels();
     Page<Exercise> getAllExercises(Pageable pageable);
+    Page<Exercise> getAllExercisesFiltered(Specification<Exercise> exerciseSpec,
+                                           Pageable pageable, String userName) throws NotFoundException;
 
     List<Exercise> getExercisesByType(EExerciseType type);
     List<Exercise> getExercisesByCreatorId(UUID creatorId);

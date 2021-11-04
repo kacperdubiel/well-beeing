@@ -47,7 +47,7 @@ export default {
             const token = this.$store.getters.getToken;
             console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.exercises = response.data['objects']
+                this.exercises = response.data['content']
                 console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
