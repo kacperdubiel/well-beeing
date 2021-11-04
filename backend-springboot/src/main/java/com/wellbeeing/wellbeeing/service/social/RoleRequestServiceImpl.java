@@ -89,7 +89,7 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     }
 
     @Override
-    public RoleRequest updateRoleRequest(RoleRequest roleRequest) throws NotFoundException {
+    public RoleRequest updateRoleRequest(RoleRequest roleRequest, String updaterName) throws NotFoundException {
         RoleRequest targetRoleRequest = roleRequestDAO.findById(roleRequest.getRoleReqId()).orElse(null);
         if (targetRoleRequest == null)
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequest.getRoleReqId()));
@@ -97,8 +97,11 @@ public class RoleRequestServiceImpl implements RoleRequestService {
         if (targetRoleRequest.getStatus() != EStatus.PENDING)
             throw new NotFoundException("Selected request is not pending!");
 
-
+        Profile updaterProfile = userDAO.findUserByEmail(updaterName).orElse(null).getProfile();
         Profile submitterProfile = targetRoleRequest.getSubmitter();
+
+        if (updaterProfile != submitterProfile)
+            throw new NotFoundException("You do not have access to this role request!");
 
         roleRequest.setAddedDate(new Date());
         roleRequest.setStatus(EStatus.PENDING);
@@ -148,10 +151,16 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     }
 
     @Override
-    public boolean cancelRoleRequest(long roleRequestId) throws NotFoundException {
+    public boolean cancelRoleRequest(long roleRequestId, String cancellerName) throws NotFoundException {
         RoleRequest targetRoleRequest = roleRequestDAO.findById(roleRequestId).orElse(null);
         if (targetRoleRequest == null)
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequestId));
+
+        Profile updaterProfile = userDAO.findUserByEmail(cancellerName).orElse(null).getProfile();
+        Profile submitterProfile = targetRoleRequest.getSubmitter();
+
+        if (updaterProfile != submitterProfile)
+            throw new NotFoundException("You do not have access to this role request!");
 
         if (!Objects.equals(targetRoleRequest.getStatus().toString(), EStatus.PENDING.toString()))
             throw new NotFoundException("You can't cancel this request!");

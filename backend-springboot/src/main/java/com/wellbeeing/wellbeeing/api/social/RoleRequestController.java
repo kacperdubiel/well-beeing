@@ -82,15 +82,15 @@ public class RoleRequestController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<?> updateRoleRequest(@PathVariable(value = "id") Long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest) throws NotFoundException {
+    public ResponseEntity<?> updateRoleRequest(@PathVariable(value = "id") Long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest, Principal principal) throws NotFoundException {
         roleRequest.setRoleReqId(roleRequestId);
-        roleRequestService.updateRoleRequest(roleRequest);
+        roleRequestService.updateRoleRequest(roleRequest, principal.getName());
         return new ResponseEntity<>(roleRequest, HttpStatus.OK);
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> cancelRoleRequest(@PathVariable(value = "id") Long roleRequestId) throws NotFoundException {
-        roleRequestService.cancelRoleRequest(roleRequestId);
+    public ResponseEntity<?> cancelRoleRequest(@PathVariable(value = "id") Long roleRequestId, Principal principal) throws NotFoundException {
+        roleRequestService.cancelRoleRequest(roleRequestId, principal.getName());
         RoleRequest cancelledRoleRequest = roleRequestService.getRoleRequest(roleRequestId);
         return new ResponseEntity<>(cancelledRoleRequest, HttpStatus.OK);
     }
@@ -105,7 +105,7 @@ public class RoleRequestController {
 
     SimpleDateFormat sdf = new SimpleDateFormat("/yyyy/MM/dd/");
     @PostMapping("/import/{requestId}")
-    public ResponseEntity<?> importData(MultipartFile file, @PathVariable long requestId) throws IOException, NotFoundException {
+    public ResponseEntity<?> importData(MultipartFile file, @PathVariable long requestId, Principal principal) throws IOException, NotFoundException {
         String format = sdf.format(new Date());
         boolean created = false;
         File folder = new File("backend-springboot/upload/role-requests" + format);
@@ -120,7 +120,7 @@ public class RoleRequestController {
         System.out.println(url);
         RoleRequest roleRequest = roleRequestService.getRoleRequest(requestId);
         roleRequest.setDocumentImgPath(url);
-        roleRequestService.updateRoleRequest(roleRequest);
+        roleRequestService.updateRoleRequest(roleRequest, principal.getName());
 
         return new ResponseEntity<>("Sent", HttpStatus.OK);
     }

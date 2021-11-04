@@ -15,7 +15,7 @@ public interface RoleRequestService {
 
     RoleRequest submitRoleRequest(RoleRequest roleRequest, String submitterName) throws NotFoundException;
 
-    RoleRequest updateRoleRequest(RoleRequest roleRequest) throws NotFoundException;
+    RoleRequest updateRoleRequest(RoleRequest roleRequest, String updaterName) throws NotFoundException;
     boolean processRoleRequest(RoleRequest roleRequest) throws NotFoundException;
-    boolean cancelRoleRequest(long roleRequestId) throws NotFoundException;
+    boolean cancelRoleRequest(long roleRequestId, String cancellerName) throws NotFoundException;
 }
