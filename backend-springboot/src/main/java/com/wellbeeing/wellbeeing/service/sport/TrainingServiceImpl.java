@@ -13,6 +13,7 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -156,6 +157,26 @@ public class TrainingServiceImpl implements TrainingService{
         double finalWeight = weight;
         Page<Training> trainingPage = trainingDAO.findAll(pageable);
         trainingPage.getContent().forEach(training -> training.setCaloriesBurned(training.caloriesBurned(finalWeight)));
+        return trainingPage;
+    }
+
+    @Override
+    public Page<Training> getAllTrainingsFiltered(Specification<Training> trainingSpec, Pageable pageable, String userName) throws NotFoundException {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Page<Training> trainingPage = trainingDAO.findAll(trainingSpec, pageable);
+        trainingPage.getContent().forEach(training -> {
+            training.setCaloriesBurned(training.caloriesBurned(finalWeight));
+            training.getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
+            training.getExerciseInTrainings().forEach(ex -> ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(finalWeight)));
+        });
+
         return trainingPage;
     }
 

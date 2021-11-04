@@ -65,7 +65,7 @@ public class ExerciseController {
             @And({
                 @Spec(path = "exerciseType", spec = Equal.class),
                 @Spec(path = "name", spec = LikeIgnoreCase.class),
-                @Spec(path = "ls.name", params="label", spec = Like.class)
+                @Spec(path = "ls.name", params="label", spec = LikeIgnoreCase.class)
             }) Specification<Exercise> exerciseSpec,
             @PageableDefault(sort = {"name"}, size = 20) Pageable pageable, Principal principal) throws NotFoundException {
         return new ResponseEntity<>(exerciseService.getAllExercisesFiltered(exerciseSpec, pageable, principal.getName()), HttpStatus.OK);

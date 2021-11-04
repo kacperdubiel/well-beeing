@@ -12,11 +12,19 @@ import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -45,26 +53,48 @@ public class TrainingController {
         return new ResponseEntity<>(trainingService.getTraining(trainingId, principal.getName()), HttpStatus.OK);
     }
 
+//    @GetMapping(path = "")
+//    public ResponseEntity<?> getTrainings(@RequestParam(value = "page", defaultValue = "0") int page,
+//                                          @RequestParam(value = "size", defaultValue = "20") int size,
+//                                          Principal principal) {
+////        return new ResponseEntity<>(trainingService.getAllTrainings(), HttpStatus.OK);
+//        try {
+//            List<Training> trainings;
+//            Pageable paging = PageRequest.of(page, size);
+//
+//            Page<Training> pageTrainings;
+//            pageTrainings = trainingService.getAllTrainings(paging, principal.getName());
+//            trainings = pageTrainings.getContent();
+//            PaginatedResponse response = PaginatedResponse.builder()
+//                    .objects(trainings)
+//                    .currentPage(pageTrainings.getNumber())
+//                    .totalItems(pageTrainings.getTotalElements())
+//                    .totalPages(pageTrainings.getTotalPages()).build();
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @GetMapping(path = "")
-    public ResponseEntity<?> getTrainings(@RequestParam(value = "page", defaultValue = "0") int page,
-                                          @RequestParam(value = "size", defaultValue = "20") int size,
-                                          Principal principal) {
+    public ResponseEntity<?> getTrainingsWithFilters(
+            @Join(path = "exerciseInTrainings", alias = "extr")
+            @Join(path = "extr.exercise", alias = "ex")
+            @Join(path = "ex.labels", alias = "ls")
+            @And({
+                @Spec(path = "trainingDifficulty", spec = Equal.class),
+                @Spec(path = "name", spec = LikeIgnoreCase.class),
+                @Spec(path = "totalTrainingTimeSeconds", params = {"secondsMoreThan","secondsLessThan"},spec = LikeIgnoreCase.class),
+                @Spec(path = "ex.name", params="exerciseName", spec = LikeIgnoreCase.class),
+                @Spec(path = "ls.name", params="label", spec = LikeIgnoreCase.class)
+             }) Specification<Training> trainingSpec,
+         @PageableDefault(sort = {"name"}, size = 20) Pageable pageable, Principal principal) {
 //        return new ResponseEntity<>(trainingService.getAllTrainings(), HttpStatus.OK);
         try {
-            List<Training> trainings;
-            Pageable paging = PageRequest.of(page, size);
 
-            Page<Training> pageTrainings;
-            pageTrainings = trainingService.getAllTrainings(paging, principal.getName());
-            trainings = pageTrainings.getContent();
-            PaginatedResponse response = PaginatedResponse.builder()
-                    .objects(trainings)
-                    .currentPage(pageTrainings.getNumber())
-                    .totalItems(pageTrainings.getTotalElements())
-                    .totalPages(pageTrainings.getTotalPages()).build();
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(trainingService.getAllTrainingsFiltered(trainingSpec, pageable, principal.getName()), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

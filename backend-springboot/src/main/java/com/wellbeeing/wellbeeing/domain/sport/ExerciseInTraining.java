@@ -34,6 +34,9 @@ public class ExerciseInTraining {
     @Column(name = "time_in_seconds")
     private int time_seconds;
 
+    @Transient
+    private int caloriesBurned;
+
     public ExerciseInTraining(Training training, Exercise exercise, int repetitions, int time_seconds, int series) {
         this.training = training;
         this.exercise = exercise;
