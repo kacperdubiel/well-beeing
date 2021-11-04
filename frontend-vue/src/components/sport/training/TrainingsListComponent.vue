@@ -1,17 +1,6 @@
 <template>
 <div class="container my-3">
     <div class="row justify-content-center">
-        <div class="col-md-7 col-sm-6 align-self-center">
-            <input
-                type="text"
-                placeholder="Wyszukaj..."
-                id="search-input"
-                class="w-100 shadow"
-            />
-        </div>
-        <div class="col-md-5 col-sm-6 align-self-center">
-            FILTRY
-        </div>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -106,4 +95,5 @@ table {
 .selected-training {
     background-color: var(--SPORT);
 }
+
 </style>

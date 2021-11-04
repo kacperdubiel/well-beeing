@@ -1,28 +1,7 @@
 <template>
     <div class="container my-3">
-
         <div class="row justify-content-center">
-            <div class="col-md-7 col-sm-6 align-self-center">
-                <input
-                    type="text"
-                    placeholder="Wyszukaj..."
-                    id="search-input"
-                    class="w-100 shadow"
-                />
-            </div>
-            <div class="col-md-5 col-sm-6 align-self-center">
-                FILTRY
-            </div>
             <div class="col-12">
-<!--                <div class="row mb-3 px-3 mt-3 mw-100">-->
-<!--                    <div class="col-md-6 search-info">-->
-<!--                        <span id="search-results">Wyniki wyszukiwania dla frazy: </span>-->
-<!--&lt;!&ndash;                        <span class="fst-italic">"{{this.activeSearchWord}}"</span>&ndash;&gt;-->
-<!--                        <button class="btn btn-sm btn-outline-4 size" type="button" id="button-cancel">-->
-<!--                            <font-awesome-icon :icon="['fa', 'info']" />-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <div class="row justify-content-center mw-100 mt-3">
                     <div class="col-lg-12 col-md-9 col-sm-7 col-10">
                         <div class="row align-content-center">

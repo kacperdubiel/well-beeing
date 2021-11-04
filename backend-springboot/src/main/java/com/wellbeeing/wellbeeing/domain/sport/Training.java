@@ -37,6 +37,9 @@ public class Training {
     @Transient
     private int caloriesBurned;
 
+    @Transient
+    private int totalTrainingTimeSeconds;
+
     @Column(name = "isPrivate")
     private boolean isPrivate = false;
 
@@ -56,9 +59,14 @@ public class Training {
     public int caloriesBurned(double user_weight) {
         return this.exerciseInTrainings.stream().map(ex -> ex.countCaloriesPerExerciseDuration(user_weight)).mapToInt(num -> num).sum();
     }
+//    @Transient
+//    public int getTotalTrainingTimeSeconds() {
+//        return this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries()).mapToInt(num -> num).sum();
+//    }
 
-    public int getTotalTrainingTimeSeconds() {
-        return this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries()).mapToInt(num -> num).sum();
+    @PostLoad
+    public void onTotalTrainingTimeSeconds() {
+        this.totalTrainingTimeSeconds =  this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries()).mapToInt(num -> num).sum();
     }
 
     @Override

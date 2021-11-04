@@ -100,7 +100,7 @@
                                                 <th scope="col">Id</th>
                                                 <th scope="col">Nazwa</th>
                                                 <th scope="col">Typ</th>
-                                                <th scope="col">kcal/h</th>
+                                                <th scope="col">kcal</th>
                                                 <th scope="col">Powt</th>
                                                 <th scope="col">Serie</th>
                                                 <th scope="col">Czas</th>
@@ -112,7 +112,7 @@
                                                 <td>{{ ex.exercise.exerciseId }}</td>
                                                 <td>{{ ex.exercise.name }}</td>
                                                 <td>{{ ex.exercise.exerciseType }}</td>
-                                                <td>{{ ex.exercise.caloriesBurned }}</td>
+                                                <td>{{ ex.caloriesBurned }}</td>
                                                 <td>{{ ex.repetitions }}</td>
                                                 <td>{{ ex.series }}</td>
                                                 <td>{{ ex.time_seconds }}</td>

@@ -40,7 +40,7 @@
                     style="border-radius: 5px"
                     @change="getExercisesWithFilters()"
                 >
-                    <option disabled value="">Wybierz typ</option>
+                    <option disabled value="">Rozmiar strony</option>
                     <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
                 </select>
             </div>
@@ -72,8 +72,8 @@
                 </div>
             </div>
         </div>
-        <div class="row my-2 align-items-center justify-content-end">
-            <span class="col-2 float-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
+        <div class="row my-2 align-items-center justify-content-end d-flex">
+            <span class="col-2 float-end justify-content-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
                 <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
             </span>
             <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">

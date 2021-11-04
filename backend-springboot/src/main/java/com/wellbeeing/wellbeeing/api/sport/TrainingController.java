@@ -12,6 +12,7 @@ import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import net.kaczmarzyk.spring.data.jpa.domain.Between;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
@@ -84,7 +85,7 @@ public class TrainingController {
             @And({
                 @Spec(path = "trainingDifficulty", spec = Equal.class),
                 @Spec(path = "name", spec = LikeIgnoreCase.class),
-                @Spec(path = "totalTrainingTimeSeconds", params = {"secondsMoreThan","secondsLessThan"},spec = LikeIgnoreCase.class),
+                @Spec(path = "totalTrainingTimeSeconds", params = {"secondsMoreThan","secondsLessThan"},spec = Between.class),
                 @Spec(path = "ex.name", params="exerciseName", spec = LikeIgnoreCase.class),
                 @Spec(path = "ls.name", params="label", spec = LikeIgnoreCase.class)
              }) Specification<Training> trainingSpec,

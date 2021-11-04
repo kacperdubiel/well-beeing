@@ -86,7 +86,10 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
         }
         double finalWeight = weight;
         plan.getTrainingPositions().forEach(
-                pos -> pos.getTraining().setCaloriesBurned(pos.getTraining().caloriesBurned(finalWeight))
+                pos -> {
+                    pos.getTraining().setCaloriesBurned(pos.getTraining().caloriesBurned(finalWeight));
+                    pos.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
+                }
         );
         return plan;
     }
@@ -185,7 +188,10 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
         List<TrainingPlan> myPlans = trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName);
         double finalWeight = weight;
         myPlans.forEach(plan -> plan.getTrainingPositions().forEach(
-                pos -> pos.getTraining().setCaloriesBurned(pos.getTraining().caloriesBurned(finalWeight))
+                pos -> {
+                    pos.getTraining().setCaloriesBurned(pos.getTraining().caloriesBurned(finalWeight));
+                    pos.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
+                }
         ));
         return trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName);
     }
