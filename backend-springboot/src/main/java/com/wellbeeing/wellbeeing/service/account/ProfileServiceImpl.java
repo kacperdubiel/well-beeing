@@ -2,7 +2,7 @@ package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.*;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.repository.account.DoctorDAO;
+import com.wellbeeing.wellbeeing.repository.account.DoctorProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
@@ -21,17 +21,20 @@ public class ProfileServiceImpl implements ProfileService {
     private ProfileDAO profileDAO;
     private UserDAO userDAO;
     private TrainerDAO trainerDAO;
-    private DoctorDAO doctorDAO;
+    private DoctorProfileDAO doctorProfileDAO;
+    private DoctorSpecializationService doctorSpecService;
 
     @Autowired
     public ProfileServiceImpl(@Qualifier("profileDAO") ProfileDAO profileDAO,
                               @Qualifier("userDAO") UserDAO userDAO,
                               @Qualifier("trainerDAO") TrainerDAO trainerDAO,
-                              @Qualifier("doctorDAO") DoctorDAO doctorDAO) {
+                              @Qualifier("doctorProfileDAO") DoctorProfileDAO doctorProfileDAO,
+                              @Qualifier("doctorSpecializationService") DoctorSpecializationService doctorSpecService) {
         this.profileDAO = profileDAO;
         this.userDAO = userDAO;
         this.trainerDAO = trainerDAO;
-        this.doctorDAO = doctorDAO;
+        this.doctorProfileDAO = doctorProfileDAO;
+        this.doctorSpecService = doctorSpecService;
     }
 
     @Override
@@ -43,8 +46,28 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Page<DoctorProfile> getDoctorsProfiles(int page, int size) {
-        return doctorDAO.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "userProfile.lastName")));
+    public DoctorProfile getDoctorProfileById(UUID doctorProfileId) throws NotFoundException {
+        DoctorProfile doctorProfile = doctorProfileDAO.findById(doctorProfileId).orElse(null);
+        if(doctorProfile == null) {
+            throw new NotFoundException("Doctor profile with id: " + doctorProfileId + " not found");
+        }
+
+        return doctorProfile;
+    }
+
+    @Override
+    public Page<DoctorProfile> getDoctorProfilesBySpecialization(DoctorSpecialization specialization, String like, int page, int size) {
+        return doctorProfileDAO.findBySpecialization(specialization, like, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "userProfile.lastName")));
+    }
+
+    @Override
+    public DoctorProfile addDoctorSpecializationToDoctor(UUID doctorId, UUID doctorSpecializationId) throws NotFoundException {
+        DoctorSpecialization doctorSpecialization = doctorSpecService.getDoctorSpecializationById(doctorSpecializationId);
+        DoctorProfile doctorProfile = getDoctorProfileById(doctorId);
+
+        doctorProfile.addDoctorSpecialization(doctorSpecialization);
+
+        return doctorProfileDAO.save(doctorProfile);
     }
 
     @Override

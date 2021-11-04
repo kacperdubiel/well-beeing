@@ -11,7 +11,9 @@ import java.util.UUID;
 
 public interface ProfileService {
     Profile getProfileById(UUID profileId) throws NotFoundException;
-    Page<DoctorProfile> getDoctorsProfiles(int page, int size);
+    DoctorProfile getDoctorProfileById(UUID doctorProfileId) throws NotFoundException;
+    Page<DoctorProfile> getDoctorProfilesBySpecialization(DoctorSpecialization specialization, String like, int page, int size);
+    DoctorProfile addDoctorSpecializationToDoctor(UUID doctorId, UUID doctorSpecializationId) throws NotFoundException;
     List<TrainerProfile> getTrainersProfiles();
     Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException;
 }

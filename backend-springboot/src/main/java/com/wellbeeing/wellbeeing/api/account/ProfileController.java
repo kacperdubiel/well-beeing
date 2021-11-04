@@ -1,9 +1,12 @@
 package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.DoctorProfile;
+import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
+import com.wellbeeing.wellbeeing.service.account.DoctorSpecializationService;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +25,15 @@ import java.util.UUID;
 public class ProfileController {
     private ProfileService profileService;
     private UserService userService;
+    private DoctorSpecializationService doctorSpecService;
 
     @Autowired
     public ProfileController(@Qualifier("profileService") ProfileService profileService,
-                             @Qualifier("userService") UserService userService){
+                             @Qualifier("userService") UserService userService,
+                             @Qualifier("doctorSpecializationService") DoctorSpecializationService doctorSpecService){
         this.profileService = profileService;
         this.userService = userService;
+        this.doctorSpecService = doctorSpecService;
     }
 
     /*@RequestMapping(path = "/profile/{profileId}", method = RequestMethod.GET)
@@ -81,18 +87,21 @@ public class ProfileController {
         }
     }
 
-    @GetMapping(path = "/doctors")
-    public ResponseEntity<?> getDoctorsProfiles(@RequestParam(value = "page", defaultValue = "0") String page,
-                                                @RequestParam(value = "size", defaultValue = "10") String size) {
-
-        Page<DoctorProfile> doctorsPage = profileService.getDoctorsProfiles(Integer.parseInt(page), Integer.parseInt(size));
+    @GetMapping(path = "/doctors/doctor-specializations/{spec_id}")
+    public ResponseEntity<?> getDoctorsProfiles(@PathVariable("spec_id") UUID specializationId,
+                                                @RequestParam(value = "like", defaultValue = "") String like,
+                                                @RequestParam(value = "page", defaultValue = "0") String page,
+                                                @RequestParam(value = "size", defaultValue = "10") String size)
+            throws NotFoundException
+    {
+        DoctorSpecialization specialization = doctorSpecService.getDoctorSpecializationById(specializationId);
+        Page<DoctorProfile> doctorsPage = profileService.getDoctorProfilesBySpecialization(specialization, like, Integer.parseInt(page), Integer.parseInt(size));
         PaginatedResponse response = PaginatedResponse.builder()
                 .currentPage(doctorsPage.getNumber())
                 .totalItems(doctorsPage.getTotalElements())
                 .totalPages(doctorsPage.getTotalPages())
                 .objects(doctorsPage.getContent())
                 .build();
-
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
