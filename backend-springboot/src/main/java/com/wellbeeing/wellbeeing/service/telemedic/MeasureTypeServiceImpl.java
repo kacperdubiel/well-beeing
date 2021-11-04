@@ -22,7 +22,7 @@ public class MeasureTypeServiceImpl implements MeasureTypeService {
 
     @Override
     public List<MeasureType> getMeasureTypes(){
-        return measureTypeDAO.findAllByOrderByNameAsc();
+        return measureTypeDAO.findAllByOrderByNameDesc();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class MeasureTypeServiceImpl implements MeasureTypeService {
         UUID measureTypeId = updatedMeasureType.getId();
 
         if(measureTypeId == null) {
-            throw new NotFoundException("Specify measure id!");
+            throw new NotFoundException("Specify measure type id!");
         }
 
         MeasureType measureTypeResult = measureTypeDAO.findById(measureTypeId).orElse(null);

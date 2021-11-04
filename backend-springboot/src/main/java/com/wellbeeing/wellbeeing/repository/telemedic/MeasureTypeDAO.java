@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository("measureTypeDAO")
 public interface MeasureTypeDAO extends JpaRepository<MeasureType, UUID> {
-    List<MeasureType> findAllByOrderByNameAsc();
+    List<MeasureType> findAllByOrderByNameDesc();
 }
