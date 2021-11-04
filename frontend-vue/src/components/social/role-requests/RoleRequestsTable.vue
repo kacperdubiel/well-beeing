@@ -28,7 +28,7 @@
                         <button class="btn-white mx-1" v-if="req.status === 'PENDING'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestEditModal2">
                             <font-awesome-icon :icon="['fa', 'pen']" size="1x" class="navbar-icon" />
                         </button>
-                        <button class="btn-white mx-1"  @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestDetailsModal">
+                        <button class="btn-white mx-1" v-if="req.status === 'REJECTED'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestDetailsModal">
                             <font-awesome-icon :icon="['fa', 'question']" size="1x" class="navbar-icon" />
                         </button>
                     </td>

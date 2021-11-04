@@ -22,7 +22,12 @@
                                 {{ formatDate(this.roleRequestSource.addedDate )}}
                             </div>
                             <div class="col">
-                                <select class="form-select" aria-label="Default select example" v-model="editedRoleRequest.role">
+                                <select
+                                    class="form-select"
+                                    aria-label="Default select example"
+                                    v-model="editedRoleRequest.role"
+                                    @focus="clearStatus"
+                                >
                                     <option v-for="role in this.possibleRoles" :value="role" :key="role">
                                         {{ role }}
                                     </option>
@@ -71,14 +76,17 @@
                             <div class="col-12">
                                 {{ this.roleRequestSource.comment === "" ? "-" : this.roleRequestSource.comment }}
                             </div>
-                            <div class="col-12">
-                                <button class="btn-panel-social" @click="updateRoleRequest">Uaktualnij prośbę</button>
-                            </div>
+
                         </div>
-                        <div v-if="errorRequest" class="row mt-3 text-start ms-4">
+                        <div v-if="errorRequest" class="row text-start">
                             <p class="has-error m-0">
                                 Proszę uzupełnić wszystkie dane!
                             </p>
+                        </div>
+                        <div class="row">
+                            <div class="col text-end">
+                                <button class="btn-panel-social" @click="updateRoleRequest">Uaktualnij prośbę</button>
+                            </div>
                         </div>
 
                     </div>
@@ -103,8 +111,7 @@ export default {
             editFile: false,
 
             updatingRequest: false,
-            errorRequest: false,
-            requestId: 0
+            errorRequest: false
         }
     },
     props: {
@@ -133,19 +140,30 @@ export default {
 
             this.editedRoleRequest.role = this.roleRequestSource.role
             this.editedRoleRequest.documentImgPath = this.roleRequestSource.documentImgPath
+            this.clearStatus()
             this.editFile = false
         },
         deleteFile() {
             this.editFile = true
+            this.editedRoleRequest.documentImgPath = ""
         },
         updateRoleRequest() {
             this.updatingRequest = true
             this.clearStatus()
-            console.log(this.$refs.editfile.files[0])
-            if (this.$refs.editfile.files.length > 0) {
-                this.editedRoleRequest.documentImgPath = this.$refs.editfile.files[0].name
+            if (this.editFile) {
+                console.log('file0', this.$refs.editfile.files[0])
+                if (this.$refs.editfile.files.length > 0) {
+                    this.editedRoleRequest.documentImgPath = this.$refs.editfile.files[0].name
+                }
+                else {
+                    if (this.invalidFile) {
+                        this.errorRequest = true
+                        return
+                    }
+                }
             }
-            if (this.invalidRole || this.invalidFile) {
+
+            if (this.invalidRole) {
                 this.errorRequest = true
                 // console.log("wielbłąd")
                 return
@@ -155,7 +173,10 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.put(url, this.editedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
-                this.$func_global.importData(this.roleRequestSource.roleReqId, this.$refs.editfile, this.$store.getters.getToken)
+                if (this.editFile) {
+                    this.$func_global.importData(this.roleRequestSource.roleReqId, this.$refs.editfile, this.$store.getters.getToken)
+
+                }
                 // this.clearInputs()
                 this.$parent.$parent.getMyRoleRequests()
                 document.getElementById('modal-close').click();
