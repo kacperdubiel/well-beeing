@@ -5,7 +5,7 @@
                             <div class="col-5 offset-3 training-time-day text-uppercase text-center ">{{trainingPosition.timeOfDay}}
                             </div>
                             <div class="col-3 form-switch justify-content-end">
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" :disabled="trainingPosition.trainingStatus === 'COMPLETED'" :checked="trainingPosition.trainingStatus === 'COMPLETED'">
+                                <input class="form-check-input" @change="check($event)" type="checkbox" id="flexSwitchCheckDefault" :disabled="trainingPosition.trainingStatus === 'COMPLETED'" :checked="trainingPosition.trainingStatus === 'COMPLETED'">
                             </div>
                     </div>
                     <div class="training-name">{{trainingPosition.training.name}}</div>
@@ -38,6 +38,24 @@ export default {
         trainingPosition: Object
     },
     methods: {
+        check(){
+            if (this.trainingPosition.trainingStatus !== 'COMPLETED') {
+                this.updateTrainingStatus()
+            }
+        },
+        async updateTrainingStatus() {
+            const url = `${this.apiURL}sport/training-plan/${this.trainingPosition.trainingPositionId}/update-position-status?newStatus=COMPLETED`
+            const token = this.$store.getters.getToken;
+            console.log('token ', token);
+            await this.axios.patch(url, {},{headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.trainings = response.data['content']
+                this.$emit('update:active')
+                console.log(this.trainings)
+            }).catch(error => {
+                console.log(error.response);
+            });
+            // /training-plan/115/update-position-status?newStatus=COMPLETED
+        },
         getTimePrettyFromSeconds(position) {
             let seconds = position.training.totalTrainingTimeSeconds;
             if (seconds < 60) {

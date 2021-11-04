@@ -71,30 +71,6 @@ public class ExerciseController {
         return new ResponseEntity<>(exerciseService.getAllExercisesFiltered(exerciseSpec, pageable, principal.getName()), HttpStatus.OK);
     }
 
-//    @GetMapping(path = "")
-//    public ResponseEntity<?> getExercisesPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
-//                                                   @RequestParam(value = "size", defaultValue = "25") int size,
-//                                                    Principal principal) throws NotFoundException {
-//            List<Exercise> exercises;
-//            Pageable paging = PageRequest.of(page, size);
-//
-//            Page<Exercise> pageExercises;
-//            pageExercises = exerciseService.getAllExercises(paging);
-//            exercises = pageExercises.getContent();
-//            Map<Long, Integer> calories = exerciseService.getCaloriesBurnedFromUser(exercises, principal.getName());
-//
-//            for (Exercise exercise:
-//                    exercises) {
-//                exercise.setCaloriesBurned(calories.get(exercise.getExerciseId()));
-//            }
-//        PaginatedResponse response = PaginatedResponse.builder()
-//                        .objects(exercises)
-//                        .currentPage(pageExercises.getNumber())
-//                        .totalItems(pageExercises.getTotalElements())
-//                        .totalPages(pageExercises.getTotalPages()).build();
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
-
     @PostMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
     public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) throws NotFoundException{

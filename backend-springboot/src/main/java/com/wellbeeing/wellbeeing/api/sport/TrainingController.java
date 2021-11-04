@@ -4,10 +4,8 @@ import com.wellbeeing.wellbeeing.domain.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseToTrainingRequest;
-import com.wellbeeing.wellbeeing.domain.sport.Exercise;
-import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
-import com.wellbeeing.wellbeeing.domain.sport.Training;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
+import com.wellbeeing.wellbeeing.domain.message.sport.ChangeTrainingPlanRequestStatusRequest;
+import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
@@ -53,29 +51,6 @@ public class TrainingController {
     public ResponseEntity<?> getTrainingById(@PathVariable(value = "id") Long trainingId, Principal principal) throws NotFoundException {
         return new ResponseEntity<>(trainingService.getTraining(trainingId, principal.getName()), HttpStatus.OK);
     }
-
-//    @GetMapping(path = "")
-//    public ResponseEntity<?> getTrainings(@RequestParam(value = "page", defaultValue = "0") int page,
-//                                          @RequestParam(value = "size", defaultValue = "20") int size,
-//                                          Principal principal) {
-////        return new ResponseEntity<>(trainingService.getAllTrainings(), HttpStatus.OK);
-//        try {
-//            List<Training> trainings;
-//            Pageable paging = PageRequest.of(page, size);
-//
-//            Page<Training> pageTrainings;
-//            pageTrainings = trainingService.getAllTrainings(paging, principal.getName());
-//            trainings = pageTrainings.getContent();
-//            PaginatedResponse response = PaginatedResponse.builder()
-//                    .objects(trainings)
-//                    .currentPage(pageTrainings.getNumber())
-//                    .totalItems(pageTrainings.getTotalElements())
-//                    .totalPages(pageTrainings.getTotalPages()).build();
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     @GetMapping(path = "")
     public ResponseEntity<?> getTrainingsWithFilters(
@@ -152,6 +127,5 @@ public class TrainingController {
         }
         return new ResponseEntity<>(caloriesBurned, HttpStatus.OK);
     }
-
 
 }

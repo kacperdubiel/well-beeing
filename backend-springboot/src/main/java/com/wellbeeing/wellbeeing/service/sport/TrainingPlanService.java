@@ -25,6 +25,6 @@ public interface TrainingPlanService {
     List<TrainingPlanRequest> getTrainersRequests(String trainerName) throws NotFoundException;
     TrainingPlanRequest changeTrainingPlanRequestStatus(String userName, long requestId, String newStatus) throws NotFoundException;
     TrainingPlanRequest sendRequestToTrainer(UUID trainerId, String submitterName, String message) throws NotFoundException;
-
+    TrainingPosition updateTrainingPositionStatus(Long positionId, String newStatus, String userName) throws IllegalArgumentException, NotFoundException;
     TrainingPlan partialUpdateTrainingPlan(TrainingPlan trainingPlan);
 }

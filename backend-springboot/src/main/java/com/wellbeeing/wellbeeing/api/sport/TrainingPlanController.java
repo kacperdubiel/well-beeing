@@ -145,6 +145,11 @@ public class TrainingPlanController {
         return new ResponseEntity<>(editedRequest, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}/update-position-status")
+    public ResponseEntity<?> updateTrainingPositionStatus(@PathVariable(value = "id") Long trainingPositionId, @RequestParam String newStatus, Principal principal) throws NotFoundException, IllegalArgumentException {
+        return new ResponseEntity<>(trainingPlanService.updateTrainingPositionStatus(trainingPositionId, newStatus, principal.getName()), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> partialUpdateTrainingPlan(@PathVariable(value = "id") Long trainingPlanId, @RequestBody Map<String, Object> fields, Principal principal) throws Exception {
         // Sanitize and validate the data

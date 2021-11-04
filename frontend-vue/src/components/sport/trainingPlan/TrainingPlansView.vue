@@ -5,11 +5,10 @@
             <span class="week">({{this.getDateRangeOfWeek(week)}})</span>
             <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
         </div>
-        <div class="row justify-content-between mx-1 my-2 day">
+        <div class="row justify-content-start m-3 mx-4">
             <div class="col-3">
-                <p>Zrealizowane treningi</p>
                 <div class="progress-text">
-                    {{this.activePlanProgress.trainingsCompleted}}/{{this.activePlanProgress.trainingsTotal}}
+                    {{this.activePlanProgress.trainingsCompleted}}/{{this.activePlanProgress.trainingsTotal}} treningi
                 </div>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
@@ -22,7 +21,6 @@
                 </div>
             </div>
             <div class="col-3">
-                <p>Spalone kalorie</p>
                 <div class="progress-text">
                     {{this.activePlanProgress.caloriesBurned}}/{{this.activePlanProgress.caloriesTotal}} kcal
                 </div>
@@ -36,14 +34,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2 d-flex justify-content-end">
-                <button class="btn-primary mx-2" @click="downloadPlan">
+            <div class="col-2 d-flex ms-auto">
+                <button class="btn-panel-sport mx-2 ms-auto" @click="downloadPlan">
                     <font-awesome-icon :icon="['fa', 'download']" />
                 </button>
             </div>
         </div>
         <!--Active plan-->
-        <TrainingPlanWeek @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
+        <TrainingPlanWeek @update:active="getMyTrainingPlans" @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
         <div class="m-3 mx-4 header">
             <span >Tworzenie nowego planu </span>
         </div>
@@ -430,7 +428,7 @@ p.week {
     background-color: var(--SPORT);
 }
 .progress {
-    height: 20%;
+    height: 30%;
     font-size: medium;
     font-weight: bold;
 }

@@ -255,6 +255,22 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
+    public TrainingPosition updateTrainingPositionStatus(Long positionId, String newStatus, String userName) throws IllegalArgumentException, NotFoundException {
+        TrainingPosition foundPosition = trainingPositionDAO.findById(positionId).orElse(null);
+        if (foundPosition == null)
+            throw new NotFoundException(String.format("Position with id=%s doesn't exist", foundPosition));
+        ETrainingStatus status;
+        try {
+            status = ETrainingStatus.valueOf(newStatus.toUpperCase());
+        } catch (java.lang.IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        foundPosition.setTrainingStatus(status);
+        trainingPositionDAO.save(foundPosition);
+        return foundPosition;
+    }
+
+    @Override
     public TrainingPlan partialUpdateTrainingPlan(TrainingPlan trainingPlan) {
         trainingPlanDAO.save(trainingPlan);
         return trainingPlan;
