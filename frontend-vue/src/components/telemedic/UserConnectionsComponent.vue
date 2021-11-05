@@ -18,9 +18,21 @@
                         </option>
                     </select>
                 </div>
-                <div v-if="connectionType !== 'WITH_USER'" class="col-4">
-                    <button class="btn-panel-telemedic">
-                        Wyszukaj specjalistę
+                <div v-if="connectionType !== 'WITH_USER'" class="col-5">
+                    <button v-if="connectionType === 'WITH_DOCTOR'" class="btn-panel-telemedic">
+                        <router-link :to="{ name: 'SearchDoctorsView' }">
+                            Wyszukaj lekarza
+                        </router-link>
+                    </button>
+                    <button v-if="connectionType === 'WITH_DIETICIAN'" class="btn-panel-diet">
+                        <router-link :to="{ name: 'SearchDoctorsView' }">
+                            Wyszukaj dietetyka
+                        </router-link>
+                    </button>
+                    <button v-if="connectionType === 'WITH_TRAINER'" class="btn-panel-sport">
+                        <router-link :to="{ name: 'SearchDoctorsView' }">
+                            Wyszukaj trenera
+                        </router-link>
                     </button>
                 </div>
             </div>
