@@ -175,7 +175,7 @@ export default {
             if(this.selectedUserConnection){
                 this.axios({
                     method: 'delete',
-                    url: `http://localhost:8090/profile-connections/${this.selectedSpecialistConnection.id}`,
+                    url: `http://localhost:8090/profile-connections/${this.selectedUserConnection.id}`,
                     headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
                 }).then(() => {
                     this.getUserConnections();
