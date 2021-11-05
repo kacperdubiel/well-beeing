@@ -91,6 +91,9 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
                     pos.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
                 }
         );
+        System.out.println("Przed planem");
+        PDFFromTrainingPlan.generatePDFFromTrainingPlan(plan);
+        System.out.println("Po planie");
         return plan;
     }
 
