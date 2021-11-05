@@ -10,14 +10,16 @@ import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class PDFFromTrainingPlan {
 
     private static final ArrayList<String> WEEK_DAYS = new ArrayList<String>(){
@@ -42,6 +44,9 @@ public class PDFFromTrainingPlan {
     private static final Font ultimateHeaderFont = FontFactory.getFont(String.valueOf(base),32, Font.BOLD);
     private static final Font headerFont = FontFactory.getFont(String.valueOf(base),28, Font.BOLD);
     private static final Font secondHeaderFont = FontFactory.getFont(String.valueOf(base),12, Font.BOLD);
+
+    public static InputStream fileStream;
+
     public static void main(String[] args)
     {
 
@@ -80,7 +85,8 @@ public class PDFFromTrainingPlan {
         }
     }
 
-    public static Document generatePDFFromTrainingPlan(TrainingPlan trainingPlan) {
+    public static Document generatePDFFromTrainingPlan(TrainingPlan trainingPlan, String name) {
+        String filename = name.equals("") ? "/NewTrainingPlan.pdf" : "/"+name+".pdf";
         Document doc = new Document();
         doc.setPageSize(PageSize.A4.rotate());
 
@@ -89,7 +95,8 @@ public class PDFFromTrainingPlan {
 //generate a PDF at the specified location
             File file = new File("backend-springboot/data");
             System.out.println(file.getAbsolutePath());
-            PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(file.getAbsolutePath() + "/NewTrainingPlan.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(file.getAbsolutePath() + filename));
+            fileStream = new FileInputStream(file.getAbsolutePath() + filename);
             System.out.println("PDF created.");
             Paragraph paragraph = new Paragraph("Plan treningowy na tydzien: " + weekRange, ultimateHeaderFont);
 //prepares trainingPlan

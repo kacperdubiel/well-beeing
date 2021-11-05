@@ -92,7 +92,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
                 }
         );
         System.out.println("Przed planem");
-        PDFFromTrainingPlan.generatePDFFromTrainingPlan(plan);
+        PDFFromTrainingPlan.generatePDFFromTrainingPlan(plan, "Some plan");
         System.out.println("Po planie");
         return plan;
     }

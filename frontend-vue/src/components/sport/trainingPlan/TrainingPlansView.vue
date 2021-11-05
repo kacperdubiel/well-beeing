@@ -183,7 +183,16 @@ export default {
     },
     methods: {
         async downloadPlan () {
-          //TODO Download Plan
+            const url = `${this.apiURL}sport/training-plan/export/${this.activePlan.trainingPlanId}`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'}, responseType: 'arraybuffer'}).then((response) => {
+                console.log(response.data)
+                const blob = new Blob([response.data], { type: 'application/pdf' })
+                const objectUrl = window.URL.createObjectURL(blob)
+                window.open(objectUrl)
+            }).catch(error => {
+                console.log(error.response.status)
+            });
         },
         async updateWeek () {
             console.log('New week: ', this.newPlan.week)

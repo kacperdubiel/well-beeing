@@ -1,15 +1,21 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
+import com.itextpdf.text.Document;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.*;
 import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.service.sport.PDFFromTrainingPlan;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +24,9 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -183,4 +192,17 @@ public class TrainingPlanController {
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
+    @GetMapping("/export/{trainingPlanId}")
+    public ResponseEntity<?> exportTrainingPlan(@PathVariable long trainingPlanId, Principal principal) throws IOException, NotFoundException {
+        TrainingPlan trainingPlan = trainingPlanService.getTrainingPlan(trainingPlanId, principal.getName());
+//        String path = roleRequest.getDocumentImgPath();
+        Document doc = PDFFromTrainingPlan.generatePDFFromTrainingPlan(trainingPlan,"someNewPlan");
+//        File preFile = new File(path);
+
+        InputStreamResource file = new InputStreamResource(new ByteArrayInputStream(IOUtils.toByteArray(PDFFromTrainingPlan.fileStream)));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "someNewPlan")
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(file);
+    }
 }
