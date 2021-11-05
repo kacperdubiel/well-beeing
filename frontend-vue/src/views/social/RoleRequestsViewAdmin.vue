@@ -1,53 +1,55 @@
 <template>
-    <div>
-        <div class="row">
-            <div class="col-md-2 col-sm-12 align-self-center filter-control">
-                <select
-                    v-model="filters.sortBy"
-                    class=" p-2"
-                    style="border-radius: 5px"
-                    @change="getRoleRequests()"
-                >
-                    <option disabled value="">Wybierz sortowanie</option>
-                    <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{ sort.label }}</option>
-                </select>
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div>
+                <div class="row mb-4">
+                    <div class="col-md-2 col-sm-6 text-start">
+                        <label for="status-select" class="form-label">Status:</label>
+                        <select
+                            v-model="filters.statusFilter"
+                            class="p-2 w-100"
+                            id="status-select"
+                            @change="getRoleRequests()"
+                        >
+                            <option v-for="status in filters.allStatusFilters" :key="status.label" :value="status.value">{{ status.label }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-6 text-start">
+                        <label for="role-select" class="form-label">Rola:</label>
+                        <select
+                            v-model="filters.roleFilter"
+                            class="p-2 w-100"
+                            id="role-select"
+                            @change="getRoleRequests()"
+                        >
+                            <option v-for="role in filters.allRoleFilters" :key="role.label" :value="role.value">{{ role.label }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-6 text-start ms-auto">
+                        <label for="page-size-select" class="form-label">Rozmiar strony:</label>
+                        <select
+                            v-model="userNavigation.pageSize"
+                            class="p-2 w-100"
+                            id="page-size-select"
+                            @change="getRoleRequests()"
+                        >
+                            <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-6 text-start">
+                        <label for="sorting-select" class="form-label">Sortowanie:</label>
+                        <select
+                            v-model="filters.sortBy"
+                            class="p-2 w-100"
+                            id="sorting-select"
+                            @change="getRoleRequests()"
+                        >
+                            <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{ sort.label }}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-2 col-sm-12  filter-control align-self-center">
-                <select
-                    v-model="userNavigation.pageSize"
-                    class=" p-2"
-                    style="border-radius: 5px"
-                    @change="getRoleRequests()"
-                >
-                    <option disabled value="">Rozmiar strony</option>
-                    <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
-                </select>
-            </div>
-            <div class="col-md-2 col-sm-12 align-self-center filter-control">
-                <select
-                    v-model="filters.statusFilter"
-                    class=" p-2"
-                    style="border-radius: 5px"
-                    @change="getRoleRequests()"
-                >
-                    <option disabled value="">Wybierz status</option>
-                    <option v-for="status in filters.allStatusFilters" :key="status.label" :value="status.value">{{ status.label }}</option>
-                </select>
-            </div>
-            <div class="col-md-2 col-sm-12 align-self-center filter-control">
-                <select
-                    v-model="filters.roleFilter"
-                    class=" p-2"
-                    style="border-radius: 5px"
-                    @change="getRoleRequests()"
-                >
-                    <option disabled value="">Wybierz rolę</option>
-                    <option v-for="role in filters.allRoleFilters" :key="role.label" :value="role.value">{{ role.label }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-11">
+            <div class="row justify-content-center">
                 <role-requests-table :role-requests-source="roleRequests" :key="roleRequests"/>
             </div>
         </div>
