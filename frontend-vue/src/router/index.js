@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Feed from "@/views/social/Feed";
 import RoleRequestsView from "@/views/social/RoleRequestsView";
+import LoginAdminView from "@/views/social/LoginAdminView";
+import RoleRequestViewAdmin from "@/views/social/RoleRequestsViewAdmin";
 
 const routes = [
   {
@@ -27,6 +29,18 @@ const routes = [
     path: '/role-requests',
     name: 'RoleRequestsView',
     component: RoleRequestsView
+  },
+  {
+    path: '/admin',
+    name: 'LoginAdminView',
+    meta: { layout: "clean"},
+    component: LoginAdminView
+  },
+  {
+    path: '/admin/role-requests',
+    name: 'RoleRequestsViewAdmin',
+    meta: { layout: "admin"},
+    component: RoleRequestViewAdmin
   }
 ]
 

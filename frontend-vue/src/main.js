@@ -10,6 +10,7 @@ import { func_global } from "./global-func"
 
 import Default from "@/layouts/Default";
 import Clean from "@/layouts/Clean";
+import Admin from "@/layouts/Admin";
 
 // fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -44,10 +45,14 @@ import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 library.add(faFilePdf)
 library.add(faInfo)
 library.add(faPen)
 library.add(faQuestion)
+library.add(faTimes)
+library.add(faCheck)
 
 const app = createApp(App).use(router);
 
@@ -59,6 +64,7 @@ app.use(VueAxios, axios)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)
 app.component('clean-layout', Clean)
+app.component('admin-layout', Admin)
 
 app.mount('#app');
 

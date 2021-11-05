@@ -49,7 +49,7 @@ public class RoleRequestController {
     @GetMapping(path = "")
 //    @RolesAllowed(ERole.Name.ROLE_ADMIN)
     public ResponseEntity<?> getRoleRequestsPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                   @RequestParam(value = "size", defaultValue = "3") int size) {
+                                                   @RequestParam(value = "size", defaultValue = "20") int size) {
         List<RoleRequest> roleRequests;
         Pageable paging = PageRequest.of(page, size);
 
@@ -58,7 +58,7 @@ public class RoleRequestController {
         roleRequests = pageRoleRequests.getContent();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("exercises", roleRequests);
+        response.put("requests", roleRequests);
         response.put("currentPage", pageRoleRequests.getNumber());
         response.put("totalItems", pageRoleRequests.getTotalElements());
         response.put("totalPages", pageRoleRequests.getTotalPages());

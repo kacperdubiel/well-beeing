@@ -85,6 +85,21 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public boolean addRoleToUser(UUID userId, String role) {
+        User foundUser = userDAO.findUserById(userId).orElse(null);
+        Role foundRole = roleDAO.findRoleByName(ERole.valueOf(role)).orElse(null);
+        System.out.println(foundUser);
+        System.out.println(foundRole);
+        if (foundUser != null && foundRole != null){
+            foundUser.addRole(foundRole);
+            userDAO.save(foundUser);
+            System.out.println("Authorities" + foundUser.getAuthorities());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public UUID findUserIdByUsername(String username) {
         User foundUser = userDAO.findUserByEmail(username).orElse(null);
         if(foundUser != null)

@@ -4,6 +4,7 @@
             <thead>
                 <tr>
                     <th>Data</th>
+                    <th v-if="isAdmin">Imię i nazwisko</th>
                     <th>Rola</th>
                     <th>Dokument</th>
                     <th>Status</th>
@@ -14,6 +15,7 @@
             <tbody>
                 <tr v-for="req in roleRequestsSource" :key="req.roleReqId">
                     <td>{{ formatDate(req.addedDate) }}</td>
+                    <td v-if="isAdmin">{{req.submitter.firstName}} {{req.submitter.lastName}}</td>
                     <td>{{ req.role }}</td>
                     <td>
                         <button class="no-bg" @click="downloadFile(req.roleReqId)">
@@ -21,22 +23,30 @@
                         </button>
                     </td>
                     <td>{{ req.status }}</td>
-                    <td class="text-end">
+                    <td class="text-end" v-if="!isAdmin">
                         <button class="btn-white mx-1" @click="handleCancel(req.roleReqId)" v-if="req.status === 'PENDING'">
                             Anuluj
                         </button>
                         <button class="btn-white mx-1" v-if="req.status === 'PENDING'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestEditModal2">
-                            <font-awesome-icon :icon="['fa', 'pen']" size="1x" class="navbar-icon" />
+                            <font-awesome-icon :icon="['fa', 'pen']" size="1x"/>
                         </button>
                         <button class="btn-white mx-1" v-if="req.status === 'REJECTED'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestDetailsModal">
-                            <font-awesome-icon :icon="['fa', 'question']" size="1x" class="navbar-icon" />
+                            <font-awesome-icon :icon="['fa', 'question']" size="1x"/>
+                        </button>
+                    </td>
+                    <td class="text-end" v-else>
+                        <button class="btn-white mx-1" v-if="req.status !== 'REJECTED'">
+                            <font-awesome-icon :icon="['fa', 'times']" size="1x"/>
+                        </button>
+                        <button class="btn-white mx-1" v-if="req.status !== 'ACCEPTED'" @click="acceptRoleRequest(req)">
+                            <font-awesome-icon :icon="['fa', 'check']" size="1x"/>
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <RoleRequestEdit :role-request-source="roleRequest" :refresh="openingModal" v-if="roleRequest" @download:file="downloadFile"/>
-        <RoleRequestDetails :role-request-source="roleRequest" v-if="roleRequest"  @download:file="downloadFile"/>
+        <RoleRequestEdit :role-request-source="roleRequest" :refresh="openingModal" v-if="roleRequest && !isAdmin" @download:file="downloadFile"/>
+        <RoleRequestDetails :role-request-source="roleRequest" v-if="roleRequest && !isAdmin"  @download:file="downloadFile"/>
     </div>
 </template>
 
@@ -53,7 +63,8 @@ export default {
     data () {
         return {
             roleRequest: Object,
-            openingModal: 0
+            openingModal: 0,
+            processedRoleRequest: Object
         }
     },
     props: {
@@ -89,6 +100,39 @@ export default {
             this.openingModal += 1
             console.log('Table req ', this.roleRequest)
             // this.$refs.editmodal.checkPossibleRoles()
+        },
+        acceptRoleRequest(req) {
+            const url = `${this.apiURL}role-request/${req.roleReqId}/process`
+            const token = this.$store.getters.getToken;
+            this.processedRoleRequest = {
+                "status": "ACCEPTED"
+            }
+            this.axios.patch(url, this.processedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response)
+                this.addRole(req.submitter.id, req.role)
+                this.$parent.getRoleRequests()
+            }).catch(error => {
+                console.log(error.response)
+            });
+        },
+        addRole(id, role) {
+            const url = `${this.apiURL}add-role-to-user-id`
+            const token = this.$store.getters.getToken;
+            const data = {
+                "userId": id,
+                "role": role
+            }
+            this.axios.put(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response)
+            }).catch(error => {
+                console.log(error.response)
+            });
+        }
+    },
+    computed: {
+        isAdmin() {
+            return this.$store.getters.getRoles.includes('ROLE_ADMIN')
+
         }
     }
 }

@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.api.account;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
+import com.wellbeeing.wellbeeing.domain.message.RoleToUserIdRequest;
 import com.wellbeeing.wellbeeing.domain.message.RoleToUserRequest;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +34,15 @@ public class UserController {
     @RolesAllowed(ERole.Name.ROLE_ADMIN)
     public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest){
         if(!userService.addRoleToUser(roleToUserRequest.getUsername(), roleToUserRequest.getRole())) {
+            return new ResponseEntity<>(new ErrorMessage("Can't set this role to user!", "error"), HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>("Roles updated", HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/add-role-to-user-id", method = RequestMethod.POST)
+    @RolesAllowed(ERole.Name.ROLE_ADMIN)
+    public ResponseEntity<?> addRoleToUserId(@RequestBody @NonNull RoleToUserIdRequest roleToUserIdRequest){
+        if(!userService.addRoleToUser(roleToUserIdRequest.getUserId(), roleToUserIdRequest.getRole())) {
             return new ResponseEntity<>(new ErrorMessage("Can't set this role to user!", "error"), HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>("Roles updated", HttpStatus.OK);
