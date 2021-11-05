@@ -186,7 +186,7 @@ export default {
             document.getElementsByClassName('')
         },
         getUserInfo () {
-            const url = `${this.apiURL}profile`
+            const url = `${this.apiURL}profile/my`
 
             this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
                 this.$store.commit('setFirstName', response.data['firstName']);

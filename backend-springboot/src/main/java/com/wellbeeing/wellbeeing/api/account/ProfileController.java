@@ -1,21 +1,22 @@
 package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
+@RequestMapping(path = "/profile")
 @RestController
 public class ProfileController {
     private final ProfileService profileService;
@@ -28,18 +29,18 @@ public class ProfileController {
         this.userService = userService;
     }
 
-    @RequestMapping(path = "/profile", method = RequestMethod.GET)
+    @GetMapping(path = "/my")
     public ResponseEntity<?> getProfile(Principal principal) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         Profile profile = profileService.getProfileById(profileId);
         return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/profile", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateProfileById(Principal principal,
-                                               @NonNull @RequestBody Profile profile) throws NotFoundException {
+    @PatchMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> partialUpdateProfileBy(Principal principal,
+                                                    @RequestBody Map<String, Object> fields) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        Profile actProfile = profileService.updateProfile(profile, profileId);
+        Profile actProfile = profileService.partialUpdateProfile(profileId, fields);
         return new ResponseEntity<>(actProfile, HttpStatus.OK);
     }
 }
