@@ -34,7 +34,7 @@
                                             min="0" max="1000"
                                             step="0.5"
                                         />
-                                        <span class="input-group-text">
+                                        <span v-if="selectedMeasureType" class="input-group-text">
                                             {{ selectedMeasureType.unit }}
                                         </span>
                                     </div>
@@ -89,9 +89,9 @@
                                             class="form-control"
                                             min="0" max="1000"
                                             step="0.5"/>
-                                        <span class="input-group-text">
-                                                    {{ selectedMeasureType.unit }}
-                                                </span>
+                                        <span v-if="selectedMeasureType" class="input-group-text">
+                                            {{ selectedMeasureType.unit }}
+                                        </span>
                                     </div>
                                     <div class="row mt-3">
                                         <date-picker v-model="measureDate" mode="dateTime" is24hr>
@@ -210,6 +210,7 @@ export default {
         return {
             measureTypes: {},
             selectedMeasureType: null,
+
             measures: {},
             measuresPage: {},
             measureDate: new Date(),
@@ -254,8 +255,8 @@ export default {
                     this.measureTypes = response.data;
                     if(response.data.length > 0){
                         this.selectedMeasureType = response.data[0];
+                        this.getProfile();
                     }
-                    // console.log(response.data);
                 })
                 .catch(e => {
                     console.log(e);
@@ -355,7 +356,6 @@ export default {
     },
     created(){
         this.getMeasureTypes();
-        this.getProfile();
     },
 }
 </script>
