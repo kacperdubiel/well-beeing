@@ -15,6 +15,10 @@ import lombok.Setter;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,6 +90,7 @@ public class PDFFromTrainingPlan {
     }
 
     public static Document generatePDFFromTrainingPlan(TrainingPlan trainingPlan, String name) {
+        weekRange = PDFFromTrainingPlan.getDateRangeOfWeek(trainingPlan.getWeek(), trainingPlan.getYear());
         String filename = name.equals("") ? "/NewTrainingPlan.pdf" : "/"+name+".pdf";
         Document doc = new Document();
         doc.setPageSize(PageSize.A4.rotate());
@@ -332,4 +337,47 @@ public class PDFFromTrainingPlan {
             return hours + "h " + (minutes != 0 ? minutes + "min": "");
         }
     }
+
+
+    private static String getDateRangeOfWeek(int weekNo, int year){
+        LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, weekNo+1);
+
+        LocalDate start = week.with(DayOfWeek.MONDAY);
+        LocalDate end = start.plusDays(6);
+        System.out.println(start +" - "+ end);
+        DateTimeFormatter ft = DateTimeFormatter.ofPattern("dd.MM");
+        return ft.format(start) +" - "+ ft.format(end);
+
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.clear();
+//        calendar.set(Calendar.YEAR, year);
+//
+//
+//        calendar.set(Calendar.WEEK_OF_YEAR, week);
+//        calendar.set(Calendar.DAY_OF_WEEK, 1);
+//        // Now get the first day of week.
+//        Date sDate = calendar.getTime();
+//        System.out.println(sDate);
+//
+//        calendar.set(Calendar.WEEK_OF_YEAR, (week));
+//        calendar.set(Calendar.DAY_OF_WEEK, 7);
+//        Date eDate = calendar.getTime();
+//        System.out.println(eDate);
+    }
+//    private static ArrayList<String> getDatesArrayOfWeek(int weekNo){
+//        var d1 = new Date();
+//        var numOfdaysPastSinceLastMonday = eval(d1.getDay()- 1);
+//        d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
+//        var weekNoToday = d1.getWeek();
+//        var weeksInTheFuture = eval( weekNo - weekNoToday );
+//        d1.setDate(d1.getDate() + eval( 7 * weeksInTheFuture ));
+//        let weekDays = []
+//        for (let i = 0; i < 7; i++) {
+//            weekDays.push({
+//                    day: this.days[i],
+//                    date: d1.addDays(i)
+//            })
+//        }
+//        return weekDays;
+//    },
 }

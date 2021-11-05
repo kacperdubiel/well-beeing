@@ -7,7 +7,7 @@
         ({{date != null ? this.$func_global.dateDayMonth(date.date) : ""}})
     </div>
         <div v-for="position in positions" v-bind:key="position.trainingPositionId" class="row my-3">
-            <TrainingInPlan @update:active="updateActive" :trainingPosition="position" @set:training="setTraining">
+            <TrainingInPlan :create="create" :details="details" @update:active="updateActive" :trainingPosition="position" @set:training="setTraining">
 
             </TrainingInPlan>
         </div>
@@ -36,6 +36,7 @@ name: "TrainingPlanDay",
         day: String,
         positions: Array,
         create: Boolean,
+        details: Boolean,
         date: {} // {day:, date:}
     },
     methods: {

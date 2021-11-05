@@ -5,7 +5,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title ms-2" id="infoTrainingModalLabel">Szczegóły treningu</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
+                        <button type="button" class="btn-close" id="infoTrainingModalClose"  data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid" id="modal-container">
