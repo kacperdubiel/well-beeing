@@ -1,6 +1,5 @@
 package com.wellbeeing.wellbeeing.domain.account;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jdk.nashorn.internal.objects.annotations.Constructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +16,7 @@ public abstract class SpecialistProfile {
     private UUID id;
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JsonIgnore
     private Profile userProfile;
 
     public SpecialistProfile (Profile userProfile) {

@@ -1,6 +1,5 @@
 package com.wellbeeing.wellbeeing.api.account;
 
-import com.wellbeeing.wellbeeing.domain.account.DoctorProfile;
 import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
@@ -95,7 +94,9 @@ public class ProfileController {
             throws NotFoundException
     {
         DoctorSpecialization specialization = doctorSpecService.getDoctorSpecializationById(specializationId);
-        Page<DoctorProfile> doctorsPage = profileService.getDoctorProfilesBySpecialization(specialization, like, Integer.parseInt(page), Integer.parseInt(size));
+        Page<Profile> doctorsPage = profileService.getDoctorsBySpecialization(specialization, like,
+                Integer.parseInt(page), Integer.parseInt(size));
+
         PaginatedResponse response = PaginatedResponse.builder()
                 .currentPage(doctorsPage.getNumber())
                 .totalItems(doctorsPage.getTotalElements())

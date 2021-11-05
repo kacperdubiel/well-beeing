@@ -50,6 +50,13 @@ public class Profile {
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private User profileUser;
+
+    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    private DoctorProfile doctorProfile;
+    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    private TrainerProfile trainerProfile;
+    // TODO: Add dietician profile link!
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     //@JsonIgnore

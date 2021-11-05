@@ -56,8 +56,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Page<DoctorProfile> getDoctorProfilesBySpecialization(DoctorSpecialization specialization, String like, int page, int size) {
-        return doctorProfileDAO.findBySpecialization(specialization, like, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "userProfile.lastName")));
+    public Page<Profile> getDoctorsBySpecialization(DoctorSpecialization specialization, String like, int page, int size) {
+        return profileDAO.findDoctorsBySpecialization(specialization, like,
+                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "lastName")));
     }
 
     @Override
