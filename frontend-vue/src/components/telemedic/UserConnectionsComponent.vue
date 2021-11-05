@@ -81,7 +81,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
-    <!--                            <th v-if="connectionType === 'WITH_DOCTOR'" scope="col" class="w-15">Specjalizacja</th>-->
+                                <th v-if="connectionType === 'WITH_DOCTOR'" scope="col" class="w-15">Specjalizacja</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -94,7 +94,14 @@
                                     {{ connection.connectedWith.firstName }} {{ connection.connectedWith.lastName }}
                                 </td>
 
-    <!--                            <td v-if="connectionType === 'WITH_DOCTOR'">{{ connection.connectedWith.SPECIALISATION?? }}</td>-->
+                                <td v-if="connectionType === 'WITH_DOCTOR'">
+                                    <ul v-for="spec in connection.connectedWith.doctorProfile.specializations"
+                                        v-bind:key="spec.id"
+                                        class="specialization-list"
+                                    >
+                                        <li>{{ spec.name }}</li>
+                                    </ul>
+                                </td>
                                 <td class="align-right">
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
@@ -232,6 +239,12 @@ export default {
 
 .specialists-table tbody tr:hover {
     background-color: var(--TELEMEDIC);
+}
+
+.specialization-list {
+    list-style: none outside none;
+    padding: 0;
+    margin: 0;
 }
 
 a {
