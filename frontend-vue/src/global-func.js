@@ -26,5 +26,31 @@ export const func_global = {
         if (date) {
             return moment(String(date)).format('DD/MM/YYYY')
         }
+    },
+    mapRole(role) {
+        if(role === 'ROLE_DIETICIAN')
+            return 'Dietetyk'
+        else if(role === 'ROLE_DOCTOR')
+            return 'Lekarz'
+        else if(role === 'ROLE_TRAINER')
+            return 'Trener'
+        else if(role === 'ROLE_ADMIN')
+            return 'Admin'
+        else if(role === 'ROLE_BASIC_USER')
+            return 'Podstawowy użytkownik'
+        else
+            return 'Brak informacji'
+    },
+    mapRoleRequestStatus(status) {
+        if(status === 'ACCEPTED')
+            return 'Zaakceptowano'
+        else if(status === 'REJECTED')
+            return 'Odrzucono'
+        else if(status === 'PENDING')
+            return 'Oczekujące'
+        else if(status === 'CANCELLED')
+            return 'Anulowano'
+        else
+            return 'Brak informacji'
     }
 }

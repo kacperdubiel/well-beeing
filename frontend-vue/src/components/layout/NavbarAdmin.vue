@@ -8,15 +8,14 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <router-link class="nav-link" :to="{name: 'RoleRequestsViewAdmin'}">Prośby o nadanie roli</router-link>
-<!--                        <a class="nav-link active" aria-current="page" href="#">Home</a>-->
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="#">Inne</router-link>
+                        <router-link class="nav-link" :to="{name: 'LoginAdminView'}">Inne</router-link>
                     </li>
 
                 </ul>
                 <form class="d-flex">
-                    <button class="btn btn-outline-success">Wyloguj się</button>
+                    <button class="btn btn-outline-light">Wyloguj się</button>
                 </form>
             </div>
         </div>
@@ -30,5 +29,7 @@ export default {
 </script>
 
 <style scoped>
-
+.nav-link.router-link-exact-active, .nav-link.router-link-active {
+    color: var(--DARK-YELLOW);
+}
 </style>

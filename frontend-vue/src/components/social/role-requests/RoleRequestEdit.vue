@@ -29,7 +29,7 @@
                                     @focus="clearStatus"
                                 >
                                     <option v-for="role in this.possibleRoles" :value="role" :key="role">
-                                        {{ role }}
+                                        {{ this.$func_global.mapRole(role) }}
                                     </option>
 
                                 </select>
@@ -65,7 +65,7 @@
                                 >
                             </div>
                             <div class="col">
-                                {{ this.roleRequestSource.status }}
+                                {{ this.$func_global.mapRoleRequestStatus(this.roleRequestSource.status) }}
                             </div>
                         </div>
 

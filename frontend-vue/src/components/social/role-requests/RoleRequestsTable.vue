@@ -16,13 +16,13 @@
                 <tr v-for="req in roleRequestsSource" :key="req.roleReqId">
                     <td>{{ this.$func_global.formatDate(req.addedDate) }}</td>
                     <td v-if="isAdmin">{{req.submitter.firstName}} {{req.submitter.lastName}}</td>
-                    <td>{{ req.role }}</td>
+                    <td>{{ this.$func_global.mapRole(req.role) }}</td>
                     <td>
                         <button class="no-bg" @click="downloadFile(req.roleReqId)">
                             <font-awesome-icon :icon="['far', 'file-pdf']" size="2x" class="navbar-icon text-white" />
                         </button>
                     </td>
-                    <td>{{ req.status }}</td>
+                    <td>{{ this.$func_global.mapRoleRequestStatus(req.status) }}</td>
                     <td class="text-end" v-if="!isAdmin">
                         <button class="btn-white mx-1" @click="handleCancel(req.roleReqId)" v-if="req.status === 'PENDING'">
                             Anuluj

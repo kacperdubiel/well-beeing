@@ -22,7 +22,7 @@
                                 {{ this.$func_global.formatDate(this.roleRequestSource.addedDate )}}
                             </div>
                             <div class="col">
-                                {{ this.roleRequestSource.role }}
+                                {{ this.$func_global.mapRole(this.roleRequestSource.role) }}
                             </div>
                         </div>
 
@@ -41,7 +41,7 @@
                                 </button>
                             </div>
                             <div class="col">
-                                {{ this.roleRequestSource.status }}
+                                {{ this.$func_global.mapRoleRequestStatus(this.roleRequestSource.status) }}
                             </div>
                         </div>
 
