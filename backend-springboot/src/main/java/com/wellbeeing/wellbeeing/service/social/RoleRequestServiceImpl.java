@@ -13,6 +13,7 @@ import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -37,8 +38,8 @@ public class RoleRequestServiceImpl implements RoleRequestService {
 
 
     @Override
-    public Page<RoleRequest> getAllRoleRequests(Pageable pageable) {
-        return roleRequestDAO.findAll(pageable);
+    public Page<RoleRequest> getAllRoleRequests(Specification<RoleRequest> reqSpec, Pageable pageable) {
+        return roleRequestDAO.findAll(reqSpec,pageable);
     }
 
     @Override
@@ -133,10 +134,18 @@ public class RoleRequestServiceImpl implements RoleRequestService {
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequest.getRoleReqId()));
 
         if (Objects.equals(roleRequest.getStatus().toString(), EStatus.ACCEPTED.toString())) {
-            userService.addRoleToUser(targetRoleRequest.getSubmitter().getProfileUser().getEmail(), targetRoleRequest.getRole().toString());
+
+            String userMail = targetRoleRequest.getSubmitter().getProfileUser().getEmail();
+            userService.addRoleToUser(userMail, targetRoleRequest.getRole().toString());
             targetRoleRequest.setStatus(EStatus.ACCEPTED);
             targetRoleRequest.setComment(roleRequest.getComment());
             roleRequestDAO.save(targetRoleRequest);
+
+            List<RoleRequest> reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRole(userMail, targetRoleRequest.getRole());
+            reqsToCancel.forEach(r -> {
+                r.setStatus(EStatus.CANCELLED);
+                roleRequestDAO.save(r);
+            });
         }
         else if (Objects.equals(roleRequest.getStatus().toString(), EStatus.REJECTED.toString())) {
             targetRoleRequest.setStatus(EStatus.REJECTED);

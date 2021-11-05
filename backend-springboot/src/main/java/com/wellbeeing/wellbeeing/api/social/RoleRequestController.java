@@ -8,6 +8,11 @@ import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.social.RoleRequestService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +20,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,24 +54,39 @@ public class RoleRequestController {
         this.roleRequestService = roleRequestService;
     }
 
+//    @GetMapping(path = "")
+////    @RolesAllowed(ERole.Name.ROLE_ADMIN)
+//    public ResponseEntity<?> getRoleRequestsPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
+//                                                   @RequestParam(value = "size", defaultValue = "20") int size) {
+//        List<RoleRequest> roleRequests;
+//        Pageable paging = PageRequest.of(page, size);
+//
+//        Page<RoleRequest> pageRoleRequests;
+//        pageRoleRequests = roleRequestService.getAllRoleRequests(paging);
+//        roleRequests = pageRoleRequests.getContent();
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("requests", roleRequests);
+//        response.put("currentPage", pageRoleRequests.getNumber());
+//        response.put("totalItems", pageRoleRequests.getTotalElements());
+//        response.put("totalPages", pageRoleRequests.getTotalPages());
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
+
+
     @GetMapping(path = "")
-//    @RolesAllowed(ERole.Name.ROLE_ADMIN)
-    public ResponseEntity<?> getRoleRequestsPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                   @RequestParam(value = "size", defaultValue = "20") int size) {
-        List<RoleRequest> roleRequests;
-        Pageable paging = PageRequest.of(page, size);
+    @RolesAllowed(ERole.Name.ROLE_ADMIN)
+    public ResponseEntity<?> getRoleRequestsFiltered(
+            @And({
+            @Spec(path = "status", spec = Equal.class),
+            @Spec(path = "role", spec = Equal.class),
+             }) Specification<RoleRequest> reqSpec,
+            @PageableDefault(sort = {"addedDate"}, size = 20, direction = Sort.Direction.DESC) Pageable pageable, Principal principal) {
 
-        Page<RoleRequest> pageRoleRequests;
-        pageRoleRequests = roleRequestService.getAllRoleRequests(paging);
-        roleRequests = pageRoleRequests.getContent();
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("requests", roleRequests);
-        response.put("currentPage", pageRoleRequests.getNumber());
-        response.put("totalItems", pageRoleRequests.getTotalElements());
-        response.put("totalPages", pageRoleRequests.getTotalPages());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        Page<RoleRequest> pageRoleRequests = roleRequestService.getAllRoleRequests(reqSpec, pageable);
+        return new ResponseEntity<>(pageRoleRequests, HttpStatus.OK);
     }
+
 
     @RequestMapping(path = "/{id}")
     public ResponseEntity<?> getRoleRequestId(@PathVariable(value = "id") Long roleRequestId) {
