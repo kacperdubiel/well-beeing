@@ -35,13 +35,19 @@
                 </div>
             </div>
             <div class="col-2 d-flex ms-auto">
-                <button class="btn-panel-sport mx-2 ms-auto" @click="downloadPlan">
+                <button class="btn-panel-sport mx-2 ms-auto" @click="downloadPlan(this.activePlan.trainingPlanId)">
                     <font-awesome-icon :icon="['fa', 'download']" />
                 </button>
             </div>
         </div>
         <!--Active plan-->
-        <TrainingPlanWeek @update:active="getMyTrainingPlans" @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
+        <TrainingPlanWeek @update:items="updateItems" @update:active="getMyTrainingPlans" @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
+
+        <div class="m-3 mx-4 header">
+            <span >Twoje pozostałe plany</span>
+            <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
+        </div>
+        <training-plans-table @update:items="updateItems" :training-plans-source="myTrainingPlans" @download:plan="downloadPlan" @update:plan="getMyTrainingPlans"/>
         <div class="m-3 mx-4 header">
             <span >Tworzenie nowego planu </span>
         </div>
@@ -83,7 +89,7 @@
 <!--                </div>-->
             </div>
             <!--New plan-->
-            <TrainingPlanWeek @set:training="setTraining" :plan="newCreatedPlan" :week-dates="getDatesArrayOfWeek(newCreatedPlan.week)" :plan-type="'create'" :days="days" v-if="activePlan.trainingPlanId != null"/>
+            <TrainingPlanWeek @update:items="updateItems" @set:training="setTraining" :plan="newCreatedPlan" :week-dates="getDatesArrayOfWeek(newCreatedPlan.week)" :plan-type="'create'" :days="days" v-if="newCreatedPlan.trainingPlanId != null"/>
 
             <div class="row mt-3 mx-4">
                 <div class="col-12">
@@ -101,9 +107,10 @@
 import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
 import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
+import TrainingPlansTable from "@/components/sport/trainingPlan/TrainingPlansTable";
 export default {
     name: "TrainingPlansView",
-    components: {AddTrainingToPlanModal, TrainingDetails,  TrainingPlanWeek,},
+    components: {TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails,  TrainingPlanWeek,},
     data () {
         return {
             week: 43,
@@ -182,8 +189,49 @@ export default {
         }
     },
     methods: {
-        async downloadPlan () {
-            const url = `${this.apiURL}sport/training-plan/export/${this.activePlan.trainingPlanId}`
+        updateItems() {
+            {
+                setTimeout(() => {
+                    const sliders = document.querySelectorAll('.items');
+                    let isDown = false;
+                    let startX;
+                    let scrollLeft;
+                    console.log(sliders)
+                    if(sliders != null)
+                    {
+                        sliders.forEach(slider => {
+                            slider.addEventListener('mousedown', (e) => {
+                                isDown = true;
+                                slider.classList.add('active');
+                                startX = e.pageX - slider.offsetLeft;
+                                scrollLeft = slider.scrollLeft;
+                            });
+                            slider.addEventListener('mouseleave', () => {
+                                isDown = false;
+                                slider.classList.remove('active');
+                            });
+                            slider.addEventListener('mouseup', () => {
+                                isDown = false;
+                                slider.classList.remove('active');
+                            });
+                            slider.addEventListener('mousemove', (e) => {
+                                if(!isDown) return;
+                                e.preventDefault();
+                                const x = e.pageX - slider.offsetLeft;
+                                const walk = (x - startX); //scroll-fast
+                                slider.scrollLeft = scrollLeft - walk;
+                            });
+                        })
+
+                    }
+                    else
+                        console.log('EMPTY');
+                }, 500)
+
+            }
+        },
+        async downloadPlan (planId) {
+            const url = `${this.apiURL}sport/training-plan/export/${planId}`
             const token = this.$store.getters.getToken;
             this.axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'}, responseType: 'arraybuffer'}).then((response) => {
                 console.log(response.data)

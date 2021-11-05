@@ -111,5 +111,22 @@ input{
 .style-chooser .vs__deselect {
     fill: var(--GREY3);
 }
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+    background-color: var(--DARK-YELLOW);
+}
+.section-bg ::-webkit-scrollbar {
+    background-color: var(--GREY2);
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(200,200,200,1);
+    border-radius: 5px;
+}
 
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--LIGHT-YELLOW);
+    -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
+}
 </style>

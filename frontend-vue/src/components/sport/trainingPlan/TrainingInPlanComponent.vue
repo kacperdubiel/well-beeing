@@ -1,10 +1,10 @@
 <template>
             <div class="col ">
                 <div class="section-bg p-2 training" @click="openInfoModal(trainingPosition.training)" data-bs-toggle="modal" data-bs-target="#infoTrainingModal">
-                    <div class="row justify-content-center align-items-center">
-                            <div class="col-5 offset-3 training-time-day text-uppercase text-center ">{{trainingPosition.timeOfDay}}
+                    <div class="row justify-content-center align-items-center" @click.stop="closeModal()">
+                            <div class="col-5  training-time-day text-uppercase text-center " v-bind:class="{'col-8':create || details, 'offset-3':!create && !details}">{{trainingPosition.timeOfDay}}
                             </div>
-                            <div class="col-3 form-switch justify-content-end">
+                            <div v-if="!create && !details"  class="col-3 form-switch justify-content-end">
                                 <input class="form-check-input" @change="check($event)" type="checkbox" id="flexSwitchCheckDefault" :disabled="trainingPosition.trainingStatus === 'COMPLETED'" :checked="trainingPosition.trainingStatus === 'COMPLETED'">
                             </div>
                     </div>
@@ -35,9 +35,15 @@ export default {
         }
     },
     props: {
-        trainingPosition: Object
+        trainingPosition: Object,
+        create: Boolean,
+        details: Boolean
     },
     methods: {
+        closeModal() {
+            document.getElementById('infoTrainingModalClose').modal('show');
+
+        },
         check(){
             if (this.trainingPosition.trainingStatus !== 'COMPLETED') {
                 this.updateTrainingStatus()
