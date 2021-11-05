@@ -14,7 +14,7 @@
             </thead>
             <tbody>
                 <tr v-for="req in roleRequestsSource" :key="req.roleReqId">
-                    <td>{{ formatDate(req.addedDate) }}</td>
+                    <td>{{ this.$func_global.formatDate(req.addedDate) }}</td>
                     <td v-if="isAdmin">{{req.submitter.firstName}} {{req.submitter.lastName}}</td>
                     <td>{{ req.role }}</td>
                     <td>
@@ -35,10 +35,10 @@
                         </button>
                     </td>
                     <td class="text-end" v-else>
-                        <button class="btn-white mx-1" v-if="req.status !== 'REJECTED'">
-                            <font-awesome-icon :icon="['fa', 'times']" size="1x"/>
+                        <button class="btn-white mx-1" v-if="req.status === 'PENDING'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestRejectModal">
+                            <font-awesome-icon :icon="['fa', 'times']" size="1x" @click="handleGet(req)"/>
                         </button>
-                        <button class="btn-white mx-1" v-if="req.status !== 'ACCEPTED'" @click="acceptRoleRequest(req)">
+                        <button class="btn-white mx-1" v-if="req.status === 'PENDING'" @click="acceptRoleRequest(req)">
                             <font-awesome-icon :icon="['fa', 'check']" size="1x"/>
                         </button>
                     </td>
@@ -47,18 +47,20 @@
         </table>
         <RoleRequestEdit :role-request-source="roleRequest" :refresh="openingModal" v-if="roleRequest && !isAdmin" @download:file="downloadFile"/>
         <RoleRequestDetails :role-request-source="roleRequest" v-if="roleRequest && !isAdmin"  @download:file="downloadFile"/>
+        <RoleRequestReject :role-request-source="roleRequest" v-if="roleRequest && isAdmin" @reject:role-request="rejectRoleRequest"/>
     </div>
 </template>
 
 <script>
-import moment from 'moment'
 import RoleRequestDetails from "@/components/social/role-requests/RoleRequestDetails";
 import RoleRequestEdit from "@/components/social/role-requests/RoleRequestEdit";
+import RoleRequestReject from "@/components/social/role-requests/RoleRequestReject";
 export default {
     name: "RoleRequestsTable",
     components: {
         RoleRequestDetails,
-        RoleRequestEdit
+        RoleRequestEdit,
+        RoleRequestReject
     },
     data () {
         return {
@@ -71,11 +73,6 @@ export default {
         roleRequestsSource: Array
     },
     methods: {
-        formatDate(date) {
-            if (date) {
-                return moment(String(date)).format('DD/MM/YYYY')
-            }
-        },
         downloadFile (reqId) {
             const url = `${this.apiURL}role-request/export/${reqId}`
             const token = this.$store.getters.getToken;
@@ -124,6 +121,21 @@ export default {
             }
             this.axios.put(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
+            }).catch(error => {
+                console.log(error.response)
+            });
+        },
+
+        rejectRoleRequest(id, comment) {
+            const url = `${this.apiURL}role-request/${id}/process`
+            const token = this.$store.getters.getToken;
+            this.processedRoleRequest = {
+                "status": "REJECTED",
+                "comment": comment
+            }
+            this.axios.patch(url, this.processedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response)
+                this.$parent.getRoleRequests()
             }).catch(error => {
                 console.log(error.response)
             });

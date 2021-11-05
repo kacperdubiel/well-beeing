@@ -19,7 +19,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                {{ formatDate(this.roleRequestSource.addedDate )}}
+                                {{ this.$func_global.formatDate(this.roleRequestSource.addedDate )}}
                             </div>
                             <div class="col">
                                 <select
@@ -98,7 +98,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 export default {
     name: "RoleRequestEdit",
     data () {
@@ -119,11 +118,6 @@ export default {
         refresh: Number
     },
     methods: {
-        formatDate(date) {
-            if (date) {
-                return moment(String(date)).format('DD/MM/YYYY')
-            }
-        },
         handleDownloadFile(id) {
             this.$emit('download:file', id)
         },

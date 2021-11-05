@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const apiURL = 'http://localhost:8090/'
 import axios from "axios";
 export const func_global = {
@@ -20,4 +22,9 @@ export const func_global = {
             console.log(error.response)
         });
     },
+    formatDate(date) {
+        if (date) {
+            return moment(String(date)).format('DD/MM/YYYY')
+        }
+    }
 }
