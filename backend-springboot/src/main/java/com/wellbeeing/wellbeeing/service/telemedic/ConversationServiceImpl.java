@@ -11,12 +11,12 @@ import com.wellbeeing.wellbeeing.repository.telemedic.ConversationDAO;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service("conversationService")
 public class ConversationServiceImpl implements ConversationService {
@@ -44,14 +44,21 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public List<Conversation> getConversationsByProfileAndConnectionType(Profile profile, EConnectionType connectionType) {
-        List<Conversation> convsAsFirstProfile = conversationDAO
-                .findByFirstProfileAndConnectionType(profile, connectionType);
-        List<Conversation> convsAsSecondProfile = conversationDAO
-                .findBySecondProfileAndConnectionType(profile, connectionType);
-
-        return Stream.concat(convsAsFirstProfile.stream(), convsAsSecondProfile.stream())
-                .collect(Collectors.toList());
+    public Page<Conversation> getConversationsByProfileAndConnectionType(Profile profile, EConnectionType connectionType,
+                                                                         boolean asSpecialist, int page, int size)
+    {
+        if(connectionType == EConnectionType.WITH_USER){
+            return conversationDAO.findByFirstOrSecondProfileAndConnectionType(profile, connectionType,
+                    PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "messages.createDate")));
+        } else {
+            if(!asSpecialist){
+                return conversationDAO.findByFirstProfileAndConnectionType(profile, connectionType,
+                        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "messages.createDate")));
+            } else {
+                return conversationDAO.findBySecondProfileAndConnectionType(profile, connectionType,
+                        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "messages.createDate")));
+            }
+        }
     }
 
     @Override
@@ -105,18 +112,11 @@ public class ConversationServiceImpl implements ConversationService {
         Profile secondProfile = profileService.getProfileById(secondProfileId);
         EConnectionType connectionType = conversation.getConnectionType();
 
-        Conversation existingConversation;
-        if(conversation.getConnectionType() == EConnectionType.WITH_USER){
-            existingConversation = conversationDAO
-                    .findByFirstProfileAndSecondProfileAndConnectionType(firstProfile, secondProfile, connectionType);
-
-            if(existingConversation == null) {
-                existingConversation = conversationDAO.findByFirstProfileAndSecondProfileAndConnectionType(firstProfile,
-                        secondProfile, connectionType);
-            }
-        } else {
-            existingConversation = conversationDAO
-                    .findByFirstProfileAndSecondProfileAndConnectionType(firstProfile, secondProfile, connectionType);
+        Conversation existingConversation = conversationDAO
+                .findByFirstProfileAndSecondProfileAndConnectionType(firstProfile, secondProfile, connectionType);;
+        if(conversation.getConnectionType() == EConnectionType.WITH_USER && existingConversation == null){
+            existingConversation = conversationDAO.findByFirstProfileAndSecondProfileAndConnectionType(secondProfile,
+                    firstProfile, connectionType);
         }
         if(existingConversation != null){
             throw new ConflictException("Conversation already exist!");
