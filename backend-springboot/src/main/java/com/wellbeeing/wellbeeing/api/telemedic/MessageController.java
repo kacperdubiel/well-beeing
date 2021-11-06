@@ -48,10 +48,10 @@ public class MessageController {
         UUID userId = userService.findUserIdByUsername(principal.getName());
         Conversation conversation = conversationService.getConversationById(id);
 
-        UUID convFirstUserId = conversation.getFirstProfile().getId();
-        UUID convSecondUserId = conversation.getSecondProfile().getId();
+        UUID firstConvProfileId = conversation.getFirstProfile().getId();
+        UUID secondConvProfileId = conversation.getSecondProfile().getId();
 
-        if(!convFirstUserId.equals(userId) && !convSecondUserId.equals(userId)){
+        if(!firstConvProfileId.equals(userId) && !secondConvProfileId.equals(userId)){
             throw new ForbiddenException("You do not have access rights to do that!");
         }
 
@@ -71,8 +71,11 @@ public class MessageController {
     {
         UUID userId = userService.findUserIdByUsername(principal.getName());
         Message message = messageService.getMessageById(id);
+        Conversation conversation = message.getConversation();
+        UUID firstConvProfileId = conversation.getFirstProfile().getId();
+        UUID secondConvProfileId = conversation.getSecondProfile().getId();
 
-        if(!message.getSender().getId().equals(userId)){
+        if(!firstConvProfileId.equals(userId) && !secondConvProfileId.equals(userId)){
             throw new ForbiddenException("You do not have access rights to do that!");
         }
 
@@ -90,10 +93,10 @@ public class MessageController {
         UUID conversationId = message.getConversation().getId();
         Conversation conversation = conversationService.getConversationById(conversationId);
 
-        UUID convFirstUserId = conversation.getFirstProfile().getId();
-        UUID convSecondUserId = conversation.getSecondProfile().getId();
+        UUID firstConvProfileId = conversation.getFirstProfile().getId();
+        UUID secondConvProfileId = conversation.getSecondProfile().getId();
 
-        if(!convFirstUserId.equals(userId) && !convSecondUserId.equals(userId)){
+        if(!firstConvProfileId.equals(userId) && !secondConvProfileId.equals(userId)){
             throw new ForbiddenException("You do not have access rights to do that!");
         }
 
