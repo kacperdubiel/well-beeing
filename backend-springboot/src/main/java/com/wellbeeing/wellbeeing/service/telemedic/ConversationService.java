@@ -8,6 +8,7 @@ import com.wellbeeing.wellbeeing.domain.telemedic.Conversation;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import org.springframework.data.domain.Page;
 
+import java.util.Date;
 import java.util.UUID;
 
 public interface ConversationService {
@@ -18,4 +19,5 @@ public interface ConversationService {
     Conversation getConversationByFirstProfileAndSecondProfileAndType(Profile profile1, Profile profile2, EConnectionType connectionType) throws NotFoundException;
     Conversation addConversation(Conversation conversation) throws NotFoundException, ConflictException, ForbiddenException;
     Conversation updateReadStatus(Conversation conversation, Profile profile, boolean isRead) throws NotFoundException;
+    Conversation updateLastMessageDate(Conversation conversation, Date lastMessageDate) throws NotFoundException;
 }

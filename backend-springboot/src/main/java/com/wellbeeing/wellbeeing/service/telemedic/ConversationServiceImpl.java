@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service("conversationService")
@@ -49,14 +49,14 @@ public class ConversationServiceImpl implements ConversationService {
     {
         if(connectionType == EConnectionType.WITH_USER){
             return conversationDAO.findByFirstOrSecondProfileAndConnectionType(profile, connectionType,
-                    PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "messages.createDate")));
+                    PageRequest.of(page, size));
         } else {
             if(!asSpecialist){
                 return conversationDAO.findByFirstProfileAndConnectionType(profile, connectionType,
-                        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "messages.createDate")));
+                        PageRequest.of(page, size));
             } else {
                 return conversationDAO.findBySecondProfileAndConnectionType(profile, connectionType,
-                        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "messages.createDate")));
+                        PageRequest.of(page, size));
             }
         }
     }
@@ -133,11 +133,36 @@ public class ConversationServiceImpl implements ConversationService {
 
         conversation.setReadByFirstUser(true);
         conversation.setReadBySecondUser(true);
+        conversation.setLastMessageDate(null);
         return conversationDAO.save(conversation);
     }
 
     @Override
     public Conversation updateReadStatus(Conversation conversation, Profile profile, boolean isRead) throws NotFoundException {
+        Conversation conversationResult = findConversation(conversation);
+
+        UUID profileId = profile.getId();
+        UUID firstProfileId = conversationResult.getFirstProfile().getId();
+        UUID secondProfileId = conversationResult.getSecondProfile().getId();
+
+        if(firstProfileId.equals(profileId)){
+            conversationResult.setReadByFirstUser(isRead);
+        } else if (secondProfileId.equals(profileId)){
+            conversationResult.setReadBySecondUser(isRead);
+        }
+        return conversationDAO.save(conversationResult);
+    }
+
+    @Override
+    public Conversation updateLastMessageDate(Conversation conversation, Date lastMessageDate) throws NotFoundException {
+        Conversation conversationResult = findConversation(conversation);
+
+        conversationResult.setLastMessageDate(lastMessageDate);
+
+        return conversationDAO.save(conversationResult);
+    }
+
+    private Conversation findConversation(Conversation conversation) throws NotFoundException {
         UUID conversationId = conversation.getId();
 
         if(conversationId == null){
@@ -148,16 +173,6 @@ public class ConversationServiceImpl implements ConversationService {
         if(conversationResult == null) {
             throw new NotFoundException("Conversation with id: " + conversationId + " not found!");
         }
-
-        UUID profileId = profile.getId();
-        UUID firstProfileId = conversation.getFirstProfile().getId();
-        UUID secondProfileId = conversation.getSecondProfile().getId();
-
-        if(firstProfileId.equals(profileId)){
-            conversation.setReadByFirstUser(isRead);
-        } else if (secondProfileId.equals(profileId)){
-            conversation.setReadBySecondUser(isRead);
-        }
-        return conversationDAO.save(conversation);
+        return conversationResult;
     }
 }

@@ -90,14 +90,18 @@ public class MessageServiceImpl implements MessageService {
             }
         }
 
+        Date createDate = new Date();
+        message.setCreateDate(createDate);
+        Message msgResult = messageDAO.save(message);
+
         if(message.getSender().getId().equals(firstProfileId)){
             conversationService.updateReadStatus(conversation, secondProfile, false);
         }else if(message.getSender().getId().equals(secondProfileId)){
             conversationService.updateReadStatus(conversation, firstProfile, false);
         }
 
-        message.setCreateDate(new Date());
-        return messageDAO.save(message);
+        conversationService.updateLastMessageDate(conversation, createDate);
+        return msgResult;
     }
 
 }

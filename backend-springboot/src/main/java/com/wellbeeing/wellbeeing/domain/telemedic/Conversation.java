@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,9 @@ public class Conversation {
 
     @Column(nullable = false)
     private EConnectionType connectionType;
+
+    @Column
+    private Date lastMessageDate;
 
     @Column
     private boolean isReadByFirstUser;

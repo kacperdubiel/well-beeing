@@ -16,12 +16,23 @@ import java.util.UUID;
 public interface ConversationDAO extends JpaRepository<Conversation, UUID> {
     @Query("select c from Conversation c " +
             "where (c.firstProfile = :profile or c.secondProfile = :profile) " +
-            "and c.connectionType = :connType ")
+            "and c.connectionType = :connType and c.messages is not empty " +
+            "order by c.lastMessageDate desc")
     Page<Conversation> findByFirstOrSecondProfileAndConnectionType(
             @Param("profile") Profile profile, @Param("connType") EConnectionType connectionType, Pageable pageable);
 
-    Page<Conversation> findByFirstProfileAndConnectionType(Profile firstProfile, EConnectionType connectionType, Pageable pageable);
-    Page<Conversation> findBySecondProfileAndConnectionType(Profile secondProfile, EConnectionType connectionType, Pageable pageable);
+    @Query("select c from Conversation c " +
+            "where c.firstProfile = :firstProfile and c.connectionType = :connType and c.messages is not empty " +
+            "order by c.lastMessageDate desc")
+    Page<Conversation> findByFirstProfileAndConnectionType(@Param("firstProfile") Profile firstProfile,
+                                                           @Param("connType") EConnectionType connectionType, Pageable pageable);
+
+    @Query("select c from Conversation c " +
+            "where c.secondProfile = :secondProfile and c.connectionType = :connType and c.messages is not empty " +
+            "order by c.lastMessageDate desc")
+    Page<Conversation> findBySecondProfileAndConnectionType(@Param("secondProfile") Profile secondProfile,
+                                                           @Param("connType") EConnectionType connectionType, Pageable pageable);
+
     Conversation findByFirstProfileAndSecondProfileAndConnectionType(Profile firstProfile, Profile secondProfile,
                                                                      EConnectionType connectionType);
 }
