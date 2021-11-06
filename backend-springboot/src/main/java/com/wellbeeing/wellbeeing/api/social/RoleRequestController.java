@@ -100,7 +100,6 @@ public class RoleRequestController {
         return new ResponseEntity<>(processedRoleRequest, HttpStatus.OK);
     }
 
-    SimpleDateFormat sdf = new SimpleDateFormat("/yyyy/MM/dd/");
     @PostMapping("/import/{requestId}")
     public ResponseEntity<?> importData(MultipartFile file, @PathVariable long requestId, Principal principal) throws NotFoundException {
 
