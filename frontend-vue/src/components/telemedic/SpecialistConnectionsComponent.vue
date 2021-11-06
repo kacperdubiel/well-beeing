@@ -157,6 +157,16 @@ export default {
         },
     },
     methods: {
+        isConnectionTypeCorrect(){
+            if(this.connectionType === "WITH_DOCTOR" || this.connectionType === "WITH_DIETICIAN" ||
+                this.connectionType === "WITH_TRAINER")
+            {
+                this.componentError = false;
+                this.getProfile();
+            } else {
+                this.componentError = true;
+            }
+        },
         getProfile(){
             this.axios.get('http://localhost:8090/profile', {
                 headers: {
@@ -212,17 +222,6 @@ export default {
                 }).catch(e => {
                     console.log(e);
                 })
-            }
-        },
-
-        isConnectionTypeCorrect(){
-            if(this.connectionType === "WITH_DOCTOR" || this.connectionType === "WITH_DIETICIAN" ||
-                this.connectionType === "WITH_TRAINER")
-            {
-                this.componentError = false;
-                this.getProfile();
-            } else {
-                this.componentError = true;
             }
         },
     },

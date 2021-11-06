@@ -140,6 +140,16 @@ export default {
         },
     },
     methods: {
+        isConnectionTypeCorrect(){
+            if(this.connectionType === "WITH_DOCTOR" || this.connectionType === "WITH_DIETICIAN" ||
+                this.connectionType === "WITH_TRAINER")
+            {
+                this.componentError = false;
+                this.getDoctorSpecializations();
+            } else {
+                this.componentError = true;
+            }
+        },
         getDoctorSpecializations() {
             this.axios.get('http://localhost:8090/doctor-specializations', {
                 headers: {
@@ -206,16 +216,6 @@ export default {
                     this.connectionResultMsg = "Nie udało się zapisać.";
                     this.connectionDone = true;
                 })
-        },
-        isConnectionTypeCorrect(){
-            if(this.connectionType === "WITH_DOCTOR" || this.connectionType === "WITH_DIETICIAN" ||
-                this.connectionType === "WITH_TRAINER")
-            {
-                this.componentError = false;
-                this.getDoctorSpecializations();
-            } else {
-                this.componentError = true;
-            }
         },
     },
     created(){
