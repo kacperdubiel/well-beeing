@@ -340,7 +340,7 @@ public class PDFFromTrainingPlan {
 
 
     private static String getDateRangeOfWeek(int weekNo, int year){
-        LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, weekNo+1);
+        LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, weekNo+1).withYear(year);
 
         LocalDate start = week.with(DayOfWeek.MONDAY);
         LocalDate end = start.plusDays(6);

@@ -1,6 +1,8 @@
 package com.wellbeeing.wellbeeing;
 
+import com.wellbeeing.wellbeeing.service.files.FileService;
 import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,9 +26,10 @@ public class WellbeeingApplication implements WebMvcConfigurer {
 	}
 
 	@Bean
-	CommandLineRunner init() {
+	CommandLineRunner init(@Qualifier("fileService") FileService fileService) {
 		return (args) -> {
-
+//			fileService.deleteAll();
+//			fileService.init();
 		};
 	}
 
