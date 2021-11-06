@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -48,6 +49,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         else throw new UsernameNotFoundException("User: " + email + " not found");
     }
 
+    @Override
+    public User loadUserByEmail(String email) throws UsernameNotFoundException {
+        User foundUser = userDAO.findUserByEmail(email).orElse(null);
+        if(foundUser != null)
+            return foundUser;
+        else throw new UsernameNotFoundException("User: " + email + " not found");
+    }
 
     @Override
     public boolean register(User user) {
@@ -105,5 +113,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if(foundUser != null)
             return foundUser.getId();
         else throw new UsernameNotFoundException("User: " + username + " not found");
+    }
+
+    @Override
+    public void changeUserPassword(final User user, final String password) {
+
+        user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt("$2a$")));
+        userDAO.save(user);
+    }
+
+    @Override
+    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+//        new BCryptPasswordEncoder().encode()
+        return new BCryptPasswordEncoder().matches(oldPassword, user.getPassword());
     }
 }

@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.api;
 
 import com.wellbeeing.wellbeeing.domain.exception.*;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 
 //    @ExceptionHandler({Exception.class})
 //    public ResponseEntity<ErrorMessage> handleException(Exception e){
-//        return new ResponseEntity<>(new ErrorMessage("Server error: " + Arrays.toString(e.getStackTrace()),
+//        return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
 //                "500"), HttpStatus.INTERNAL_SERVER_ERROR);
 //    }
 
@@ -47,5 +48,17 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<ErrorMessage> handleException(UnauthorizedException e){
         return new ResponseEntity<>(new ErrorMessage("Unauthorized: " + e.getMessage(),
                 "401"), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<ErrorMessage> handleException(IllegalArgumentException e){
+        return new ResponseEntity<>(new ErrorMessage("Illegal argument: " + e.getMessage(),
+                "400"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({PasswordException.class})
+    public ResponseEntity<ErrorMessage> handleException(PasswordException e){
+        return new ResponseEntity<>(new ErrorMessage("Password error: " + e.getMessage(),
+                "409"), HttpStatus.CONFLICT);
     }
 }

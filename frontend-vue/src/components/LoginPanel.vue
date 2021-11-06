@@ -278,6 +278,15 @@ export default {
     background: var(--GREY2);
 }
 
+input.has-error {
+    border: 1px solid var(--INTENSE-PINK);
+}
+
+p.has-error {
+    color: var(--INTENSE-PINK);
+    /*font-weight: bold;*/
+}
+
 .register-btn {
     color: white;
     font-size: 120%;

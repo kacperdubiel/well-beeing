@@ -9,10 +9,11 @@ import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -80,8 +81,22 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Training getTraining(long trainingId) {
-        return trainingDAO.findById(trainingId).orElse(null);
+    public Training getTraining(long trainingId, String userName) throws NotFoundException {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Training training = trainingDAO.findById(trainingId).orElse(null);
+        if (training == null)
+        {
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exist", trainingId));
+        }
+        training.setCaloriesBurned(training.caloriesBurned(finalWeight));
+        return training;
     }
 
     @Override
@@ -131,8 +146,38 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Page<Training> getAllTrainings(Pageable pageable) {
-        return trainingDAO.findAll(pageable);
+    public Page<Training> getAllTrainings(Pageable pageable, String userName) {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Page<Training> trainingPage = trainingDAO.findAll(pageable);
+        trainingPage.getContent().forEach(training -> training.setCaloriesBurned(training.caloriesBurned(finalWeight)));
+        return trainingPage;
+    }
+
+    @Override
+    public Page<Training> getAllTrainingsFiltered(Specification<Training> trainingSpec, Pageable pageable, String userName) throws NotFoundException {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Page<Training> trainingPage = trainingDAO.findAll(trainingSpec, pageable);
+        trainingPage.getContent().forEach(training -> {
+            training.setCaloriesBurned(training.caloriesBurned(finalWeight));
+            training.getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
+            training.getExerciseInTrainings().forEach(ex -> ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(finalWeight)));
+        });
+
+        return trainingPage;
     }
 
     @Override

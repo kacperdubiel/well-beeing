@@ -8,7 +8,7 @@
 
 <script>
     const defaultLayout = "default";
-
+    import 'vue-select/dist/vue-select.css';
     export default {
         computed: {
             layout() {
@@ -20,6 +20,7 @@
 
 <style>
 @import "./assets/colors.css";
+
 #app {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -100,4 +101,55 @@ input.has-error {
     border: none;
 }
 
+
+#search-input {
+    border-radius: 40px;
+    height: 50px;
+    border: none;
+}
+.test {
+    background-color: #D83D68;
+}
+input{
+    text-indent: 10px;
+}
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+    border-color: rgb(133, 133, 133);
+    text-transform: lowercase;
+    font-variant: small-caps;
+    background-color: white;
+}
+
+.style-chooser .vs__clear,
+.style-chooser .vs__open-indicator {
+    fill: #394066;
+}
+.style-chooser .vs__selected {
+    background-color: var(--SPORT);
+    color: white;
+    background-blend-mode: color;
+}
+.style-chooser .vs__deselect {
+    fill: var(--GREY3);
+}
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+    background-color: var(--DARK-YELLOW);
+}
+.section-bg ::-webkit-scrollbar {
+    background-color: var(--GREY2);
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(200,200,200,1);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--LIGHT-YELLOW);
+    -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
+}
 </style>

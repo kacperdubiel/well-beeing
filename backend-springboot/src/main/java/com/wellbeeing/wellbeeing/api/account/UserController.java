@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.api.account;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.PasswordException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.RoleToUserIdRequest;
 import com.wellbeeing.wellbeeing.domain.message.RoleToUserRequest;
@@ -10,9 +11,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+
+import javax.annotation.security.RolesAllowed;
+import java.util.Locale;
+import java.util.Objects;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -30,8 +36,27 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping("/user/update-password")
+    @RolesAllowed(ERole.Name.ROLE_BASIC_USER)
+    public ResponseEntity<?> changeUserPassword(Locale locale,
+                                              @RequestParam("password") String password,
+                                              @RequestParam("oldpassword") String oldPassword) throws PasswordException {
+        User user = userService.loadUserByEmail(
+                SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (!userService.checkIfValidOldPassword(user, oldPassword)) {
+            throw new PasswordException("Old password is incorrect!");
+        }
+
+        if (Objects.equals(oldPassword, password)) {
+            throw new PasswordException("New password can't be the same as old.");
+        }
+
+        userService.changeUserPassword(user, password);
+        return new ResponseEntity<>("Password updated", HttpStatus.OK);
+    }
+
     @RequestMapping(path = "/add-role-to-user", method = RequestMethod.POST)
-    @RolesAllowed(ERole.Name.ROLE_ADMIN)
     public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest){
         if(!userService.addRoleToUser(roleToUserRequest.getUsername(), roleToUserRequest.getRole())) {
             return new ResponseEntity<>(new ErrorMessage("Can't set this role to user!", "error"), HttpStatus.CONFLICT);
