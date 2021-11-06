@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,4 +39,12 @@ public class Conversation {
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     private List<Message> messages;
 
+    public Message getLastMessage() {
+        if(messages != null && messages.size() > 0){
+            Message msg = messages.stream().max(Comparator.comparing(Message::getCreateDate)).orElse(null);
+            msg.setConversation(null);
+            return msg;
+        }
+        return null;
+    }
 }
