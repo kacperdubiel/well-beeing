@@ -4,6 +4,7 @@ import Feed from "@/views/social/Feed";
 import RoleRequestsView from "@/views/social/RoleRequestsView";
 import LoginAdminView from "@/views/social/LoginAdminView";
 import RoleRequestViewAdmin from "@/views/social/RoleRequestsViewAdmin";
+import ProfileView from "@/views/social/ProfileView";
 
 const routes = [
   {
@@ -41,7 +42,17 @@ const routes = [
     name: 'RoleRequestsViewAdmin',
     meta: { layout: "admin"},
     component: RoleRequestViewAdmin
-  }
+  },
+  {
+    path: '/profile/:profileId',
+    name: 'ProfileView',
+    component: ProfileView
+  },
+  {
+    path: '/profile/my',
+    name: 'MyProfileView',
+    component: ProfileView
+  },
 ]
 
 const router = createRouter({

@@ -4,6 +4,7 @@ export default createStore({
     state () {
         return {
             // SOCIAL
+            profileId: "",
             token: "",
             firstName: "",
             lastName: "",
@@ -16,6 +17,9 @@ export default createStore({
         }
     },
     mutations: {
+        setProfileId (state, value) {
+            state.profileId = value;
+        },
         setToken (state, value) {
             state.token = value;
         },
@@ -33,6 +37,9 @@ export default createStore({
         }
     },
     getters: {
+        getProfileId (state) {
+            return state.profileId;
+        },
         getToken (state) {
             return state.token;
         },
