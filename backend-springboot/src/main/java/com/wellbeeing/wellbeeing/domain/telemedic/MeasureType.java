@@ -1,7 +1,10 @@
 package com.wellbeeing.wellbeeing.domain.telemedic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,6 +12,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "measureTypes")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MeasureType {
     @Id
     @GeneratedValue
@@ -23,47 +30,5 @@ public class MeasureType {
     @OneToMany(mappedBy = "measureType")
     private List<Measure> measures;
 
-    public MeasureType() {
-
-    }
-
-    public MeasureType(@JsonProperty("id") UUID id, @JsonProperty("name") String name,
-                       @JsonProperty("unit") String unit){
-        this.id = id;
-        this.name = name;
-        this.unit = unit;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public List<Measure> getMeasures() {
-        return measures;
-    }
-
-    public void setMeasures(List<Measure> measures) {
-        this.measures = measures;
-    }
 }
 

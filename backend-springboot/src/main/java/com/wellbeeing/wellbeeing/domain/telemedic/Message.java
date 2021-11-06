@@ -1,7 +1,10 @@
 package com.wellbeeing.wellbeeing.domain.telemedic;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,6 +12,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "messages")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Message {
     @Id
     @GeneratedValue
@@ -26,51 +33,4 @@ public class Message {
     @ManyToOne
     private Conversation conversation;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public EMessageType getMessageType() {
-        return messageType;
-    }
-
-    public void setMessageType(EMessageType messageType) {
-        this.messageType = messageType;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Profile getSender() {
-        return sender;
-    }
-
-    public void setSender(Profile sender) {
-        this.sender = sender;
-    }
-
-    public Conversation getConversation() {
-        return conversation;
-    }
-
-    public void setConversation(Conversation conversation) {
-        this.conversation = conversation;
-    }
 }
