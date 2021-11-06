@@ -53,27 +53,6 @@ public class RoleRequestController {
     public RoleRequestController(@Qualifier("roleRequestService") RoleRequestService roleRequestService) {
         this.roleRequestService = roleRequestService;
     }
-
-//    @GetMapping(path = "")
-////    @RolesAllowed(ERole.Name.ROLE_ADMIN)
-//    public ResponseEntity<?> getRoleRequestsPaginated(@RequestParam(value = "page", defaultValue = "0") int page,
-//                                                   @RequestParam(value = "size", defaultValue = "20") int size) {
-//        List<RoleRequest> roleRequests;
-//        Pageable paging = PageRequest.of(page, size);
-//
-//        Page<RoleRequest> pageRoleRequests;
-//        pageRoleRequests = roleRequestService.getAllRoleRequests(paging);
-//        roleRequests = pageRoleRequests.getContent();
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("requests", roleRequests);
-//        response.put("currentPage", pageRoleRequests.getNumber());
-//        response.put("totalItems", pageRoleRequests.getTotalElements());
-//        response.put("totalPages", pageRoleRequests.getTotalPages());
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
-
-
     @GetMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_ADMIN)
     public ResponseEntity<?> getRoleRequestsFiltered(
@@ -86,7 +65,6 @@ public class RoleRequestController {
         Page<RoleRequest> pageRoleRequests = roleRequestService.getAllRoleRequests(reqSpec, pageable);
         return new ResponseEntity<>(pageRoleRequests, HttpStatus.OK);
     }
-
 
     @RequestMapping(path = "/{id}")
     public ResponseEntity<?> getRoleRequestId(@PathVariable(value = "id") Long roleRequestId) {

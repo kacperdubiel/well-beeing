@@ -9,7 +9,7 @@ import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.telemedic.ConversationService;
 import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

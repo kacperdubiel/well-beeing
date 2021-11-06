@@ -8,6 +8,7 @@ import SportView from "@/views/sport/SportView";
 import TrainingView from "@/components/sport/training/TrainingView";
 import ExerciseView from "@/components/sport/exercise/ExerciseView";
 import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView";
+import ProfileView from "@/views/social/ProfileView";
 
 const routes = [
   {
@@ -68,7 +69,17 @@ const routes = [
     name: 'RoleRequestsViewAdmin',
     meta: { layout: "admin"},
     component: RoleRequestViewAdmin
-  }
+  },
+  {
+    path: '/profile/:profileId',
+    name: 'ProfileView',
+    component: ProfileView
+  },
+  {
+    path: '/profile/my',
+    name: 'MyProfileView',
+    component: ProfileView
+  },
 ]
 
 const router = createRouter({

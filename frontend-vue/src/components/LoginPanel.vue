@@ -186,13 +186,15 @@ export default {
             document.getElementsByClassName('')
         },
         getUserInfo () {
-            const url = `${this.apiURL}profile`
+            const url = `${this.apiURL}profile/my`
 
             this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
                 this.$store.commit('setFirstName', response.data['firstName']);
                 this.$store.commit('setLastName', response.data['lastName']);
+                this.$store.commit('setProfileId', response.data['id']);
                 console.log(this.$store.getters.getFirstName)
                 console.log(this.$store.getters.getLastName)
+                console.log(this.$store.getters.getProfileId)
                 let roles = []
                 response.data['roles'].forEach((e) => {
                     roles.push(e['role'])

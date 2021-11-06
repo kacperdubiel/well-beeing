@@ -1,7 +1,7 @@
 <template>
     <div class="section-bg sticky-top">
         <div class="side-menu">
-            <router-link to="/">
+            <router-link :to="{ name: 'MyProfileView' }">
                 <div class="row mx-4 pt-3 pb-2 sidebar-item">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'user']" />
