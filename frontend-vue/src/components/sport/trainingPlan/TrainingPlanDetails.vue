@@ -2,7 +2,7 @@
     <div>
         <div class="modal fade" id="infoPlanModal" tabindex="-1" aria-labelledby="infoPlanModalLabel" aria-hidden="true" >
             <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
+                <div class="modal-content" v-if="trainingPlan != null">
                     <div class="modal-header">
                         <h5 class="modal-title ms-2" id="infoPlanModalLabel">Szczegóły planu na tydzień {{this.$func_global.getDateRangeOfWeek(trainingPlan.week)}}</h5>
                         <button class="btn-white" @click="downloadPlan(trainingPlan.trainingPlanId)">
@@ -12,7 +12,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid" id="modal-container">
-                            <div class="col-11 mx-auto form-group" v-if="trainingPlan != null">
+                            <div class="col-11 mx-auto form-group">
                                 <div class="row justify-content-between">
                                     <training-plan-week @update:active="getMyTrainingPlans" :plan="trainingPlan" :week-dates="this.$func_global.getDatesArrayOfWeek(trainingPlan.week)" :plan-type="'details'" :days="this.$func_global.days"/>
                                 </div>
@@ -54,11 +54,11 @@
                                         Proszę uzupełnić wszystkie dane poprawnie!
                                     </p>
                                 </div></div>
-                            <div v-else>
-                                NIE MA NIC
-                            </div>
                         </div>
                     </div>
+                </div>
+                <div v-else>
+                    NIE MA NIC
                 </div>
             </div>
         </div>

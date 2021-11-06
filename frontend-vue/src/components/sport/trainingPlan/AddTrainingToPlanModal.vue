@@ -10,14 +10,22 @@
                     <div class="container-fluid" id="modal-container">
                         <div class="row mt-3 mx-4">
 
-                            <div class="col-5 align-content-start text-start">
-                                <p>Data treningu : {{this.$store.getters.getTrainingPositionDate != null ? this.$func_global.dateDayMonth(this.$store.getters.getTrainingPositionDate) : ''}}</p>
-                                <p class="form-label text-start">Pora dnia</p>
-<!--                                <v-select-->
-<!--                                    class="style-chooser pb-2"-->
-<!--                                    v-model="partOfDay"-->
-<!--                                    :options="['RANO', 'POLUDNIE', 'WIECZÓR']"-->
-<!--                                />-->
+                            <div class="col-8 align-content-start text-start">
+                                <p class="form-label">Data treningu : {{this.$store.getters.getTrainingPositionDate != null ? this.$func_global.dateDayMonth(this.$store.getters.getTrainingPositionDate) : ''}}</p>
+
+                            </div>
+                        </div>
+                        <div class="row mt-3 mx-4 justify-content-start">
+                            <div class="col-3 d-flex justify-content-start align-content-center">
+                                <span class="form-label text-start float-start">Pora dnia:</span>
+                            </div>
+                            <div class="col-9 justify-content-start text-start float-start">
+
+                                <!--                                <v-select-->
+                                <!--                                    class="style-chooser pb-2"-->
+                                <!--                                    v-model="partOfDay"-->
+                                <!--                                    :options="['RANO', 'POLUDNIE', 'WIECZÓR']"-->
+                                <!--                                />-->
                                 <select
                                     v-model="timeOfDay"
                                     class="register-input p-2"
@@ -149,7 +157,7 @@ p.has-error {
     background-color: var(--GREY2);
 }
 .form-label {
-    color: var(--GREY3);
+    color: white;
     font-weight: bold;
     text-align: left;
     padding-left: 0;

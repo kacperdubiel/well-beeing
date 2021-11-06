@@ -79,7 +79,7 @@
                                 @change="updateWeek()"
                             >
                                 <option disabled value="">Wybierz tydzień</option>
-                                <option v-for="range in generateNWeeks(10)" :key="range.weekNo" :value="range.weekNo">{{ range.range }}</option>
+                                <option v-for="range in generateNWeeks(7)" :key="range.weekNo" :value="range.weekNo">{{ range.range }}</option>
                             </select>
                         </div>
                     </div>

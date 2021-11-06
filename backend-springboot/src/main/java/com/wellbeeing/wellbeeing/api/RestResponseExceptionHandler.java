@@ -1,9 +1,7 @@
 package com.wellbeeing.wellbeeing.api;
 
-import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
-import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
+import com.wellbeeing.wellbeeing.domain.exception.*;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +40,11 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<ErrorMessage> handleException(IllegalArgumentException e){
         return new ResponseEntity<>(new ErrorMessage("Illegal argument: " + e.getMessage(),
                 "400"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({PasswordException.class})
+    public ResponseEntity<ErrorMessage> handleException(PasswordException e){
+        return new ResponseEntity<>(new ErrorMessage("Password error: " + e.getMessage(),
+                "409"), HttpStatus.CONFLICT);
     }
 }

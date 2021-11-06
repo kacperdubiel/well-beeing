@@ -35,7 +35,7 @@
                 </tbody>
             </table>
         </div>
-        <TrainingPlanDetails v-if="trainingPlan" :trainingPlan="trainingPlan" @download:plan="downloadPlan"/>
+        <TrainingPlanDetails :trainingPlan="trainingPlan" @download:plan="downloadPlan"/>
     </div>
 </template>
 
