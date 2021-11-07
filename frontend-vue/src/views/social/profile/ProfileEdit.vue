@@ -175,11 +175,26 @@
                                     ref="profilePicture"
                                     id="input-picture"
                                     accept="image/png, image/jpeg, image/png"
+                                    @focus="clearStatusPicture"
                                 >
                             </div>
                         </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorPicture">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Proszę załączyć plik!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="successChangePicture">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Pomyślnie zmieniono zdjęcie profilowe!
+                                </p>
+                            </div>
+                        </div>
                         <div class="d-flex flex-row">
-                            <button class="btn-panel-social-outline ms-auto">
+                            <button class="btn-panel-social-outline ms-auto" @click="changeProfilePicture">
                                 Zapisz zmiany
                             </button>
                         </div>
@@ -326,7 +341,11 @@ export default {
             successChangePassword: false,
             errorPassword: false,
             errorCurrentPassword: false,
-            errorEqualNewPassword: false
+            errorEqualNewPassword: false,
+
+            submittingChangePicture: false,
+            successChangePicture: false,
+            errorPicture: false,
         }
     },
     methods: {
@@ -401,6 +420,32 @@ export default {
             });
 
         },
+        changeProfilePicture() {
+            this.submittingChangePicture = true
+            this.clearStatusPicture()
+
+            if (this.$refs.profilePicture.files.length > 0) {
+                this.picturePath = this.$refs.profilePicture.files[0].name
+            }
+
+            if (this.invalidProfilePicture) {
+                this.errorPicture = true
+                return
+            }
+
+            this.$func_global.importData(this.$refs.profilePicture, this.$store.getters.getToken, 'profilePicture').then((resp) => {
+                const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
+                const token = this.$store.getters.getToken;
+                this.$func_global.downloadPhoto(url, token).then(result => {
+                    this.$store.commit('setProfileImageSrc', result)
+                })
+                this.clearInputs()
+                this.successChangePicture = true
+                console.log(resp)
+            })
+
+
+        },
         clearStatusEmail() {
             this.successChangeEmail = false
             this.errorChangeEmail = false
@@ -413,11 +458,17 @@ export default {
             this.errorEqualNewPassword = false
             this.successChangePassword = false
         },
+        clearStatusPicture() {
+            this.successChangePicture = false
+            this.errorPicture = false
+        },
         clearInputs() {
             this.email = ""
             this.currentPassword = ""
             this.newPasswordFirst = ""
             this.newPasswordSecond = ""
+            this.picturePath = ""
+            this.$refs.profilePicture.value = null
         }
     },
     computed: {
@@ -438,6 +489,9 @@ export default {
         },
         invalidEqualNewPassword() {
             return this.newPasswordFirst !== this.newPasswordSecond
+        },
+        invalidProfilePicture() {
+            return this.picturePath === ""
         }
     },
     mounted() {

@@ -123,7 +123,7 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.post(url, this.roleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.requestId = response.data['roleReqId']
-                this.$func_global.importData(this.requestId, this.$refs.myfile, this.$store.getters.getToken)
+                this.$func_global.importData(this.$refs.myfile, this.$store.getters.getToken, 'roleRequest', this.requestId)
                 this.clearInputs()
                 this.getMyRoleRequests()
             }).catch(error => {

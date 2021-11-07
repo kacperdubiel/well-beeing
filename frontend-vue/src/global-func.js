@@ -4,18 +4,25 @@ const apiURL = 'http://localhost:8090/'
 import axios from "axios";
 export const func_global = {
 
-    importData(requestId, myfile, token) {
+    async importData(myfile, token, type, requestId) {
         // let myfile = this.$refs.myfile;
         let files = myfile.files;
         let file = files[0];
         var formData = new FormData();
         formData.append("file", file);
-        this.uploadFileRequest(formData, requestId, token)
+        return this.uploadFile(formData, type, token, requestId).then((resp) => {
+            console.log(resp)
+        })
+
     },
 
-    uploadFileRequest (data, requestId, token) {
-        const url = `${apiURL}role-request/import/${requestId}/`
-        axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
+     async uploadFile (data, type, token, requestId) {
+        let url;
+        if (type === 'roleRequest')
+            url = `${apiURL}role-request/import/${requestId}/`
+        else if (type === 'profilePicture')
+            url = `${apiURL}profile/import`
+         return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
             console.log(response.data)
         }).catch(error => {
             console.log(error.response)
@@ -31,7 +38,7 @@ export const func_global = {
             console.log(error.response.status)
         });
     },
-    downloadPhoto (url, token) {
+    async downloadPhoto (url, token) {
         let data
         const urlCreator = window.URL || window.webkitURL;
         return axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'}, responseType: 'arraybuffer'}).then((response) => {
