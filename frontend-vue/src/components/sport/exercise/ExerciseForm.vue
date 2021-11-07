@@ -66,7 +66,6 @@
                                     label="name"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"/>
-                                <p class="form-label">{{ values }}</p>
                             </div>
                             <div class="row mt-3">
                                 <p class="form-label">Opis</p>
@@ -105,14 +104,11 @@
                             </div>
                         </div>
 
-<!--                        <div v-if="successRegister" class="col-11 mx-auto">-->
-<!--                            <p>-->
-<!--                                Rejestracja przebiegła pomyślnie!-->
-<!--                            </p>-->
-<!--                            <p>-->
-<!--                                Możesz zalogować się swoimi danymi.-->
-<!--                            </p>-->
-<!--                        </div>-->
+                        <div v-if="successCreateExercise" class="col-11 mx-auto submit-correct">
+                            <p>
+                                Dodano nowe ćwiczenie!
+                            </p>
+                        </div>
 
                     </div>
                 </div>
@@ -230,8 +226,16 @@ input.has-error {
     border: 1px solid var(--INTENSE-PINK);
 }
 
+textarea.has-error {
+    border: 1px solid var(--INTENSE-PINK);
+}
+
 p.has-error {
     color: var(--INTENSE-PINK);
+    /*font-weight: bold;*/
+}
+.submit-correct {
+    color: var(--TELEMEDIC);
     /*font-weight: bold;*/
 }
 .modal-title {

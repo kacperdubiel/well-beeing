@@ -1,10 +1,10 @@
 <template>
     <div class="modal fade" id="addTrainingModal" tabindex="-1" aria-labelledby="addTrainingModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title ms-2" id="addTrainingModalLabel">Dodawanie nowego treningu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs();clearStatus();"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid" id="modal-container">
@@ -74,21 +74,23 @@
                                     <button class="register-btn grey-btn py-2" @click="createTraining()">Zatwierdź i dodaj ćwiczenia</button>
                                 </div>
                             </div>
-<!--                        <div v-if="successRegister" class="col-11 mx-auto">-->
-<!--                            <p>-->
-<!--                                Rejestracja przebiegła pomyślnie!-->
-<!--                            </p>-->
-<!--                            <p>-->
-<!--                                Możesz zalogować się swoimi danymi.-->
-<!--                            </p>-->
-<!--                        </div>-->
-
-                    </div>
-                        <div class="row mt-3">
-                            <div class="col-12 text-black text-start">
-                                Cwiczenia w treningu
+                            <div class="row justify-self-end mt-3">
+                                <div v-if="successCreateTraining" class="col-11 mx-auto submit-correct">
+                                    <p>
+                                        Dodano szkielet treningu!
+                                    </p>
+                                    <p>
+                                        Teraz możesz dodać ćwiczenia.
+                                    </p>
+                                </div>
                             </div>
-                            <div class="col-12" >
+                            <div class="row mt-3">
+                                <div class="col-12 text-black form-label">
+                                    Cwiczenia w treningu
+                                </div>
+                            </div>
+                        <div class="row mt-3">
+                            <div class="col-12" v-if="this.createdTraining.exerciseInTrainings != null &&  this.createdTraining.exerciseInTrainings.length !== 0" >
                                 <table class="table table-hover">
                                     <thead>
                                     <tr>
@@ -127,79 +129,91 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div v-else class="col-12 text-black text-start form-label">
+                                <p>Brak</p>
+                            </div>
                         </div>
-                        <div v-if="showExercises" class="section-bg">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr class="text-start">
-                                    <th scope="col" >Nazwa</th>
-                                    <th scope="col">Powt</th>
-                                    <th scope="col">Serie</th>
-                                    <th scope="col">Czas</th>
-                                    <th scope="col"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-start">
-                                            <span class="form-label white">
-                                                {{currentExercise.exercise != null ? currentExercise.exercise.name : ''}}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                v-model="currentExercise.repetitions"
-                                                id="reps-form"
-                                                class="register-input p-2 col-8 d-flex justify-self-start"
-                                                :class="{ 'has-error': submittingCreateTraining }"
-                                                @focus="null"
-                                                @keypress="null"
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                v-model="currentExercise.series"
-                                                id="series-form"
-                                                class="register-input p-2 col-8 d-flex justify-self-start"
-                                                :class="{ 'has-error': submittingCreateTraining }"
-                                                @focus="null"
-                                                @keypress="null"
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                v-model="currentExercise.time"
-                                                id="time-form"
-                                                class="p-2 col-8 d-flex justify-self-start"
-                                                :class="{ 'has-error': submittingCreateTraining }"
-                                                @focus="null"
-                                                @keypress="null"
-                                            />
-                                        </td>
-                                        <td>
-                                            <button class="register-btn btn-panel-sport p-2" @click="addExerciseToTraining(currentExercise.exercise.exerciseId)">+</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="row justify-content-end mt-3">
-                                <div class="col-4">
-                                    <button class="register-btn btn-panel-sport p-2" @click="setCurrent">Dodaj</button>
+                        <div class="row mt-3 section-bg" v-if="showExercises">
+
+                            <div class="row mt-3 mx-3">
+                                <div class="col-12 form-label white">
+                                    Cwiczenia do wyboru
                                 </div>
                             </div>
-                            <div class="row my-2 align-items-center justify-content-end">
-                                    <span class="col-2 float-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
-                                        <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
-                                    </span>
-                                <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
-                                        <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
-                                    </span>
+                            <div class="row mt-3 ">
+                                <div>
+                                    <div class="row my-2 align-items-center justify-content-end">
+                                            <span class="col-2 float-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
+                                                <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
+                                            </span>
+                                        <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
+                                                <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
+                                            </span>
+                                    </div>
+                                    <ExercisesListComponent :mode="'toTraining'" v-if="isListView" :exercises-source="exercisesSource"/>
+                                    <ExercisesGridComponent :mode="'toTraining'" v-if="!isListView" :exercises-source="exercisesSource"/>
+
+                                    <div class="row justify-content-center mt-3">
+                                        <div class="col-4">
+                                            <button class="register-btn btn-panel-sport p-2 mb-3" @click="setCurrent">Dodaj</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <ExercisesListComponent :mode="'toTraining'" v-if="isListView" :exercises-source="exercisesSource"/>
-                            <ExercisesGridComponent :mode="'toTraining'" v-if="!isListView" :exercises-source="exercisesSource"/>
+                            <div class="row mt-3 d-inline-flex align-content-center text-start  mb-3 white">
+                                <div class="col-3 align-content-end">
+                                    <p class="form-label white">Nazwa</p>
+                                    <p class="form-label text-start white">
+                                        {{currentExercise.exercise != null ? currentExercise.exercise.name : ''}}
+                                    </p>
+                                </div>
+                                <div class="col-3 ">
+                                    <label for="reps-form" class="form-label white">Powtórzenia</label>
+                                    <input
+                                        type="number"
+                                        v-model="currentExercise.repetitions"
+                                        id="reps-form"
+                                        class="register-input col-10 p-1 justify-self-start"
+                                        :class="{ 'has-error': submittingCreateTraining }"
+                                        @focus="null"
+                                        @keypress="null"
+                                    />
+                                </div>
+                                <div class="col-2">
+                                    <label for="series-form" class="form-label white">Serie</label>
+                                    <input
+                                        type="number"
+                                        v-model="currentExercise.series"
+                                        id="series-form"
+                                        class="register-input p-1 col-8 d-flex justify-self-start"
+                                        :class="{ 'has-error': submittingCreateTraining }"
+                                        @focus="null"
+                                        @keypress="null"
+                                    />
+                                </div>
+                                <div class="col-3">
+                                    <label for="time-form" class="form-label white">Czas [s]</label>
+                                    <input
+                                        type="number"
+                                        v-model="currentExercise.time"
+                                        id="time-form"
+                                        class="p-1 col-8 d-flex justify-self-start"
+                                        :class="{ 'has-error': submittingCreateTraining }"
+                                        @focus="null"
+                                        @keypress="null"
+                                    />
+                                </div>
+                                <div class="col-1 d-flex">
+                                    <button class="register-btn align-self-end btn-panel-sport h-auto p-2" @click="addExerciseToTraining(currentExercise.exercise.exerciseId)">+</button>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center p-3">
+                                <div class="col-8">
+                                    <button class="register-btn grey-btn p-2" @click="clearInputs();clearStatus();" data-bs-dismiss="modal">Zakończ dodawanie</button>
+                                </div>
+                            </div>
+                        </div>
+
                         </div>
                     </div>
                 </div>
@@ -250,7 +264,8 @@ export default {
             },
             showExercises:false,
             isListView: true,
-            enableButtons: false
+            enableButtons: false,
+            isCreated: false
         }
     },
     props: {
@@ -276,6 +291,7 @@ export default {
             this.met = 0.0
             this.description = ""
             this.instruction = ""
+            this.showExercises = false
         },
         clearStatus() {
             this.errorCreateTraining = false
@@ -309,6 +325,7 @@ export default {
                 this.createdTraining = response.data
                 this.successCreateTraining = true
                 this.showExercises = true
+                this.isCreated = true
                 this.clearInputs()
                 this.$emit('get:trainings')
             }).catch(error => {
@@ -431,7 +448,7 @@ export default {
     background: var(--GREY2);
 }
 
-input.has-error {
+input.has-error, textarea.has-error, select.has-error {
     border: 1px solid var(--INTENSE-PINK);
 }
 
@@ -455,14 +472,19 @@ p.has-error {
     color: white;
     font-weight: bold;
 }
-.modal-dialog {
-    max-width: 800px;
-    width: 40%;
-}
 .active-view {
     color: var(--SPORT);
 }
 .modal-body .section-bg {
     border-radius: 2px;
+}
+
+.submit-correct {
+    color: var(--TELEMEDIC);
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 </style>
