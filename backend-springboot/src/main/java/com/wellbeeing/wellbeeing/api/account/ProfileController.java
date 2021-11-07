@@ -76,7 +76,7 @@ public class ProfileController {
         Resource file = fileService.load(profile.getProfileImgPath());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "request")
-                .contentType(MediaType.parseMediaType("application/png"))
+                .contentType(MediaType.parseMediaType("image/png"))
                 .body(file);
     }
 }

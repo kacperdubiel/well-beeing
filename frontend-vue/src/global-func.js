@@ -15,11 +15,31 @@ export const func_global = {
 
     uploadFileRequest (data, requestId, token) {
         const url = `${apiURL}role-request/import/${requestId}/`
-        // const token = this.$store.getters.getToken;
         axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
             console.log(response.data)
         }).catch(error => {
             console.log(error.response)
+        });
+    },
+    downloadPdfFile (url, token) {
+        axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'}, responseType: 'arraybuffer'}).then((response) => {
+            console.log(response.data)
+            const blob = new Blob([response.data], { type: 'application/pdf' })
+            const objectUrl = window.URL.createObjectURL(blob)
+            window.open(objectUrl)
+        }).catch(error => {
+            console.log(error.response.status)
+        });
+    },
+    downloadPhoto (url, token) {
+        let data
+        const urlCreator = window.URL || window.webkitURL;
+        return axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'}, responseType: 'arraybuffer'}).then((response) => {
+            data = new Blob([response.data], { type: 'image/png' })
+            return urlCreator.createObjectURL(data);
+        }).catch(error => {
+            console.log(error.response.status)
+            return data
         });
     },
     formatDate(date) {

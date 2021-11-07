@@ -76,14 +76,7 @@ export default {
         downloadFile (reqId) {
             const url = `${this.apiURL}role-request/export/${reqId}`
             const token = this.$store.getters.getToken;
-            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'}, responseType: 'arraybuffer'}).then((response) => {
-                console.log(response.data)
-                const blob = new Blob([response.data], { type: 'application/pdf' })
-                const objectUrl = window.URL.createObjectURL(blob)
-                window.open(objectUrl)
-            }).catch(error => {
-                console.log(error.response.status)
-            });
+            this.$func_global.downloadPdfFile(url, token)
         },
         handleCancel (id) {
             if (confirm('Na pewno chcesz anulować prośbę?')) {
