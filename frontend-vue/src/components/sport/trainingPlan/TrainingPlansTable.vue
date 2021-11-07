@@ -16,7 +16,9 @@
                 <tbody>
                 <tr v-for="plan in trainingPlansSource" :key="plan.trainingPlanId">
                     <td>{{ plan.trainingPlanId }}</td>
-                    <td>{{ this.$func_global.getDateRangeOfWeek(plan.week) }}</td>
+                    <td>{{
+                            this.$func_global.getWeekRangeFromMonday(new Date(plan.beginningDate))
+                        }}</td>
                     <td>{{plan.trainingPositions.length}}</td>
                     <td>{{ plan.planStatus }}</td>
                     <td>{{ plan.caloriesBurned }}</td>
@@ -40,6 +42,9 @@
 </template>
 
 <script>
+
+import moment from "moment";
+
 import TrainingPlanDetails from "@/components/sport/trainingPlan/TrainingPlanDetails";
 export default {
     name: "TrainingPlansTable",
@@ -54,6 +59,9 @@ export default {
         trainingPlansSource: Object
     },
     methods: {
+        moment() {
+            return moment()
+        },
         downloadPlan(planId) {
             this.$emit('download:plan',planId)
         },

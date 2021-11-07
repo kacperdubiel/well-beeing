@@ -2,10 +2,10 @@
     <div>
         <div class="m-3 mx-4 header">
             <span >Aktualny plan treningowy </span>
-            <span class="week">({{this.getDateRangeOfWeek(week)}})</span>
+            <span class="week">({{this.getWeekRangeFromMonday(moment().clone().isoWeekday(1).toDate())}})</span>
             <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
         </div>
-        <div class="row justify-content-start m-3 mx-4">
+        <div class="row justify-content-start m-3 mx-4" v-if="activePlan.trainingPlanId != null">
             <div class="col-3">
                 <div class="progress-text">
                     {{this.activePlanProgress.trainingsCompleted}}/{{this.activePlanProgress.trainingsTotal}} treningi
@@ -41,11 +41,10 @@
             </div>
         </div>
         <!--Active plan-->
-        <TrainingPlanWeek @update:items="updateItems" @update:active="getMyTrainingPlans" @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayOfWeek(activePlan.week)" :plan-type="'active'" :days="days"/>
+        <TrainingPlanWeek v-if="activePlan.trainingPlanId != null" @update:items="updateItems" @update:active="getMyTrainingPlans" @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayFromMonday(new Date(activePlan.beginningDate))" :plan-type="'active'" :days="days"/>
 
         <div class="m-3 mx-4 header">
             <span >Twoje pozostałe plany</span>
-            <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
         </div>
         <training-plans-table @update:items="updateItems" :training-plans-source="myTrainingPlans" @download:plan="downloadPlan" @update:plan="getMyTrainingPlans"/>
         <div class="m-3 mx-4 header">
@@ -73,13 +72,13 @@
                     <div class="row ">
                         <div class="col-7 justify-content-start">
                             <select
-                                v-model="newPlan.week"
+                                v-model="newPlan.beginningDate"
                                 class=" p-2"
                                 style="border-radius: 5px"
-                                @change="updateWeek()"
+                                @change="updateBeginningDate()"
                             >
                                 <option disabled value="">Wybierz tydzień</option>
-                                <option v-for="range in generateNWeeks(7)" :key="range.weekNo" :value="range.weekNo">{{ range.range }}</option>
+                                <option v-for="range in generateNWeeks(7)" :key="range.weekNo" :value="range.beginningDate">{{ range.range }}</option>
                             </select>
                         </div>
                     </div>
@@ -89,12 +88,19 @@
 <!--                </div>-->
             </div>
             <!--New plan-->
-            <TrainingPlanWeek @update:items="updateItems" @set:training="setTraining" :plan="newCreatedPlan" :week-dates="getDatesArrayOfWeek(newCreatedPlan.week)" :plan-type="'create'" :days="days" v-if="newCreatedPlan.trainingPlanId != null"/>
+            <TrainingPlanWeek  @update:items="updateItems" @set:training="setTraining" :plan="newCreatedPlan" :week-dates="getDatesArrayFromMonday(new Date(newCreatedPlan.beginningDate))" :plan-type="'create'" :days="days" v-if="newCreatedPlan.trainingPlanId != null"/>
 
             <div class="row mt-3 mx-4">
                 <div class="col-12">
                     <button type="button" class="btn-panel-sport " @click="savePlanStatus('PLANNED')">Zapisz</button>
                 </div>
+            </div>
+        </div>
+        <div class="row mx-auto mt-3">
+            <div v-if="savedNewPlan" class="col-11 mx-auto submit-correct">
+                <p>
+                    Dodano nowy plan!
+                </p>
             </div>
         </div>
         <TrainingDetails :training="infoTraining"/>
@@ -104,6 +110,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
 import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
@@ -113,6 +120,7 @@ export default {
     components: {TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails,  TrainingPlanWeek,},
     data () {
         return {
+            beginningDate: new Date(),
             week: 43,
             year: 2021,
             days: [
@@ -152,6 +160,7 @@ export default {
                 "week": 33,
                 "details": "Do details",
                 "planStatus": "SCRATCH",
+                beginningDate: new Date()
             },
             trainingPosition: {
                 "trainingPositionId": 54,
@@ -171,12 +180,13 @@ export default {
                 trainingsCompleted: 0,
                 trainingsTotal: 0,
             },
+            savedNewPlan: false,
             createAuto: false,
             createManual: false,
             newPlan: {
                 trainingPlanId: -1,
                 week: 0,
-                year: 2021,
+                beginningDate: '',
                 details:"",
                 planStatus:"",
                 trainingPositions: []
@@ -189,6 +199,9 @@ export default {
         }
     },
     methods: {
+        moment: function () {
+            return moment();
+        },
         updateItems() {
             {
                 setTimeout(() => {
@@ -242,12 +255,12 @@ export default {
                 console.log(error.response.status)
             });
         },
-        async updateWeek () {
-            console.log('New week: ', this.newPlan.week)
+        async updateBeginningDate () {
+            console.log('New week: ', this.newPlan.beginningDate)
             const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
             let data = {
-                week: this.newPlan.week
+                beginningDate: moment(new Date(this.newPlan.beginningDate)).format('DD.MM.YYYY-HH:mm:ss')
             }
             await this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
@@ -267,6 +280,8 @@ export default {
                 console.log(response.data)
                 // Dodać zmianę dat w pozycjach treningowych
                 this.refreshNewPlan()
+                this.getMyTrainingPlans()
+                this.savedNewPlan = true
             }).catch(error => {
                 console.log(error.response);
             });
@@ -292,11 +307,17 @@ export default {
             this.activePlanProgress.trainingsTotal = trainingsTotal
         },
         generateNWeeks(n) {
+            let week = new Date().getWeek()
+            let currentMondayDate = moment().clone().isoWeekday(1).toDate()
+            console.log('Current monday',currentMondayDate)
             let weekArray = []
             for (let i = 0; i < n; i++) {
                 weekArray.push({
-                    weekNo: this.week+i,
-                    range:this.getDateRangeOfWeek(this.week + i)})
+                    weekNo: week+i,
+                    beginningDate: currentMondayDate.addDays(i*7),
+                    range: this.getWeekRangeFromMonday(currentMondayDate.addDays(i*7))
+                })
+                console.log('Week from ', currentMondayDate.addDays(i*7),' range: ', this.getWeekRangeFromMonday(currentMondayDate.addDays(i*7)))
             }
             return weekArray;
         },
@@ -310,6 +331,11 @@ export default {
                 console.log(error.response);
             });
         },
+        getNextMonday() {
+            let d = new Date();
+            d.setDate(d.getDate() + (((1 + 7 - d.getDay()) % 7) || 7));
+            return d
+        },
         async refreshNewPlan () {
             const url = `${this.apiURL}sport/training-plan/${this.newPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
@@ -317,6 +343,8 @@ export default {
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 // this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
+
+                this.getMyTrainingPlans()
             }).catch(error => {
                 console.log(error.response);
             });
@@ -328,8 +356,10 @@ export default {
                await this.createNewPlan()
             }
             else {
-                this.newCreatedPlan = scratchPlan;
-                this.newPlan.week = this.newCreatedPlan.week;
+                console.log('Data scratch', new Date(this.newCreatedPlan.beginningDate))
+                this.newCreatedPlan = scratchPlan
+                this.newPlan.week = moment(new Date(this.newCreatedPlan.beginningDate)).toDate().getWeek()
+                this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.newPlan.trainingPlanId = this.newCreatedPlan.trainingPlanId
             }
         },
@@ -339,8 +369,7 @@ export default {
             console.log('here')
             const data = {
                 trainingPlan: {
-                    week: this.newPlan.week,
-                    year: new Date().getFullYear(),
+                    beginningDate: this.newPlan.beginningDate,
                     // details: this.newPlan.details,
                     details: "Nowy plan"
                 }
@@ -352,39 +381,28 @@ export default {
                 console.log(error.response);
             });
         },
-        async addTrainingToPlan() {
-
-        },
         setNewPlanCreationMethod (isAuto) {
             this.createAuto = isAuto;
             this.createManual = !isAuto;
+            this.savedNewPlan = false
         },
         setActivePlan() {
-          let plan = this.myTrainingPlans.find(plan => plan.week === this.week);
+          let plan = this.myTrainingPlans.find(plan => new Date(plan.beginningDate).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
+          console.log(plan)
           if (plan != null) {
               this.activePlan = plan;
               this.calculateProgress()
           }
         },
-        getDateRangeOfWeek(weekNo){
-            var d1 = new Date();
-            var numOfdaysPastSinceLastMonday = eval(d1.getDay()- 1);
-            d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
-            var weekNoToday = d1.getWeek();
-            var weeksInTheFuture = eval( weekNo - weekNoToday );
-            d1.setDate(d1.getDate() + eval( 7 * weeksInTheFuture ));
-            var rangeIsFrom = d1.getDate().toString().padStart(2, '0') + '.' + eval(d1.getMonth()+1).toString().padStart(2, '0');
-            d1.setDate(d1.getDate() + 6);
-            var rangeIsTo = d1.getDate().toString().padStart(2, '0') + '.' + eval(d1.getMonth()+1).toString().padStart(2, '0');
-            return rangeIsFrom + " - "+rangeIsTo;
+        getWeekRangeFromMonday(mondayDate){
+            console.log('Monday', mondayDate)
+            let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
+            mondayDate.setDate(mondayDate.getDate() + 6);
+            let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
+            return from + " - "+ to
         },
-        getDatesArrayOfWeek(weekNo){
-            var d1 = new Date();
-            var numOfdaysPastSinceLastMonday = eval(d1.getDay()- 1);
-            d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
-            var weekNoToday = d1.getWeek();
-            var weeksInTheFuture = eval( weekNo - weekNoToday );
-            d1.setDate(d1.getDate() + eval( 7 * weeksInTheFuture ));
+        getDatesArrayFromMonday(d1){
+            console.log('Array monday:', d1)
             let weekDays = []
             for (let i = 0; i < 7; i++) {
                 weekDays.push({
@@ -431,6 +449,7 @@ Date.prototype.getWeek = function() {
     // Adjust to Thursday in week 1 and count number of weeks from date to week1.
     return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
+
 </script>
 
 <style scoped>
@@ -488,5 +507,8 @@ p.week {
     height: 30%;
     font-size: medium;
     font-weight: bold;
+}
+.submit-correct {
+    color: var(--TELEMEDIC);
 }
 </style>

@@ -29,10 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
@@ -172,7 +171,6 @@ public class TrainingPlanController {
         if (trainingPlan == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Claim object does not exist
         }
-
         // Remove id from request, we don't ever want to change the id.
         // This is not necessary, you can just do it to save time on the reflection
         // loop used below since we checked the id above
@@ -183,6 +181,13 @@ public class TrainingPlanController {
             // Change Claim.class to whatver your object is: Object.class
             Field field = ReflectionUtils.findField(TrainingPlan.class, k); // find field in the object class
             field.setAccessible(true);
+            if(k.equals("beginningDate")) {
+                try {
+                    v = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss").parse((String) v);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
             if (field.getType() == EPlanStatus.class)
                 v = EPlanStatus.valueOf((String) v);
             ReflectionUtils.setField(field, trainingPlan, v); // set given field for defined object to value V

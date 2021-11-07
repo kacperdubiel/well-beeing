@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 @Data
@@ -31,11 +32,9 @@ public class TrainingPlan {
     @JoinColumn(name = "owner")
     private Profile owner;
 
-    @Column(name = "year")
-    private int year;
-
-    @Column(name = "week")
-    private int week;
+    //ALWAYS MONDAY
+    @Column(name = "beginningDate")
+    private Date beginningDate;
 
     @Column(name = "details")
     private String details;
@@ -51,15 +50,11 @@ public class TrainingPlan {
 
     public TrainingPlan(Profile owner, int year, int week, String details) {
         this.owner = owner;
-        this.year = year;
-        this.week = week;
         this.details = details;
     }
 
     public TrainingPlan(Profile owner, int year, int week, String details, Profile creator) {
         this.owner = owner;
-        this.year = year;
-        this.week = week;
         this.details = details;
         this.creator = creator;
     }

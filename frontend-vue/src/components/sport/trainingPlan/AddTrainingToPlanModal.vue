@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title ms-2" id="addTrainingToPlanModalLabel">Dodawanie treningu do planu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" ref="closeModal" aria-label="Close" @click="clearStatus()"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid" id="modal-container">
@@ -20,15 +20,10 @@
                                 <span class="form-label text-start float-start">Pora dnia:</span>
                             </div>
                             <div class="col-9 justify-content-start text-start float-start">
-
-                                <!--                                <v-select-->
-                                <!--                                    class="style-chooser pb-2"-->
-                                <!--                                    v-model="partOfDay"-->
-                                <!--                                    :options="['RANO', 'POLUDNIE', 'WIECZÓR']"-->
-                                <!--                                />-->
                                 <select
                                     v-model="timeOfDay"
                                     class="register-input p-2"
+                                    :class="{ 'has-error': submittingAddTrainingToPlan && invalidTimeOfDay}"
                                     style="border-radius: 5px"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"
@@ -36,7 +31,11 @@
                                     <option disabled value="">Wybierz porę dnia</option>
                                     <option v-for="op in ['MORNING', 'NOON', 'AFTERNOON', 'EVENING', 'NIGHT']" :key="op">{{ op }}</option>
                                 </select>
-                                <p class="form-label">{{ timeOfDay }}</p>
+                                <div v-if="invalidTimeOfDay && submittingAddTrainingToPlan" class="row text-end">
+                                    <p class="has-error m-0">
+                                        Wybierz porę dnia!
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
@@ -54,6 +53,11 @@
                         </div>
                         <TrainingsGridComponent v-if="!isListView" :mode="'toPlan'" :trainings-source="trainingsSource"/>
                         <TrainingsListComponent v-if="isListView" :mode="'toPlan'" :trainings-source="trainingsSource"/>
+                        <div v-if="errorAddTrainingToPlan && !invalidTimeOfDay" class="row text-end">
+                            <p class="has-error m-0">
+                                Wybierz trening!
+                            </p>
+                        </div>
                         <div class="col-4">
                             <button class="register-btn btn-panel-sport p-2" @click="addToTrainingPlan">Dodaj</button>
                         </div>
@@ -78,7 +82,7 @@ export default {
           submittingAddTrainingToPlan: false,
           successAddTrainingToPlan: false,
           errorAddTrainingToPlan: false,
-          isListView: true
+          isListView: true,
       }
     },
     props: {
@@ -99,8 +103,8 @@ export default {
             //http://localhost:8090/sport/training-plan/9/add-position
             this.submittingAddTrainingToPlan = true
             this.clearStatus()
-            if (this.timeOfDay === '' || this.date === '' || this.date == null) {
-                this.errorCreateExercise = true
+            if (this.invalidTimeOfDay || this.date === '' || this.date == null || this.trainingId < 0) {
+                this.errorAddTrainingToPlan = true
                 return
             }
             const data = {
@@ -117,6 +121,7 @@ export default {
                 console.log(response.data)
                 this.successAddTrainingToPlan = true
                 this.$emit('new:plan')
+                this.$refs.closeModal.click()
                 // this.$emit('get:exercises')
             }).catch(error => {
                 alert(error)
@@ -133,7 +138,17 @@ export default {
     mounted() {
         this.setDate(this.$store.getters.getTrainingPositionDate)
         this.$store.commit('setPlanTrainingId', -1)
+    },
+    computed: {
+        invalidTimeOfDay() {
+            return this.timeOfDay == null || this.timeOfDay === '';
+        }
     }
+}
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
 }
 </script>
 
