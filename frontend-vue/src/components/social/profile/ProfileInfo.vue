@@ -54,7 +54,6 @@ export default {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
             const token = this.$store.getters.getToken;
             this.$func_global.downloadPhoto(url, token).then(result => this.imageSrc = result)
-            console.log('imageSrc' + this.imageSrc)
         }
     },
     mounted() {
