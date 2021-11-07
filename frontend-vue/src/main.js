@@ -72,6 +72,10 @@ library.add(faQuestion)
 library.add(faTimes)
 library.add(faCheck)
 
+//profile
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+library.add(faChevronLeft)
+
 const app = createApp(App).use(router);
 
 app.config.globalProperties.apiURL = 'http://localhost:8090/'

@@ -3,7 +3,7 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img :src="imageSrc" alt="Bee image"  id="profile-picture" height="100" width="100">
+                <img :src="imageSrc" alt="Profile picture"  id="profile-picture" height="100" width="100">
             </div>
 
             <div class="d-flex flex-column align-self-center w-100">
@@ -12,7 +12,9 @@
                     <h3>{{this.profileSource.firstName}} {{this.profileSource.lastName}}</h3>
 
                     <button class="btn-white ms-auto fw-bolder">
-                        Edytuj profil
+                        <router-link :to="{ name: 'ProfileEdit' }">
+                            Edytuj profil
+                        </router-link>
                     </button>
                 </div>
 
@@ -76,5 +78,10 @@ div[class*="tag-"] {
 
 .tag-sport {
     background-color: var(--SPORT);
+}
+
+a {
+    color: var(--GREY3);
+    text-decoration: none;
 }
 </style>
