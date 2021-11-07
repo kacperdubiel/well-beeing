@@ -23,7 +23,7 @@
                     <font-awesome-icon :icon="['far', 'bell']" size="2x" class="navbar-icon"/>
                 </div>
                 <div class="col-2 d-flex align-self-center align-items-center">
-                    <img :src="imageSrc" alt="Profile picture"  id="profile-picture" height="40" width="40">
+                    <img :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  id="profile-picture" height="40" width="40">
                     <div class="dropdown">
                         <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-profile" data-bs-toggle="dropdown" aria-expanded="false">
                             Cześć, {{this.$store.getters.getFirstName}}!
@@ -45,16 +45,11 @@
 <script>
 export default {
     name: "NavBar",
-    data () {
-        return {
-            imageSrc: ''
-        }
-    },
     methods: {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
             const token = this.$store.getters.getToken;
-            this.$func_global.downloadPhoto(url, token).then(result => this.imageSrc = result)
+            this.$func_global.downloadPhoto(url, token).then(result => this.$store.commit('setProfileImageSrc', result))
         }
     },
     mounted() {

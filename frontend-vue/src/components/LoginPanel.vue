@@ -150,9 +150,10 @@ export default {
             this.axios.post(url, data).then((response) => {
                 this.$store.commit('setToken', response.data['jwt']);
                 console.log(this.$store.getters.getToken)
-                this.clearInputs()
+                this.$store.commit('setEmail', this.email);
+                console.log(this.$store.getters.getEmail)
                 this.getUserInfo()
-                this.$router.push({name: 'Feed'})
+                this.clearInputs()
             }).catch(error => {
                 console.log(error.response);
                 this.wrongLoginData = true
@@ -183,7 +184,6 @@ export default {
                 }
             });
             this.submittingRegister = false
-            document.getElementsByClassName('')
         },
         getUserInfo () {
             const url = `${this.apiURL}profile/my`
@@ -192,15 +192,18 @@ export default {
                 this.$store.commit('setFirstName', response.data['firstName']);
                 this.$store.commit('setLastName', response.data['lastName']);
                 this.$store.commit('setProfileId', response.data['id']);
+                this.$store.commit('setProfileImageSrc', response.data['profileImgPath']);
                 console.log(this.$store.getters.getFirstName)
                 console.log(this.$store.getters.getLastName)
                 console.log(this.$store.getters.getProfileId)
+                console.log(this.$store.getters.getProfileImageSrc)
                 let roles = []
                 response.data['roles'].forEach((e) => {
                     roles.push(e['role'])
                 })
                 this.$store.commit('setRoles', roles);
                 console.log('role', this.$store.getters.getRoles)
+                this.$router.push({name: 'Feed'})
             }).catch(error => {
                 console.log(error.response);
             });

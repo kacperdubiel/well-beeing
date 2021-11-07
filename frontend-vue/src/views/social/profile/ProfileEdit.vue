@@ -13,20 +13,56 @@
         <div class="accordion accordion-flush p-3" id="accordion-profile-edit">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-mail">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-mail" aria-expanded="true" aria-controls="collapse-mail">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-mail" aria-expanded="true" aria-controls="collapse-mail">
                         E-mail
                     </button>
                 </h2>
-                <div id="collapse-mail" class="accordion-collapse collapse show" aria-labelledby="heading-mail" data-bs-parent="#accordion-profile-edit">
+                <div id="collapse-mail" class="accordion-collapse collapse" aria-labelledby="heading-mail" data-bs-parent="#accordion-profile-edit">
                     <div class="accordion-body">
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
                                 <label for="input-mail" class="form-label">Adres e-mail</label>
-                                <input type="email" class="form-control" id="input-mail" v-model="mail">
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="input-mail"
+                                    v-model="email"
+                                    :class="{ 'has-error': (submittingChangeEmail && (invalidEmail || errorEmailTaken))}"
+                                    @focus="clearStatusEmail"
+                                    @keypress="clearStatusEmail"
+                                >
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorEmailTaken">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Istnieje już konto przypisane do tego e-maila!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorChangeEmail">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Proszę poprawnie uzupełnić wszystkie pola!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorSameEmail">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Proszę podać nowego maila, ten używany jest obecnie!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="successChangeEmail">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Zmiana e-maila przebiegła pomyślnie!
+                                </p>
                             </div>
                         </div>
                         <div class="d-flex flex-row">
-                            <button class="btn-panel-social-outline ms-auto">
+                            <button class="btn-panel-social-outline ms-auto" @click="changeEmail">
                                 Zapisz zmiany
                             </button>
                         </div>
@@ -44,23 +80,78 @@
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
                                 <label for="input-curr-pass" class="form-label">Aktualne hasło</label>
-                                <input type="password" autocomplete="new-password" class="form-control" id="input-curr-pass" v-model="currentPassword" >
+                                <input
+                                    type="password"
+                                    autocomplete="new-password"
+                                    class="form-control"
+                                    id="input-curr-pass"
+                                    v-model="currentPassword"
+                                    :class="{ 'has-error': (submittingChangePassword && (invalidCurrentPassword || errorCurrentPassword))}"
+                                    @focus="clearStatusPassword"
+                                    @keypress="clearStatusPassword"
+                                >
                             </div>
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
                                 <label for="input-new-pass" class="form-label">Nowe hasło</label>
-                                <input type="password" autocomplete="new-password" class="form-control" id="input-new-pass" v-model="newPassword">
+                                <input
+                                    type="password"
+                                    autocomplete="new-password"
+                                    class="form-control"
+                                    id="input-new-pass"
+                                    v-model="newPasswordFirst"
+                                    :class="{ 'has-error': (submittingChangePassword && (invalidNewPasswordFirst || invalidEqualNewPassword))}"
+                                    @focus="clearStatusPassword"
+                                    @keypress="clearStatusPassword"
+                                >
                             </div>
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
                                 <label for="input-new-pass-again" class="form-label">Powtórz nowe hasło</label>
-                                <input type="password" autocomplete="new-password" class="form-control" id="input-new-pass-again" v-model="newPasswordAgain">
+                                <input
+                                    type="password"
+                                    autocomplete="new-password"
+                                    class="form-control"
+                                    id="input-new-pass-again"
+                                    v-model="newPasswordSecond"
+                                    :class="{ 'has-error': (submittingChangePassword && (invalidNewPasswordSecond || invalidEqualNewPassword))}"
+                                    @focus="clearStatusPassword"
+                                    @keypress="clearStatusPassword"
+                                >
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorCurrentPassword">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Niepoprawne aktualne hasło!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorEqualNewPassword">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Nowe hasła się różnią!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorPassword">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Proszę uzupełnić wszystkie pola!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="successChangePassword">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Zmiana hasła przebiegła pomyślnie!
+                                </p>
                             </div>
                         </div>
                         <div class="d-flex flex-row">
-                            <button class="btn-panel-social-outline ms-auto">
+                            <button class="btn-panel-social-outline ms-auto" @click="changePassword">
                                 Zapisz zmiany
                             </button>
                         </div>
@@ -214,20 +305,144 @@ export default {
     },
     data() {
         return {
-            mail: "",
+            email: "",
             currentPassword: "",
-            newPassword: "",
-            newPasswordAgain: "",
+            newPasswordFirst: "",
+            newPasswordSecond: "",
             picturePath: "",
             firstName: "",
             lastName: "",
             description: "",
             sex: "",
-            birthday: new Date()
+            birthday: new Date(),
+
+            submittingChangeEmail: false,
+            successChangeEmail: false,
+            errorChangeEmail: false,
+            errorEmailTaken: false,
+            errorSameEmail: false,
+
+            submittingChangePassword: false,
+            successChangePassword: false,
+            errorPassword: false,
+            errorCurrentPassword: false,
+            errorEqualNewPassword: false
         }
     },
     methods: {
+        getMyProfile() {
+            const url = `${this.apiURL}profile/my`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+        },
+        changeEmail() {
+            this.submittingChangeEmail = true
+            this.clearStatusEmail()
 
+            if (this.invalidEmail) {
+                this.errorChangeEmail = true
+                return
+            }
+
+            if (this.invalidSameEmail) {
+                this.errorSameEmail = true
+                return
+            }
+
+            const url = `${this.apiURL}user/update-email`
+            const token = this.$store.getters.getToken;
+            const myParams = {
+                email: this.email,
+            }
+            this.axios.post(url, null, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.successChangeEmail = true
+                this.$store.commit('setEmail', this.email);
+                // this.clearInputs()
+                this.$store.commit('setToken', response.data['jwt']);
+                this.submittingChangeEmail = false
+            }).catch(error => {
+                console.log(error.response.status)
+                this.errorEmailTaken = true
+            });
+        },
+        changePassword() {
+            this.submittingChangePassword = true
+            this.clearStatusPassword()
+
+            if (this.invalidCurrentPassword || this.invalidNewPasswordFirst || this.invalidNewPasswordSecond) {
+                this.errorPassword = true
+                return
+            }
+
+            if (this.invalidEqualNewPassword) {
+                this.errorEqualNewPassword = true
+                return
+            }
+
+            const url = `${this.apiURL}user/update-password`
+            const token = this.$store.getters.getToken;
+            const myParams = {
+                oldPassword: this.currentPassword,
+                password: this.newPasswordFirst
+            }
+            this.axios.post(url, null, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.successChangePassword = true
+                this.clearInputs()
+                this.submittingChangePassword = false
+            }).catch(error => {
+                console.log(error.response.status)
+                this.errorCurrentPassword = true
+            });
+
+        },
+        clearStatusEmail() {
+            this.successChangeEmail = false
+            this.errorChangeEmail = false
+            this.errorEmailTaken = false
+            this.errorSameEmail = false
+        },
+        clearStatusPassword() {
+            this.errorPassword = false
+            this.errorCurrentPassword = false
+            this.errorEqualNewPassword = false
+            this.successChangePassword = false
+        },
+        clearInputs() {
+            this.email = ""
+            this.currentPassword = ""
+            this.newPasswordFirst = ""
+            this.newPasswordSecond = ""
+        }
+    },
+    computed: {
+        invalidEmail() {
+            return this.email === '' || !this.email.includes('@')
+        },
+        invalidSameEmail() {
+            return this.email === this.$store.getters.getEmail
+        },
+        invalidCurrentPassword() {
+            return this.currentPassword === ''
+        },
+        invalidNewPasswordFirst() {
+            return this.newPasswordFirst.length < 1
+        },
+        invalidNewPasswordSecond() {
+            return this.newPasswordSecond.length < 1
+        },
+        invalidEqualNewPassword() {
+            return this.newPasswordFirst !== this.newPasswordSecond
+        }
+    },
+    mounted() {
+        this.email = this.$store.getters.getEmail
+        this.getMyProfile()
     }
 }
 </script>

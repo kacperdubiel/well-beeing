@@ -8,8 +8,8 @@ import SportView from "@/views/sport/SportView";
 import TrainingView from "@/components/sport/training/TrainingView";
 import ExerciseView from "@/components/sport/exercise/ExerciseView";
 import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView";
-import ProfileView from "@/views/social/ProfileView";
-import ProfileEdit from "@/components/social/profile/ProfileEdit";
+import ProfileView from "@/views/social/profile/ProfileView";
+import ProfileEdit from "@/views/social/profile/ProfileEdit";
 
 const routes = [
   {

@@ -5,6 +5,8 @@ export default createStore({
         return {
             // SOCIAL
             profileId: "",
+            email: "",
+            profileImageSrc: "",
             token: "",
             firstName: "",
             lastName: "",
@@ -33,6 +35,12 @@ export default createStore({
     mutations: {
         setProfileId (state, value) {
             state.profileId = value;
+        },
+        setEmail (state, value) {
+            state.email = value;
+        },
+        setProfileImageSrc (state, value) {
+            state.profileImageSrc = value;
         },
         setToken (state, value) {
             state.token = value;
@@ -87,6 +95,12 @@ export default createStore({
     getters: {
         getProfileId (state) {
             return state.profileId;
+        },
+        getEmail (state) {
+            return state.email;
+        },
+        getProfileImageSrc (state) {
+            return state.profileImageSrc;
         },
         getToken (state) {
             return state.token;
