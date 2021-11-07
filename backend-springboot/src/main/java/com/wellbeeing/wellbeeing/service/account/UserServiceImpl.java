@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.*;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.RoleDAO;
@@ -122,6 +123,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         userDAO.save(user);
     }
 
+    @Override
+    public void changeUserEmail(UUID userId, String email) throws ConflictException {
+        User user = userDAO.findUserById(userId).orElse(null);
+
+        if(user == null)
+            throw new UsernameNotFoundException("User: " + email + " not found");
+
+        if(userDAO.findUserByEmail(email).isPresent()) {
+            throw new ConflictException("Email: " + email + " is already taken");
+        }
+        user.setEmail(email);
+        userDAO.save(user);
+    }
     @Override
     public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
 //        new BCryptPasswordEncoder().encode()
