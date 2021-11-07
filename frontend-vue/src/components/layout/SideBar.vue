@@ -138,7 +138,7 @@ export default {
 <style scoped>
 a {
     color: white;
-    font-size: 130%;
+    font-size: 120%;
     text-decoration: none;
     text-align: left;
 }

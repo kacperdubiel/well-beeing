@@ -18,6 +18,7 @@
     "check-versions": "^1.0.0",
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
+    "v-calendar": "^3.0.0-alpha.6",
     "vue": "^3.0.2",
     "vue-axios": "^3.3.7",
     "vue-router": "^4.0.0-0",

@@ -19,7 +19,17 @@
                 </h2>
                 <div id="collapse-mail" class="accordion-collapse collapse show" aria-labelledby="heading-mail" data-bs-parent="#accordion-profile-edit">
                     <div class="accordion-body">
-                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-8 ">
+                                <label for="input-mail" class="form-label">Adres e-mail</label>
+                                <input type="email" class="form-control" id="input-mail" v-model="mail">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <button class="btn-panel-social-outline ms-auto">
+                                Zapisz zmiany
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,7 +41,29 @@
                 </h2>
                 <div id="collapse-password" class="accordion-collapse collapse" aria-labelledby="heading-password" data-bs-parent="#accordion-profile-edit">
                     <div class="accordion-body">
-                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-8 ">
+                                <label for="input-curr-pass" class="form-label">Aktualne hasło</label>
+                                <input type="password" autocomplete="new-password" class="form-control" id="input-curr-pass" v-model="currentPassword" >
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-8 ">
+                                <label for="input-new-pass" class="form-label">Nowe hasło</label>
+                                <input type="password" autocomplete="new-password" class="form-control" id="input-new-pass" v-model="newPassword">
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-8 ">
+                                <label for="input-new-pass-again" class="form-label">Powtórz nowe hasło</label>
+                                <input type="password" autocomplete="new-password" class="form-control" id="input-new-pass-again" v-model="newPasswordAgain">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <button class="btn-panel-social-outline ms-auto">
+                                Zapisz zmiany
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -43,7 +75,24 @@
                 </h2>
                 <div id="collapse-photo" class="accordion-collapse collapse" aria-labelledby="heading-photo" data-bs-parent="#accordion-profile-edit">
                     <div class="accordion-body">
-                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-8 ">
+                                <label for="input-picture" class="form-label">Wybierz zdjęcie</label>
+                                <input
+                                    class="form-control"
+                                    type="file"
+                                    ref="profilePicture"
+                                    id="input-picture"
+                                    accept="image/png, image/jpeg, image/png"
+                                >
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <button class="btn-panel-social-outline ms-auto">
+                                Zapisz zmiany
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -55,7 +104,51 @@
                 </h2>
                 <div id="collapse-personal" class="accordion-collapse collapse" aria-labelledby="heading-personal" data-bs-parent="#accordion-profile-edit">
                     <div class="accordion-body">
-                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-8 ">
+                                <label for="input-first-name" class="form-label">Imię</label>
+                                <input type="text" class="form-control" id="input-first-name" v-model="firstName">
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-8 ">
+                                <label for="input-last-name" class="form-label">Nazwisko</label>
+                                <input type="text" class="form-control" id="input-last-name" v-model="lastName">
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12">
+                                <label for="input-description" class="form-label">Opis</label>
+                                <textarea class="form-control" id="input-description" rows="3" v-model="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-6">
+                                <label for="input-birthday" class="form-label">Data urodzenia</label>
+                                <DatePicker class="d-block" id="input-birthday" v-model="birthday"/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="input-sex" class="form-label">Płeć</label>
+                                <div class="form-check" id="input-sex">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="input-sex-woman">
+<!--                                    dodac value-->
+                                    <label class="form-check-label" for="input-sex-woman">
+                                        Kobieta
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="input-sex-man">
+                                    <label class="form-check-label" for="input-sex-man">
+                                        Mężczyzna
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <button class="btn-panel-social-outline ms-auto">
+                                Zapisz zmiany
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -67,7 +160,31 @@
                 </h2>
                 <div id="collapse-tags" class="accordion-collapse collapse" aria-labelledby="heading-tags" data-bs-parent="#accordion-profile-edit">
                     <div class="accordion-body">
-                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        <div class="row text-start mb-3 px-2">
+                            <div class="col-12 col-md-6">
+                                <label for="input-tag-sport" class="form-label">Tag sportowy</label>
+                                <select class="form-select" aria-label="Default select example" id="input-tag-sport">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="input-tag-nutrition" class="form-label">Tag żywieniowy</label>
+                                <select class="form-select" aria-label="Default select example" id="input-tag-nutrition">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <button class="btn-panel-social-outline ms-auto">
+                                Zapisz zmiany
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,11 +206,24 @@
 </template>
 
 <script>
+import {DatePicker} from 'v-calendar';
 export default {
     name: "ProfileEdit",
+    components: {
+        DatePicker
+    },
     data() {
         return {
-
+            mail: "",
+            currentPassword: "",
+            newPassword: "",
+            newPasswordAgain: "",
+            picturePath: "",
+            firstName: "",
+            lastName: "",
+            description: "",
+            sex: "",
+            birthday: new Date()
         }
     },
     methods: {
@@ -128,5 +258,21 @@ export default {
 a {
     color: white;
     text-decoration: none;
+}
+
+.btn-panel-social-outline {
+    color: var(--GREY2);
+    border-radius: 5px;
+    border: 3px solid var(--DARK-YELLOW);
+    padding: 0.3rem 0.5rem;
+    font-size: 1rem;
+    font-weight: bolder;
+    background-color: white;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-panel-social-outline:hover {
+    color: white;
+    background-color: var(--DARK-YELLOW);
 }
 </style>
