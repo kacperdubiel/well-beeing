@@ -50,6 +50,9 @@ import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 library.add(faBell)
 library.add(faUserCircle)
 
+import {faChevronUp} from "@fortawesome/free-solid-svg-icons/faChevronUp"
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
+
 //sport
 library.add(faPencilAlt)
 library.add(faInfo)
@@ -59,6 +62,8 @@ library.add(faTh)
 library.add(faListUl)
 library.add(faDownload)
 library.add(faSearch)
+library.add(faChevronUp)
+library.add(faChevronDown)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'

@@ -57,18 +57,18 @@
             </div>
         </div>
         <div class="row mb-3 px-3 mt-3 mw-100">
-            <div class="col-md-6 search-info">
+            <div class="col-md-12 search-info">
                 <div class="container d-inline-flex px-1 py-1 align-text-center" >
                     <span id="search-results" class="align-text-bottom me-2">Nałożone filtry: </span>
                     <div class="form-label label-node p-2 mx-1 my-1" v-if="filters.lastNameSearch !== ''">
-                        <span class="fst-italic">Nazwa: "{{filters.lastNameSearch}}"</span>
+                        <span class="fst-italic my-auto">Nazwa: "{{filters.lastNameSearch}}"</span>
                         <button class="btn btn-sm btn-outline-4 size" type="button" @click="removeFilters('name')">X</button>
                     </div>
                     <div class="form-label label-node p-2 mx-1 my-1" v-if="filters.difficultyFilter !== ''">
-                        <span class="fst-italic">Poziom: "{{filters.difficultyFilter}}"</span>
+                        <span class="fst-italic my-auto">Poziom: "{{filters.difficultyFilter}}"</span>
                         <button class="btn btn-sm btn-outline-4 size" type="button" @click="removeFilters('type')">X</button>
                     </div>
-                    <button v-if="(filters.lastNameSearch !== '' || filters.difficultyFilter !== '')" class="btn btn-sm btn-outline-4 size" type="button" @click="removeFilters()">X</button>
+                    <button v-if="(filters.lastNameSearch !== '' || filters.difficultyFilter !== '')" class="btn btn-sm btn-outline-4 btn-danger my-auto" type="button" @click="removeFilters()">Usuń filtry</button>
                 </div>
             </div>
         </div>
@@ -80,8 +80,8 @@
                 <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
             </span>
         </div>
-        <TrainingsListComponent v-if="isListView" :trainings-source="trainings"/>
-        <TrainingsGridComponent v-if="!isListView" :trainings-source="trainings"/>
+        <TrainingsListComponent v-if="isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
+        <TrainingsGridComponent v-if="!isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
         <!--Modal-->
         <TrainingForm :labels-source="labels" :exercises-source="exercises" @get:exercises="getExercises" @get:trainings="getTrainings"/>
     </div>

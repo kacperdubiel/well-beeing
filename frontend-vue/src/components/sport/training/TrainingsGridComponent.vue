@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <TrainingDetails :training="training"/>
+        <TrainingDetails :training="training" @get:trainings="getTrainings"/>
     </div>
 </template>
 
@@ -41,6 +41,9 @@ export default {
     methods: {
         setTraining(training) {
             this.training = training
+        },
+        getTrainings(){
+            this.$emit('get:trainings')
         }
     }
 }

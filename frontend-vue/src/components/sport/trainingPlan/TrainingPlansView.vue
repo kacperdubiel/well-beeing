@@ -260,10 +260,11 @@ export default {
             const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
             let data = {
-                beginningDate: moment(new Date(this.newPlan.beginningDate)).format('DD.MM.YYYY-HH:mm:ss')
+                beginningDate: moment(new Date(this.newPlan.beginningDate)).format('DD.MM.YYYY')
             }
             await this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
+                console.log('New post week: ', response.data)
                 // Dodać zmianę dat w pozycjach treningowych
                 this.refreshNewPlan()
             }).catch(error => {
@@ -387,22 +388,24 @@ export default {
             this.savedNewPlan = false
         },
         setActivePlan() {
-          let plan = this.myTrainingPlans.find(plan => new Date(plan.beginningDate).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
-          console.log(plan)
+            let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+
+            let plan = this.myTrainingPlans.find(plan => plan.planStatus !== 'SCRATCH' && new Date(new Date(plan.beginningDate ) - tzoffset).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
+          console.log('Active', plan)
           if (plan != null) {
               this.activePlan = plan;
               this.calculateProgress()
           }
         },
         getWeekRangeFromMonday(mondayDate){
-            console.log('Monday', mondayDate)
+            // console.log('Monday', mondayDate)
             let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
             mondayDate.setDate(mondayDate.getDate() + 6);
             let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
             return from + " - "+ to
         },
         getDatesArrayFromMonday(d1){
-            console.log('Array monday:', d1)
+            // console.log('Array monday:', d1)
             let weekDays = []
             for (let i = 0; i < 7; i++) {
                 weekDays.push({
@@ -431,6 +434,11 @@ export default {
         this.week = new Date().getWeek()
         this.getMyTrainingPlans()
         this.getTrainings()
+    },
+    watch: {
+        activePlan: function () {
+            this.updateItems()
+        }
     }
 
 }
@@ -505,7 +513,7 @@ p.week {
 }
 .progress {
     height: 30%;
-    font-size: medium;
+    font-size: 12px;
     font-weight: bold;
 }
 .submit-correct {

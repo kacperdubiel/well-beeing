@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
 <div class="container my-3">
     <div class="row justify-content-center">
@@ -37,7 +38,7 @@
             </tbody>
         </table>
     </div>
-    <ExerciseDetails :exercise="exercise"/>
+    <ExerciseDetails @submit:editExercise="submitEditExercise" :exercise="exercise"/>
 </div>
 </template>
 
@@ -56,7 +57,8 @@ export default {
                 caloriesBurned:345,
                 owner:""
             },
-            enableButtons: false
+            enableButtons: false,
+            opened: [],
         }
 
     },
@@ -65,16 +67,32 @@ export default {
         mode: String
     },
     methods: {
+        submitEditExercise(exercise,labels){
+            this.$emit('submit:editExercise', exercise, labels)
+        },
         openInfoModal(exercise) {
             this.exercise = exercise
             // this.$store.commit('setExerciseId', id);
             // this.$refs.datailsModal.getExercise();
+        },
+        toggle(id) {
+            const index = this.opened.indexOf(id);
+            if (index > -1) {
+                this.opened.splice(index, 1)
+            } else {
+                this.opened.push(id)
+            }
         }
     }
+
 }
 </script>
 
 <style scoped>
+
+.opened {
+    background-color: yellow;
+}
 .header {
     text-align: left;
     font-size: 36px;
@@ -91,4 +109,5 @@ table {
 .selected-exercise {
     background-color: var(--SPORT);
 }
+
 </style>

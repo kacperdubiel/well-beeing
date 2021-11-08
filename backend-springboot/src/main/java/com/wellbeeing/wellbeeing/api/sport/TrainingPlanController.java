@@ -183,7 +183,9 @@ public class TrainingPlanController {
             field.setAccessible(true);
             if(k.equals("beginningDate")) {
                 try {
-                    v = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss").parse((String) v);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                            sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+                    v = sdf.parse((String) v);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

@@ -37,7 +37,7 @@
             </tbody>
         </table>
     </div>
-    <TrainingDetails :training="training"/>
+    <TrainingDetails @get:trainings="getTrainings" :training="training"/>
 </div>
 </template>
 
@@ -73,6 +73,9 @@ export default {
         },
         openInfoModal(training) {
             this.training = training
+        },
+        getTrainings(){
+            this.$emit('get:trainings')
         }
     }
 }

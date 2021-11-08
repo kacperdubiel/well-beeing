@@ -291,7 +291,6 @@ export default {
             this.met = 0.0
             this.description = ""
             this.instruction = ""
-            this.showExercises = false
         },
         clearStatus() {
             this.errorCreateTraining = false

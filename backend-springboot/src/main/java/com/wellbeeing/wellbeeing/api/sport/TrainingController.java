@@ -25,14 +25,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.lang.reflect.Field;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -126,6 +130,43 @@ public class TrainingController {
             return new ResponseEntity<>(new ErrorMessage("",""), HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(caloriesBurned, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> partialUpdateExercise(@PathVariable(value = "id") Long trainingId, @RequestBody Map<String, Object> fields, Principal principal) throws Exception {
+        // Sanitize and validate the data
+        if (trainingId <= 0 || fields == null || fields.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 400 Invalid claim object received or invalid id or id does not match object
+        }
+
+        Training training = trainingService.getTraining(trainingId, principal.getName());
+
+        // Does the object exist?
+        if (training == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Claim object does not exist
+        }
+
+        // Remove id from request, we don't ever want to change the id.
+        // This is not necessary, you can just do it to save time on the reflection
+        // loop used below since we checked the id above
+        fields.remove("trainingId");
+        fields.remove("exerciseInTrainings");
+        fields.forEach((k, v) -> {
+            // use reflection to get field k on object and set it to value v
+            // Change Claim.class to whatver your object is: Object.class
+            Field field = ReflectionUtils.findField(Training.class, k); // find field in the object class
+            if (field != null) {
+                field.setAccessible(true);
+
+                if (field.getType() == ETrainingDifficulty.class)
+                    v = ETrainingDifficulty.valueOf((String) v);
+                ReflectionUtils.setField(field, training, v); // set given field for defined object to value V
+            }
+
+        });
+
+        Training updated = trainingService.partialUpdateTraining(training);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
 }

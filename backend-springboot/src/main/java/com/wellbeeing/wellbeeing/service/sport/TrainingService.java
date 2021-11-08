@@ -26,6 +26,7 @@ public interface TrainingService {
     boolean removeExerciseFromTraining(long trainingId, long exerciseId, String clientName) throws NotFoundException;
     List<Training> getTrainingByCreatorId(UUID creatorId);
     Training updateTraining(Training training) throws NotFoundException;
+    Training partialUpdateTraining(Training training);
 
     double getCaloriesBurnedFromUser(long trainingPositionId, String userName) throws NotFoundException;
 }

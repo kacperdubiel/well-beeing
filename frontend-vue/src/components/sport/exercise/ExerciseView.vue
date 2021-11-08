@@ -80,7 +80,7 @@
                 <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
             </span>
         </div>
-        <ExercisesListComponent v-if="isListView" :exercises-source="exercises"/>
+        <ExercisesListComponent @submit:editExercise="updateExercise" v-if="isListView" :exercises-source="exercises"/>
         <ExercisesGridComponent v-if="!isListView" :exercises-source="exercises"/>
         <!--Modal-->
         <ExerciseForm :labels-source="labels" @get:exercises="getExercises"/>
@@ -217,6 +217,20 @@ export default {
         setListView(value) {
             console.log(value)
             this.isListView = value
+        },
+        async updateExercise(updatedExercise, values) {
+            updatedExercise.labels = values
+            const url = `${this.apiURL}sport/exercise/${updatedExercise.exerciseId}`
+            const token = this.$store.getters.getToken;
+            const data = updatedExercise
+            console.log('token ', token);
+            await this.axios.patch(url, data,{headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.getExercisesWithFilters()
+                // console.log(this.exercises)
+            }).catch(error => {
+                console.log(error.response);
+            });
         }
     },
     mounted() {

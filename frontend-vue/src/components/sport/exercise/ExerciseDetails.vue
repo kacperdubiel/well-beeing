@@ -4,23 +4,65 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title ms-2" id="infoExerciseModalLabel">Szczegóły ćwiczenia</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
+                    <h5 class="modal-title ms-2" id="infoExerciseModalLabel">Szczegóły ćwiczenia {{edit ? '- tryb edycji' : ''}}</h5>
+                    <button class="btn-white" @click="editExercise()">
+                        <font-awesome-icon :icon="['fa', 'pencil-alt']" />
+                    </button>
+                    <button type="button" class="btn-close" ref="closeModal" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid" id="modal-container"  v-if="exercise != null">
                         <div class="col-11 mx-auto form-group">
                             <div class="row justify-content-between">
-                                <div class="col-4 px-0 ">
-                                    <p class="form-label">Nazwa</p>
+                                <div class="col-5 px-0 justify-content-start">
+                                    <p class="form-label fst-italic">{{ edit ? 'Poprzednia nazwa' : 'Nazwa' }}</p>
                                     <p class="info-value">{{exercise.name}}</p>
+                                </div>
+                                <div class="col-4 px-0">
+                                    <p class="form-label fst-italic">{{ edit ? 'Poprzedni typ' : 'Typ' }}</p>
+                                    <p class="info-value">{{exercise.exerciseType}}</p>
+                                </div>
+                                <div class="col-3 px-0">
+                                    <p class="form-label">kcal/h</p>
+                                    <p class="info-value">{{exercise.caloriesBurned}}</p>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <p class="form-label fst-italic">{{ edit ? 'Poprzednie etykiety' : 'Etykiety' }}</p>
+                                <div class="container labels-container px-1 py-1" v-if="exercise.labels != null && exercise.labels.length > 0">
+                                    <div class="form-label label-node p-2 mx-1 my-1"
+                                       :style="{backgroundColor: randomColor(label.sportLabelId)}"
+                                        v-for="label in exercise.labels" :key="label.sportLabelId">{{label.name}}</div>
+
+                                </div>
+                                <p v-else class="info-value">Brak etykiet</p>
+                            </div>
+                            <div class="row mt-3">
+                                <p class="form-label fst-italic">{{ edit ? 'Poprzedni wydatek energetyczny (intensywność)' : 'Wydatek energetyczny (intensywność)' }}</p>
+                                <p class="info-value">{{exercise.met}} METs</p>
+                            </div>
+
+                            <div class="row mt-3">
+                                <p class="form-label fst-italic">{{ edit ? 'Poprzedni opis' : 'Opis' }}</p>
+                                <p class="info-value">{{exercise.description}}</p>
+                            </div>
+                            <div class="row mt-3 ">
+                                <p class="form-label fst-italic">{{ edit ? 'Poprzednia instrukcja' : 'Instrukcja' }}</p>
+                                <p class="info-value">{{exercise.instruction}}</p>
+                            </div>
+                            <div class="row mt-3 " v-if="this.edit">
+                                <h5 class="modal-title mt-3 text-start ps-0">Edytowane ćwiczenie</h5>
+                            </div>
+                            <div class="row justify-content-between">
+                                <div class="col-5 px-0 justify-content-start">
+                                    <p v-if="this.edit" class="form-label">Nowa nazwa:</p>
                                     <input
                                         v-if="this.edit"
                                         type="text"
                                         placeholder="Nazwa ćwiczenia"
-                                        v-model="name"
+                                        v-model="editedExercise.name"
                                         id="name-form"
-                                        class="register-input p-2"
+                                        class="register-input p-2 float-start me-auto"
                                         :class="{ 'has-error': submittingEditExercise && invalidName || nameTaken}"
                                         @focus="clearStatus"
                                         @keypress="clearStatus"
@@ -30,12 +72,11 @@
                                     </p>
                                 </div>
                                 <div class="col-4 px-0">
-                                    <p class="form-label">Typ</p>
-                                    <p class="info-value">{{exercise.exerciseType}}</p>
+                                    <p v-if="this.edit" class="form-label">Nowy typ:</p>
                                     <select
-                                        v-model="type"
                                         v-if="this.edit"
-                                        class="register-input p-2"
+                                        v-model="editedExercise.exerciseType"
+                                        class="register-input p-2 float-start me-auto"
                                         :class="{ 'has-error': submittingEditExercise && invalidType}"
                                         @focus="clearStatus"
                                         @keypress="clearStatus"
@@ -46,30 +87,27 @@
                                         <option>CARDIO</option>
                                     </select>
                                 </div>
-                                <div class="col-4 px-0">
-                                    <p class="form-label">kcal/h</p>
-                                    <p class="info-value">{{exercise.caloriesBurned}}</p>
-                                </div>
                             </div>
                             <div class="row mt-3">
-                                <p class="form-label">Etykiety</p>
-                                <div class="container labels-container px-1 py-1" v-if="exercise.labels != null && exercise.labels.length > 0">
-                                    <div class="form-label label-node p-2 mx-1 my-1"
-                                       :style="{backgroundColor: randomColor(label.sportLabelId)}"
-                                        v-for="label in exercise.labels" :key="label.sportLabelId">{{label.name}}</div>
-
-                                </div>
-                                <p v-else class="info-value">Brak etykiet</p>
+                                <p v-if="this.edit" class="form-label mt-2">Nowe etykiety:</p>
+                                <v-select
+                                    v-if="edit"
+                                    class=" register-form style-chooser px-0"
+                                    multiple v-model="values"
+                                    :options=labelsSource
+                                    :reduce="name => name.sportLabelId"
+                                    label="name"
+                                    @focus="clearStatus"
+                                    @keypress="clearStatus"/>
                             </div>
                             <div class="row mt-3">
-                                <p class="form-label">Wydatek energetyczny (intensywność)</p>
-                                <p class="info-value">{{exercise.met}} METs</p>
+                                <p v-if="this.edit" class="form-label">Nowy wydatek energetyczny (intensywność):</p>
                                 <input
                                     type="number"
                                     placeholder="MET"
-                                    v-model="met"
+                                    v-model="editedExercise.met"
                                     v-if="this.edit"
-                                    class="register-input p-2"
+                                    class="register-input w-auto p-2"
                                     min=0.0
                                     max=30.0
                                     :class="{ 'has-error': submittingEditExercise && invalidMet}"
@@ -79,25 +117,23 @@
                             </div>
 
                             <div class="row mt-3">
-                                <p class="form-label">Opis</p>
-                                <p class="info-value">{{exercise.description}}</p>
+                                <p v-if="this.edit" class="form-label">Nowy opis:</p>
                                 <textarea
                                     placeholder=" Opis"
                                     v-if="this.edit"
-                                    v-model="description"
+                                    v-model="editedExercise.description"
                                     class="register-input p-2"
                                     :class="{ 'has-error': submittingEditExercise && invalidDescription}"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"
                                 />
                             </div>
-                            <div class="row mt-3">
-                                <p class="form-label">Instrukcja</p>
-                                <p class="info-value">{{exercise.instruction}}</p>
+                            <div class="row mt-3 ">
+                                <p v-if="this.edit" class="form-label">Nowa instrukcja:</p>
                                 <textarea
                                     placeholder=" Instrukcja"
                                     v-if="this.edit"
-                                    v-model="instruction"
+                                    v-model="editedExercise.instruction"
                                     class="register-input p-2"
                                     :class="{ 'has-error': submittingEditExercise && invalidInstruction}"
                                     @focus="clearStatus"
@@ -109,6 +145,19 @@
                                     Proszę uzupełnić wszystkie dane poprawnie!
                                 </p>
                             </div>
+                            <div class="row mt-3 justify-content-between" v-if="edit">
+                                <div class="col-4 ">
+                                    <button class="grey-btn h-100 text-white float-start" @click="cancelEditExercise()">
+                                        Anuluj edycję
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button class="btn-panel-sport" @click="submitEditExercise()">
+                                        Zapisz zmiany
+                                    </button>
+                                </div>
+                            </div>
+
 <!--                            <div class="row justify-content-end mt-3">-->
 <!--                                <div class="col-4">-->
 <!--                                    <button class="register-btn grey-btn p-2" @click="clearInputs(); clearStatusWithTimeout()" data-bs-dismiss="modal">Anuluj</button>-->
@@ -154,7 +203,9 @@ export default {
             submittingEditExercise: false,
             labelStyle: {
                 backgroundColor:this.randomColor()
-            }
+            },
+            editedExercise: Object,
+            labelsSource: Array
         }
     },
     props: {
@@ -162,6 +213,22 @@ export default {
         exercise: Object
     },
     methods: {
+        cancelEditExercise() {
+          this.editedExercise = {}
+          this.values = []
+          this.edit = false
+        },
+        editExercise(){
+            this.editedExercise = Object.assign({},this.exercise)
+            this.values = this.editedExercise.labels.map(l => l.sportLabelId)
+
+            console.log('Array Labels ',this.values)
+            this.edit = true
+        },
+        async submitEditExercise() {
+            this.$emit('submit:editExercise', this.editedExercise, this.values)
+            this.$refs.closeModal.click()
+        },
         async getExercise () {
             const url = `${this.apiURL}sport/exercise/${this.$store.getters.getExerciseId}`
             const token = this.$store.getters.getToken;
@@ -173,13 +240,24 @@ export default {
                 console.log(error.response);
             });
         },
+        async getLabels () {
+            const url = `${this.apiURL}sport/exercise/labels`
+            const token = this.$store.getters.getToken;
+            console.log('token ', token);
+            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.labelsSource = response.data
+                console.log(this.labelsSource)
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
         clearInputs() {
             this.name = ""
             this.type = ""
             this.met = 0.0
             this.description = ""
             this.instruction = ""
-            this.values = []
+            // this.values = []
         },
         clearStatus() {
             this.errorEditExercise = false
@@ -209,6 +287,9 @@ export default {
             return this.instruction === ''
         }
     },
+    mounted() {
+        this.getLabels()
+    }
 }
 </script>
 
@@ -264,5 +345,8 @@ p.has-error {
     color: var(--bs-white);
     font-size: x-small;
     font-weight: normal;
+}
+.register-input {
+    box-sizing:border-box;
 }
 </style>
