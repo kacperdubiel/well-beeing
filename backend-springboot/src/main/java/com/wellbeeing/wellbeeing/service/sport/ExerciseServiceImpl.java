@@ -193,6 +193,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
             Map<String, Object> data = DataFromApi.getExercisesFromJsonWger();
             HashSet<String> categoriesLabels = (HashSet<String>) data.get("labels");
             List<Exercise> exercises = (List<Exercise>) data.get("exercises");
+            List<Map<String, Object>> exercisesLabels = (List<Map<String, Object>>) data.get("exerciseLabels");
             categoriesLabels.forEach(l -> {
                 addSportLabel(SportLabel.builder().name(l).build());
             });
@@ -201,6 +202,15 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
                 if(exerciseDAO.findAllByName(ex.getName()).isEmpty())
                 exerciseDAO.save(Exercise.builder().name(ex.getName()).instruction(ex.getInstruction()).exerciseType(EExerciseType.OTHER).build());
             });
+
+            for (Map<String, Object> exercisesLabel : exercisesLabels) {
+                Exercise ex = exerciseDAO.findExerciseByName(((Exercise) exercisesLabel.get("Exercise")).getName());
+                try {
+                    addLabelToExerciseByLabelName(ex.getExerciseId(), exercisesLabel.get("Label").toString());
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
 
         } catch (JSONException | IOException | ParseException e) {
             e.printStackTrace();
@@ -226,7 +236,10 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
 
     @Override
     public SportLabel addSportLabel(SportLabel sportLabel) {
-        return sportLabelDAO.save(sportLabel);
+        if (!sportLabelDAO.findSportLabelByName(sportLabel.getName()).isPresent())
+            return sportLabelDAO.save(sportLabel);
+        else
+            return null;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class Exercise {
     )
     private Set<SportLabel> labels = new HashSet<>();
     @JsonIgnore
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ExerciseInTraining> exerciseInTrainings;
 
     public Exercise(String name, double met) { //, ExerciseInTraining... exerciseInTrainings

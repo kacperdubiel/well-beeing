@@ -1,4 +1,5 @@
 package com.wellbeeing.wellbeeing.util;
+import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import okhttp3.*;
 //import jdk.nashorn.internal.parser.JSONParser;
@@ -75,15 +76,19 @@ public abstract class DataFromApi {
         // Iterators differ from enumerations in two ways:
         // 1. Iterators allow the caller to remove elements from the underlying collection during the iteration with well-defined semantics.
         // 2. Method names have been improved.
+        List<Map<String, Object>> resultMap = new ArrayList<>();
         List<Exercise> exercises = new ArrayList<>();
         for (org.json.simple.JSONObject object : (Iterable<org.json.simple.JSONObject>) exercisesJson) {
             String name = object.get("name").toString();
             String description = object.get("description").toString();
-            exercises.add(Exercise.builder().name(name).instruction(description).build());
-
-            System.out.println(name);
-            System.out.println(description);
-            categories.add(((org.json.simple.JSONObject) object.get("category")).get("name").toString());
+            Exercise ex = Exercise.builder().name(name).instruction(description).build();
+            String l = ((org.json.simple.JSONObject) object.get("category")).get("name").toString();
+            resultMap.add(new HashMap<String, Object>() {{
+                put("Exercise", ex);
+                put("Label", l);
+            }});
+            exercises.add(ex);
+            categories.add(l);
         }
 
         System.out.println(exercises);
@@ -92,6 +97,7 @@ public abstract class DataFromApi {
         Map<String, Object> result = new HashMap<>();
         result.put("exercises", exercises);
         result.put("labels", categories);
+        result.put("exerciseLabels",resultMap);
         return  result;
     }
 
