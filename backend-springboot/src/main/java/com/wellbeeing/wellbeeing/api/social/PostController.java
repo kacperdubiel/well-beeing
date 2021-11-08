@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.api.social;
 
+import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
@@ -8,6 +9,10 @@ import com.wellbeeing.wellbeeing.service.social.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +21,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -30,6 +36,12 @@ public class PostController {
     public PostController(@Qualifier("postService") PostService postService, @Qualifier("fileService") FileService fileService) {
         this.postService = postService;
         this.fileService = fileService;
+    }
+
+    @GetMapping(path = "/my")
+    public ResponseEntity<?> getMyPosts(@PageableDefault(sort = {"addedDate"}, size = 20, direction = Sort.Direction.DESC) Pageable pageable, Principal principal) {
+        Page<Post> pagePosts = postService.getMyPosts(principal.getName(), pageable);
+        return new ResponseEntity<>(pagePosts, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{id}")
