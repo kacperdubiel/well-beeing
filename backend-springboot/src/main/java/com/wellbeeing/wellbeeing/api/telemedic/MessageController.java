@@ -39,7 +39,7 @@ public class MessageController {
         this.profileService = profileService;
     }
 
-    @RequestMapping(path = "conversation/{id}/messages", method = RequestMethod.GET)
+    @RequestMapping(path = "conversations/{id}/messages", method = RequestMethod.GET)
     public ResponseEntity<?> getConversationMessages(@PathVariable("id") UUID id, Principal principal,
                                                      @RequestParam(value = "page", defaultValue = "0") String page,
                                                      @RequestParam(value = "size", defaultValue = "10") String size)
