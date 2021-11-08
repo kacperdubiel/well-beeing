@@ -14,7 +14,7 @@
                             <span v-if="connectionType === 'WITH_TRAINER'">Moi trenerzy</span>
                         </option>
                         <option :value="false">
-                            Oczekujący na akceptację
+                            Wysłane prośby
                         </option>
                     </select>
                 </div>

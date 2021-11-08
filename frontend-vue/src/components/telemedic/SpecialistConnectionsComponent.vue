@@ -99,16 +99,17 @@
                         <tbody>
                             <tr v-for="connection in specialistConnections" v-bind:key="connection.id">
                                 <td v-if="selectedAcceptState" class="user-name-link">
-                                    <router-link :to="{ name: 'DoctorUserProfileView', params: { userId: connection.profile.id } }">
+                                    <span @click="$emit('open-profile', connection.profile.id)">
                                         {{ connection.profile.firstName }} {{ connection.profile.lastName }}
-                                    </router-link>
+                                    </span>
                                 </td>
                                 <td v-if="!selectedAcceptState">
                                     {{ connection.profile.firstName }} {{ connection.profile.lastName }}
                                 </td>
 
                                 <td class="align-right">
-                                    <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover">
+                                    <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
+                                            @click="openConversation(connection.profile.id)">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
                                     </button>
                                     <button v-if="!selectedAcceptState" class="btn-white m-r-5 btn-hover"
@@ -223,6 +224,19 @@ export default {
                     console.log(e);
                 })
             }
+        },
+        openConversation(profileId){
+            this.axios.get(`http://localhost:8090/conversations/profile/${profileId}/type/${this.connectionType}`, {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    this.$emit('open-conversation', response.data.id)
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
     },
     created(){

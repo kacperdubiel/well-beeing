@@ -4,7 +4,8 @@
 
         </header>
         <section>
-            <specialist-connections-component connection-type="WITH_DOCTOR"/>
+            <specialist-connections-component connection-type="WITH_DOCTOR"
+                                              v-on:open-profile="openProfile" v-on:open-conversation="openConversation"/>
         </section>
     </div>
 </template>
@@ -23,7 +24,12 @@ export default {
         }
     },
     methods: {
-
+        openProfile(profileId){
+            this.$router.push({ name: 'DoctorUserProfileView', params: { userId: profileId } });
+        },
+        openConversation(conversationId){
+            this.$router.push({ name: 'DoctorUserConversationView', params: { conversationId: conversationId } });
+        },
     },
     created(){
 
