@@ -59,6 +59,22 @@ public class ConversationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(path = "conversations/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getConversationById(@PathVariable("id") UUID conversationId, Principal principal
+        ) throws NotFoundException, ForbiddenException {
+        UUID userId = userService.findUserIdByUsername(principal.getName());
+
+        Conversation conversation = conversationService.getConversationById(conversationId);
+        UUID firstConvProfileId = conversation.getFirstProfile().getId();
+        UUID secondConvProfileId = conversation.getSecondProfile().getId();
+
+        if(!firstConvProfileId.equals(userId) && !secondConvProfileId.equals(userId)){
+            throw new ForbiddenException("You do not have access rights to do that!");
+        }
+
+        return new ResponseEntity<>(conversation, HttpStatus.OK);
+    }
+
     @RequestMapping(path = "conversations/profile/{profile_id}/type/{type}", method = RequestMethod.GET)
     public ResponseEntity<?> getConversationByProfileAndType(
             @PathVariable("profile_id") UUID otherProfileId,
@@ -68,9 +84,10 @@ public class ConversationController {
     {
         EConnectionType connectionType = EConnectionType.valueOf(type);
         UUID userId = userService.findUserIdByUsername(principal.getName());
-        Profile userProfile = profileService.getProfileById(userId);
 
+        Profile userProfile = profileService.getProfileById(userId);
         Profile otherProfile = profileService.getProfileById(otherProfileId);
+
         Conversation conversation = conversationService.getConversationByProfilesAndType(userProfile, otherProfile, connectionType);
         return new ResponseEntity<>(conversation, HttpStatus.OK);
     }
@@ -107,5 +124,4 @@ public class ConversationController {
         Conversation conversationResult = conversationService.updateReadStatus(conversation, userProfile, true);
         return new ResponseEntity<>(conversationResult, HttpStatus.OK);
     }
-
 }
