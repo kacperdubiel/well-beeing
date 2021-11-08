@@ -104,7 +104,7 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
 
         double suggestedCalories = completeMetabolism + changeDueToAilments + changeDueToGoal + changeDueToBmiResult;
 
-        HashMap<EBasicMacro, Double> macros = macrosCalcStrategy.calculateMacros(completeMetabolism, profileCard);
+        HashMap<EBasicMacro, Double> macros = macrosCalcStrategy.calculateMacros(suggestedCalories, profileCard);
         double suggestedCarbohydrates = macros.get(EBasicMacro.CARBOHYDRATES);
         double suggestedFats = macros.get(EBasicMacro.FATS);
         double suggestedProteins = macros.get(EBasicMacro.PROTEINS);
@@ -174,22 +174,6 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
             return actCalc;
         throw new NotFoundException("Profile diet calculation with id: " + profileDietCalculationId + " not found");
     }
-
-    /*@Override
-    public ProfileDietCalculation getDietCalculationByProfileCardId(UUID profileCardId) throws NotFoundException {
-        ProfileCard profileCard = profileCardService.getProfileCardById(profileCardId);
-        return profileCard.getDietCalculations();
-    }
-
-    @Override
-    public ProfileDietCalculation updateDietCalculationByProfileCardId(UUID profileCardId) throws NotFoundException {
-        ProfileCard profileCard = profileCardService.getProfileCardById(profileCardId);
-        ProfileDietCalculation calcForProfileCard = calculateAllSuggestionsByProfileCardId(profileCardId);
-        profileDietCalculationDAO.save(calcForProfileCard);
-        profileCard.setDietCalculations(calcForProfileCard);
-        profileCardService.updateProfileCardById(profileCard, profileCardId);
-        return calcForProfileCard;
-    }*/
 
     @Override
     public ProfileDietCalculation getDietCalculationByProfileId(UUID profileId) throws NotFoundException {
