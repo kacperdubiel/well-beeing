@@ -14,13 +14,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-public abstract class ProductDetail {
+public abstract class ProductElementDetail {
     @Column
-    private double amount;
+    private double amountOfElementPerHundredGrams;
     @Enumerated(EnumType.STRING)
     @Column
     private EWeightMeasure measureType;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    @JsonIgnore
+    private Product elementsProduct;
+
+    public double countAmountInGramsPerGram(){
+        return this.amountOfElementPerHundredGrams * this.measureType.getNumberOfGrams() / 100;
+    }
 }
