@@ -19,7 +19,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                {{ this.$func_global.formatDate(this.roleRequestSource.addedDate )}}
+                                {{ this.$func_global.formatDate(this.roleRequestSource.addedDate)}}
                             </div>
                             <div class="col">
                                 {{ this.$func_global.mapRole(this.roleRequestSource.role) }}

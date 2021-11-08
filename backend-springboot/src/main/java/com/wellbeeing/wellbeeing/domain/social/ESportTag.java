@@ -2,6 +2,8 @@ package com.wellbeeing.wellbeeing.domain.social;
 
 public enum ESportTag {
     NONE,
-    XXX,
-    YYY
+    WEIGHT_TRAINING,
+    CARDIO,
+    PILATES,
+    YOGA
 }

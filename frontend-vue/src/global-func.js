@@ -85,6 +85,28 @@ export const func_global = {
         else
             return 'Brak informacji'
     },
+    mapSportTag(tag) {
+        if(tag === 'WEIGHT_TRAINING')
+            return 'Trening siłowy'
+        else if(tag === 'CARDIO')
+            return 'Trening kardio'
+        else if(tag === 'PILATES')
+            return 'Pilates'
+        else if(tag === 'YOGA')
+            return 'Joga'
+        else
+            return 'Brak informacji'
+    },
+    mapNutritionTag(tag) {
+        if(tag === 'VEGETARIAN')
+            return 'Dieta wegetariańska'
+        else if(tag === 'VEGAN')
+            return 'Dieta wegańska'
+        else if(tag === 'GLUTEN_FREE')
+            return 'Dieta bezglutenowa'
+        else
+            return 'Brak informacji'
+    },
     dateDayMonth(date) {
         return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth()+1).toString().padStart(2, '0');
     },

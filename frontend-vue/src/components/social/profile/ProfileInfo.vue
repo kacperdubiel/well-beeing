@@ -20,10 +20,10 @@
 
                 <div class="text-start d-flex flex-row ms-2">
                     <div class="p-2 mx-2 tag-sport fw-bolder" v-if="this.profileSource.esportTag !== 'NONE'">
-                        {{this.profileSource.esportTag}}
+                        {{ this.$func_global.mapSportTag(this.profileSource.esportTag )}}
                     </div>
                     <div class="p-2 mx-2 tag-nutrition fw-bolder" v-if="this.profileSource.enutritionTag !== 'NONE'">
-                        {{this.profileSource.enutritionTag}}
+                        {{ this.$func_global.mapNutritionTag(this.profileSource.enutritionTag) }}
                     </div>
                 </div>
 

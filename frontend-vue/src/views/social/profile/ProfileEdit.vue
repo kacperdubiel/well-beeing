@@ -331,25 +331,43 @@
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-6">
                                 <label for="input-tag-sport" class="form-label">Tag sportowy</label>
-                                <select class="form-select" aria-label="Default select example" id="input-tag-sport">
-                                    <option selected>Open this select menu</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select
+                                    class="form-select"
+                                    aria-label="Default select example"
+                                    id="input-tag-sport"
+                                    v-model="sportTag"
+                                >
+                                    <option v-for="tag in sportTags" :key="tag.label" :value="tag.value">{{ tag.label }}</option>
                                 </select>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="input-tag-nutrition" class="form-label">Tag żywieniowy</label>
-                                <select class="form-select" aria-label="Default select example" id="input-tag-nutrition">
-                                    <option selected>Open this select menu</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select
+                                    class="form-select"
+                                    aria-label="Default select example"
+                                    id="input-tag-nutrition"
+                                    v-model="nutritionTag"
+                                >
+                                    <option v-for="tag in nutritionTags" :key="tag.label" :value="tag.value">{{ tag.label }}</option>
                                 </select>
                             </div>
                         </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorChangeTags">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Proszę wybrać tagi!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="successChangeTags">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Pomyślnie zmieniono tagi!
+                                </p>
+                            </div>
+                        </div>
                         <div class="d-flex flex-row">
-                            <button class="btn-panel-social-outline ms-auto">
+                            <button class="btn-panel-social-outline ms-auto" @click="changeTags">
                                 Zapisz zmiany
                             </button>
                         </div>
@@ -392,6 +410,21 @@ export default {
             description: "",
             sex: "",
             birthday: null,
+            sportTag: "",
+            sportTags: [
+                {label:'-', value:'NONE'},
+                {label:'Trening siłowy', value:'WEIGHT_TRAINING'},
+                {label:'Kardio', value:'CARDIO'},
+                {label:'Pilates', value:'PILATES'},
+                {label:'Joga', value:'YOGA'}
+            ],
+            nutritionTag: "",
+            nutritionTags: [
+                {label:'-', value:'NONE'},
+                {label:'Dieta wegetariańska', value:'VEGETARIAN'},
+                {label:'Dieta wegańska', value:'VEGAN'},
+                {label:'Dieta bezglutenowa', value:'GLUTEN_FREE'}
+            ],
 
             submittingChangeEmail: false,
             successChangeEmail: false,
@@ -411,7 +444,11 @@ export default {
 
             submittingChangePersonalInfo: false,
             successChangePersonalInfo: false,
-            errorChangePersonalInfo: false
+            errorChangePersonalInfo: false,
+
+            submittingChangeTags: false,
+            successChangeTags: false,
+            errorChangeTags: false
         }
     },
     methods: {
@@ -424,6 +461,8 @@ export default {
                 this.description = response.data['description']
                 this.sex = response.data['esex']
                 this.birthday = response.data['birthday'] === '' ? new Date() : this.$func_global.formatDateDatePicker(response.data['birthday'])
+                this.sportTag = response.data['esportTag']
+                this.nutritionTag = response.data['enutritionTag']
             }).catch(error => {
                 console.log(error.response.status)
             });
@@ -529,7 +568,7 @@ export default {
                 firstName: this.firstName,
                 lastName: this.lastName,
                 description: this.description,
-                esex: this.sex,
+                ESex: this.sex,
                 birthday: this.birthday
             }
             this.axios.patch(url, updatedFields, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
@@ -540,7 +579,31 @@ export default {
                 console.log(error.response.status)
                 this.errorChangePersonalInfo = true
             });
+        },
+        changeTags() {
+            this.submittingChangeTags = true
+            this.clearStatusTags()
 
+            if (this.invalidSportTag || this.invalidNutritionTag) {
+                this.errorChangeTags = true
+                return
+            }
+
+            const url = `${this.apiURL}profile`
+            const token = this.$store.getters.getToken;
+            const updatedFields = {
+                eSportTag: this.sportTag,
+                eNutritionTag: this.nutritionTag
+            }
+
+            this.axios.patch(url, updatedFields, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.successChangeTags = true
+                this.submittingChangeTags = false
+            }).catch(error => {
+                console.log(error.response.status)
+                this.errorChangeTags = true
+            });
 
         },
         clearStatusEmail() {
@@ -563,8 +626,11 @@ export default {
             this.successChangePersonalInfo = false
             this.errorChangePersonalInfo = false
         },
+        clearStatusTags() {
+            this.successChangeTags = false
+            this.errorChangeTags = false
+        },
         clearInputs() {
-            // this.email = ""
             this.currentPassword = ""
             this.newPasswordFirst = ""
             this.newPasswordSecond = ""
@@ -607,6 +673,12 @@ export default {
         },
         invalidBirthday() {
             return this.birthday === null
+        },
+        invalidSportTag() {
+            return this.sportTag === ""
+        },
+        invalidNutritionTag() {
+            return this.nutritionTag === ""
         }
     },
     mounted() {
