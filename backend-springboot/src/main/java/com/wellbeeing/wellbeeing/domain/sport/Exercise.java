@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -18,6 +15,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +25,7 @@ public class Exercise {
     private String name;
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    private EExerciseType exerciseType;
+    private EExerciseType exerciseType = EExerciseType.OTHER;
     @Column(name = "description")
     private String description;
     @Column(name = "instruction")

@@ -31,6 +31,7 @@ public interface ExerciseService {
     List<Exercise> getExercisesByCreatorId(UUID creatorId);
     Exercise updateExercise(Exercise exercise) throws NotFoundException;
     Exercise partialUpdateExercise(Exercise exercise);
+    void initiateExercises();
 
     Map<Long, Integer> getCaloriesBurnedFromUser(List<Exercise> exercises, String userName) throws NotFoundException;
 }

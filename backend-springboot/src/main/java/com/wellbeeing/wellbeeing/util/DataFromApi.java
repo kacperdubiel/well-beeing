@@ -1,21 +1,32 @@
 package com.wellbeeing.wellbeeing.util;
+import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import okhttp3.*;
-import jdk.nashorn.internal.parser.JSONParser;
+//import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.simple.parser.ParseException;
 import org.springframework.security.core.parameters.P;
+import org.json.simple.parser.JSONParser;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public abstract class DataFromApi {
 
     private static final String DEEP_API_KEY = "8e0083f3-c620-1b01-cfee-69485fa69b35:fx";
     private static final String DEEP_URL = "api-free.deepl.com/v2/translate?auth_key=";
+
+    public static void main(String[] args)
+    {
+        try {
+            getExercisesFromJsonWger();
+        } catch (JSONException | IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void getExerciseDataRapid() throws IOException {
 
         OkHttpClient client = new OkHttpClient();
@@ -48,6 +59,43 @@ public abstract class DataFromApi {
 
 
     }
+
+    public static Map<String,Object> getExercisesFromJsonWger() throws JSONException, IOException, ParseException {
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader("wger.json"));
+
+        // A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.
+        org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) obj;
+
+        // A JSON array. JSONObject supports java.util.List interface.
+        org.json.simple.JSONArray exercisesJson = (org.json.simple.JSONArray) jsonObject.get("results");
+        Set<String> categories = new HashSet<>();
+        // An iterator over a collection. Iterator takes the place of Enumeration in the Java Collections Framework.
+        // Iterators differ from enumerations in two ways:
+        // 1. Iterators allow the caller to remove elements from the underlying collection during the iteration with well-defined semantics.
+        // 2. Method names have been improved.
+        List<Exercise> exercises = new ArrayList<>();
+        for (org.json.simple.JSONObject object : (Iterable<org.json.simple.JSONObject>) exercisesJson) {
+            String name = object.get("name").toString();
+            String description = object.get("description").toString();
+            exercises.add(Exercise.builder().name(name).instruction(description).build());
+
+            System.out.println(name);
+            System.out.println(description);
+            categories.add(((org.json.simple.JSONObject) object.get("category")).get("name").toString());
+        }
+
+        System.out.println(exercises);
+        System.out.println(categories);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("exercises", exercises);
+        result.put("labels", categories);
+        return  result;
+    }
+
+
 
     public static void getExerciseDataWger() throws IOException {
 

@@ -10,7 +10,10 @@ import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.SportLabelDAO;
+import com.wellbeeing.wellbeeing.util.DataFromApi;
 import javafx.scene.control.Pagination;
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,10 +23,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service("exerciseService")
-public class ExerciseServiceImpl implements ExerciseService {
+public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     private final ExerciseDAO exerciseDAO;
     private final SportLabelDAO sportLabelDAO;
     private final UserDAO userDAO;
@@ -184,6 +188,27 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
+    public void initiateExercises() {
+        try {
+            Map<String, Object> data = DataFromApi.getExercisesFromJsonWger();
+            HashSet<String> categoriesLabels = (HashSet<String>) data.get("labels");
+            List<Exercise> exercises = (List<Exercise>) data.get("exercises");
+            categoriesLabels.forEach(l -> {
+                addSportLabel(SportLabel.builder().name(l).build());
+            });
+
+            exercises.forEach(ex -> {
+                if(exerciseDAO.findAllByName(ex.getName()).isEmpty())
+                exerciseDAO.save(Exercise.builder().name(ex.getName()).instruction(ex.getInstruction()).exerciseType(EExerciseType.OTHER).build());
+            });
+
+        } catch (JSONException | IOException | ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
     public Map<Long, Integer> getCaloriesBurnedFromUser(List<Exercise> exercises, String userName) throws NotFoundException {
         Map<Long, Integer> caloriesMap = new HashMap<>();
         User user = userDAO.findUserByEmail(userName).orElse(null);
@@ -197,5 +222,26 @@ public class ExerciseServiceImpl implements ExerciseService {
         }
         System.out.println("User weight: " + weight);
         return caloriesMap;
+    }
+
+    @Override
+    public SportLabel addSportLabel(SportLabel sportLabel) {
+        return sportLabelDAO.save(sportLabel);
+    }
+
+    @Override
+    public boolean deleteSportLabel(long id) {
+        sportLabelDAO.deleteById(id);
+        return  true;
+    }
+
+    @Override
+    public SportLabel getSportLabel(long id) {
+        return sportLabelDAO.findById(id).orElse(null);
+    }
+
+    @Override
+    public SportLabel updateSportLabel(SportLabel sportLabel) {
+        return sportLabelDAO.save(sportLabel);
     }
 }
