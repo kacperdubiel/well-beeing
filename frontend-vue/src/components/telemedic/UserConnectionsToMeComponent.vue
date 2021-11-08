@@ -4,36 +4,16 @@
             Błąd ładowania.
         </div>
         <div v-if="componentError === false" class="container">
-            <div class="row justify-content-between">
+            <div v-if="connectionType !== 'WITH_USER'" class="row justify-content-between">
                 <div class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
                         <option :value="true">
-                            <span v-if="connectionType === 'WITH_USER'">Moi znajomi</span>
-                            <span v-if="connectionType === 'WITH_DOCTOR'">Moi lekarze</span>
-                            <span v-if="connectionType === 'WITH_DIETICIAN'">Moi dietetycy</span>
-                            <span v-if="connectionType === 'WITH_TRAINER'">Moi trenerzy</span>
+                            Moi pacjenci
                         </option>
                         <option :value="false">
-                            Wysłane prośby
+                            Oczekujące zgłoszenia
                         </option>
                     </select>
-                </div>
-                <div v-if="connectionType !== 'WITH_USER'" class="col-5">
-                    <button v-if="connectionType === 'WITH_DOCTOR'" class="btn-panel-telemedic">
-                        <router-link :to="{ name: 'SearchDoctorsView' }">
-                            Wyszukaj lekarza
-                        </router-link>
-                    </button>
-                    <button v-if="connectionType === 'WITH_DIETICIAN'" class="btn-panel-diet">
-                        <router-link :to="{ name: 'SearchDoctorsView' }">
-                            Wyszukaj dietetyka
-                        </router-link>
-                    </button>
-                    <button v-if="connectionType === 'WITH_TRAINER'" class="btn-panel-sport">
-                        <router-link :to="{ name: 'SearchDoctorsView' }">
-                            Wyszukaj trenera
-                        </router-link>
-                    </button>
                 </div>
             </div>
 
@@ -43,8 +23,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title ms-2" id="deleteUserConnectionModalLabel">
-                                <span v-if="connectionType === 'WITH_USER'">Usuń znajomego</span>
-                                <span v-if="connectionType !== 'WITH_USER'">Wypisz się od specjalisty</span>
+                                Usuń połączenie
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -52,8 +31,12 @@
                             <div class="container-fluid">
                                 <div class="col-11 mx-auto">
                                     <div class="row">
-                                        <span v-if="connectionType === 'WITH_USER'">Czy na pewno chcesz usunąć znajomego?</span>
-                                        <span v-if="connectionType !== 'WITH_USER'">Czy na pewno chcesz się wypisać?</span>
+                                        <span v-if="connectionType !== 'WITH_USER'">
+                                            Czy na pewno chcesz usunąć pacjenta?
+                                        </span>
+                                        <span v-else>
+                                            Czy na pewno chcesz usunąć znajomego?
+                                        </span>
                                     </div>
 
                                     <div class="row justify-content-end mt-3">
@@ -62,8 +45,46 @@
                                         </div>
                                         <div class="col-3">
                                             <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="deleteUserConnection">
-                                                <span v-if="connectionType === 'WITH_USER'">Usuń</span>
-                                                <span v-if="connectionType !== 'WITH_USER'">Wypisz</span>
+                                                <span>Usuń</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal - AcceptUserConnection -->
+            <div class="modal fade" id="acceptUserConnectionModal" tabindex="-1" aria-labelledby="acceptUserConnectionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title ms-2" id="acceptUserConnectionModalLabel">
+                                Zaakceptuj połączenie
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="col-11 mx-auto">
+                                    <div class="row">
+                                        <span v-if="connectionType !== 'WITH_USER'">
+                                            Czy na pewno chcesz zaakceptować pacjenta?
+                                        </span>
+                                        <span v-else>
+                                            Czy na pewno chcesz zaakceptować znajomego?
+                                        </span>
+                                    </div>
+
+                                    <div class="row justify-content-end mt-3">
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="acceptUserConnection">
+                                                <span>Akceptuj</span>
                                             </button>
                                         </div>
                                     </div>
@@ -77,35 +98,33 @@
 
             <div class="row">
                 <div class="col-12">
-                    <table class="table specialists-table">
+                    <table class="table connections-table">
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
-                                <th v-if="connectionType === 'WITH_DOCTOR'" scope="col" class="w-15">Specjalizacja</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="connection in userConnections" v-bind:key="connection.id">
-                                <td v-if="connection.profile.id !== userId">
+                                <td v-if="selectedAcceptState" class="user-name-link">
+                                    <span @click="$emit('open-profile', connection.profile.id)">
+                                        {{ connection.profile.firstName }} {{ connection.profile.lastName }}
+                                    </span>
+                                </td>
+                                <td v-if="!selectedAcceptState">
                                     {{ connection.profile.firstName }} {{ connection.profile.lastName }}
                                 </td>
-                                <td v-else>
-                                    {{ connection.connectedWith.firstName }} {{ connection.connectedWith.lastName }}
-                                </td>
 
-                                <td v-if="connectionType === 'WITH_DOCTOR'">
-                                    <ul v-for="spec in connection.connectedWith.doctorProfile.specializations"
-                                        v-bind:key="spec.id"
-                                        class="specialization-list"
-                                    >
-                                        <li>{{ spec.name }}</li>
-                                    </ul>
-                                </td>
                                 <td class="align-right">
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
-                                            @click="getConversation(getOtherUserId(connection))">
+                                            @click="getConversation(connection.profile.id)">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
+                                    </button>
+                                    <button v-if="!selectedAcceptState" class="btn-white m-r-5 btn-hover"
+                                            data-bs-toggle="modal" data-bs-target="#acceptUserConnectionModal"
+                                            @click="selectUserConnection(connection)">
+                                        <font-awesome-icon :icon="['fa', 'check']" />
                                     </button>
                                     <button class="btn-white btn-hover"
                                             data-bs-toggle="modal" data-bs-target="#deleteUserConnectionModal"
@@ -125,7 +144,7 @@
 <script>
 
 export default {
-    name: 'UserConnectionsComponent',
+    name: 'UserConnectionsToMeComponent',
     components: {
 
     },
@@ -149,7 +168,7 @@ export default {
     },
     methods: {
         isConnectionTypeCorrect(){
-            if(this.connectionType === "WITH_USER"       || this.connectionType === "WITH_DOCTOR" ||
+            if(this.connectionType === "WITH_USER" || this.connectionType === "WITH_DOCTOR" ||
                 this.connectionType === "WITH_DIETICIAN" || this.connectionType === "WITH_TRAINER")
             {
                 this.componentError = false;
@@ -173,7 +192,7 @@ export default {
                 })
         },
         getUserConnections() {
-            this.axios.get(`http://localhost:8090/profile-connections/my/type/${this.connectionType}/accepted/${this.selectedAcceptState}`, {
+            this.axios.get(`http://localhost:8090/profile-connections/to-me/type/${this.connectionType}/accepted/${this.selectedAcceptState}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -202,8 +221,18 @@ export default {
                 })
             }
         },
-        getOtherUserId(connection){
-            return connection.profile.id !== this.userId ? connection.profile.id : connection.connectedWith.id;
+        acceptUserConnection(){
+            if(this.selectedUserConnection){
+                this.axios({
+                    method: 'put',
+                    url: `http://localhost:8090/profile-connections/${this.selectedUserConnection.id}/mark-as-accepted`,
+                    headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                }).then(() => {
+                    this.getUserConnections();
+                }).catch(e => {
+                    console.log(e);
+                })
+            }
         },
         getConversation(profileId){
             this.axios.get(`http://localhost:8090/conversations/profile/${profileId}/type/${this.connectionType}`, {
@@ -223,10 +252,10 @@ export default {
             const data = {
                 "connectionType": this.connectionType,
                 "firstProfile": {
-                    "id": this.userId,
+                    "id": otherUserId,
                 },
                 "secondProfile": {
-                    "id": otherUserId,
+                    "id": this.userId,
                 },
             }
 
@@ -275,25 +304,18 @@ export default {
     min-height: calc(60% - 3.5rem);
 }
 
-.specialists-table {
+.connections-table {
     color: white;
     margin-top: 20px;
     text-align: left;
 }
 
-.specialists-table tbody tr:hover {
+.user-name-link span {
+    cursor: pointer;
+}
+
+.connections-table tbody tr:hover {
     background-color: var(--TELEMEDIC);
-}
-
-.specialization-list {
-    list-style: none outside none;
-    padding: 0;
-    margin: 0;
-}
-
-a {
-    color: white;
-    text-decoration: none;
 }
 
 </style>

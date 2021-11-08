@@ -5,20 +5,22 @@
 
         </header>
         <section>
-            <user-connections-component connection-type="WITH_DOCTOR" v-on:open-conversation="openConversation"/>
+            <user-connections-from-me-component connection-type="WITH_DOCTOR"
+                                                v-on:open-conversation="openConversation"
+                                                v-on:search-specialist="openSearchSpecialist"/>
         </section>
     </div>
 </template>
 
 <script>
 import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
-import UserConnectionsComponent from "@/components/telemedic/UserConnectionsComponent";
+import UserConnectionsFromMeComponent from "@/components/telemedic/UserConnectionsFromMeComponent";
 
 export default {
     name: 'UserDoctorsView',
     components: {
         TelemedicNavbar,
-        UserConnectionsComponent
+        UserConnectionsFromMeComponent
     },
     data() {
         return {
@@ -28,6 +30,9 @@ export default {
     methods: {
         openConversation(conversationId){
             this.$router.push({ name: 'UserDoctorConversationView', params: { conversationId: conversationId } });
+        },
+        openSearchSpecialist(){
+            this.$router.push({ name: 'SearchDoctorView' });
         },
     },
     created(){

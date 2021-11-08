@@ -4,7 +4,7 @@
             <doctor-navbar/>
         </header>
         <section>
-            <specialist-connections-component connection-type="WITH_DOCTOR"
+            <user-connections-to-me-component connection-type="WITH_DOCTOR"
                                               v-on:open-profile="openProfile" v-on:open-conversation="openConversation"/>
         </section>
     </div>
@@ -12,13 +12,13 @@
 
 <script>
 import DoctorNavbar from "@/components/telemedic/DoctorNavbar";
-import SpecialistConnectionsComponent from "@/components/telemedic/SpecialistConnectionsComponent";
+import UserConnectionsToMeComponent from "@/components/telemedic/UserConnectionsToMeComponent";
 
 export default {
     name: 'DoctorUsersView',
     components: {
         DoctorNavbar,
-        SpecialistConnectionsComponent
+        UserConnectionsToMeComponent
     },
     data() {
         return {
