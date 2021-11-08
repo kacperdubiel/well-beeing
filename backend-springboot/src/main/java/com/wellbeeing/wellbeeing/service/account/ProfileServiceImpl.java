@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("profileService")
 public class ProfileServiceImpl implements ProfileService {
@@ -82,6 +82,17 @@ public class ProfileServiceImpl implements ProfileService {
                     v = ESportTag.valueOf((String) v);
                 if (field.getType() == ENutritionTag.class)
                     v = ENutritionTag.valueOf((String) v);
+                if (field.getType() == Date.class) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
+                    sdf.setTimeZone(TimeZone.getTimeZone("Europe/Warsaw"));
+
+                    try {
+                        v = sdf.parse((String) v);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 ReflectionUtils.setField(field, actProfile, v);
             }
         });

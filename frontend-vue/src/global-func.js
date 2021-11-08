@@ -54,6 +54,11 @@ export const func_global = {
             return moment(String(date)).format('DD/MM/YYYY')
         }
     },
+    formatDateDatePicker(date) {
+        if (date) {
+            return moment(String(date)).format('YYYY-MM-DD')
+        }
+    },
     mapRole(role) {
         if(role === 'ROLE_DIETICIAN')
             return 'Dietetyk'

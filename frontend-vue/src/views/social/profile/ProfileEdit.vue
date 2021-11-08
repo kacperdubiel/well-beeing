@@ -213,45 +213,107 @@
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
                                 <label for="input-first-name" class="form-label">Imię</label>
-                                <input type="text" class="form-control" id="input-first-name" v-model="firstName">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="input-first-name"
+                                    v-model="firstName"
+                                    :class="{ 'has-error': (submittingChangePersonalInfo && invalidFirstName)}"
+                                    @focus="clearStatusPersonalInfo"
+                                    @keypress="clearStatusPersonalInfo"
+                                >
                             </div>
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
                                 <label for="input-last-name" class="form-label">Nazwisko</label>
-                                <input type="text" class="form-control" id="input-last-name" v-model="lastName">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="input-last-name"
+                                    v-model="lastName"
+                                    :class="{ 'has-error': (submittingChangePersonalInfo && invalidLastName)}"
+                                    @focus="clearStatusPersonalInfo"
+                                    @keypress="clearStatusPersonalInfo"
+                                >
                             </div>
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12">
                                 <label for="input-description" class="form-label">Opis</label>
-                                <textarea class="form-control" id="input-description" rows="3" v-model="description"></textarea>
+                                <textarea
+                                    class="form-control"
+                                    id="input-description"
+                                    rows="3"
+                                    v-model="description"
+                                    @focus="clearStatusPersonalInfo"
+                                    @keypress="clearStatusPersonalInfo"
+                                >
+                                </textarea>
                             </div>
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-6">
                                 <label for="input-birthday" class="form-label">Data urodzenia</label>
-                                <DatePicker class="d-block" id="input-birthday" v-model="birthday"/>
+                                <DatePicker
+                                    v-if="birthday"
+                                    class="d-block"
+                                    id="input-birthday"
+                                    v-model="birthday"
+                                    @focus="clearStatusPersonalInfo"
+                                    @keypress="clearStatusPersonalInfo"
+                                />
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="input-sex" class="form-label">Płeć</label>
                                 <div class="form-check" id="input-sex">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="input-sex-woman">
-<!--                                    dodac value-->
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="flexRadioDefault"
+                                        id="input-sex-woman"
+                                        v-model="sex"
+                                        value="WOMAN"
+                                        @focus="clearStatusPersonalInfo"
+                                        @keypress="clearStatusPersonalInfo"
+                                    >
                                     <label class="form-check-label" for="input-sex-woman">
                                         Kobieta
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="input-sex-man">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="flexRadioDefault"
+                                        id="input-sex-man"
+                                        v-model="sex"
+                                        value="MAN"
+                                        @focus="clearStatusPersonalInfo"
+                                        @keypress="clearStatusPersonalInfo"
+                                    >
                                     <label class="form-check-label" for="input-sex-man">
                                         Mężczyzna
                                     </label>
                                 </div>
                             </div>
                         </div>
+                        <div class="row text-start mb-3 px-2" v-if="errorChangePersonalInfo">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Proszę uzupełnić obowiązkowe pola!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-start mb-3 px-2" v-if="successChangePersonalInfo">
+                            <div class="col">
+                                <p class="has-error m-0">
+                                    Pomyślnie zmieniono dane osobowe!
+                                </p>
+                            </div>
+                        </div>
                         <div class="d-flex flex-row">
-                            <button class="btn-panel-social-outline ms-auto">
+                            <button class="btn-panel-social-outline ms-auto" @click="changePersonalInfo">
                                 Zapisz zmiany
                             </button>
                         </div>
@@ -329,7 +391,7 @@ export default {
             lastName: "",
             description: "",
             sex: "",
-            birthday: new Date(),
+            birthday: null,
 
             submittingChangeEmail: false,
             successChangeEmail: false,
@@ -346,6 +408,10 @@ export default {
             submittingChangePicture: false,
             successChangePicture: false,
             errorPicture: false,
+
+            submittingChangePersonalInfo: false,
+            successChangePersonalInfo: false,
+            errorChangePersonalInfo: false
         }
     },
     methods: {
@@ -353,7 +419,11 @@ export default {
             const url = `${this.apiURL}profile/my`
             const token = this.$store.getters.getToken;
             this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response.data)
+                this.firstName = response.data['firstName']
+                this.lastName = response.data['lastName']
+                this.description = response.data['description']
+                this.sex = response.data['esex']
+                this.birthday = response.data['birthday'] === '' ? new Date() : this.$func_global.formatDateDatePicker(response.data['birthday'])
             }).catch(error => {
                 console.log(error.response.status)
             });
@@ -443,6 +513,33 @@ export default {
                 this.successChangePicture = true
                 console.log(resp)
             })
+        },
+        changePersonalInfo() {
+            this.submittingChangePersonalInfo = true
+            this.clearStatusPersonalInfo()
+
+            if (this.invalidFirstName || this.invalidLastName || this.invalidSex || this.invalidBirthday) {
+                this.errorChangePersonalInfo = true
+                return
+            }
+
+            const url = `${this.apiURL}profile`
+            const token = this.$store.getters.getToken;
+            const updatedFields = {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                description: this.description,
+                esex: this.sex,
+                birthday: this.birthday
+            }
+            this.axios.patch(url, updatedFields, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.successChangePersonalInfo = true
+                this.submittingChangePersonalInfo = false
+            }).catch(error => {
+                console.log(error.response.status)
+                this.errorChangePersonalInfo = true
+            });
 
 
         },
@@ -462,8 +559,12 @@ export default {
             this.successChangePicture = false
             this.errorPicture = false
         },
+        clearStatusPersonalInfo() {
+            this.successChangePersonalInfo = false
+            this.errorChangePersonalInfo = false
+        },
         clearInputs() {
-            this.email = ""
+            // this.email = ""
             this.currentPassword = ""
             this.newPasswordFirst = ""
             this.newPasswordSecond = ""
@@ -492,6 +593,20 @@ export default {
         },
         invalidProfilePicture() {
             return this.picturePath === ""
+        },
+
+
+        invalidFirstName() {
+            return this.firstName === ""
+        },
+        invalidLastName() {
+            return this.lastName === ""
+        },
+        invalidSex() {
+            return this.sex === ""
+        },
+        invalidBirthday() {
+            return this.birthday === null
         }
     },
     mounted() {
