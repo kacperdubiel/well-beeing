@@ -1,9 +1,9 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.MacroDetail;
-import com.wellbeeing.wellbeeing.domain.diet.MineralDetail;
+import com.wellbeeing.wellbeeing.domain.diet.ProductMacroDetail;
+import com.wellbeeing.wellbeeing.domain.diet.ProductMineralDetail;
 import com.wellbeeing.wellbeeing.domain.diet.Product;
-import com.wellbeeing.wellbeeing.domain.diet.VitaminDetail;
+import com.wellbeeing.wellbeeing.domain.diet.ProductVitaminDetail;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.repository.diet.ProductDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,26 +43,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> getProductsWithNameLike(String namePart, int numberOfElements, int page) {
-        return productDAO.findByNameStartingWithIgnoreCase(namePart, PageRequest.of(page,
+        return productDAO.findByNameLikeIgnoreCase(namePart, PageRequest.of(page,
                  numberOfElements, Sort.by("name")));
     }
 
     @Override
-    public List<MacroDetail> getProductMacroDetailsByProductId(UUID productId) throws NotFoundException {
+    public List<ProductMacroDetail> getProductMacroDetailsByProductId(UUID productId) throws NotFoundException {
         Product product = getProductById(productId);
         return product.getMacroDetails();
 
     }
 
     @Override
-    public List<VitaminDetail> getProductVitaminDetailsByProductId(UUID productId) throws NotFoundException {
+    public List<ProductVitaminDetail> getProductVitaminDetailsByProductId(UUID productId) throws NotFoundException {
         Product product = getProductById(productId);
         return product.getVitaminDetails();
     }
 
 
     @Override
-    public List<MineralDetail> getProductMineralDetailsByProductId(UUID productId) throws NotFoundException {
+    public List<ProductMineralDetail> getProductMineralDetailsByProductId(UUID productId) throws NotFoundException {
         Product product = getProductById(productId);
         return product.getMineralDetails();
     }
@@ -79,9 +79,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product addProduct(Product product) {
         productDAO.save(product);
-        product.getMineralDetails().forEach(md -> md.setProduct(product));
-        product.getMacroDetails().forEach(md -> md.setProduct(product));
-        product.getVitaminDetails().forEach(md -> md.setProduct(product));
+        product.getMineralDetails().forEach(md -> md.setElementsProduct(product));
+        product.getMacroDetails().forEach(md -> md.setElementsProduct(product));
+        product.getVitaminDetails().forEach(vd -> vd.setElementsProduct(product));
         return productDAO.save(product);
     }
 
