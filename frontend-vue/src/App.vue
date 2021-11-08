@@ -90,7 +90,7 @@ button[class^="btn-panel-"] {
 }
 
 .telemedic-section {
-    padding: 20px;
+    padding: 25px 20px;
 }
 
 </style>
