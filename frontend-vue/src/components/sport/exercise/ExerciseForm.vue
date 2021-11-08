@@ -27,34 +27,37 @@
                                     Istnieje już ćwiczenie o takiej nazwie!
                                 </p>
                             </div>
-                            <div class="row mt-3">
-                                <p class="form-label">Typ</p>
-                                <select
-                                    v-model="type"
-                                    class="register-input p-2"
-                                    :class="{ 'has-error': submittingCreateExercise && invalidType}"
-                                    @focus="clearStatus"
-                                    @keypress="clearStatus"
-                                >
-                                    <option disabled value="">Wybierz typ</option>
-                                    <option>OTHER</option>
-                                    <option>STRENGTH</option>
-                                    <option>CARDIO</option>
-                                </select>
-                            </div>
-                            <div class="row mt-3">
-                                <p class="form-label">MET</p>
-                                <input
-                                    type="number"
-                                    placeholder="MET"
-                                    v-model="met"
-                                    class="register-input p-2"
-                                    min=0.0
-                                    max=30.0
-                                    :class="{ 'has-error': submittingCreateExercise && invalidMet}"
-                                    @focus="clearStatus"
-                                    @keypress="clearStatus"
-                                />
+                            <div class="row ">
+                                <div class="col-6 ps-0 mt-3">
+                                    <p class="form-label mx-auto">Typ</p>
+                                    <select
+                                        v-model="type"
+                                        class="float-start register-input p-2"
+                                        :class="{ 'has-error': submittingCreateExercise && invalidType}"
+                                        @focus="clearStatus"
+                                        @keypress="clearStatus"
+                                    >
+                                        <option disabled value="">Wybierz typ</option>
+                                        <option>OTHER</option>
+                                        <option>STRENGTH</option>
+                                        <option>CARDIO</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 ps-0 mt-3">
+                                    <p class="form-label">MET</p>
+                                    <input
+                                        type="number"
+                                        placeholder="MET"
+                                        v-model="met"
+                                        class="float-start register-input p-2"
+                                        min=0.0
+                                        max=30.0
+                                        :class="{ 'has-error': submittingCreateExercise && invalidMet}"
+                                        @focus="clearStatus"
+                                        @keypress="clearStatus"
+                                    />
+                                </div>
+
                             </div>
                             <div class="row mt-3">
                                 <p class="form-label">Etykiety</p>

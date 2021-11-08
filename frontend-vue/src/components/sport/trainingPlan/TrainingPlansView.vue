@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2 d-flex ms-auto">
+            <div class="col-xxl-2 col-xl-3 col-md-4 d-flex ms-auto">
                 <button class="btn-panel-sport mx-2 ms-auto" @click="downloadPlan(this.activePlan.trainingPlanId)">
                     <font-awesome-icon :icon="['fa', 'download']" />
                 </button>
@@ -73,7 +73,7 @@
                         <div class="col-7 justify-content-start">
                             <select
                                 v-model="newPlan.beginningDate"
-                                class=" p-2"
+                                class=" p-2 float-start"
                                 style="border-radius: 5px"
                                 @change="updateBeginningDate()"
                             >

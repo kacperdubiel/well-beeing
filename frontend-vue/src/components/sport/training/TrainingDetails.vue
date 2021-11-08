@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="modal fade" id="infoTrainingModal" tabindex="-1" aria-labelledby="infoTrainingModalLabel" aria-hidden="true" >
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title ms-2" id="infoTrainingModalLabel">Szczegóły treningu</h5>
@@ -14,7 +14,7 @@
                         <div class="container-fluid" id="modal-container">
                             <div class="col-11 mx-auto form-group" v-if="training != null">
                                 <div class="row">
-                                    <div class="col-5 px-0 ">
+                                    <div class="col-xl-5 col-md-12 px-0 ">
                                         <p class="form-label">Nazwa</p>
                                         <p class="info-value" v-if="!edit">{{training.name}}</p>
                                         <input
@@ -32,7 +32,7 @@
                                             Istnieje już trening o takiej nazwie!
                                         </p>
                                     </div>
-                                    <div class="col-4 px-1">
+                                    <div class="col-xl-4 col-md-12 px-0">
                                         <p class="form-label">Trudność</p>
                                         <p class="info-value" v-if="!edit">{{training.trainingDifficulty}}</p>
                                         <select
@@ -49,7 +49,7 @@
                                             <option>HARD</option>
                                         </select>
                                     </div>
-                                    <div class="col-3 px-0" v-if="!edit">
+                                    <div class="col-xl-3 col-md-12 px-0" v-if="!edit">
                                         <p class="form-label">kcal</p>
                                         <p class="info-value">{{training.caloriesBurned}}</p>
                                     </div>
@@ -95,79 +95,79 @@
                                         @keypress="clearStatus"
                                     />
                                 </div>
-<!--                                <&#45;&#45; EXERCISES IN TRAINING &ndash;&gt;-->
+                                <!--EXERCISES IN TRAINING-->
                                 <div class="row mt-3">
-                                    <table class="table table-hover">
-                                        <caption class="caption-top form-label">Cwiczenia w treningu</caption>
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Id</th>
-                                                <th scope="col">Nazwa</th>
-                                                <th scope="col">Typ</th>
-                                                <th scope="col">kcal</th>
-                                                <th scope="col">Powt</th>
-                                                <th scope="col">Serie</th>
-                                                <th scope="col">Czas</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <template v-for="ex in (this.edit ? this.editedTraining.exerciseInTrainings : this.training.exerciseInTrainings)" :key="ex.exercise.exerciseId">
-                                            <tr class="accordion accordion-toggle" id="accordionExample"
-                                                v-bind:class="{'opened': opened.includes(ex.exercise.exerciseId)}">
-                                                <td>{{ ex.exercise.exerciseId }}</td>
-                                                <td>{{ ex.exercise.name }}</td>
-                                                <td>{{ ex.exercise.exerciseType }}</td>
-                                                <td>{{ ex.caloriesBurned }}</td>
-                                                <td>{{ ex.repetitions }}</td>
-                                                <td>{{ ex.series }}</td>
-                                                <td>{{ ex.time_seconds }}</td>
-                                                <td>
-                                                    <button class="btn-white mx-2" @click="toggle(ex.exercise.exerciseId)">
-                                                        <font-awesome-icon :icon="opened.includes(ex.exercise.exerciseId) ? ['fa', 'chevron-up'] : ['fa', 'chevron-down']" />
-                                                    </button>
-                                                    <button v-if="edit" class="btn-white mx-2" @click="removeExercise(ex)">
-                                                        <font-awesome-icon :icon="['fa', 'trash']" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr :key="ex.name" v-if="opened.includes(ex.exercise.exerciseId)" class="sub-table">
-                                                <td colspan="8">
-                                                    <div class="container-fluid" v-if="ex.exercise != null">
-                                                        <div class="col-11 mx-auto form-group">
-                                                            <div class="row mt-3">
-                                                                <p class="form-label">Etykiety</p>
-                                                                <div class="container labels-container px-1 py-1" v-if="ex.exercise.labels != null && ex.exercise.labels.length > 0">
-                                                                    <div class="form-label label-node p-2 mx-1 my-1"
-                                                                         :style="{backgroundColor: randomColor(label.sportLabelId)}"
-                                                                         v-for="label in ex.exercise.labels" :key="label.sportLabelId">{{label.name}}</div>
+                                    <div class="col-12">
+                                        <table class=" table table-hover">
+                                            <caption class="caption-top form-label">Cwiczenia w treningu</caption>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Id</th>
+                                                    <th scope="col">Nazwa</th>
+                                                    <th scope="col">Typ</th>
+                                                    <th scope="col">kcal</th>
+                                                    <th scope="col">Powt</th>
+                                                    <th scope="col">Serie</th>
+                                                    <th scope="col">Czas</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template v-for="ex in (this.edit ? this.editedTraining.exerciseInTrainings : this.training.exerciseInTrainings)" :key="ex.exercise.exerciseId">
+                                                    <tr class="accordion accordion-toggle" id="accordionExample"
+                                                        v-bind:class="{'opened': opened.includes(ex.exercise.exerciseId)}">
+                                                        <td>{{ ex.exercise.exerciseId }}</td>
+                                                        <td>{{ ex.exercise.name }}</td>
+                                                        <td>{{ ex.exercise.exerciseType }}</td>
+                                                        <td>{{ ex.caloriesBurned }}</td>
+                                                        <td>{{ ex.repetitions }}</td>
+                                                        <td>{{ ex.series }}</td>
+                                                        <td>{{ ex.time_seconds }}</td>
+                                                        <td>
+                                                            <button class="btn-white mx-2" @click="toggle(ex.exercise.exerciseId)">
+                                                                <font-awesome-icon :icon="opened.includes(ex.exercise.exerciseId) ? ['fa', 'chevron-up'] : ['fa', 'chevron-down']" />
+                                                            </button>
+                                                            <button v-if="edit" class="btn-white mx-2" @click="removeExercise(ex)">
+                                                                <font-awesome-icon :icon="['fa', 'trash']" />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr :key="ex.name" v-if="opened.includes(ex.exercise.exerciseId)" class="sub-table">
+                                                        <td colspan="8">
+                                                            <div class="container-fluid" v-if="ex.exercise != null">
+                                                                <div class="col-11 mx-auto form-group">
+                                                                    <div class="row mt-3">
+                                                                        <p class="form-label">Etykiety</p>
+                                                                        <div class="container labels-container px-1 py-1" v-if="ex.exercise.labels != null && ex.exercise.labels.length > 0">
+                                                                            <div class="form-label label-node p-2 mx-1 my-1"
+                                                                                 :style="{backgroundColor: randomColor(label.sportLabelId)}"
+                                                                                 v-for="label in ex.exercise.labels" :key="label.sportLabelId">{{label.name}}</div>
 
+                                                                        </div>
+                                                                        <p v-else class="info-value">Brak etykiet</p>
+
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <p class="form-label">Wydatek energetyczny (intensywność)</p>
+                                                                        <p class="info-value">{{ex.exercise.met}} METs</p>
+                                                                    </div>
+
+                                                                    <div class="row mt-3">
+                                                                        <p class="form-label">Opis</p>
+                                                                        <p class="info-value">{{ex.exercise.description}}</p>
+                                                                    </div>
+                                                                    <div class="row mt-3 ">
+                                                                        <p class="form-label ">Instrukcja</p>
+                                                                        <p class="info-value">{{ex.exercise.instruction}}</p>
+                                                                    </div>
                                                                 </div>
-                                                                <p v-else class="info-value">Brak etykiet</p>
-
                                                             </div>
-                                                            <div class="row mt-3">
-                                                                <p class="form-label">Wydatek energetyczny (intensywność)</p>
-                                                                <p class="info-value">{{ex.exercise.met}} METs</p>
-                                                            </div>
-
-                                                            <div class="row mt-3">
-                                                                <p class="form-label">Opis</p>
-                                                                <p class="info-value">{{ex.exercise.description}}</p>
-                                                            </div>
-                                                            <div class="row mt-3 ">
-                                                                <p class="form-label ">Instrukcja</p>
-                                                                <p class="info-value">{{ex.exercise.instruction}}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </template>
-
-
-                                        </tbody>
-                                    </table>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
 
                                 <div class="row mt-3 section-bg" v-if="edit">
@@ -510,6 +510,10 @@ export default {
 </script>
 
 <style scoped>
+table {
+    table-layout:fixed;
+    width:100%;
+}
 .opened {
     background-color: rgba(0, 0, 0, 0.075);
 }
@@ -541,10 +545,6 @@ p.has-error {
 .register-btn {
     color: white;
     font-weight: bold;
-}
-.modal-dialog {
-    max-width: 800px;
-    width: 40%;
 }
 .labels-container {
     border: solid;

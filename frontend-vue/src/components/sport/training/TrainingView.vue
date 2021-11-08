@@ -6,8 +6,8 @@
                 <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" href="#addTrainingModal" />
             </span>
         </div>
-        <div class="row justify-content-start">
-            <div class="col-md-3 col-sm-12 align-self-center">
+        <div class="row justify-content-evenly">
+            <div class="col-xl-5 col-lg-10 col-sm-10 col-10 align-self-center">
                 <input
                     type="text"
                     v-model="filters.nameSearch"
@@ -17,15 +17,15 @@
                     class="w-100 shadow"
                 />
             </div>
-            <div class="col-md-1 col-sm-12 align-self-center">
+            <div class="col-xl-1 col-lg-2 col-sm-2 col-2 align-self-center">
                 <span class="float-start button-icon" @click="getTrainingsWithFilters(true)">
-                    <font-awesome-icon class="icon  mx-4" :icon="['fa', 'search']" />
+                    <font-awesome-icon class="icon" :icon="['fa', 'search']" />
                 </span>
             </div>
-            <div class="col-md-2 col-sm-12 align-self-center filter-control">
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 pt-2 align-self-center filter-control">
                 <select
                     v-model="filters.sortBy"
-                    class=" p-2"
+                    class=" p-2 w-100"
                     style="border-radius: 5px"
                     @change="getTrainingsWithFilters(true)"
                 >
@@ -33,10 +33,10 @@
                     <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{ sort.label }}</option>
                 </select>
             </div>
-            <div class="col-md-2 col-sm-12  filter-control align-self-center">
+            <div class="col-xl-1 col-lg-4 col-md-4 col-sm-12 pt-2 filter-control align-self-center">
                 <select
                     v-model="userNavigation.pageSize"
-                    class=" p-2"
+                    class=" p-2 w-100"
                     style="border-radius: 5px"
                     @change="getTrainingsWithFilters(true)"
                 >
@@ -44,10 +44,10 @@
                     <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
                 </select>
             </div>
-            <div class="col-md-2 col-sm-12 align-self-center filter-control">
+            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center pt-2 filter-control">
                 <select
                     v-model="filters.difficultyFilter"
-                    class=" p-2"
+                    class=" p-2 w-100"
                     style="border-radius: 5px"
                     @change="getTrainingsWithFilters(true)"
                 >
@@ -76,9 +76,9 @@
 
         </div>
 
-        <div class="row my-2 align-items-center justify-content-end d-flex">
-            <nav aria-label="..." class="col-4 offset-4" >
-                <ul class="pagination justify-content-center">
+        <div class="row my-2 align-items-center justify-content-start d-flex">
+            <nav aria-label="..." class="col-xl-8 col-lg-4 col-md-8 col-8 offset-xl-2 offset-lg-2 offset-md-0 offset-0 " >
+                <ul class="pagination justify-content-center my-auto">
                     <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isFirst}">
                         <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
                             <font-awesome-icon :icon="['fa', 'fast-backward']" />
@@ -102,10 +102,10 @@
                     </li>
                 </ul>
             </nav>
-            <span class="col-2 float-end justify-content-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
+            <span class="col-xl-1 col-2 float-end px-2 justify-content-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
                 <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
             </span>
-            <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
+            <span class="col-xl-1 col-2 float-end px-0" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
                 <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
             </span>
         </div>
