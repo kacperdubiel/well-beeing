@@ -56,7 +56,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2" v-if="successChangeEmail">
                             <div class="col">
-                                <p class="has-error m-0">
+                                <p class="success-social m-0">
                                     Zmiana e-maila przebiegła pomyślnie!
                                 </p>
                             </div>
@@ -145,7 +145,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2" v-if="successChangePassword">
                             <div class="col">
-                                <p class="has-error m-0">
+                                <p class="success-social m-0">
                                     Zmiana hasła przebiegła pomyślnie!
                                 </p>
                             </div>
@@ -188,7 +188,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2" v-if="successChangePicture">
                             <div class="col">
-                                <p class="has-error m-0">
+                                <p class="success-social m-0">
                                     Pomyślnie zmieniono zdjęcie profilowe!
                                 </p>
                             </div>
@@ -307,7 +307,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2" v-if="successChangePersonalInfo">
                             <div class="col">
-                                <p class="has-error m-0">
+                                <p class="success-social m-0">
                                     Pomyślnie zmieniono dane osobowe!
                                 </p>
                             </div>
@@ -336,6 +336,8 @@
                                     aria-label="Default select example"
                                     id="input-tag-sport"
                                     v-model="sportTag"
+                                    @focus="clearStatusTags"
+                                    @keypress="clearStatusTags"
                                 >
                                     <option v-for="tag in sportTags" :key="tag.label" :value="tag.value">{{ tag.label }}</option>
                                 </select>
@@ -347,6 +349,8 @@
                                     aria-label="Default select example"
                                     id="input-tag-nutrition"
                                     v-model="nutritionTag"
+                                    @focus="clearStatusTags"
+                                    @keypress="clearStatusTags"
                                 >
                                     <option v-for="tag in nutritionTags" :key="tag.label" :value="tag.value">{{ tag.label }}</option>
                                 </select>
@@ -361,7 +365,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2" v-if="successChangeTags">
                             <div class="col">
-                                <p class="has-error m-0">
+                                <p class="success-social m-0">
                                     Pomyślnie zmieniono tagi!
                                 </p>
                             </div>

@@ -95,6 +95,10 @@ p.has-error {
     color: var(--INTENSE-PINK);
 }
 
+p.success-social {
+    color: var(--DARK-YELLOW);
+}
+
 input.has-error {
     border: 1px solid var(--INTENSE-PINK);
 }
