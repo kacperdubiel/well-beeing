@@ -1,9 +1,6 @@
 <template>
     <div class="section-bg telemedic-section">
         <header>
-
-        </header>
-        <section>
             <div class="row mb-4">
                 <div class="col-2">
                     <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
@@ -14,7 +11,8 @@
                     </h3>
                 </div>
             </div>
-
+        </header>
+        <section>
             <measures-component :user-id="this.userId"/>
         </section>
     </div>

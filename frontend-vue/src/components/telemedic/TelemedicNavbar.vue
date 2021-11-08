@@ -12,7 +12,7 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{ name: 'UserCommunicatorView' }" class="nav-link" active-class="active">
+                <router-link :to="{ name: 'UserDoctorConversationsView' }" class="nav-link" active-class="active">
                     Wiadomości
                 </router-link>
             </li>

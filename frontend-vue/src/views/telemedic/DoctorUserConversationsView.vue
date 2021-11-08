@@ -4,34 +4,30 @@
             <doctor-navbar/>
         </header>
         <section>
-            <specialist-connections-component connection-type="WITH_DOCTOR"
-                                              v-on:open-profile="openProfile" v-on:open-conversation="openConversation"/>
+            <conversations-component connection-type="WITH_DOCTOR" :as-specialist="true"
+                                     v-on:open-conversation="openConversation"/>
         </section>
     </div>
 </template>
 
 <script>
 import DoctorNavbar from "@/components/telemedic/DoctorNavbar";
-import SpecialistConnectionsComponent from "@/components/telemedic/SpecialistConnectionsComponent";
+import ConversationsComponent from "@/components/telemedic/ConversationsComponent";
 
 export default {
-    name: 'DoctorUsersView',
+    name: 'DoctorUserConversationsView',
     components: {
         DoctorNavbar,
-        SpecialistConnectionsComponent
+        ConversationsComponent
     },
     data() {
         return {
-
         }
     },
     methods: {
-        openProfile(profileId){
-            this.$router.push({ name: 'DoctorUserProfileView', params: { userId: profileId } });
-        },
         openConversation(conversationId){
             this.$router.push({ name: 'DoctorUserConversationView', params: { conversationId: conversationId } });
-        },
+        }
     },
     created(){
 

@@ -1,32 +1,31 @@
 <template>
     <div class="section-bg telemedic-section">
         <header>
-            <telemedic-navbar/>
 
         </header>
         <section>
-
+            <conversation-component :conversation-id="conversationId" />
         </section>
     </div>
 </template>
 
 <script>
-import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
+import ConversationComponent from "@/components/telemedic/ConversationComponent";
 
 export default {
-    name: 'UserCommunicatorView',
+    name: 'UserDoctorConversationView',
     components: {
-        TelemedicNavbar
+        ConversationComponent
     },
     data() {
         return {
+            conversationId: this.$route.params.conversationId,
         }
     },
     methods: {
 
     },
     created(){
-
     },
 }
 </script>
