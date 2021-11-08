@@ -26,6 +26,9 @@ import { faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons'
 import { faBriefcaseMedical } from '@fortawesome/free-solid-svg-icons'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import 'vue-select/dist/vue-select.css';
 
 library.add(faUserSecret)
@@ -37,6 +40,10 @@ library.add(faUtensils)
 library.add(faDumbbell)
 library.add(faBriefcaseMedical)
 library.add(faInfo)
+library.add(faTrash)
+library.add(faEdit)
+library.add(faPlusCircle)
+
 
 //navbar
 import { faBell } from '@fortawesome/free-regular-svg-icons'

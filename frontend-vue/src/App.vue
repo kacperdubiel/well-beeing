@@ -111,4 +111,24 @@ button[class^="btn-card-panel-"] {
     background-color: var(--DARK-YELLOW);
 }
 
+ p.has-error {
+    color: var(--INTENSE-PINK);
+ }
+
+ .modal-diet-content {
+        background-color: white;
+        color: black;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-content: flex-start;
+        align-items: flex-start;
+        justify-content: start;
+        padding: 20px;
+        border-radius: 20px;
+}
+.modal-content {
+    border-radius: 20px;
+}
 </style>

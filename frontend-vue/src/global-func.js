@@ -71,15 +71,15 @@ export const func_global = {
     },
     mapMeal(meal){
         if(meal == 'BREAKFAST')
-            return "Śniadanie"
+            return "ŚNIADANIE"
         else if(meal == 'LUNCH')
-            return "Drugie śniadanie"
+            return "LUNCH"
         else if(meal == "DINNER")
-            return "Obiad"
+            return "OBIAD"
         else if(meal == "SNACK")
-            return "Przekąska"
+            return "PRZEKĄSKA"
         else if(meal == "SUPPER")
-            return "Kolacja"
+            return "KOLACJA"
         else
             return "Nieznany"
     },
