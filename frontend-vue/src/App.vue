@@ -91,6 +91,22 @@ button[class^="btn-panel-"] {
     background-color: var(--DARK-YELLOW) !important;
 }
 
+.btn-panel-social-outline {
+    color: var(--GREY2);
+    border-radius: 5px;
+    border: 3px solid var(--DARK-YELLOW);
+    padding: 0.3rem 0.5rem;
+    font-size: 1rem;
+    font-weight: bolder;
+    background-color: white;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-panel-social-outline:hover {
+    color: white;
+    background-color: var(--DARK-YELLOW);
+}
+
 p.has-error {
     color: var(--INTENSE-PINK);
 }

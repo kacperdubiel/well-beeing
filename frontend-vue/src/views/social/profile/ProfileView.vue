@@ -1,7 +1,11 @@
 <template>
     <div class="section-bg">
-        <div class="row mx-4 py-4">
+        <div class="row mx-4 pt-4 pb-2">
             <profile-info :profile-source="profile" v-if="profile"/>
+        </div>
+
+        <div class="row mx-4 py-2">
+            <new-post v-if="profile"/>
         </div>
 
     </div>
@@ -9,10 +13,12 @@
 
 <script>
 import ProfileInfo from "@/components/social/profile/ProfileInfo";
+import NewPost from "@/components/social/posts/NewPost";
 export default {
     name: "ProfileView",
     components: {
-        ProfileInfo
+        ProfileInfo,
+        NewPost
     },
     data () {
         return {
