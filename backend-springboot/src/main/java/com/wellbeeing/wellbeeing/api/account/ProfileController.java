@@ -56,6 +56,12 @@ public class ProfileController {
         return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/{profile_id}")
+    public ResponseEntity<?> getProfile(@PathVariable("profile_id") UUID profileId, Principal principal) throws NotFoundException {
+        Profile profile = profileService.getProfileById(profileId);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
+    }
+
     @PatchMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> partialUpdateProfileBy(Principal principal,
                                                     @RequestBody Map<String, Object> fields) throws NotFoundException {
