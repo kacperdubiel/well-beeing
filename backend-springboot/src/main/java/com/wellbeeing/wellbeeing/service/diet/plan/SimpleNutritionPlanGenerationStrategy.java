@@ -31,7 +31,7 @@ public class SimpleNutritionPlanGenerationStrategy implements NutritionPlanGener
                 DishMealType dishMealType = dishMealTypeDAO.findAllByMealType(mealType).stream()
                         .filter(dmt -> {
                             assert sugg != null;
-                            return Math.abs(dmt.getDish().getDerivedCalories() - sugg.getNumberOfCalories()) < CALORIES_TOLERANCE;
+                            return Math.abs(dmt.getDish().getDerivedNutritionalValues().getDerivedCalories() - sugg.getNumberOfCalories()) < CALORIES_TOLERANCE;
                         }).findAny().orElse(null);
                 if(dishMealType == null){
                     throw new NutritionPlanGenerationException
