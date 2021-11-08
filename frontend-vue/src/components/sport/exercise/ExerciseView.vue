@@ -6,50 +6,50 @@
                 <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" data-bs-target="#addExerciseModal" />
             </span>
         </div>
-        <div class="row justify-content-start">
-            <div class="col-md-3 col-sm-12 align-self-center">
+        <div class="row justify-content-evenly">
+            <div class="col-xl-5 col-lg-10 col-sm-10 col-10 align-self-center">
                 <input
                     type="text"
                     v-model="filters.nameSearch"
-                    v-on:keyup.enter="getExercisesWithFilters()"
+                    v-on:keyup.enter="getExercisesWithFilters(true)"
                     placeholder="Wyszukaj..."
                     id="search-input"
                     class="w-100 shadow"
                 />
             </div>
-            <div class="col-md-1 col-sm-12 align-self-center">
-                <span class="float-start button-icon" @click="getExercisesWithFilters()">
-                    <font-awesome-icon class="icon  mx-4" :icon="['fa', 'search']" />
+            <div class="col-xl-1 col-lg-2 col-sm-2 col-2 align-self-center">
+                <span class="float-start button-icon" @click="getExercisesWithFilters(true)">
+                    <font-awesome-icon class="icon" :icon="['fa', 'search']" />
                 </span>
             </div>
-            <div class="col-md-2 col-sm-12 align-self-center filter-control">
+            <div class="pt-2 col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
                 <select
                     v-model="filters.sortBy"
-                    class=" p-2"
+                    class=" p-2 w-100"
                     style="border-radius: 5px"
-                    @change="getExercisesWithFilters()"
+                    @change="getExercisesWithFilters(true)"
                 >
                     <option disabled value="">Wybierz sortowanie</option>
                     <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{ sort.label }}</option>
                 </select>
             </div>
-            <div class="col-md-2 col-sm-12  filter-control align-self-center">
+            <div class="pt-2 col-xl-2 col-lg-4 col-md-4 col-sm-12  filter-control align-self-center">
                 <select
                     v-model="userNavigation.pageSize"
-                    class=" p-2"
+                    class=" p-2 w-100"
                     style="border-radius: 5px"
-                    @change="getExercisesWithFilters()"
+                    @change="getExercisesWithFilters(true)"
                 >
                     <option disabled value="">Rozmiar strony</option>
                     <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
                 </select>
             </div>
-            <div class="col-md-2 col-sm-12 align-self-center filter-control">
+            <div class="pt-2 col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
                 <select
                     v-model="filters.typeFilter"
-                    class=" p-2"
+                    class=" p-2 w-100"
                     style="border-radius: 5px"
-                    @change="getExercisesWithFilters()"
+                    @change="getExercisesWithFilters(true)"
                 >
                     <option disabled value="">Wybierz typ</option>
                     <option v-for="type in filters.allTypeFilters" :key="type.label" :value="type.value">{{ type.label }}</option>
@@ -73,14 +73,39 @@
             </div>
         </div>
         <div class="row my-2 align-items-center justify-content-end d-flex">
-            <span class="col-2 float-end justify-content-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
+            <nav aria-label="..." class="col-xl-8 col-lg-4 col-md-8 col-8 offset-xl-2 offset-lg-2 offset-md-0 offset-0 " >
+                <ul class="pagination justify-content-center my-auto">
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isFirst}">
+                        <a class="page-link sport-page" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
+                            <font-awesome-icon :icon="['fa', 'fast-backward']" />
+                        </a>
+                    </li>
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isFirst}">
+                        <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
+                            <font-awesome-icon :icon="['fa', 'chevron-left']" />
+                        </a>
+                    </li>
+                    <li class="page-item sport-page" v-bind:class="{'active' : navigation.currentPage === page}" v-for="page in userNavigation.pagesNavbar" :key="page"><a class="page-link" @click="goToPage(page)" >{{page+1}}</a></li>
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isLast}">
+                        <a class="page-link" @click="goToPage(navigation.currentPage+1)">
+                            <font-awesome-icon :icon="['fa', 'chevron-right']" />
+                        </a>
+                    </li>
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isLast}">
+                        <a class="page-link" @click="goToPage(navigation.totalPages-1)">
+                            <font-awesome-icon :icon="['fa', 'fast-forward']" />
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <span class="col-xl-1 col-2 float-end px-2 justify-content-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
                 <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
             </span>
-            <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
+            <span class="col-xl-1 col-2 float-end px-0" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
                 <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
             </span>
         </div>
-        <ExercisesListComponent v-if="isListView" :exercises-source="exercises"/>
+        <ExercisesListComponent @submit:editExercise="updateExercise" v-if="isListView" :exercises-source="exercises"/>
         <ExercisesGridComponent v-if="!isListView" :exercises-source="exercises"/>
         <!--Modal-->
         <ExerciseForm :labels-source="labels" @get:exercises="getExercises"/>
@@ -136,12 +161,17 @@ export default {
             },
             userNavigation: {
                 goToPage: 0,
-                pageSizeOptions: [10, 20, 50],
-                pageSize: 20
+                pageSizeOptions: [3, 5, 10, 20, 50],
+                pageSize: 20,
+                pagesNavBar: []
             }
         }
     },
     methods: {
+        goToPage(pageNo) {
+            this.userNavigation.goToPage = pageNo;
+            this.getExercisesWithFilters(false)
+        },
         async removeFilters(filter) {
             switch (filter) {
                 case 'name': this.filters.nameSearch = ''; this.filters.lastNameSearch = ''; break;
@@ -154,12 +184,14 @@ export default {
                 }
             }
 
-            await this.getExercisesWithFilters()
+            await this.getExercisesWithFilters(true)
         },
-        async getExercisesWithFilters () {
+        async getExercisesWithFilters (resetGoToPage) {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
             console.log('token ', token);
+            if (resetGoToPage)
+                this.userNavigation.goToPage = 0
             const myParams = {
                 page: this.userNavigation.goToPage,
                 size: this.userNavigation.pageSize,
@@ -174,12 +206,20 @@ export default {
                 this.exercises = response.data['content']
                 this.navigation.totalElements = response.data['totalElements']
                 this.navigation.totalPages = response.data['totalPages']
-                this.navigation.isFirst = response.data['isFirst']
-                this.navigation.isLast = response.data['isLast']
-                this.navigation.isEmpty = response.data['isEmpty']
+                this.navigation.isFirst = response.data['first']
+                this.navigation.isLast = response.data['last']
+                this.navigation.isEmpty = response.data['empty']
                 this.navigation.currentPage = response.data['number']
                 this.navigation.pageSize = response.data['size']
                 this.filters.lastNameSearch = myParams.name
+                this.userNavigation.pagesNavbar = []
+                if (this.navigation.currentPage !== 0)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage-1)
+                for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
+                    this.userNavigation.pagesNavbar.push(i)
+                    if (i === this.navigation.currentPage + 3)
+                        break;
+                }
                 console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
@@ -217,10 +257,24 @@ export default {
         setListView(value) {
             console.log(value)
             this.isListView = value
+        },
+        async updateExercise(updatedExercise, values) {
+            updatedExercise.labels = values
+            const url = `${this.apiURL}sport/exercise/${updatedExercise.exerciseId}`
+            const token = this.$store.getters.getToken;
+            const data = updatedExercise
+            console.log('token ', token);
+            await this.axios.patch(url, data,{headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.getExercisesWithFilters()
+                // console.log(this.exercises)
+            }).catch(error => {
+                console.log(error.response);
+            });
         }
     },
     mounted() {
-        this.getExercises();
+        this.getExercisesWithFilters();
         this.getLabels();
     }
 

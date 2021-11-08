@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.*;
@@ -90,7 +91,7 @@ public class PDFFromTrainingPlan {
     }
 
     public static Document generatePDFFromTrainingPlan(TrainingPlan trainingPlan, String name) {
-        weekRange = PDFFromTrainingPlan.getDateRangeOfWeek(trainingPlan.getWeek(), trainingPlan.getYear());
+        weekRange = PDFFromTrainingPlan.getDateRangeOfWeek(trainingPlan.getBeginningDate());
         String filename = name.equals("") ? "/NewTrainingPlan.pdf" : "/"+name+".pdf";
         Document doc = new Document();
         doc.setPageSize(PageSize.A4.rotate());
@@ -339,8 +340,8 @@ public class PDFFromTrainingPlan {
     }
 
 
-    private static String getDateRangeOfWeek(int weekNo, int year){
-        LocalDate week = LocalDate.now().with(ChronoField.ALIGNED_WEEK_OF_YEAR, weekNo+1).withYear(year);
+    private static String getDateRangeOfWeek(Date date){
+        LocalDate week = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         LocalDate start = week.with(DayOfWeek.MONDAY);
         LocalDate end = start.plusDays(6);

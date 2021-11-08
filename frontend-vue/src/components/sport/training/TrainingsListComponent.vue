@@ -20,7 +20,7 @@
                     <td>{{ tr.trainingId }}</td>
                     <td>{{ tr.name }}</td>
                     <td>{{ this.$func_global.getTimePrettyFromSeconds(tr.totalTrainingTimeSeconds) }}</td>
-                    <td>{{ tr.trainingDifficulty }}</td>
+                    <td>{{ this.$func_global.mapTrainingDifficulty(tr.trainingDifficulty) }}</td>
                     <td>{{ tr.caloriesBurned }}</td>
                     <td>
                         <button class="btn-white mx-2" @click="openInfoModal(tr)" data-bs-toggle="modal" href="#infoTrainingModal">
@@ -37,7 +37,7 @@
             </tbody>
         </table>
     </div>
-    <TrainingDetails :training="training"/>
+    <TrainingDetails @get:trainings="getTrainings" :training="training"/>
 </div>
 </template>
 
@@ -73,6 +73,9 @@ export default {
         },
         openInfoModal(training) {
             this.training = training
+        },
+        getTrainings(){
+            this.$emit('get:trainings')
         }
     }
 }

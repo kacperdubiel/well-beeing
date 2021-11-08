@@ -117,6 +117,26 @@ export const func_global = {
         else
             return 'Brak informacji'
     },
+    mapExerciseType(type) {
+        if(type === 'STRENGTH')
+            return 'Siłowe'
+        else if(type === 'CARDIO')
+            return 'Kardio'
+        else if(type === 'OTHER')
+            return 'Inne'
+        else
+            return 'Brak informacji'
+    },
+    mapTrainingDifficulty(difficulty) {
+        if(difficulty === 'EASY')
+            return 'Łatwy'
+        else if(difficulty === 'MEDIUM')
+            return 'Średni'
+        else if(difficulty === 'HARD')
+            return 'Trudny'
+        else
+            return 'Brak informacji'
+    },
     dateDayMonth(date) {
         return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth()+1).toString().padStart(2, '0');
     },
@@ -133,25 +153,14 @@ export const func_global = {
             return hours + ' h ' + (minutes !== 0 ? minutes + ' min': '')
         }
     },
-    getDateRangeOfWeek(weekNo){
-        var d1 = new Date();
-        var numOfdaysPastSinceLastMonday = eval(d1.getDay()- 1);
-        d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
-        var weekNoToday = d1.getWeek();
-        var weeksInTheFuture = eval( weekNo - weekNoToday );
-        d1.setDate(d1.getDate() + eval( 7 * weeksInTheFuture ));
-        var rangeIsFrom = d1.getDate().toString().padStart(2, '0') + '.' + eval(d1.getMonth()+1).toString().padStart(2, '0');
-        d1.setDate(d1.getDate() + 6);
-        var rangeIsTo = d1.getDate().toString().padStart(2, '0') + '.' + eval(d1.getMonth()+1).toString().padStart(2, '0');
-        return rangeIsFrom + " - "+rangeIsTo;
+    getWeekRangeFromMonday(mondayDate){
+        console.log('range date', mondayDate)
+        let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
+        mondayDate.setDate(mondayDate.getDate() + 6);
+        let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
+        return from + " - "+ to
     },
-    getDatesArrayOfWeek(weekNo){
-        var d1 = new Date();
-        var numOfdaysPastSinceLastMonday = eval(d1.getDay()- 1);
-        d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
-        var weekNoToday = d1.getWeek();
-        var weeksInTheFuture = eval( weekNo - weekNoToday );
-        d1.setDate(d1.getDate() + eval( 7 * weeksInTheFuture ));
+    getDatesArrayFromMonday(d1){
         let weekDays = []
         for (let i = 0; i < 7; i++) {
             weekDays.push({

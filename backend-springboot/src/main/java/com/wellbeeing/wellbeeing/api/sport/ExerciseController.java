@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
+import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
@@ -35,9 +36,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.lang.reflect.Field;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(path = "/sport/exercise")
@@ -142,10 +141,27 @@ public class ExerciseController {
             // use reflection to get field k on object and set it to value v
             // Change Claim.class to whatver your object is: Object.class
             Field field = ReflectionUtils.findField(Exercise.class, k); // find field in the object class
-            field.setAccessible(true);
-            if (field.getType() == EExerciseType.class)
-                v = EExerciseType.valueOf((String) v);
-            ReflectionUtils.setField(field, exercise, v); // set given field for defined object to value V
+            if (field != null) {
+                field.setAccessible(true);
+                if (k.equals("labels"))
+                {
+                    exercise.setLabels(new HashSet<>());
+                    ((List<Integer>) v).forEach(labelId ->
+                    {
+                        try {
+                            exerciseService.addLabelToExerciseByLabelId(exercise.getExerciseId(), labelId);
+                        } catch (NotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+
+                if (field.getType() == EExerciseType.class)
+                    v = EExerciseType.valueOf((String) v);
+                if (!k.equals("labels"))
+                    ReflectionUtils.setField(field, exercise, v); // set given field for defined object to value V
+            }
+
         });
 
         Exercise updated = exerciseService.partialUpdateExercise(exercise);

@@ -50,6 +50,13 @@ import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 library.add(faBell)
 library.add(faUserCircle)
 
+import {faChevronUp} from "@fortawesome/free-solid-svg-icons/faChevronUp"
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown"
+import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight"
+import {faChevronLeft} from "@fortawesome/free-solid-svg-icons/faChevronLeft"
+import {faFastBackward} from "@fortawesome/free-solid-svg-icons/faFastBackward"
+import {faFastForward} from "@fortawesome/free-solid-svg-icons/faFastForward"
+
 //sport
 library.add(faPencilAlt)
 library.add(faInfo)
@@ -59,6 +66,12 @@ library.add(faTh)
 library.add(faListUl)
 library.add(faDownload)
 library.add(faSearch)
+library.add(faChevronUp)
+library.add(faChevronDown)
+library.add(faChevronLeft)
+library.add(faChevronRight)
+library.add(faFastBackward)
+library.add(faFastForward)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
@@ -73,7 +86,6 @@ library.add(faTimes)
 library.add(faCheck)
 
 //profile
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 library.add(faChevronLeft)
 
 //telemedic

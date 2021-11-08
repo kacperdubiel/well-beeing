@@ -14,7 +14,7 @@
         </div>
         <div class="row">
             <div class="col-12 additional">
-                {{trainingSource.trainingDifficulty}}
+                {{this.$func_global.mapTrainingDifficulty(trainingSource.trainingDifficulty)}}
             </div>
 
         </div>

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExerciseInTrainingDAO extends JpaRepository<ExerciseInTraining, Long> {
     ExerciseInTraining getExerciseInTrainingByExerciseAndTraining(Exercise exercise, Training training);
-    ExerciseInTraining getExerciseInTrainingByExercise_ExerciseIdAndTraining_TrainingId(long exercise_exerciseId, long training_trainingId);
+    ExerciseInTraining getExerciseInTrainingByExerciseExerciseIdAndTrainingTrainingId(long exercise_exerciseId, long training_trainingId);
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -127,13 +128,18 @@ public class TrainingServiceImpl implements TrainingService{
 
 
             ExerciseInTraining ex_in_training =
-                    exerciseInTrainingDAO.getExerciseInTrainingByExercise_ExerciseIdAndTraining_TrainingId(exerciseId, trainingId);
+                    exerciseInTrainingDAO.getExerciseInTrainingByExerciseExerciseIdAndTrainingTrainingId(exerciseId, trainingId);
             if (ex_in_training == null)
                 throw new NotFoundException("Couldn't find the exercise in training!");
             Profile creator = ex_in_training.getTraining().getCreator();
             if (creator == null || creator.getProfileUser().getUsername().equals(clientName))
             {
+                ex_in_training.getTraining().removeExerciseFromTraining(ex_in_training.getExercise().getExerciseId());
+                ex_in_training.getExercise().removeTrainingFromExercise(ex_in_training.getTraining().getTrainingId());
+                exerciseDAO.save(ex_in_training.getExercise());
+                trainingDAO.save(ex_in_training.getTraining());
                 exerciseInTrainingDAO.delete(ex_in_training);
+                System.out.println("DELETED" + ex_in_training.getId());
                 return true;
             }
             else
@@ -200,6 +206,12 @@ public class TrainingServiceImpl implements TrainingService{
         if(targetTraining == null)
             throw new NotFoundException("There's no training with id=" + training.getTrainingId());
 
+        trainingDAO.save(training);
+        return training;
+    }
+
+    @Override
+    public Training partialUpdateTraining(Training training) {
         trainingDAO.save(training);
         return training;
     }

@@ -179,4 +179,33 @@ input{
     padding: 25px 20px;
 }
 
+.pagination > li.sport-page > a
+{
+    background-color: white;
+    color: var(--SPORT);
+}
+
+.pagination > li.sport-page > a:focus,
+.pagination > li.sport-page > a:hover,
+.pagination > li.sport-page > span:focus,
+.pagination > li.sport-page > span:hover
+{
+    color: white;
+    background-color: var(--SPORT);
+    border-color: var(--SPORT);
+    cursor: pointer;
+}
+
+.pagination > .sport-page.active > a
+{
+    color: white;
+    background-color: var(--SPORT) !Important;
+    border: solid 1px var(--SPORT) !Important;
+}
+
+.pagination > .sport-page.active > a:hover
+{
+    background-color: var(--SPORT) !Important;
+    border: solid 1px var(--SPORT);
+}
 </style>

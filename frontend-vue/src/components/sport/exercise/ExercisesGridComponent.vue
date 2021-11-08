@@ -15,7 +15,7 @@
                 <div class="row justify-content-center mw-100 mt-3">
                     <div class="col-lg-12 col-md-9 col-sm-7 col-10">
                         <div class="row align-content-center">
-                            <div class="col-xl-3 col-lg-4 col-md-6 col-12 px-2 py-2 mx-0 section-bg training" v-for="ex in exercisesSource" :key="ex.exerciseId"
+                            <div class="col-xl-3 col-lg-4 col-md-12 col-sm-12 col-12 px-2 py-2 mx-0 section-bg training" v-for="ex in exercisesSource" :key="ex.exerciseId"
                                  v-bind:class="{'selected-exercise' : (mode === 'toTraining' && this.$store.getters.getExerciseToTrainingId === ex.exerciseId) }"
                                  v-on:click="mode === 'toTraining' ? this.$store.commit('setExerciseToTrainingId', ex.exerciseId) : null">
                                 <exercise-node :exercise-source="ex" @set:exercise="setExercise"/>

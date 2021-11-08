@@ -4,7 +4,7 @@
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content" v-if="trainingPlan != null">
                     <div class="modal-header">
-                        <h5 class="modal-title ms-2" id="infoPlanModalLabel">Szczegóły planu na tydzień {{this.$func_global.getDateRangeOfWeek(trainingPlan.week)}}</h5>
+                        <h5 class="modal-title ms-2" id="infoPlanModalLabel">Szczegóły planu na tydzień {{this.$func_global.getWeekRangeFromMonday(new Date(trainingPlan.beginningDate))}}</h5>
                         <button class="btn-white" @click="downloadPlan(trainingPlan.trainingPlanId)">
                             <font-awesome-icon :icon="['fa', 'download']" />
                         </button>
@@ -14,7 +14,7 @@
                         <div class="container-fluid" id="modal-container">
                             <div class="col-11 mx-auto form-group">
                                 <div class="row justify-content-between">
-                                    <training-plan-week @update:active="getMyTrainingPlans" :plan="trainingPlan" :week-dates="this.$func_global.getDatesArrayOfWeek(trainingPlan.week)" :plan-type="'details'" :days="this.$func_global.days"/>
+                                    <training-plan-week @update:active="getMyTrainingPlans" :plan="trainingPlan" :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(trainingPlan.beginningDate))" :plan-type="'details'" :days="this.$func_global.days"/>
                                 </div>
                                 <div class="row mt-3">
 <!--                                    <table class="table table-hover">-->

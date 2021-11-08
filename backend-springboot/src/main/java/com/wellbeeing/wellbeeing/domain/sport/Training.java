@@ -10,6 +10,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -66,7 +69,14 @@ public class Training {
 
     @PostLoad
     public void onTotalTrainingTimeSeconds() {
-        this.totalTrainingTimeSeconds =  this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries()).mapToInt(num -> num).sum();
+        try{
+
+            Stream<Object> a = this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries());
+            IntStream b = a.mapToInt(num -> (int) num);
+            this.totalTrainingTimeSeconds =  b.sum();
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
