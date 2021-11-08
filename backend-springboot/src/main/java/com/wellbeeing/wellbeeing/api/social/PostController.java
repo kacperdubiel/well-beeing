@@ -1,9 +1,10 @@
 package com.wellbeeing.wellbeeing.api.social;
 
-import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Post;
-import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
+import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.social.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(path = "/post")
@@ -31,16 +32,25 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    private UserService userService;
+    private ProfileService profileService;
     private final FileService fileService;
 
-    public PostController(@Qualifier("postService") PostService postService, @Qualifier("fileService") FileService fileService) {
+    public PostController(@Qualifier("postService") PostService postService,
+                          @Qualifier("userService") UserService userService,
+                          @Qualifier("profileService") ProfileService profileService,
+                          @Qualifier("fileService") FileService fileService) {
         this.postService = postService;
+        this.userService = userService;
+        this.profileService = profileService;
         this.fileService = fileService;
     }
 
     @GetMapping(path = "/my")
-    public ResponseEntity<?> getMyPosts(@PageableDefault(sort = {"addedDate"}, size = 20, direction = Sort.Direction.DESC) Pageable pageable, Principal principal) {
-        Page<Post> pagePosts = postService.getMyPosts(principal.getName(), pageable);
+    public ResponseEntity<?> getMyPosts(@PageableDefault(sort = {"addedDate"}, size = 20, direction = Sort.Direction.DESC) Pageable pageable, Principal principal) throws NotFoundException {
+        UUID userId = userService.findUserIdByUsername(principal.getName());
+        Profile profile = profileService.getProfileById(userId);
+        Page<Post> pagePosts = postService.getMyPosts(profile, pageable);
         return new ResponseEntity<>(pagePosts, HttpStatus.OK);
     }
 

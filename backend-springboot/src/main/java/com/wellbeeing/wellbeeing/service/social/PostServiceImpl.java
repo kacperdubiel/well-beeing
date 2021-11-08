@@ -4,13 +4,11 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Post;
-import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.social.PostDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +24,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> getMyPosts(String ownerName, Pageable pageable) {
-        return postDAO.findAllByCreatorProfileUserEmail(ownerName, pageable);
+    public Page<Post> getMyPosts(Profile creatorParam, Pageable pageable) {
+        return postDAO.findAllByCreatorProfileUserEmail(creatorParam, pageable);
     }
 
     @Override

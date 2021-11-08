@@ -3,6 +3,8 @@ package com.wellbeeing.wellbeeing.api.social;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
+import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.social.RoleRequestService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
