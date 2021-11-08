@@ -14,11 +14,12 @@ import java.util.UUID;
 
 @Repository("dishDAO")
 public interface DishDAO  extends PagingAndSortingRepository<Dish, UUID> {
-    @Query("select d from Dish d where lower(d.name) like lower(concat('%', :namePart,'%'))")
-    Page<Dish> findByNameLikeIgnoreCase(String namePart, Pageable pageable);
+    @Query("select d from Dish d where d.active = true and (:namePart = '' or lower(d.name) like lower(concat('%', :namePart,'%')))")
+    Page<Dish> findByNameLikeIgnoreCase(@Param("namePart") String namePart, Pageable pageable);
     Optional<Dish> findById(UUID dishId);
     Page<Dish> findAll(Pageable pageable);
     List<Dish> findAll();
-    @Query( "select d from Dish d where d.id in :ids and (:nameLike = '' or (lower(d.name) like lower(concat('%', :nameLike,'%'))))" )
+    @Query( "select d from Dish d where d.id in :ids and d.active = true and (:nameLike = '' or (lower(d.name) like lower(concat('%', :nameLike,'%'))))" )
     Page<Dish> findByDishIds(@Param("ids") List<UUID> dishIdList, @Param("nameLike") String nameLike, Pageable pageable);
+    List<Dish> findByDishCreatorIdAndActive(UUID dieticianId, boolean active);
 }
