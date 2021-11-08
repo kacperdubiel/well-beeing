@@ -54,7 +54,7 @@ public class ProfileConnectionController {
     }
 
     // My connections
-    @RequestMapping(path = "profile-connections/my/type/{type}/accepted/{value}", method = RequestMethod.GET)
+    @RequestMapping(path = "profile-connections/from-me/type/{type}/accepted/{value}", method = RequestMethod.GET)
     public ResponseEntity<?> getProfileConnectionsToType(@PathVariable("type") String connectionTypeText,
                                                          @PathVariable("value") boolean isAccepted, Principal principal,
                                                          @RequestParam(value = "page", defaultValue = "0") String page,
