@@ -11,14 +11,14 @@
                 <input
                     type="text"
                     v-model="filters.nameSearch"
-                    v-on:keyup.enter="getTrainingsWithFilters()"
+                    v-on:keyup.enter="getTrainingsWithFilters(true)"
                     placeholder="Wyszukaj..."
                     id="search-input"
                     class="w-100 shadow"
                 />
             </div>
             <div class="col-md-1 col-sm-12 align-self-center">
-                <span class="float-start button-icon" @click="getTrainingsWithFilters()">
+                <span class="float-start button-icon" @click="getTrainingsWithFilters(true)">
                     <font-awesome-icon class="icon  mx-4" :icon="['fa', 'search']" />
                 </span>
             </div>
@@ -27,7 +27,7 @@
                     v-model="filters.sortBy"
                     class=" p-2"
                     style="border-radius: 5px"
-                    @change="getTrainingsWithFilters()"
+                    @change="getTrainingsWithFilters(true)"
                 >
                     <option disabled value="">Wybierz sortowanie</option>
                     <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{ sort.label }}</option>
@@ -38,7 +38,7 @@
                     v-model="userNavigation.pageSize"
                     class=" p-2"
                     style="border-radius: 5px"
-                    @change="getTrainingsWithFilters()"
+                    @change="getTrainingsWithFilters(true)"
                 >
                     <option disabled value="">Rozmiar strony</option>
                     <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
@@ -49,7 +49,7 @@
                     v-model="filters.difficultyFilter"
                     class=" p-2"
                     style="border-radius: 5px"
-                    @change="getTrainingsWithFilters()"
+                    @change="getTrainingsWithFilters(true)"
                 >
                     <option disabled value="">Wybierz poziom trudności</option>
                     <option v-for="diff in filters.allDifficultyFilters" :key="diff.label" :value="diff.value">{{ diff.label }}</option>
@@ -72,7 +72,36 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-3 px-3 mt-3 mx-auto ">
+
+        </div>
+
         <div class="row my-2 align-items-center justify-content-end d-flex">
+            <nav aria-label="..." class="col-4 offset-4" >
+                <ul class="pagination justify-content-center">
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isFirst}">
+                        <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
+                            <font-awesome-icon :icon="['fa', 'fast-backward']" />
+                        </a>
+                    </li>
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isFirst}">
+                        <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
+                            <font-awesome-icon :icon="['fa', 'chevron-left']" />
+                        </a>
+                    </li>
+                    <li class="page-item sport-page" v-bind:class="{'active' : navigation.currentPage === page}" v-for="page in userNavigation.pagesNavbar" :key="page"><a class="page-link" @click="goToPage(page)" >{{page+1}}</a></li>
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isLast}">
+                        <a class="page-link" @click="goToPage(navigation.currentPage+1)">
+                            <font-awesome-icon :icon="['fa', 'chevron-right']" />
+                        </a>
+                    </li>
+                    <li class="page-item sport-page" v-bind:class="{'disabled' : navigation.isLast}">
+                        <a class="page-link" @click="goToPage(navigation.totalPages-1)">
+                            <font-awesome-icon :icon="['fa', 'fast-forward']" />
+                        </a>
+                    </li>
+                </ul>
+            </nav>
             <span class="col-2 float-end justify-content-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
                 <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
             </span>
@@ -135,12 +164,17 @@ export default {
             },
             userNavigation: {
                 goToPage: 0,
-                pageSizeOptions: [10, 20, 50],
-                pageSize: 20
+                pageSizeOptions: [1, 3, 5, 10, 20, 50],
+                pageSize: 20,
+                pagesNavbar: []
             }
         }
     },
     methods: {
+        goToPage(pageNo) {
+            this.userNavigation.goToPage = pageNo;
+            this.getTrainingsWithFilters(false)
+        },
         async removeFilters(filter) {
             switch (filter) {
                 case 'name': this.filters.nameSearch = ''; this.filters.lastNameSearch = ''; break;
@@ -155,12 +189,14 @@ export default {
                 }
             }
 
-            await this.getTrainingsWithFilters()
+            await this.getTrainingsWithFilters(true)
         },
-        async getTrainingsWithFilters () {
+        async getTrainingsWithFilters (resetGoToPage) {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
             console.log('token ', token);
+            if (resetGoToPage)
+                this.userNavigation.goToPage = 0
             const myParams = {
                 page: this.userNavigation.goToPage,
                 size: this.userNavigation.pageSize,
@@ -176,14 +212,25 @@ export default {
                 this.trainings = response.data['content']
                 this.navigation.totalElements = response.data['totalElements']
                 this.navigation.totalPages = response.data['totalPages']
-                this.navigation.isFirst = response.data['isFirst']
-                this.navigation.isLast = response.data['isLast']
-                this.navigation.isEmpty = response.data['isEmpty']
+                this.navigation.isFirst = response.data['first']
+                this.navigation.isLast = response.data['last']
+                this.navigation.isEmpty = response.data['empty']
                 this.navigation.currentPage = response.data['number']
                 this.navigation.pageSize = response.data['size']
                 this.filters.lastNameSearch = myParams.name
                 this.filters.lastExerciseNameSearch = myParams.exerciseName
-                console.log(this.exercises)
+                this.userNavigation.pagesNavbar = []
+                if (this.navigation.currentPage !== 0)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage-1)
+                for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
+                    this.userNavigation.pagesNavbar.push(i)
+                    if (i === this.navigation.currentPage + 3)
+                        break;
+                }
+                // this.userNavigation.pagesNavbar.push(this.navigation.currentPage+1)
+                // if (this.navigation.currentPage === 0)
+                //     this.userNavigation.pagesNavbar.push(this.navigation.currentPage+2)
+                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -227,8 +274,8 @@ export default {
         }
     },
     mounted() {
-        // this.getTrainingsWithFilters();
-        this.getTrainings();
+        this.getTrainingsWithFilters(true);
+        // this.getTrainings();
         this.getExercises();
         this.getLabels();
     }
@@ -273,5 +320,9 @@ span {
 }
 .filter-control {
     font-size: small;
+}
+
+.page-item:disabled {
+    background-color: #D83D68;
 }
 </style>

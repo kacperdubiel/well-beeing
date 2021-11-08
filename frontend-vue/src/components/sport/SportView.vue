@@ -39,7 +39,7 @@
 
 <script>
 export default {
-    name: "SportView",
+    name: "SportComponent",
     components: {},
     data () {
         return {
