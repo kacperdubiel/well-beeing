@@ -27,10 +27,10 @@ public class Product {
     private double carbohydratesPerHundredGrams;
     @Column
     private double proteinsPerHundredGrams;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<MacroDetail> macroDetails = new ArrayList<>();
-    @OneToMany(mappedBy = "product")
-    private List<MineralDetail> mineralDetails =  new ArrayList<>();
-    @OneToMany(mappedBy = "product")
-    private List<VitaminDetail> vitaminDetails = new ArrayList<>();
+    @OneToMany(mappedBy = "elementsProduct", cascade = CascadeType.ALL)
+    private List<ProductMacroDetail> macroDetails = new ArrayList<>();
+    @OneToMany(mappedBy = "elementsProduct")
+    private List<ProductMineralDetail> mineralDetails =  new ArrayList<>();
+    @OneToMany(mappedBy = "elementsProduct")
+    private List<ProductVitaminDetail> vitaminDetails = new ArrayList<>();
 }

@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class NutritionPlan {
     @JoinColumn(name = "profile_id")
     private Profile profile;
     @OneToMany(mappedBy = "nutritionPlan")
-    private List<NutritionPlanPosition> nutritionPlanPositions;
+    private List<NutritionPlanPosition> nutritionPlanPositions = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "diet_id")
     private Diet diet;

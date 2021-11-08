@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.domain.diet;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class Diet {
             joinColumns = @JoinColumn(name = "diet_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "id")
     )
-    private List<NutritionLabel> allowedNutritionLabels;
+    private List<NutritionLabel> allowedNutritionLabels = new ArrayList<>();
     @Column
     private boolean connectedWithMacros;
     @Column

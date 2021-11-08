@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,5 +24,5 @@ public class NutritionLabel {
     private String name;
     @JsonIgnore
     @ManyToMany(mappedBy = "allowedForNutritionLabels" )
-    List<Dish> labelledDishes;
+    List<Dish> labelledDishes = new ArrayList<>();
 }

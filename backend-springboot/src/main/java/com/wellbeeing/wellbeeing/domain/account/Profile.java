@@ -76,8 +76,11 @@ public class Profile {
     @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<ActivityGoal> activityGoals = new HashSet<>();
+
     @OneToMany(mappedBy = "reportOwner", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Report> dietReports = new ArrayList<>();
+
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<NutritionPlan> nutritionPlans = new ArrayList<>();
 

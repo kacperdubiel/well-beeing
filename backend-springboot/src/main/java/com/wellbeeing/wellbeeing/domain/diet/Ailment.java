@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.diet.type.EAilmentType;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class Ailment {
             joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "id")
     )
-    private List<NutritionLabel> allowedNutritionLabels;
+    private List<NutritionLabel> allowedNutritionLabels = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "ailment_sportLabel",
