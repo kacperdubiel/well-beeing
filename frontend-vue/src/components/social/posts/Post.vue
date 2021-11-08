@@ -11,6 +11,15 @@
                 <div class="text-start d-flex align-items-baseline ms-3">
                     <h5>{{this.postSource.creator.firstName}} {{this.postSource.creator.lastName}}</h5>
                     <h6 class="ms-3">| {{this.$func_global.formatDateDateFromNow(this.postSource.addedDate)}}</h6>
+                    <div class="dropdown ms-auto dropstart" v-if="isPostMine">
+                        <button class="no-bg" type="button" id="more" data-bs-toggle="dropdown" aria-expanded="false">
+                            <font-awesome-icon :icon="['fa', 'ellipsis-h']"/>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="more">
+                            <li><a class="dropdown-item" href="#">Edytuj</a></li>
+                            <li><a class="dropdown-item" @click="deletePost(this.postSource.postId)">Usuń</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,12 +65,26 @@ export default {
                 console.log('post')
                 this.$func_global.downloadPhoto(url, token).then(result => this.postPictureSrc = result)
             }
-
+        },
+        deletePost(postId) {
+            const url = `${this.apiURL}post/${postId}/delete`
+            const token = this.$store.getters.getToken;
+            this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.$parent.$parent.getMyPosts()
+            }).catch(error => {
+                console.log(error.response.status)
+            });
         }
     },
     mounted() {
         this.downloadProfilePicture()
         this.downloadPostPicture()
+    },
+    computed: {
+        isPostMine() {
+            return this.postSource.creator.id === this.$store.getters.getProfileId
+        }
     }
 }
 </script>
@@ -73,5 +96,9 @@ h6 {
 
 #post-content {
     text-align: justify;
+}
+
+#more {
+    color: white;
 }
 </style>

@@ -74,7 +74,9 @@ library.add(faCheck)
 
 //profile
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 library.add(faChevronLeft)
+library.add(faEllipsisH)
 
 const app = createApp(App).use(router);
 
