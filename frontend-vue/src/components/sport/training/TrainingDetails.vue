@@ -158,7 +158,7 @@
                                                                     </div>
                                                                     <div class="row mt-3 ">
                                                                         <p class="form-label ">Instrukcja</p>
-                                                                        <p class="info-value">{{ex.exercise.instruction}}</p>
+                                                                        <p class="info-value" v-html="ex.exercise.instruction"></p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -350,7 +350,7 @@ export default {
                     this.removeExerciseFromTrainingById(this.editedTraining.trainingId, e.exercise.exerciseId)
                 })
                 this.editedAddedExercises.forEach(e => {
-                    this.addExerciseToTrainingById(this.editedTraining.trainingId, e.exercise.exerciseId)
+                    this.addExerciseToTrainingById(this.editedTraining.trainingId, e.exercise.exerciseId, e)
                 })
                 this.createdTraining = response.data
                 this.successCreateTraining = true
@@ -383,25 +383,25 @@ export default {
                 this.editedRemovedExercises.push(exercise)
             }
         },
-        addExerciseToTrainingById(trainingId, exerciseId) {
+        addExerciseToTrainingById(trainingId, exerciseId, exercise) {
             const url = `${this.apiURL}sport/training/${trainingId}/add-exercise/${exerciseId}`
             const token = this.$store.getters.getToken;
             let time_seconds = 0;
             switch (this.currentExercise.timeUnits) {
                 case "s":
-                    time_seconds = this.currentExercise.time_seconds;
+                    time_seconds = exercise.time_seconds;
                     break;
                 case "min":
-                    time_seconds = this.currentExercise.time_seconds*60;
+                    time_seconds = exercise.time_seconds*60;
                     break;
                 case "h":
-                    time_seconds = this.currentExercise.time_seconds*3600;
+                    time_seconds = exercise.time_seconds*3600;
                     break;
             }
             const data = {
-                "reps":this.currentExercise.repetitions,
-                "time_seconds":time_seconds,
-                "series":this.currentExercise.series
+                "reps":exercise.repetitions,
+                "time_seconds":exercise.time_seconds,
+                "series":exercise.series
             }
             this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 // console.log(response.data)

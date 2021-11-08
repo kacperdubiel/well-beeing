@@ -15,11 +15,11 @@
                         <div class="col-11 mx-auto form-group">
                             <div class="row justify-content-between">
                                 <div class="col-5 px-0 justify-content-start">
-                                    <p class="form-label fst-italic">{{ edit ? 'Poprzednia nazwa' : 'Nazwa' }}</p>
+                                    <p class="form-label">{{ edit ? 'Poprzednia nazwa' : 'Nazwa' }}</p>
                                     <p class="info-value">{{exercise.name}}</p>
                                 </div>
                                 <div class="col-4 px-0">
-                                    <p class="form-label fst-italic">{{ edit ? 'Poprzedni typ' : 'Typ' }}</p>
+                                    <p class="form-label">{{ edit ? 'Poprzedni typ' : 'Typ' }}</p>
                                     <p class="info-value">{{exercise.exerciseType}}</p>
                                 </div>
                                 <div class="col-3 px-0">
@@ -28,7 +28,7 @@
                                 </div>
                             </div>
                             <div class="row mt-3">
-                                <p class="form-label fst-italic">{{ edit ? 'Poprzednie etykiety' : 'Etykiety' }}</p>
+                                <p class="form-label">{{ edit ? 'Poprzednie etykiety' : 'Etykiety' }}</p>
                                 <div class="container labels-container px-1 py-1" v-if="exercise.labels != null && exercise.labels.length > 0">
                                     <div class="form-label label-node p-2 mx-1 my-1"
                                        :style="{backgroundColor: randomColor(label.sportLabelId)}"
@@ -38,17 +38,17 @@
                                 <p v-else class="info-value">Brak etykiet</p>
                             </div>
                             <div class="row mt-3">
-                                <p class="form-label fst-italic">{{ edit ? 'Poprzedni wydatek energetyczny (intensywność)' : 'Wydatek energetyczny (intensywność)' }}</p>
+                                <p class="form-label">{{ edit ? 'Poprzedni wydatek energetyczny (intensywność)' : 'Wydatek energetyczny (intensywność)' }}</p>
                                 <p class="info-value">{{exercise.met}} METs</p>
                             </div>
 
                             <div class="row mt-3">
-                                <p class="form-label fst-italic">{{ edit ? 'Poprzedni opis' : 'Opis' }}</p>
+                                <p class="form-label">{{ edit ? 'Poprzedni opis' : 'Opis' }}</p>
                                 <p class="info-value">{{exercise.description}}</p>
                             </div>
                             <div class="row mt-3 ">
-                                <p class="form-label fst-italic">{{ edit ? 'Poprzednia instrukcja' : 'Instrukcja' }}</p>
-                                <p class="info-value">{{exercise.instruction}}</p>
+                                <p class="form-label">{{ edit ? 'Poprzednia instrukcja' : 'Instrukcja' }}</p>
+                                <p class="info-value" v-html="exercise.instruction"></p>
                             </div>
                             <div class="row mt-3 " v-if="this.edit">
                                 <h5 class="modal-title mt-3 text-start ps-0">Edytowane ćwiczenie</h5>
@@ -227,6 +227,7 @@ export default {
         },
         async submitEditExercise() {
             this.$emit('submit:editExercise', this.editedExercise, this.values)
+            this.edit = false
             this.$refs.closeModal.click()
         },
         async getExercise () {
@@ -267,7 +268,6 @@ export default {
         randomColor(seed) {
             let availableColors = ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392']
             return availableColors[seed % availableColors.length];
-            // return `rgb(${r()}, ${r()}, ${r()})`;
         }
     },
     computed: {

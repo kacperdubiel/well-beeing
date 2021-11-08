@@ -212,12 +212,14 @@ export default {
                 this.navigation.currentPage = response.data['number']
                 this.navigation.pageSize = response.data['size']
                 this.filters.lastNameSearch = myParams.name
-                    this.userNavigation.pagesNavbar = []
-                    if (this.navigation.currentPage !== 0)
-                        this.userNavigation.pagesNavbar.push(this.navigation.currentPage-1)
-                    for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
-                        this.userNavigation.pagesNavbar.push(i)
-                    }
+                this.userNavigation.pagesNavbar = []
+                if (this.navigation.currentPage !== 0)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage-1)
+                for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
+                    this.userNavigation.pagesNavbar.push(i)
+                    if (i === this.navigation.currentPage + 3)
+                        break;
+                }
                 console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
