@@ -6,84 +6,89 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.account.DoctorSpecializationService;
+import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
+import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
+@RequestMapping(path = "/profile")
 @RestController
 public class ProfileController {
-    private ProfileService profileService;
-    private UserService userService;
-    private DoctorSpecializationService doctorSpecService;
+    private final ProfileService profileService;
+    private final UserService userService;
+    private final FileService fileService;
+    private final DoctorSpecializationService doctorSpecService;
 
     @Autowired
     public ProfileController(@Qualifier("profileService") ProfileService profileService,
                              @Qualifier("userService") UserService userService,
+                             @Qualifier("fileService") FileService fileService,
                              @Qualifier("doctorSpecializationService") DoctorSpecializationService doctorSpecService){
         this.profileService = profileService;
         this.userService = userService;
+        this.fileService = fileService;
         this.doctorSpecService = doctorSpecService;
     }
 
-    /*@RequestMapping(path = "/profile/{profileId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getProfileById(@PathVariable("profileId") UUID profileId){
-        try {
-            Profile profile = profileService.getProfileById(profileId);
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }*/
-
-    @RequestMapping(path = "/profile", method = RequestMethod.GET)
-    public ResponseEntity<?> getProfile(Principal principal){
+    @GetMapping(path = "/my")
+    public ResponseEntity<?> getProfile(Principal principal) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        try {
-            Profile profile = profileService.getProfileById(profileId);
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Profile profile = profileService.getProfileById(profileId);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/profile", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateProfileById(Principal principal,
-                                               @NonNull @RequestBody Profile profile){
+    @PatchMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> partialUpdateProfileBy(Principal principal,
+                                                    @RequestBody Map<String, Object> fields) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        try {
-            Profile actProfile = profileService.updateProfile(profile, profileId);
-            return new ResponseEntity<>(actProfile, HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(new ErrorMessage("Not found: " + e.getMessage(),
-                    "404"), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(new ErrorMessage("Server error: " + e.getMessage(),
-                    "500"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Profile actProfile = profileService.partialUpdateProfile(profileId, fields);
+        return new ResponseEntity<>(actProfile, HttpStatus.OK);
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<?> importData(MultipartFile file, Principal principal) throws NotFoundException {
+
+        String fileName = fileService.save(file);
+
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        Profile profile = profileService.getProfileById(profileId);
+        profile.setProfileImgPath(fileName);
+
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("profileImgPath", fileName);
+
+        profileService.partialUpdateProfile(profileId, fields);
+
+        return new ResponseEntity<>("Sent", HttpStatus.OK);
+    }
+
+    @GetMapping("/export/{profileId}")
+    public ResponseEntity<?> exportData(@PathVariable UUID profileId) throws NotFoundException {
+        Profile profile = profileService.getProfileById(profileId);
+        Resource file = fileService.load(profile.getProfileImgPath());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "request")
+                .contentType(MediaType.parseMediaType("image/png"))
+                .body(file);
     }
 
     @GetMapping(path = "/doctors/doctor-specializations/{spec_id}")

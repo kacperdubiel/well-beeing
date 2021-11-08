@@ -1,20 +1,27 @@
 package com.wellbeeing.wellbeeing.service.account;
 
-import com.wellbeeing.wellbeeing.domain.account.*;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.repository.account.DoctorProfileDAO;
+import com.wellbeeing.wellbeeing.domain.account.ESex;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
+import com.wellbeeing.wellbeeing.domain.social.ENutritionTag;
+import com.wellbeeing.wellbeeing.domain.social.ESportTag;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.repository.account.DoctorProfileDAO;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
-import java.util.List;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("profileService")
 public class ProfileServiceImpl implements ProfileService {
@@ -77,15 +84,59 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException {
+    public Profile partialUpdateProfile(UUID profileId, Map<String, Object> fields) throws NotFoundException {
+
         Profile actProfile = profileDAO.findById(profileId).orElse(null);
-        if (actProfile != null) {
-            profile.setId(profileId);
-            profile.setProfileCard(actProfile.getProfileCard());
-            profile.setProfileUser(actProfile.getProfileUser());
-            profileDAO.save(profile);
-            return profile;
+
+        if (actProfile == null || fields == null || fields.isEmpty()) {
+            throw new NotFoundException("Bad request!");
         }
-        throw new NotFoundException("Profile not found");
+        fields.remove("id");
+        fields.remove("profileUser");
+        fields.remove("profileCard");
+        fields.remove("settings");
+        fields.remove("measures");
+        fields.remove("profileConnections");
+        fields.remove("trainingPlans");
+        fields.remove("activityGoals");
+        fields.remove("roles");
+        fields.remove("profileLikes");
+        fields.remove("profileComments");
+        fields.remove("profilePosts");
+        fields.remove("profileGivenOpinions");
+        fields.remove("profileReceivedOpinions");
+        fields.remove("profileRoleRequests");
+
+        fields.forEach((k, v) -> {
+            // use reflection to get field k on object and set it to value v
+            // Change Claim.class to whatver your object is: Object.class
+            Field field = ReflectionUtils.findField(Profile.class, k); // find field in the object class
+
+            if (field != null) {
+                field.setAccessible(true);
+                if (field.getType() == ESex.class)
+                    v = ESex.valueOf((String) v);
+                if (field.getType() == ESportTag.class)
+                    v = ESportTag.valueOf((String) v);
+                if (field.getType() == ENutritionTag.class)
+                    v = ENutritionTag.valueOf((String) v);
+                if (field.getType() == Date.class) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
+                    sdf.setTimeZone(TimeZone.getTimeZone("Europe/Warsaw"));
+
+                    try {
+                        v = sdf.parse((String) v);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                ReflectionUtils.setField(field, actProfile, v);
+            }
+        });
+
+        profileDAO.save(actProfile);
+        return actProfile;
+
     }
 }

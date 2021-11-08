@@ -3,11 +3,12 @@ package com.wellbeeing.wellbeeing.service.sport;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +46,10 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     public TrainingPlan addTrainingPlan(TrainingPlan trainingPlan, String creatorName, UUID ownerId) {
         User creator = userDAO.findUserByEmail(creatorName).orElse(null); // user null?
         User owner = userDAO.findUserById(ownerId).orElse(null); // user null?
-        if ( creator == null || owner == null)
+        if ( creator == null)
             return null;
+        if (owner == null)
+            owner = creator;
         System.out.println("Print id:" + creator.getId());
         trainingPlan.setPlanStatus(EPlanStatus.SCRATCH);
         trainingPlan.setOwner(owner.getProfile());
@@ -68,12 +71,34 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
-    public TrainingPlan getTrainingPlan(long trainingPlanId) {
-        return trainingPlanDAO.findById(trainingPlanId).orElse(null);
+    public TrainingPlan getTrainingPlan(long trainingPlanId, String userName) throws NotFoundException {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        TrainingPlan plan = trainingPlanDAO.findById(trainingPlanId).orElse(null);
+        if (plan == null)
+        {
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exist", trainingPlanId));
+        }
+        double finalWeight = weight;
+        plan.getTrainingPositions().forEach(
+                pos -> {
+                    pos.getTraining().setCaloriesBurned(pos.getTraining().caloriesBurned(finalWeight));
+                    pos.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
+                }
+        );
+//        System.out.println("Przed planem");
+//        PDFFromTrainingPlan.generatePDFFromTrainingPlan(plan, "Some plan");
+//        System.out.println("Po planie");
+        return plan;
     }
 
     @Override
-    public TrainingPosition addPositionToTrainingPlan(long trainingPlanId, long trainingId, Date trainingDate, String clientName) throws NotFoundException {
+    public TrainingPosition addPositionToTrainingPlan(long trainingPlanId, long trainingId, Date trainingDate, String timeOfDay, String clientName) throws NotFoundException, IllegalArgumentException {
         User clientUser = userDAO.findUserByEmail(clientName).orElse(null);
         TrainingPlan updatingPlan = trainingPlanDAO.findById(trainingPlanId).orElse(null);
         Training trainingToBeAdded = trainingDAO.findById(trainingId).orElse(null);
@@ -90,8 +115,18 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
         {
             throw new NotFoundException("You can't edit that training plan!");
         }
-
-        TrainingPosition newPosition = new TrainingPosition(trainingToBeAdded, updatingPlan, trainingDate);
+        ETimeOfDay eTimeOfDay;
+        try {
+             eTimeOfDay = ETimeOfDay.valueOf(timeOfDay);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid timeOfDay value!");
+        }
+//        (trainingToBeAdded, updatingPlan, trainingDate)
+        TrainingPosition newPosition = TrainingPosition.builder()
+                .training(trainingToBeAdded)
+                .trainingPlan(updatingPlan)
+                .trainingDate(trainingDate)
+                .timeOfDay(eTimeOfDay).build();
         trainingPositionDAO.save(newPosition);
         return newPosition;
     }
@@ -143,7 +178,27 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     }
 
     @Override
-    public List<TrainingPlan> getMyTrainingPlans(String ownerName) {
+    public List<TrainingPlan> getMyTrainingPlans(String ownerName) throws NotFoundException {
+        User owner = userDAO.findUserByEmail(ownerName).orElse(null);
+        if (owner == null)
+            throw new NotFoundException(String.format("User with name=%s doesn't exist", ownerName));
+        double weight = 0;
+        try {
+            weight = owner.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        List<TrainingPlan> myPlans = trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName);
+        double finalWeight = weight;
+        myPlans.forEach(plan -> {
+            plan.getTrainingPositions().forEach(
+                    pos -> {
+                        pos.getTraining().setCaloriesBurned(pos.getTraining().caloriesBurned(finalWeight));
+                        pos.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
+                    }
+            );
+            plan.setCaloriesBurned(plan.getTrainingPositions().stream().map(pos -> pos.getTraining().getCaloriesBurned()).mapToInt(num -> num).sum());
+        });
         return trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName);
     }
 
@@ -203,6 +258,28 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
         trainingPlanRequestDAO.save(newRequest);
         return newRequest;
 
+    }
+
+    @Override
+    public TrainingPosition updateTrainingPositionStatus(Long positionId, String newStatus, String userName) throws IllegalArgumentException, NotFoundException {
+        TrainingPosition foundPosition = trainingPositionDAO.findById(positionId).orElse(null);
+        if (foundPosition == null)
+            throw new NotFoundException(String.format("Position with id=%s doesn't exist", foundPosition));
+        ETrainingStatus status;
+        try {
+            status = ETrainingStatus.valueOf(newStatus.toUpperCase());
+        } catch (java.lang.IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        foundPosition.setTrainingStatus(status);
+        trainingPositionDAO.save(foundPosition);
+        return foundPosition;
+    }
+
+    @Override
+    public TrainingPlan partialUpdateTrainingPlan(TrainingPlan trainingPlan) {
+        trainingPlanDAO.save(trainingPlan);
+        return trainingPlan;
     }
 
 }

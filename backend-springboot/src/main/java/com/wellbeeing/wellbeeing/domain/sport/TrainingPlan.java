@@ -42,6 +42,10 @@ public class TrainingPlan {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EPlanStatus planStatus = EPlanStatus.SCRATCH;
+
+    @Transient
+    private int caloriesBurned;
+
     @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL)
     private Set<TrainingPosition> trainingPositions = new HashSet<>();
 

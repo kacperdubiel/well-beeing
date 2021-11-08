@@ -89,20 +89,29 @@ public class Profile {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL)
     private Set<Like> profileLikes = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "commenter", cascade = CascadeType.ALL)
     private Set<Comment> profileComments = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<Post> profilePosts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "giver", cascade = CascadeType.ALL)
     private Set<Opinion> profileGivenOpinions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<Opinion> profileReceivedOpinions = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "submitter", cascade = CascadeType.ALL)
+    private Set<RoleRequest> profileRoleRequests = new HashSet<>();
 
     public Profile(String firstName, String lastName, Date birthday, User profileUser) {
         System.out.println("Entered constructor");

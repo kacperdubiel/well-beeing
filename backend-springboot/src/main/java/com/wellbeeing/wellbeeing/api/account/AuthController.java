@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.api.account;
 
+import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationRequest;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationResponse;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -29,7 +31,7 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
 
-    public AuthController(@Qualifier("userService") UserDetailsService userService,
+    public AuthController(UserDetailsService userService,
                           @Qualifier("jwtUtil") JwtUtil jwtUtil){
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -54,4 +56,34 @@ public class AuthController {
         });
         return ResponseEntity.ok(new AuthenticationResponse(jwt, roles));
     }
+
+    @RequestMapping(value = "/admin", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationTokenAdmin(@RequestBody @NonNull AuthenticationRequest authenticationRequest){
+
+        final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getEmail());
+        AtomicBoolean isAdmin = new AtomicBoolean(false);
+        userDetails.getAuthorities().forEach(authority -> {
+            if (((Role) authority).getRole().equals(ERole.ROLE_ADMIN))
+                isAdmin.set(true);
+        });
+
+        if (!isAdmin.get())
+            return new ResponseEntity<>(new ErrorMessage("Unauthorized", "error"), HttpStatus.UNAUTHORIZED);
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authenticationRequest.getEmail(), authenticationRequest.getPassword(), userDetails.getAuthorities()));
+        }
+        catch (BadCredentialsException e){
+            return new ResponseEntity<>(new ErrorMessage("Unauthorized", "error"), HttpStatus.UNAUTHORIZED);
+        }
+        final String jwt = jwtUtil.generateToken(userDetails);
+        ArrayList<String> roles = new ArrayList<>();
+        userDetails.getAuthorities().forEach(authority -> {
+            roles.add(((Role) authority).getRole().toString());
+        });
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, roles));
+    }
+
 }

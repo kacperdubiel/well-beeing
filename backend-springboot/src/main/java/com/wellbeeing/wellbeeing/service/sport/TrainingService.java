@@ -4,17 +4,20 @@ import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface TrainingService {
-    Training getTraining(long trainingId);
+    Training getTraining(long trainingId, String userName) throws NotFoundException;
     List<Training> getAllTrainings();
-    Page<Training> getAllTrainings(Pageable pageable);
+    Page<Training> getAllTrainings(Pageable pageable, String userName);
+    Page<Training> getAllTrainingsFiltered(Specification<Training> trainingSpec,
+                                              Pageable pageable, String userName) throws NotFoundException;
     List<ExerciseInTraining> getExercisesFromTraining(long trainingId) throws NotFoundException;
     Training addTraining(Training training, String creatorName) throws NotFoundException;
     Training addTrainingWithExercises(Training training, String creatorName, List<ExerciseInTraining> exercisesInTraining) throws NotFoundException;

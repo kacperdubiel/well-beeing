@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,6 +19,8 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long postId;
+    @Column
+    private Date addedDate;
     @Column(unique = true)//idk
     private String postImgPath;
     @Column
@@ -36,7 +39,7 @@ public class Post {
     @JoinColumn(name = "creator_id")
     private Profile creator;
 
-    public Post(@JsonProperty("postImgPath") String postImgPath, @JsonProperty("postContent") String postContent,
+    public Post(@JsonProperty("postImgPath") String postImgPath, @JsonProperty("addedDate") Date addedDate, @JsonProperty("postContent") String postContent,
                 @JsonProperty("privSettings") EPrivacy privSettings, @JsonProperty("creator") Profile creator) {
         this.postImgPath = postImgPath;
         this.postContent = postContent;
@@ -57,7 +60,8 @@ public class Post {
     @Override
     public String toString() {
         return "Post{" +
-                "post_id=" + postId +
+                "postId=" + postId +
+                ", addedDate=" + addedDate +
                 ", postImgPath='" + postImgPath + '\'' +
                 ", postContent='" + postContent + '\'' +
                 ", privSettings=" + privSettings +

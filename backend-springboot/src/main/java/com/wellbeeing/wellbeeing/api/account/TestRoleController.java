@@ -21,6 +21,7 @@ public class TestRoleController {
     }
 
     @RequestMapping(path = "/add-role", method = RequestMethod.POST)
+    @RolesAllowed(ERole.Name.ROLE_ADMIN)
     public ResponseEntity<?> addRole(@RequestBody @NonNull Role role){
         if(!roleService.addRole(role))
             return new ResponseEntity<>(new ErrorMessage("Role already exist", "error"), HttpStatus.CONFLICT);

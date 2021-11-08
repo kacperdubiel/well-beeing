@@ -12,6 +12,15 @@ import DoctorUserProfileView from "@/views/telemedic/DoctorUserProfileView";
 import SearchDoctorsView from "@/views/telemedic/SearchDoctorsView";
 import DoctorUserConversationsView from "@/views/telemedic/DoctorUserConversationsView";
 import DoctorUserConversationView from "@/views/telemedic/DoctorUserConversationView";
+import RoleRequestsView from "@/views/social/RoleRequestsView";
+import LoginAdminView from "@/views/social/LoginAdminView";
+import RoleRequestViewAdmin from "@/views/social/RoleRequestsViewAdmin";
+import SportView from "@/views/sport/SportView";
+import TrainingView from "@/components/sport/training/TrainingView";
+import ExerciseView from "@/components/sport/exercise/ExerciseView";
+import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView";
+import ProfileView from "@/views/social/profile/ProfileView";
+import ProfileEdit from "@/views/social/profile/ProfileEdit";
 
 const routes = [
   {
@@ -87,6 +96,60 @@ const routes = [
     path: '/doctor/conversations/:conversationId',
     name: 'DoctorUserConversationView',
     component: DoctorUserConversationView
+  },
+    path: '/sport',
+    redirect: {name: 'TrainingPlansView'},
+    name: 'SportView',
+    component: SportView,
+    children: [
+      {
+        path: 'training',
+        name: 'TrainingView',
+        component: TrainingView,
+      },
+      {
+        path: 'exercise',
+        name: 'ExerciseView',
+        component: ExerciseView
+      },
+      {
+        path: 'training-plans',
+        name: 'TrainingPlansView',
+        component: TrainingPlansView
+      }
+    ]
+  },
+  {
+    path: '/role-requests',
+    name: 'RoleRequestsView',
+    component: RoleRequestsView
+  },
+  {
+    path: '/admin',
+    name: 'LoginAdminView',
+    meta: { layout: "clean"},
+    component: LoginAdminView
+  },
+  {
+    path: '/admin/role-requests',
+    name: 'RoleRequestsViewAdmin',
+    meta: { layout: "admin"},
+    component: RoleRequestViewAdmin
+  },
+  {
+    path: '/profile/:profileId',
+    name: 'ProfileView',
+    component: ProfileView
+  },
+  {
+    path: '/profile/my',
+    name: 'MyProfileView',
+    component: ProfileView,
+  },
+  {
+    path: '/profile/edit',
+    name: 'ProfileEdit',
+    component: ProfileEdit
   },
 ]
 
