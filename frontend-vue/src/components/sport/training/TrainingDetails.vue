@@ -8,7 +8,7 @@
                         <button class="btn-white" @click="editTraining()">
                             <font-awesome-icon :icon="['fa', 'pencil-alt']" />
                         </button>
-                        <button type="button" class="btn-close" id="infoTrainingModalClose"  data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
+                        <button type="button" class="btn-close" id="infoTrainingModalClose" ref="infoTrainingModalClose"  data-bs-dismiss="modal" aria-label="Close" @click="clearInputs()"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid" id="modal-container">
@@ -357,6 +357,7 @@ export default {
                 this.isCreated = true
                 this.clearInputs()
                 this.$emit('get:trainings') // WRÓCIC
+                this.$refs.infoTrainingModalClose.click()
             }).catch(error => {
                 if (error.response.status === 409) {
                     this.nameTaken = true
