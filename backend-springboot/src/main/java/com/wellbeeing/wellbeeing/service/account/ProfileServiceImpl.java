@@ -1,8 +1,6 @@
 package com.wellbeeing.wellbeeing.service.account;
 
-import com.wellbeeing.wellbeeing.domain.account.ESex;
-import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
+import com.wellbeeing.wellbeeing.domain.account.*;
 import com.wellbeeing.wellbeeing.domain.social.ENutritionTag;
 import com.wellbeeing.wellbeeing.domain.social.ESportTag;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
