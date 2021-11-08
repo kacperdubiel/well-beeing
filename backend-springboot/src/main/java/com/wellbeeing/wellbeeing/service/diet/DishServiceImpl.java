@@ -1,9 +1,11 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.Dish;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
+import com.wellbeeing.wellbeeing.domain.diet.*;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
+import com.wellbeeing.wellbeeing.repository.diet.DishMealTypeDAO;
+import com.wellbeeing.wellbeeing.repository.diet.DishProductDetailDAO;
 import com.wellbeeing.wellbeeing.repository.diet.NutritionLabelDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,20 +14,33 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service("dishService")
 public class DishServiceImpl implements DishService {
+    @Autowired
+    private EntityManager entityManager;
     private DishDAO dishDAO;
+    private ProfileDAO profileDAO;
     private NutritionLabelDAO nutritionLabelDAO;
+    private DishProductDetailDAO dishProductDetailDAO;
+    private DishMealTypeDAO dishMealTypeDAO;
 
     @Autowired
     public DishServiceImpl(@Qualifier("dishDAO") DishDAO dishDAO,
-                           @Qualifier("nutritionLabelDAO") NutritionLabelDAO nutritionLabelDAO){
+                           @Qualifier("nutritionLabelDAO") NutritionLabelDAO nutritionLabelDAO,
+                           @Qualifier("dishProductDetailDAO") DishProductDetailDAO dishProductDetailDAO,
+                           @Qualifier("dishMealTypeDAO") DishMealTypeDAO dishMealTypeDAO,
+                           @Qualifier("profileDAO") ProfileDAO profileDAO) {
         this.dishDAO = dishDAO;
         this.nutritionLabelDAO = nutritionLabelDAO;
+        this.dishProductDetailDAO = dishProductDetailDAO;
+        this.dishMealTypeDAO = dishMealTypeDAO;
+        this.profileDAO = profileDAO;
     }
 
     @Override
@@ -44,8 +59,6 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int page) {
-        if(namePart.equals(""))
-            return getAllDishes(numberOfElements, page);
         return dishDAO.findByNameLikeIgnoreCase(namePart,
                 PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
@@ -53,31 +66,58 @@ public class DishServiceImpl implements DishService {
     @Override
     public boolean updateCaloriesAndMacrosByDishId(UUID dishId) throws NotFoundException {
         Dish dish = getDishById(dishId);
-        dish.setDerivedCalories(countDishCalories(dish));
-        dish.setDerivedCarbohydrates(countDishCarbohydrates(dish));
-        dish.setDerivedFats(countDishFats(dish));
-        dish.setDerivedProteins(countDishProteins(dish));
+        return updateCaloriesAndMacrosByDish(dish);
+    }
+
+    private boolean updateCaloriesAndMacrosByDish(Dish dish){
+        dish.setDerived();
         dishDAO.save(dish);
         return true;
     }
 
     @Override
-    public Dish addDish(Dish dish) {
+    public Dish addDish(Dish dish, UUID creatorId) throws NotFoundException {
+        dish.setDerivedNutritionalValues(new NutritionalValueDerivedData());
+        dish.setCreatedDate(LocalDate.now());
+        dish.setDishCreator(profileDAO.findProfileByProfileUserId(creatorId).orElse(null));
+        Dish actDish = dishDAO.save(dish);
+        for(DishMealType d : actDish.getDishMealTypes()){
+            d.setDish(actDish);
+            dishMealTypeDAO.saveAndFlush(d);
+        }
+        for(DishProductDetail d : actDish.getDishProductDetails()){
+            d.setDish(actDish);
+            d.setDerivedNutritionalValues(new NutritionalValueDerivedData());
+            DishProductDetail dpd = dishProductDetailDAO.saveAndFlush(d);
+            entityManager.clear();
+            DishProductDetail newDetail = dishProductDetailDAO.findById(dpd.getId()).orElse(null);
+            if(newDetail != null){
+                newDetail.setDerived();
+                dishProductDetailDAO.save(newDetail);
+            }
+        }
+        Dish dishNotUpdated = getDishById(actDish.getId());
+        updateCaloriesAndMacrosByDish(dishNotUpdated);
+        return dishDAO.save(dishNotUpdated);
+    }
+
+    @Override
+    public Dish updateDish(Dish dish, UUID dishId) throws NotFoundException {
+        Dish dishToUpdate = getDishById(dishId);
+        dishToUpdate.getDishProductDetails().forEach(d -> dishProductDetailDAO.deleteById(d.getId()));
+        dishToUpdate.getDishMealTypes().forEach(d -> dishMealTypeDAO.deleteById(d.getId()));
+        dishDAO.save(dishToUpdate);
+
+        dish.setId(dishToUpdate.getId());
+        return addDish(dish, dishToUpdate.getDishCreator().getId());
+    }
+
+    @Override
+    public boolean deleteDish(UUID dishId) throws NotFoundException {
+        Dish dish = getDishById(dishId);
+        dish.setActive(false);
         dishDAO.save(dish);
-        dish.getDishProductDetails().forEach(d -> d.setDish(dish));
-        dish.getDishMealTypes().forEach(m -> m.setDish(dish));
-        return dishDAO.save(dish);
-    }
-
-    @Override
-    public Dish updateDish(Dish dish, UUID dishId) {
-        dish.setId(dishId);
-        return addDish(dish);
-    }
-
-    @Override
-    public boolean deleteDish(UUID dishId) {
-        dishDAO.deleteById(dishId);
+        //dishDAO.deleteById(dishId);
         return true;
     }
 
@@ -99,79 +139,8 @@ public class DishServiceImpl implements DishService {
         return dishDAO.findByDishIds(resultDishes, namePart, PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
 
-    private double countDishCalories(Dish dish) {
-        return dish.getDishProductDetails()
-                .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getCaloriesPerHundredGrams()/100)
-                .sum();
+    @Override
+    public List<Dish> getDieticianDishesByDieticianId(UUID dieticianId) {
+        return dishDAO.findByDishCreatorIdAndActive(dieticianId, true);
     }
-
-    public double countDishCarbohydrates(Dish dish) {
-        return dish.getDishProductDetails()
-                .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getCarbohydratesPerHundredGrams()/100)
-                .sum();
-    }
-
-    public double countDishProteins(Dish dish) {
-        return dish.getDishProductDetails()
-                .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getProteinsPerHundredGrams()/100)
-                .sum();
-    }
-
-    public double countDishFats(Dish dish) {
-        return dish.getDishProductDetails()
-                .stream()
-                .mapToDouble(pd -> pd.getAmount() * pd.getMeasureType().getNumberOfGrams() * pd.getProduct().getFatsPerHundredGrams()/100)
-                .sum();
-    }
-
-    /*@Override
-    public Map<String, Map<String, Double>> countDishDetailsByDishId(UUID dishId) throws NotFoundException {
-        Dish dish = getDishById(dishId);
-
-        Map<String, Map<String, Double>> result = new HashMap<>();
-
-        Map<String, Double> dishMacroDetails = new HashMap<>();
-        Map<String, Double> dishVitaminDetails = new HashMap<>();
-        Map<String, Double> dishMineralDetails = new HashMap<>();
-
-        for(DishProductDetail d : dish.getDishProductDetails()){
-            double actProductGrams = d.getAmount() * d.getMeasureType().getNumberOfGrams();
-
-            List<MacroDetail> actualProductMacroDetails = d.getProduct().getMacroDetails();
-            List<MineralDetail> actualProductMineralDetails = d.getProduct().getMineralDetails();
-            List<VitaminDetail> actualProductVitaminDetails = d.getProduct().getVitaminDetails();
-
-            actualProductMacroDetails
-                    .forEach(md -> dishMacroDetails.put(md.getDetailedMacroType().toString(), (
-                                            dishMacroDetails.get(md.getDetailedMacroType().toString()) == null
-                                            ?
-                                            actProductGrams * md.getMeasureType().getNumberOfGrams()
-                                            :
-                                            dishMacroDetails.get(md.getDetailedMacroType().toString())
-                                                    + actProductGrams * md.getMeasureType().getNumberOfGrams())));
-            actualProductMineralDetails
-                    .forEach(m -> dishMineralDetails.put(m.getMineralType().toString(), (
-                            dishMineralDetails.get(m.getMineralType().toString()) == null
-                                    ?
-                                    actProductGrams * m.getMeasureType().getNumberOfGrams()
-                                    :
-                                    dishMineralDetails.get(m.getMineralType().toString())
-                                            + actProductGrams * m.getMeasureType().getNumberOfGrams())));
-            actualProductVitaminDetails
-                    .forEach(v -> dishVitaminDetails.put(v.getVitaminType().toString(), (
-                            dishVitaminDetails.get(v.getVitaminType().toString()) == null
-                                    ?
-                                    actProductGrams * v.getMeasureType().getNumberOfGrams()
-                                    :
-                                    dishVitaminDetails.get(v.getVitaminType().toString())
-                                            + actProductGrams * v.getMeasureType().getNumberOfGrams())));
-        }
-        result.put("macroDetails", dishMacroDetails);
-        result.put("vitamins", dishVitaminDetails);
-        result.put("minerals", dishMineralDetails);
-        return result;
-    }*/
 }

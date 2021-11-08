@@ -12,8 +12,9 @@ public interface DishService {
     Page<Dish> getAllDishes(int numberOfElements, int page);
     Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int page);
     boolean updateCaloriesAndMacrosByDishId(UUID dishId) throws NotFoundException;
-    Dish addDish(Dish dish);
-    Dish updateDish(Dish dish, UUID dishId);
-    boolean deleteDish(UUID dishId);
+    Dish addDish(Dish dish, UUID creatorId) throws NotFoundException;
+    Dish updateDish(Dish dish, UUID dishId) throws NotFoundException;
+    boolean deleteDish(UUID dishId) throws NotFoundException;
     Page<Dish> getLabeledDishes(List<UUID> labelIds, int numberOfElements, int page, String namePart);
+    List<Dish> getDieticianDishesByDieticianId(UUID dieticianId);
 }
