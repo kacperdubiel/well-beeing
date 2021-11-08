@@ -1,7 +1,7 @@
 <template>
-    <div @click="logOnClick" class="row dish-browser-element">
-        <div style="background-color: var(--GREY1); border-radius: 10px;" class="col-lg-3">
-            <p style="align-self: flex-start; display: flex;">{{actualDish.derivedCalories}} kcal / porcja</p>
+    <div class="row dish-browser-element">
+        <div style="border-radius: 10px;" class="col-lg-3">
+            <p style="align-self: flex-start; display: flex;">{{actualDish.derivedNutritionalValues.derivedCalories}} kcal / porcja</p>
         </div>
         <div style="text-align: start; align-items: flex-start; display: flex; flex-direction: column;" class="col-lg-9">
             <h6 style="margin-top: 8px;">{{this.actualDish.name}}</h6>
@@ -26,9 +26,6 @@ export default {
         }
     },
     methods: {
-        logOnClick() {
-            console.log("click")
-        },
         changeModalDish(){
             this.$emit('change:dishModal', this.actualDish)
         }

@@ -25,12 +25,20 @@
         <div style="width: 100%;" v-for="dish in this.dishesToShow" :key="dish.id">
             <dish-browser-element-component @change:dishModal="changeModalDish" :actualDish="dish"></dish-browser-element-component>
         </div>
-        <div v-if="this.allItems > this.dishesToShow.length" style="justify-content: flex-end; flex-direction: row; display: flex;">
+        <div v-if="this.showMore" style="justify-content: flex-end; flex-direction: row; display: flex;">
             <button @click="loadNextPage" class="btn-card-panel-diet">Załaduj więcej</button>
         </div>
-        <div id="dishBrowserModal" class="modal fade" tabindex="-1" aria-labelledby="ailmentModalLabel" aria-hidden="false">
-            <div class="modal-dialog modal-dialog-centered">
-                <dish-component :dish="this.modalDish"></dish-component>
+        <div id="dishBrowserModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="dishModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 style="color: black;" class="modal-title" id="dishModalLabel">{{this.modalDish.name}}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <dish-component :dish="this.modalDish"></dish-component>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -55,19 +63,33 @@ export default {
             dishesToShow: [],
             actualNameLike: '',
             allItems: 0,
-            modalDish: Object
+            modalDish: {
+                derivedNutritionalValues: {
+                    derivedProteins: 0,
+                    derivedFats: 0,
+                    derivedCarbohydrates: 0,
+                    derivedCalories: 0
+                }
+            },
         }
     },
     watch: {
         actualNameLike: function () {
+            this.allItems=0
             this.dishesToShow = []
             this.getDishes()
             this.page = 0;
         },
         chosenNutritionLabels: function () {
+            this.allItems=0
             this.dishesToShow = []
             this.getDishes()
             this.page = 0;
+        }
+    },
+    computed: {
+        showMore(){
+            return this.allItems > this.dishesToShow.length
         }
     },
     mounted(){
