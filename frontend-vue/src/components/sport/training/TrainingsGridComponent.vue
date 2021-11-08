@@ -5,7 +5,7 @@
                 <div class="row justify-content-center mw-100 mt-3">
                     <div class="col-lg-12 col-md-9 col-sm-7 col-10">
                         <div class="row align-content-center">
-                            <div class="col-xl-3 col-lg-4 col-md-6 col-12 px-2 py-2 mx-0 section-bg training"
+                            <div class="col-xl-3 col-lg-4 col-md-12 col-12 px-2 py-2 mx-0 section-bg training"
                                  v-for="tr in trainingsSource" :key="tr.trainingId"
                                  v-bind:class="{'selected-training' : (mode === 'toPlan' && this.$store.getters.getPlanTrainingId === tr.trainingId) }"
                                  v-on:click="mode === 'toPlan' ? this.$store.commit('setPlanTrainingId', tr.trainingId) : null">

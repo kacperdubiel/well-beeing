@@ -2,7 +2,7 @@
     <div class="container align-items-start" style="overflow: auto" v-if="plan.trainingPlanId != null">
         <div class="row-fluid d-flex align-items-start ">
             <div class="items justify-content-start d-flex">
-                <div v-for="day in days" :key="day.num" class="col-3 day mx-1   mb-3 p-3 item" >
+                <div v-for="day in days" :key="day.num" class="col-xxl-3 col-xl-4 col-lg-4 col-md-6 col-sm-6 day mx-1   mb-3 p-3 item" >
                     <TrainingPlanDay @update:active="updateActive" @set:training="setTraining" :date="weekDates.find(d => d.day.num === day.num)" :day=day.name :create="planType === 'create'" :details="planType === 'details'" :positions="plan.trainingPositions.filter( pos => matchesDayOfTheWeek(pos, day.num))">
 
                     </TrainingPlanDay>

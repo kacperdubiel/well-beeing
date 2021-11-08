@@ -10,17 +10,35 @@
                     <div class="container-fluid" id="modal-container">
                         <div class="col-11 mx-auto form-group">
                             <div class="row">
-                                <p class="form-label">Nazwa</p>
-                                <input
-                                    type="text"
-                                    placeholder="Nazwa treningu"
-                                    v-model="name"
-                                    id="name-form"
-                                    class="register-input p-2"
-                                    :class="{ 'has-error': submittingCreateTraining && invalidName || nameTaken}"
-                                    @focus="clearStatus"
-                                    @keypress="clearStatus"
-                                />
+                                <div class="col-6 ps-0 mt-3">
+                                    <p class="form-label">Nazwa</p>
+                                    <input
+                                        type="text"
+                                        placeholder="Nazwa treningu"
+                                        v-model="name"
+                                        id="name-form"
+                                        class="float-start register-input p-2"
+                                        :class="{ 'has-error': submittingCreateTraining && invalidName || nameTaken}"
+                                        @focus="clearStatus"
+                                        @keypress="clearStatus"
+                                    />
+                                </div>
+                                <div class="col-6 ps-0 mt-3">
+                                    <p class="form-label">Trudność</p>
+                                    <select
+                                        v-model="trainingDifficulty"
+                                        class="float-start register-input p-2"
+                                        :class="{ 'has-error': submittingCreateTraining && invalidDifficultyLevel}"
+                                        @focus="clearStatus"
+                                        @keypress="clearStatus"
+                                    >
+                                        <option disabled value="">Wybierz trudność</option>
+                                        <option>EASY</option>
+                                        <option>MEDIUM</option>
+                                        <option>HARD</option>
+                                    </select>
+                                </div>
+
                             </div>
                             <div class="row text-end">
                                 <p v-if="nameTaken" class="has-error m-0">
@@ -28,19 +46,7 @@
                                 </p>
                             </div>
                             <div class="row mt-3">
-                                <p class="form-label">Trudność</p>
-                                <select
-                                    v-model="trainingDifficulty"
-                                    class="register-input p-2"
-                                    :class="{ 'has-error': submittingCreateTraining && invalidDifficultyLevel}"
-                                    @focus="clearStatus"
-                                    @keypress="clearStatus"
-                                >
-                                    <option disabled value="">Wybierz trudność</option>
-                                    <option>EASY</option>
-                                    <option>MEDIUM</option>
-                                    <option>HARD</option>
-                                </select>
+
                             </div>
                             <div class="row mt-3">
                                 <p class="form-label">Opis</p>
