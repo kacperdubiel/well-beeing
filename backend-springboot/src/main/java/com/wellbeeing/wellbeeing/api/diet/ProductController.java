@@ -1,9 +1,8 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.MacroDetail;
-import com.wellbeeing.wellbeeing.domain.diet.MineralDetail;
-import com.wellbeeing.wellbeeing.domain.diet.Product;
-import com.wellbeeing.wellbeeing.domain.diet.VitaminDetail;
+import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.diet.ProductMacroDetail;
+import com.wellbeeing.wellbeeing.domain.diet.ProductVitaminDetail;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.diet.ProductService;
@@ -80,19 +79,19 @@ public class ProductController {
 
     @RequestMapping(path = "/product/{productId}/detailed-macros", method = RequestMethod.GET)
     public ResponseEntity<?> getProductMacroDetailsByProductId(@PathVariable("productId") UUID productID) throws NotFoundException {
-        List<MacroDetail> actMacros = productService.getProductMacroDetailsByProductId(productID);
+        List<ProductMacroDetail> actMacros = productService.getProductMacroDetailsByProductId(productID);
         return new ResponseEntity<>(actMacros, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/product/{productId}/minerals", method = RequestMethod.GET)
     public ResponseEntity<?> getProductMineralDetailsByProductId(@PathVariable("productId") UUID productID) throws NotFoundException {
-        List<MineralDetail> actMacros = productService.getProductMineralDetailsByProductId(productID);
+        List<ProductMineralDetail> actMacros = productService.getProductMineralDetailsByProductId(productID);
         return new ResponseEntity<>(actMacros, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/product/{productId}/vitamins", method = RequestMethod.GET)
     public ResponseEntity<?> getProductVitaminDetailsByProductId(@PathVariable("productId") UUID productID) throws NotFoundException {
-        List<VitaminDetail> actMacros = productService.getProductVitaminDetailsByProductId(productID);
+        List<ProductVitaminDetail> actMacros = productService.getProductVitaminDetailsByProductId(productID);
         return new ResponseEntity<>(actMacros, HttpStatus.OK);
     }
 

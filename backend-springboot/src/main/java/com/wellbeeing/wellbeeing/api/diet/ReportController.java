@@ -16,7 +16,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,7 +46,7 @@ public class ReportController {
     @RequestMapping(path = "/report/{reportId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteReportById(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
         boolean reportDelStatus  = reportService.deleteReportById(reportId);
@@ -58,10 +58,10 @@ public class ReportController {
                                                               @PathVariable("reportId")UUID reportId,
                                                               @RequestBody @NonNull List<UUID> dishes) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportDelStatus  = reportService.deleteDishesFromReportByReportId(reportId, dishes);
+        Report reportDelStatus  = reportService.deleteDishesFromReportByReportId(reportId, dishes);
         return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
     }
 
@@ -70,10 +70,10 @@ public class ReportController {
                                                               @PathVariable("reportId")UUID reportId,
                                                               @RequestBody @NonNull List<UUID> products) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportDelStatus  = reportService.deleteProductsFromReportByReportId(reportId, products);
+        Report reportDelStatus  = reportService.deleteProductsFromReportByReportId(reportId, products);
         return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
     }
 
@@ -82,10 +82,10 @@ public class ReportController {
                                                               @PathVariable("reportId")UUID reportId,
                                                               @RequestBody @NonNull List<ReportDishDetail> dishes) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportAddStatus  = reportService.addDishesToReportByReportId(dishes, reportId);
+        Report reportAddStatus  = reportService.addDishesToReportByReportId(dishes, reportId);
         return new ResponseEntity<>(reportAddStatus, HttpStatus.OK);
     }
 
@@ -94,10 +94,10 @@ public class ReportController {
                                                                 @PathVariable("reportId")UUID reportId,
                                                                 @RequestBody @NonNull List<ReportProductDetail> products) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
-        boolean reportAddStatus  = reportService.addProductsToReportByReportId(products, reportId);
+        Report reportAddStatus  = reportService.addProductsToReportByReportId(products, reportId);
         return new ResponseEntity<>(reportAddStatus, HttpStatus.OK);
     }
 
@@ -108,17 +108,17 @@ public class ReportController {
         return new ResponseEntity<>(newReport, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/report", method = RequestMethod.GET)
+    /*@RequestMapping(path = "/report", method = RequestMethod.GET)
     public ResponseEntity<?> getReports(Principal principal) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         List<Report> reports = reportService.getReportsByProfileId(profileId);
         return new ResponseEntity<>(reports, HttpStatus.OK);
-    }
+    }*/
 
     @RequestMapping(path = "/report/{reportId}/details", method = RequestMethod.GET)
     public ResponseEntity<?> getReportDetailsByReportId(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
         return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
@@ -127,16 +127,25 @@ public class ReportController {
     @RequestMapping(path = "/report/{reportId}/actualize", method = RequestMethod.GET)
     public ResponseEntity<?> updateReportDerivedByReportId(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getId())){
+        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
         reportService.updateReportDerivedElementsByReportId(reportId);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/report/{date}", method = RequestMethod.GET)
-    public ResponseEntity<?> getReportByDate(Principal principal, @PathVariable("date") Date date) throws NotFoundException {
+    @RequestMapping(path = "/report/{date}/date", method = RequestMethod.GET)
+    public ResponseEntity<?> getReportByDate(Principal principal,
+                                             @PathVariable("date") LocalDate date) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         return new ResponseEntity<>(reportService.getReportByDateAndProfileId(date, profileId), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/report", method = RequestMethod.GET)
+    public ResponseEntity<?> getReportByMonthAndYear(Principal principal,
+                                                     @RequestParam(value = "month", defaultValue = "1" ) int month,
+                                                     @RequestParam(value = "year", defaultValue = "2020") int year) throws NotFoundException {
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        return new ResponseEntity<>(reportService.getReportsByMonthAndProfileId(month, year, profileId), HttpStatus.OK);
     }
 }
