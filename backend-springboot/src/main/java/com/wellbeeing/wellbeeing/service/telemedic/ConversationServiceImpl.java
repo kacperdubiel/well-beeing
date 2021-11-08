@@ -66,11 +66,7 @@ public class ConversationServiceImpl implements ConversationService {
             throws NotFoundException
     {
         Conversation conversation = conversationDAO
-                .findByFirstProfileAndSecondProfileAndConnectionType(profile1, profile2, connectionType);
-
-        if(conversation == null) {
-            conversation = conversationDAO.findByFirstProfileAndSecondProfileAndConnectionType(profile2, profile1, connectionType);
-        }
+                .findByProfilesAndConnectionType(profile1, profile2, connectionType);
 
         if(conversation == null) {
             throw new NotFoundException("Conversation between profile id " + profile1.getId() +

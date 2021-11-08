@@ -31,7 +31,16 @@ public interface ConversationDAO extends JpaRepository<Conversation, UUID> {
             "where c.secondProfile = :secondProfile and c.connectionType = :connType and c.messages is not empty " +
             "order by c.lastMessageDate desc")
     Page<Conversation> findBySecondProfileAndConnectionType(@Param("secondProfile") Profile secondProfile,
-                                                           @Param("connType") EConnectionType connectionType, Pageable pageable);
+                                                            @Param("connType") EConnectionType connectionType, Pageable pageable);
+
+    @Query("select c from Conversation c " +
+            "where (" +
+                        "(c.firstProfile = :profile1 and c.secondProfile = :profile2) " +
+                        "or (c.firstProfile = :profile2 and c.secondProfile = :profile1)" +
+                    ") and c.connectionType = :connType "
+    )
+    Conversation findByProfilesAndConnectionType(@Param("profile1") Profile profile1, @Param("profile2") Profile profile2,
+                                                 @Param("connType") EConnectionType connectionType);
 
     Conversation findByFirstProfileAndSecondProfileAndConnectionType(Profile firstProfile, Profile secondProfile,
                                                                      EConnectionType connectionType);
