@@ -20,7 +20,7 @@
                     v-on:click="mode === 'toTraining' ? this.$store.commit('setExerciseToTrainingId', ex.exerciseId) : null">
                     <td>{{ ex.exerciseId }}</td>
                     <td>{{ ex.name }}</td>
-                    <td>{{ ex.exerciseType }}</td>
+                    <td>{{ this.$func_global.mapExerciseType(ex.exerciseType) }}</td>
                     <td>{{ ex.caloriesBurned }}</td>
                     <td>{{ ex.owner }}</td>
                     <td>

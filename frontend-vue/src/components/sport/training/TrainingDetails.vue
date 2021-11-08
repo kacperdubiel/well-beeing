@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="col-xl-4 col-md-12 px-0">
                                         <p class="form-label">Trudność</p>
-                                        <p class="info-value" v-if="!edit">{{training.trainingDifficulty}}</p>
+                                        <p class="info-value" v-if="!edit">{{this.$func_global.mapTrainingDifficulty(training.trainingDifficulty)}}</p>
                                         <select
                                             v-model="editedTraining.trainingDifficulty"
                                             v-if="this.edit"
@@ -44,9 +44,8 @@
                                             @keypress="clearStatus"
                                         >
                                             <option disabled value="">Wybierz trudność</option>
-                                            <option>EASY</option>
-                                            <option>MEDIUM</option>
-                                            <option>HARD</option>
+                                            <option v-for="difficulty in difficultyOptions" :key="difficulty" :value="difficulty">{{this.$func_global.mapTrainingDifficulty(difficulty)}}</option>
+
                                         </select>
                                     </div>
                                     <div class="col-xl-3 col-md-12 px-0" v-if="!edit">
@@ -118,7 +117,7 @@
                                                         v-bind:class="{'opened': opened.includes(ex.exercise.exerciseId)}">
                                                         <td>{{ ex.exercise.exerciseId }}</td>
                                                         <td>{{ ex.exercise.name }}</td>
-                                                        <td>{{ ex.exercise.exerciseType }}</td>
+                                                        <td>{{ this.$func_global.mapExerciseType(ex.exercise.exerciseType) }}</td>
                                                         <td>{{ ex.caloriesBurned }}</td>
                                                         <td>{{ ex.repetitions }}</td>
                                                         <td>{{ ex.series }}</td>
@@ -284,6 +283,7 @@ export default {
     },
     data () {
         return {
+            difficultyOptions: ['EASY','MEDIUM','HARD'],
             edit: false,
             values: [],
             name: "",
@@ -536,6 +536,9 @@ p.has-error {
     font-weight: bold;
     text-align: left;
     padding-left: 0;
+}
+.form-label.white {
+    color: white;
 }
 .info-value {
     color: var(--GREY3);

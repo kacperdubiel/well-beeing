@@ -26,9 +26,9 @@ public class Exercise {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private EExerciseType exerciseType = EExerciseType.OTHER;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
-    @Column(name = "instruction")
+    @Column(name = "instruction", columnDefinition="TEXT")
     private String instruction;
     @Column(name = "isPrivate")
     private boolean isPrivate = false;

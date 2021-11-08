@@ -20,7 +20,7 @@
                                 </div>
                                 <div class="col-4 px-0">
                                     <p class="form-label">{{ edit ? 'Poprzedni typ' : 'Typ' }}</p>
-                                    <p class="info-value">{{exercise.exerciseType}}</p>
+                                    <p class="info-value">{{this.$func_global.mapExerciseType(exercise.exerciseType)}}</p>
                                 </div>
                                 <div class="col-3 px-0">
                                     <p class="form-label">kcal/h</p>
@@ -82,9 +82,8 @@
                                         @keypress="clearStatus"
                                     >
                                         <option disabled value="">Wybierz typ</option>
-                                        <option>OTHER</option>
-                                        <option>STRENGTH</option>
-                                        <option>CARDIO</option>
+                                        <option v-for="type in typeOptions" :key="type" :value="type">{{this.$func_global.mapExerciseType(type)}}</option>
+
                                     </select>
                                 </div>
                             </div>
@@ -190,6 +189,7 @@ export default {
     name: "ExerciseDetails",
     data () {
         return {
+            typeOptions: ['OTHER','STRENGTH','CARDIO'],
             edit: false,
             values: [],
             name: "",

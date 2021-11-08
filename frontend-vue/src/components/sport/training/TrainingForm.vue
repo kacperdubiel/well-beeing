@@ -33,9 +33,8 @@
                                         @keypress="clearStatus"
                                     >
                                         <option disabled value="">Wybierz trudność</option>
-                                        <option>EASY</option>
-                                        <option>MEDIUM</option>
-                                        <option>HARD</option>
+                                        <option v-for="difficulty in difficultyOptions" :key="difficulty" :value="difficulty">{{this.$func_global.mapTrainingDifficulty(difficulty)}}</option>
+
                                     </select>
                                 </div>
 
@@ -243,6 +242,7 @@ export default {
     },
     data () {
         return {
+            difficultyOptions: ['EASY','MEDIUM','HARD'],
             values: [],
             trainingId:-1,
             name: "",

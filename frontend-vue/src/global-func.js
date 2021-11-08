@@ -53,6 +53,26 @@ export const func_global = {
         else
             return 'Brak informacji'
     },
+    mapExerciseType(type) {
+        if(type === 'STRENGTH')
+            return 'Siłowe'
+        else if(type === 'CARDIO')
+            return 'Kardio'
+        else if(type === 'OTHER')
+            return 'Inne'
+        else
+            return 'Brak informacji'
+    },
+    mapTrainingDifficulty(difficulty) {
+        if(difficulty === 'EASY')
+            return 'Łatwy'
+        else if(difficulty === 'MEDIUM')
+            return 'Średni'
+        else if(difficulty === 'HARD')
+            return 'Trudny'
+        else
+            return 'Brak informacji'
+    },
     dateDayMonth(date) {
         return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth()+1).toString().padStart(2, '0');
     },

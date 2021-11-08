@@ -38,9 +38,7 @@
                                         @keypress="clearStatus"
                                     >
                                         <option disabled value="">Wybierz typ</option>
-                                        <option>OTHER</option>
-                                        <option>STRENGTH</option>
-                                        <option>CARDIO</option>
+                                        <option v-for="type in typeOptions" :key="type" :value="type">{{this.$func_global.mapExerciseType(type)}}</option>
                                     </select>
                                 </div>
                                 <div class="col-6 ps-0 mt-3">
@@ -126,6 +124,7 @@ export default {
     name: "ExerciseForm",
     data () {
         return {
+            typeOptions: ['OTHER','STRENGTH','CARDIO'],
             values: [],
             name: "",
             type: "",

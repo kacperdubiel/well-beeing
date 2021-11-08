@@ -12,7 +12,7 @@
         </div>
         <div class="row">
             <div class="col-12 additional">
-                {{exerciseSource.exerciseType}} | {{exerciseSource.caloriesBurned}} kcal
+                {{this.$func_global.mapExerciseType(exerciseSource.exerciseType)}} | {{exerciseSource.caloriesBurned}} kcal
             </div>
 
         </div>
