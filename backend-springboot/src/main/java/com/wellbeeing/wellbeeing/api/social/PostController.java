@@ -76,4 +76,11 @@ public class PostController {
                 .contentType(MediaType.parseMediaType("image/png"))
                 .body(file);
     }
+
+    @PatchMapping(path = "/{id}/delete")
+    public ResponseEntity<?> deletePost(@PathVariable(value = "id") long postId, Principal principal) throws NotFoundException {
+        postService.deletePost(postId, principal.getName());
+        Post deletedPost = postService.getPost(postId);
+        return new ResponseEntity<>(deletedPost, HttpStatus.OK);
+    }
 }

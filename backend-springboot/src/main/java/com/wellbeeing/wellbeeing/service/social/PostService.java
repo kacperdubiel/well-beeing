@@ -13,4 +13,5 @@ public interface PostService {
 
     Post addPost(Post post, String creatorName) throws NotFoundException;
     Post updatePost(long id, Post post, String updaterName) throws NotFoundException;
+    boolean deletePost(long postId, String cancellerName) throws NotFoundException;
 }

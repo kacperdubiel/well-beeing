@@ -67,4 +67,22 @@ public class PostServiceImpl implements PostService {
         return post;
 
     }
+
+    @Override
+    public boolean deletePost(long postId, String cancellerName) throws NotFoundException {
+        Post targetPost = postDAO.findPostByPostId(postId);
+
+        if (targetPost == null)
+            throw new NotFoundException(String.format("There's no post with id=%d", postId));
+
+        Profile cancellerProfile = userDAO.findUserByEmail(cancellerName).orElse(null).getProfile();
+        Profile postOwner = targetPost.getCreator();
+
+        if (cancellerProfile != postOwner)
+            throw new NotFoundException("That is not your post!");
+
+        targetPost.setDeleted(true);
+        postDAO.save(targetPost);
+        return true;
+    }
 }

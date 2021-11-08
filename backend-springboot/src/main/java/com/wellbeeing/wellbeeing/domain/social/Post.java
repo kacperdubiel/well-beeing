@@ -37,6 +37,9 @@ public class Post {
     @Column
     private boolean isSharing = false;
 
+    @Column
+    private boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "original_post_id")
     private Post originalPost = null;
