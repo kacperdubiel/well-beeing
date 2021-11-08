@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.service.social;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Post;
@@ -46,5 +47,24 @@ public class PostServiceImpl implements PostService {
         post.setCreator(user.getProfile());
         postDAO.save(post);
         return post;
+    }
+
+    @Override
+    public Post updatePost(long id, Post post, String updaterName) throws NotFoundException {
+        post.setPostId(id);
+        Post targetPost = postDAO.findPostByPostId(id);
+
+        if (targetPost == null)
+            throw new NotFoundException(String.format("There's no post with id=%d", id));
+
+        Profile updaterProfile = userDAO.findUserByEmail(updaterName).orElse(null).getProfile();
+        Profile postOwner = targetPost.getCreator();
+
+        if (updaterProfile != postOwner)
+            throw new NotFoundException("That is not your post!");
+
+        postDAO.save(post);
+        return post;
+
     }
 }
