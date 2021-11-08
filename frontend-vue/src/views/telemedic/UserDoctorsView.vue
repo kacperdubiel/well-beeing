@@ -5,7 +5,7 @@
 
         </header>
         <section>
-            <user-connections-component connection-type="WITH_DOCTOR"/>
+            <user-connections-component connection-type="WITH_DOCTOR" v-on:open-conversation="openConversation"/>
         </section>
     </div>
 </template>
@@ -26,7 +26,9 @@ export default {
         }
     },
     methods: {
-
+        openConversation(conversationId){
+            this.$router.push({ name: 'UserDoctorConversationView', params: { conversationId: conversationId } });
+        },
     },
     created(){
 

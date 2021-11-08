@@ -109,7 +109,7 @@
 
                                 <td class="align-right">
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
-                                            @click="openConversation(connection.profile.id)">
+                                            @click="getConversation(connection.profile.id)">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
                                     </button>
                                     <button v-if="!selectedAcceptState" class="btn-white m-r-5 btn-hover"
@@ -225,19 +225,47 @@ export default {
                 })
             }
         },
-        openConversation(profileId){
+        getConversation(profileId){
             this.axios.get(`http://localhost:8090/conversations/profile/${profileId}/type/${this.connectionType}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
             })
                 .then(response => {
-                    this.$emit('open-conversation', response.data.id)
+                    this.openConversation(response.data.id)
+                })
+                .catch(e => {
+                    console.log(e);
+                    this.addConversation(profileId);
+                })
+        },
+        addConversation(otherUserId){
+            const data = {
+                "connectionType": this.connectionType,
+                "firstProfile": {
+                    "id": otherUserId,
+                },
+                "secondProfile": {
+                    "id": this.userId,
+                },
+            }
+
+            this.axios({
+                method: 'post',
+                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                url: `http://localhost:8090/conversations`,
+                data: data
+            })
+                .then(response => {
+                    this.openConversation(response.data.id)
                 })
                 .catch(e => {
                     console.log(e);
                 })
         },
+        openConversation(conversationId){
+            this.$emit('open-conversation', conversationId)
+        }
     },
     created(){
         this.isConnectionTypeCorrect();
@@ -273,9 +301,8 @@ export default {
     text-align: left;
 }
 
-.user-name-link a {
-    color: white;
-    text-decoration: none;
+.user-name-link span {
+    cursor: pointer;
 }
 
 .specialists-table tbody tr:hover {

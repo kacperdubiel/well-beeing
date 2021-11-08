@@ -103,7 +103,8 @@
                                     </ul>
                                 </td>
                                 <td class="align-right">
-                                    <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover">
+                                    <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
+                                            @click="getConversation(getOtherUserId(connection))">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
                                     </button>
                                     <button class="btn-white btn-hover"
@@ -201,6 +202,50 @@ export default {
                 })
             }
         },
+        getOtherUserId(connection){
+            return connection.profile.id !== this.userId ? connection.profile.id : connection.connectedWith.id;
+        },
+        getConversation(profileId){
+            this.axios.get(`http://localhost:8090/conversations/profile/${profileId}/type/${this.connectionType}`, {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    this.openConversation(response.data.id)
+                })
+                .catch(e => {
+                    console.log(e);
+                    this.addConversation(profileId);
+                })
+        },
+        addConversation(otherUserId){
+            const data = {
+                "connectionType": this.connectionType,
+                "firstProfile": {
+                    "id": this.userId,
+                },
+                "secondProfile": {
+                    "id": otherUserId,
+                },
+            }
+
+            this.axios({
+                method: 'post',
+                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                url: `http://localhost:8090/conversations`,
+                data: data
+            })
+                .then(response => {
+                    this.openConversation(response.data.id)
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
+        openConversation(conversationId){
+            this.$emit('open-conversation', conversationId)
+        }
     },
     created(){
         this.isConnectionTypeCorrect();
