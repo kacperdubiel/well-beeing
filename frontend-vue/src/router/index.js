@@ -1,9 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Feed from "@/views/social/Feed";
-import RoleRequestsView from "@/views/social/RoleRequestsView";
-import LoginAdminView from "@/views/social/LoginAdminView";
-import RoleRequestViewAdmin from "@/views/social/RoleRequestsViewAdmin";
+import FeedView from "@/views/social/feed/FeedView";
+import RoleRequestsView from "@/views/social/role-requests/RoleRequestsView";
+import LoginAdminView from "@/views/social/admin/LoginAdminView";
+import RoleRequestViewAdmin from "@/views/social/admin/RoleRequestsViewAdmin";
 import SportView from "@/views/sport/SportView";
 import TrainingView from "@/components/sport/training/TrainingView";
 import ExerciseView from "@/components/sport/exercise/ExerciseView";
@@ -28,8 +28,8 @@ const routes = [
   },
   {
     path: '/feed',
-    name: 'Feed',
-    component: Feed
+    name: 'FeedView',
+    component: FeedView
   },
   {
     path: '/sport',

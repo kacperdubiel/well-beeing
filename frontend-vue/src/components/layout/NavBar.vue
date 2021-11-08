@@ -3,7 +3,7 @@
 <!--        <div class="container-fluid">-->
 <!--            <div class="row w-100">-->
                 <div class="col-1">
-                    <router-link to="/feed">
+                    <router-link :to="{ name: 'FeedView' }">
                         <img src="@/assets/bee.png" alt="Bee image" height="70">
                     </router-link>
 <!--                    <a href="/feed">-->

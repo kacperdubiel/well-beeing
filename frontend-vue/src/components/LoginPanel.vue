@@ -203,7 +203,7 @@ export default {
                 })
                 this.$store.commit('setRoles', roles);
                 console.log('role', this.$store.getters.getRoles)
-                this.$router.push({name: 'Feed'})
+                this.$router.push({name: 'FeedView'})
             }).catch(error => {
                 console.log(error.response);
             });
