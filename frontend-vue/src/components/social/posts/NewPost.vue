@@ -2,7 +2,7 @@
     <div class="section-2-bg">
         <div class="d-flex flex-row px-4 py-3">
             <div class="d-flex flex-column text-start">
-                <img :src="profilePictureSrc" alt="Profile picture"  id="profile-picture" height="60" width="60">
+                <img :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
             <div class="d-flex flex-column align-self-center w-100 ms-3">
                 <div class="grow-wrap">
@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div class="row text-start px-4 pb-3" v-if="this.post.postContent !== '' || errorPost || successPost">
+        <div class="row text-start px-4 pb-3" v-if="this.post.postContent !== '' || errorPost">
             <div class="col-12 col-md-7">
                 <label for="post-picture" class="form-label">Załącz zdjęcie</label>
                 <input
@@ -39,13 +39,6 @@
             <div class="col">
                 <p class="has-error m-0">
                     Proszę uzupełnić treść posta!
-                </p>
-            </div>
-        </div>
-        <div class="row text-start mb-3 px-2" v-if="successPost">
-            <div class="col">
-                <p class="success-social m-0">
-                    Dodano posta!
                 </p>
             </div>
         </div>
@@ -99,6 +92,7 @@ export default {
                 // this.getMyRoleRequests()
                 this.successPost = true
                 this.submittingPost = false
+                this.$emit('refresh:posts')
             }).catch(error => {
                 console.log(error.response)
             });
@@ -130,10 +124,6 @@ export default {
 </script>
 
 <style scoped>
-#profile-picture {
-    border-radius: 50%;
-}
-
 textarea {
     background-color: var(--GREY2);
     border: none;

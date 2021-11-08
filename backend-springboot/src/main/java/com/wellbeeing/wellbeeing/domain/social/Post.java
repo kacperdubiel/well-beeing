@@ -24,7 +24,7 @@ public class Post {
     private Date addedDate = new Date();
     @Column(unique = true)
     private String postImgPath;
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String postContent;
     @Enumerated(EnumType.STRING)
     @Column

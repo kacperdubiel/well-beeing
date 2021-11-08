@@ -107,6 +107,10 @@ button[class^="btn-panel-"] {
     background-color: var(--DARK-YELLOW);
 }
 
+.profile-picture {
+    border-radius: 50%;
+}
+
 p.has-error {
     color: var(--INTENSE-PINK);
 }
