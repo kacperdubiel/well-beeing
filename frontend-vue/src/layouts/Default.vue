@@ -1,5 +1,5 @@
 <template>
-    <div id="app-container" class="vh-100">
+    <div id="app-container">
         <div class="container-fluid">
             <div class="row">
                 <nav-bar />

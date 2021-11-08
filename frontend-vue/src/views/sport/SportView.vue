@@ -8,10 +8,9 @@
 import SportComponent from "@/components/sport/SportView";
 export default {
     name: "SportView",
-  components: {SportComponent}
+    components: {SportComponent}
 }
 </script>
 
 <style scoped>
-
 </style>

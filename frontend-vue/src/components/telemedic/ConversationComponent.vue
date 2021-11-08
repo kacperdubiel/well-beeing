@@ -42,7 +42,7 @@ export default {
     },
     methods: {
         getProfile(){
-            this.axios.get(`http://localhost:8090/profile`, {
+            this.axios.get(`${this.apiURL}profile/my`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -56,7 +56,7 @@ export default {
                 })
         },
         getConversation(){
-            this.axios.get(`http://localhost:8090/conversations/${this.conversationId}`, {
+            this.axios.get(`${this.apiURL}conversations/${this.conversationId}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }

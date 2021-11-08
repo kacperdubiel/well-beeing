@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Feed from "@/views/social/Feed";
-import SocialView from "@/views/social/SocialView";
 import UserMeasuresView from "@/views/telemedic/UserMeasuresView";
 import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
 import UserDoctorConversationsView from "@/views/telemedic/UserDoctorConversationsView";
@@ -41,11 +40,6 @@ const routes = [
     path: '/feed',
     name: 'Feed',
     component: Feed
-  },
-  {
-    path: '/social',
-    name: 'SovialView',
-    component: SocialView
   },
   {
     path: '/telemedic/measures',
@@ -97,6 +91,7 @@ const routes = [
     name: 'DoctorUserConversationView',
     component: DoctorUserConversationView
   },
+  {
     path: '/sport',
     redirect: {name: 'TrainingPlansView'},
     name: 'SportView',

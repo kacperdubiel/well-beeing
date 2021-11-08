@@ -27,7 +27,7 @@ export default {
     },
     methods: {
         getProfile(){
-            this.axios.get('http://localhost:8090/profile', {
+            this.axios.get(`${this.apiURL}profile/my`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }

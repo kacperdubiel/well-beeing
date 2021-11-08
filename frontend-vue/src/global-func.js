@@ -54,6 +54,16 @@ export const func_global = {
             return moment(String(date)).format('DD/MM/YYYY')
         }
     },
+    formatTime(date){
+        if (date) {
+            return moment(String(date)).format('HH:mm')
+        }
+    },
+    formatDateTime(date){
+        if (date) {
+            return moment(String(date)).format('DD/MM/YYYY HH:mm')
+        }
+    },
     formatDateDatePicker(date) {
         if (date) {
             return moment(String(date)).format('YYYY-MM-DD')

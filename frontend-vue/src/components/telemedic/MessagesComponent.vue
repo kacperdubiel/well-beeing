@@ -3,7 +3,7 @@
         <div id="messages-box">
             <div v-for="message in messages" v-bind:key="message.id" class="message-row">
                 <div class="message-datetime">
-                    {{ formatDate(message.createDate) }}
+                    {{ this.$func_global.formatDateTime(message.createDate) }}
                 </div>
                 <div class="message" :class="getClass(message)">
                     <span v-if="message.messageType === 'TEXT'">
@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import moment from "moment";
 
 export default {
     name: "MessagesComponent",
@@ -61,7 +60,7 @@ export default {
             }
         },
         getMessages(){
-            this.axios.get(`http://localhost:8090/conversations/${this.conversation.id}/messages`, {
+            this.axios.get(`${this.apiURL}conversations/${this.conversation.id}/messages`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -84,7 +83,7 @@ export default {
             this.axios({
                 method: 'put',
                 headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
-                url: `http://localhost:8090/conversations/${this.conversation.id}/mark-as-read`
+                url: `${this.apiURL}conversations/${this.conversation.id}/mark-as-read`
             })
                 .catch(e => {
                     console.log(e);
@@ -95,7 +94,7 @@ export default {
             if(messageBox){
                 const lastMessage = messageBox.lastElementChild;
                 if(lastMessage){
-                    lastMessage.scrollIntoView();
+                    lastMessage.scrollIntoView({ block: 'nearest', inline: 'start' });
                 }
             }
         },
@@ -112,7 +111,7 @@ export default {
                 this.axios({
                     method: 'post',
                     headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
-                    url: `http://localhost:8090/messages`,
+                    url: `${this.apiURL}messages`,
                     data: data
                 })
                     .then(() => {
@@ -122,11 +121,6 @@ export default {
                     .catch(e => {
                         console.log(e);
                     })
-            }
-        },
-        formatDate(date){
-            if (date) {
-                return moment(String(date)).format('DD/MM/YYYY HH:mm')
             }
         },
     },

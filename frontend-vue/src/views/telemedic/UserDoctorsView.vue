@@ -32,7 +32,7 @@ export default {
             this.$router.push({ name: 'UserDoctorConversationView', params: { conversationId: conversationId } });
         },
         openSearchSpecialist(){
-            this.$router.push({ name: 'SearchDoctorView' });
+            this.$router.push({ name: 'SearchDoctorsView' });
         },
     },
     created(){

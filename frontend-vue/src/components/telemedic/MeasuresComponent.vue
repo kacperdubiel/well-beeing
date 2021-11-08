@@ -170,8 +170,8 @@
                         </thead>
                         <tbody>
                         <tr v-for="measure in measures" v-bind:key="measure.id">
-                            <td>{{ formatDate(measure.measureDate) }}</td>
-                            <td>{{ formatTime(measure.measureDate) }}</td>
+                            <td>{{ this.$func_global.formatDate(measure.measureDate) }}</td>
+                            <td>{{ this.$func_global.formatTime(measure.measureDate) }}</td>
                             <td>{{ measure.value }} {{ measure.measureType.unit }}</td>
                             <td v-if="this.isModificationAllowed" class="align-right">
                                 <button class="btn-white m-r-5 btn-hover"
@@ -196,7 +196,6 @@
 
 <script>
 import { DatePicker } from 'v-calendar';
-import moment from "moment";
 
 export default {
     name: 'MeasuresComponent',
@@ -231,7 +230,7 @@ export default {
     },
     methods: {
         getProfile(){
-            this.axios.get('http://localhost:8090/profile', {
+            this.axios.get(`${this.apiURL}profile/my`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -246,7 +245,7 @@ export default {
                 })
         },
         getMeasureTypes() {
-            this.axios.get('http://localhost:8090/measure-types', {
+            this.axios.get(`${this.apiURL}measure-types`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -264,7 +263,7 @@ export default {
         },
         getMeasures() {
             if(this.userId && this.userId.length > 0){
-                this.axios.get(`http://localhost:8090/measures/user/${this.userId}/type/${this.selectedMeasureType.id}`, {
+                this.axios.get(`${this.apiURL}measures/user/${this.userId}/type/${this.selectedMeasureType.id}`, {
                     headers: {
                         Authorization: 'Bearer ' + this.$store.getters.getToken
                     }
@@ -296,7 +295,7 @@ export default {
             this.axios({
                 method: 'post',
                 headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
-                url: `http://localhost:8090/measures`,
+                url: `${this.apiURL}measures`,
                 data: data
             })
                 .then(() => {
@@ -316,7 +315,7 @@ export default {
             this.axios({
                 method: 'put',
                 headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
-                url: `http://localhost:8090/measures`,
+                url: `${this.apiURL}measures`,
                 data: data
             })
                 .then(() => {
@@ -330,7 +329,7 @@ export default {
             this.axios({
                 method: 'delete',
                 headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
-                url: `http://localhost:8090/measures/${this.selectedMeasure.id}`,
+                url: `${this.apiURL}measures/${this.selectedMeasure.id}`,
             })
                 .then(() => {
                     this.getMeasures();
@@ -338,16 +337,6 @@ export default {
                 }).catch(e => {
                     console.log(e);
                 })
-        },
-        formatDate(date){
-            if (date) {
-                return moment(String(date)).format('DD/MM/YYYY')
-            }
-        },
-        formatTime(date){
-            if (date) {
-                return moment(String(date)).format('HH:mm')
-            }
         },
         clearInputs(){
             this.measureDate = new Date();

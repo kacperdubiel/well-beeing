@@ -159,7 +159,7 @@ export default {
             }
         },
         getProfile(){
-            this.axios.get('http://localhost:8090/profile', {
+            this.axios.get(`${this.apiURL}profile/my`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -173,7 +173,7 @@ export default {
                 })
         },
         getUserConnections() {
-            this.axios.get(`http://localhost:8090/profile-connections/from-me/type/${this.connectionType}/accepted/${this.selectedAcceptState}`, {
+            this.axios.get(`${this.apiURL}profile-connections/from-me/type/${this.connectionType}/accepted/${this.selectedAcceptState}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -193,7 +193,7 @@ export default {
             if(this.selectedUserConnection){
                 this.axios({
                     method: 'delete',
-                    url: `http://localhost:8090/profile-connections/${this.selectedUserConnection.id}`,
+                    url: `${this.apiURL}profile-connections/${this.selectedUserConnection.id}`,
                     headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
                 }).then(() => {
                     this.getUserConnections();
@@ -206,7 +206,7 @@ export default {
             return connection.profile.id !== this.userId ? connection.profile.id : connection.connectedWith.id;
         },
         getConversation(profileId){
-            this.axios.get(`http://localhost:8090/conversations/profile/${profileId}/type/${this.connectionType}`, {
+            this.axios.get(`${this.apiURL}conversations/profile/${profileId}/type/${this.connectionType}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -233,7 +233,7 @@ export default {
             this.axios({
                 method: 'post',
                 headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
-                url: `http://localhost:8090/conversations`,
+                url: `${this.apiURL}conversations`,
                 data: data
             })
                 .then(response => {

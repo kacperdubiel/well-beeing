@@ -4,8 +4,8 @@
             Błąd ładowania.
         </div>
         <div v-if="componentError === false" class="container mt-4">
-            <div class="row mb-2 bottom-border"></div>
-            <div v-for="conversation in conversations" v-bind:key="conversation.id" class="row pb-2 mb-2 bottom-border"
+            <div v-if="conversations" class="row mb-2 bottom-border"></div>
+            <div v-for="conversation in conversations" v-bind:key="conversation.id" class="row pb-2 mb-2 bottom-border clickable"
                 @click="$emit('open-conversation', conversation.id)"
             >
                 <div class="col-2 col-xl-1">
@@ -70,7 +70,7 @@ export default {
             }
         },
         getProfile(){
-            this.axios.get('http://localhost:8090/profile', {
+            this.axios.get(`${this.apiURL}profile/my`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -85,7 +85,7 @@ export default {
                 })
         },
         getConversations() {
-            this.axios.get(`http://localhost:8090/conversations/as-specialist/${this.asSpecialist}/type/${this.connectionType}`, {
+            this.axios.get(`${this.apiURL}conversations/as-specialist/${this.asSpecialist}/type/${this.connectionType}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -138,6 +138,10 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+div.clickable:hover {
+    color: #d2d2d2;
 }
 
 </style>

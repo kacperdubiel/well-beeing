@@ -151,7 +151,7 @@ export default {
             }
         },
         getDoctorSpecializations() {
-            this.axios.get('http://localhost:8090/doctor-specializations', {
+            this.axios.get(`${this.apiURL}doctor-specializations`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -170,14 +170,14 @@ export default {
         getSpecialists() {
             let endpoint = "";
             if(this.connectionType === "WITH_DOCTOR"){
-                endpoint = `doctors/doctor-specializations/${this.selectedDoctorSpecialization.id}`;
+                endpoint = `profile/doctors/doctor-specializations/${this.selectedDoctorSpecialization.id}`;
             } else if(this.connectionType === "WITH_DIETICIAN"){
                 endpoint = "dieticians";
             } else if(this.connectionType === "WITH_TRAINER"){
                 endpoint = "trainers";
             }
 
-            this.axios.get(`http://localhost:8090/${endpoint}?like=${this.searchValue}`, {
+            this.axios.get(`${this.apiURL}${endpoint}?like=${this.searchValue}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
@@ -205,7 +205,7 @@ export default {
 
             this.axios({
                 method: 'post',
-                url: `http://localhost:8090/profile-connections`,
+                url: `${this.apiURL}profile-connections`,
                 headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
                 data: data
             })
