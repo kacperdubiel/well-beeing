@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" backdrop="static" id="profileCardFormModal" tabindex="-1" aria-labelledby="cardModalLabel" aria-hidden="true">
+    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="profileCardFormModal" tabindex="-1" aria-labelledby="cardModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content card-form-modal-content">
                     <div class="modal-header">
@@ -162,16 +162,15 @@
                                             label="name"/>
                                     </div>
                                  </div>
-                                <hr/>
                             </div>
                             <div style="justify-content: flex-end; flex-direction: row; display: flex;">
                                 <button class="btn-card-panel-diet" @click="updateCardData">Zapisz</button>
                             </div>
-                            <div style="justify-content: flex-end; flex-direction: row; display: flex;">
-                                <p class="has-error" v-if="this.errorForm">Upewnij się, że poprawnie uzupełniłeś oznaczone gwiazdką dane!</p>
+                            <div v-if="this.successForm" class="alert alert-success" role="alert">
+                                Zaktualizowano dane
                             </div>
-                            <div style="justify-content: flex-end; flex-direction: row; display: flex;">
-                                <p class="no-error" v-if="this.successForm">Zaktualizowano dane</p>
+                            <div v-if="this.errorForm" class="alert alert-danger" role="alert">
+                                Upewnij się, że poprawnie uzupełniłeś oznaczone gwiazdką dane!
                             </div>
                         </div>
                     </div>
@@ -274,13 +273,7 @@ export default {
  .card-form-modal-content{
      background-color: white;
      color: black;
-     border-radius: 25px;
-     padding: 15px;
- }
- p.has-error {
-    color: var(--INTENSE-PINK);
- }
- p.no-error {
-    color: green
+     border-radius: 15px;
+     padding: 10px;
  }
 </style>
