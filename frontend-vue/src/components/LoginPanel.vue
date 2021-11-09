@@ -145,12 +145,15 @@ export default {
                 "email": this.email,
                 "password": this.password
             }
-            this.axios.post('http://localhost:8090/' + 'authenticate', data).then((response) => {
+            const url = `${this.apiURL}authenticate`
+            this.axios.post(url, data).then((response) => {
                 this.$store.commit('setToken', response.data['jwt']);
                 localStorage.setItem('token', response.data.jwt)
                 console.log(this.$store.getters.getToken)
+                this.$store.commit('setEmail', this.email);
+                console.log(this.$store.getters.getEmail)
+                this.getUserInfo()
                 this.clearInputs()
-                this.$router.push({name: 'Feed'})
             }).catch(error => {
                 console.log(error.response);
                 this.wrongLoginData = true
@@ -170,7 +173,8 @@ export default {
                 "email": this.newEmail,
                 "password": this.newPassword
             }
-            this.axios.post('http://localhost:8090/' + 'register', data).then((response) => {
+            const url = `${this.apiURL}register`
+            this.axios.post(url, data).then((response) => {
                 console.log(response.data)
                 this.successRegister = true
                 this.clearInputs()
@@ -180,7 +184,29 @@ export default {
                 }
             });
             this.submittingRegister = false
-            document.getElementsByClassName('')
+        },
+        getUserInfo () {
+            const url = `${this.apiURL}profile/my`
+
+            this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
+                this.$store.commit('setFirstName', response.data['firstName']);
+                this.$store.commit('setLastName', response.data['lastName']);
+                this.$store.commit('setProfileId', response.data['id']);
+                this.$store.commit('setProfileImageSrc', response.data['profileImgPath']);
+                console.log(this.$store.getters.getFirstName)
+                console.log(this.$store.getters.getLastName)
+                console.log(this.$store.getters.getProfileId)
+                console.log(this.$store.getters.getProfileImageSrc)
+                let roles = []
+                response.data['roles'].forEach((e) => {
+                    roles.push(e['role'])
+                })
+                this.$store.commit('setRoles', roles);
+                console.log('role', this.$store.getters.getRoles)
+                this.$router.push({name: 'Feed'})
+            }).catch(error => {
+                console.log(error.response);
+            });
         },
         clearStatus() {
             this.errorLogin = false

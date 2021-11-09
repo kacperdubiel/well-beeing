@@ -8,7 +8,7 @@
 
 <script>
     const defaultLayout = "default";
-
+    import 'vue-select/dist/vue-select.css';
     export default {
         computed: {
             layout() {
@@ -20,12 +20,17 @@
 
 <style>
 @import "./assets/colors.css";
+
 #app {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: var(--GREY3);
+}
+
+body {
+    color: var(--GREY3);
 }
 
 .side-menu .router-link-exact-active, .side-menu .router-link-active {
@@ -34,7 +39,14 @@
 
 .section-bg {
     background-color: var(--GREY2);
-    border-radius: 35px;
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.section-2-bg {
+    background-color: var(--GREY3);
+    border-radius: 20px;
     color: white;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
@@ -59,6 +71,8 @@ button[class^="btn-panel-"] {
     padding: 0.5rem 1rem;
     font-size: 1.25rem;
     font-weight: bold;
+    background-color: var(--GREY1);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
 button[class^="btn-icon-panel-"] {
@@ -82,7 +96,7 @@ button[class^="btn-card-panel-"] {
 
 
 .btn-panel-telemedic {
-    background-color: var(--TELEMEDIC);
+    background-color: var(--TELEMEDIC) !important;
 }
 
 .tab {
@@ -92,11 +106,11 @@ button[class^="btn-card-panel-"] {
 }
 
 .btn-panel-sport {
-    background-color: var(--SPORT);
+    background-color: var(--SPORT) !important;
 }
 
 .btn-panel-diet {
-    background-color: var(--DIET);
+    background-color: var(--DIET) !important;
 }
 
 .btn-icon-panel-diet {
@@ -108,9 +122,126 @@ button[class^="btn-card-panel-"] {
 }
 
 .btn-panel-social {
-    background-color: var(--DARK-YELLOW);
+    background-color: var(--DARK-YELLOW) !important;
 }
 
+p.has-error {
+    color: var(--INTENSE-PINK);
+}
+
+p.success-social {
+    color: var(--DARK-YELLOW);
+}
+
+input.has-error {
+    border: 1px solid var(--INTENSE-PINK);
+}
+
+.table-dark {
+    --bs-table-bg: var(--GREY2);
+}
+
+.no-bg {
+    background-color: transparent;
+    border: none;
+}
+
+
+#search-input {
+    border-radius: 40px;
+    height: 50px;
+    border: none;
+}
+.test {
+    background-color: #D83D68;
+}
+input{
+    text-indent: 10px;
+}
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+    border-color: rgb(133, 133, 133);
+    text-transform: lowercase;
+    font-variant: small-caps;
+    background-color: white;
+}
+
+.style-chooser .vs__clear,
+.style-chooser .vs__open-indicator {
+    fill: #394066;
+}
+.style-chooser .vs__selected {
+    background-color: var(--SPORT);
+    color: white;
+    background-blend-mode: color;
+}
+.style-chooser .vs__deselect {
+    fill: var(--GREY3);
+}
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+    background-color: var(--DARK-YELLOW);
+}
+.section-bg ::-webkit-scrollbar {
+    background-color: var(--GREY2);
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(200,200,200,1);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--LIGHT-YELLOW);
+    -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
+}
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.telemedic-section {
+    padding: 25px 20px;
+}
+
+.pagination > li.sport-page > a
+{
+    background-color: white;
+    color: var(--SPORT);
+}
+
+.pagination > li.sport-page > a:focus,
+.pagination > li.sport-page > a:hover,
+.pagination > li.sport-page > span:focus,
+.pagination > li.sport-page > span:hover
+{
+    color: white;
+    background-color: var(--SPORT);
+    border-color: var(--SPORT);
+    cursor: pointer;
+}
+
+.pagination > .sport-page.active > a
+{
+    color: white;
+    background-color: var(--SPORT) !Important;
+    border: solid 1px var(--SPORT) !Important;
+}
+
+.pagination > .sport-page.active > a:hover
+{
+    background-color: var(--SPORT) !Important;
+    border: solid 1px var(--SPORT);
+}
  p.has-error {
     color: var(--INTENSE-PINK);
  }

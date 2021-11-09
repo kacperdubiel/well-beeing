@@ -9,12 +9,14 @@ import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -80,8 +82,22 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Training getTraining(long trainingId) {
-        return trainingDAO.findById(trainingId).orElse(null);
+    public Training getTraining(long trainingId, String userName) throws NotFoundException {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Training training = trainingDAO.findById(trainingId).orElse(null);
+        if (training == null)
+        {
+            throw new NotFoundException(String.format("Training plan with id=%d doesn't exist", trainingId));
+        }
+        training.setCaloriesBurned(training.caloriesBurned(finalWeight));
+        return training;
     }
 
     @Override
@@ -112,13 +128,18 @@ public class TrainingServiceImpl implements TrainingService{
 
 
             ExerciseInTraining ex_in_training =
-                    exerciseInTrainingDAO.getExerciseInTrainingByExercise_ExerciseIdAndTraining_TrainingId(exerciseId, trainingId);
+                    exerciseInTrainingDAO.getExerciseInTrainingByExerciseExerciseIdAndTrainingTrainingId(exerciseId, trainingId);
             if (ex_in_training == null)
                 throw new NotFoundException("Couldn't find the exercise in training!");
             Profile creator = ex_in_training.getTraining().getCreator();
             if (creator == null || creator.getProfileUser().getUsername().equals(clientName))
             {
+                ex_in_training.getTraining().removeExerciseFromTraining(ex_in_training.getExercise().getExerciseId());
+                ex_in_training.getExercise().removeTrainingFromExercise(ex_in_training.getTraining().getTrainingId());
+                exerciseDAO.save(ex_in_training.getExercise());
+                trainingDAO.save(ex_in_training.getTraining());
                 exerciseInTrainingDAO.delete(ex_in_training);
+                System.out.println("DELETED" + ex_in_training.getId());
                 return true;
             }
             else
@@ -131,8 +152,38 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public Page<Training> getAllTrainings(Pageable pageable) {
-        return trainingDAO.findAll(pageable);
+    public Page<Training> getAllTrainings(Pageable pageable, String userName) {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Page<Training> trainingPage = trainingDAO.findAll(pageable);
+        trainingPage.getContent().forEach(training -> training.setCaloriesBurned(training.caloriesBurned(finalWeight)));
+        return trainingPage;
+    }
+
+    @Override
+    public Page<Training> getAllTrainingsFiltered(Specification<Training> trainingSpec, Pageable pageable, String userName) throws NotFoundException {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        Page<Training> trainingPage = trainingDAO.findAll(trainingSpec, pageable);
+        trainingPage.getContent().forEach(training -> {
+            training.setCaloriesBurned(training.caloriesBurned(finalWeight));
+            training.getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(finalWeight)));
+            training.getExerciseInTrainings().forEach(ex -> ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(finalWeight)));
+        });
+
+        return trainingPage;
     }
 
     @Override
@@ -155,6 +206,12 @@ public class TrainingServiceImpl implements TrainingService{
         if(targetTraining == null)
             throw new NotFoundException("There's no training with id=" + training.getTrainingId());
 
+        trainingDAO.save(training);
+        return training;
+    }
+
+    @Override
+    public Training partialUpdateTraining(Training training) {
         trainingDAO.save(training);
         return training;
     }

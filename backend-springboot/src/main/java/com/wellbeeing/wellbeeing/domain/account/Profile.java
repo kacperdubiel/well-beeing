@@ -54,6 +54,13 @@ public class Profile {
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private User profileUser;
+
+    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    private DoctorProfile doctorProfile;
+    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    private TrainerProfile trainerProfile;
+    // TODO: Add dietician profile link!
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
@@ -92,18 +99,54 @@ public class Profile {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL)
     private Set<Like> profileLikes = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "commenter", cascade = CascadeType.ALL)
     private Set<Comment> profileComments = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<Post> profilePosts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "giver", cascade = CascadeType.ALL)
     private Set<Opinion> profileGivenOpinions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<Opinion> profileReceivedOpinions = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "submitter", cascade = CascadeType.ALL)
+    private Set<RoleRequest> profileRoleRequests = new HashSet<>();
+
+    public Profile(String firstName, String lastName, Date birthday, User profileUser) {
+        System.out.println("Entered constructor");
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.profileUser = profileUser;
+        this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
+        profileUser.setProfile(this);
+        this.id = profileUser.getId();
+        System.out.println("Escaped constructor");
+    }
+
+
+    public Profile(String firstName, String lastName, Date birthday, ESportTag eSportTag, ENutritionTag eNutritionTag, User profileUser) {
+        System.out.println("Entered constructor");
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.eSportTag = eSportTag;
+        this.eNutritionTag = eNutritionTag;
+        this.profileUser = profileUser;
+        this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
+        profileUser.setProfile(this);
+        this.id = profileUser.getId();
+        System.out.println("Escaped constructor");
+    }
 }

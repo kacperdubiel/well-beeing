@@ -1,27 +1,37 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
+import com.itextpdf.text.Document;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.*;
-import com.wellbeeing.wellbeeing.domain.sport.Training;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlanRequest;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
+import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.service.sport.PDFFromTrainingPlan;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
@@ -35,8 +45,8 @@ public class TrainingPlanController {
     }
 
     @RequestMapping(path = "/{id}")
-    public ResponseEntity<?> getTrainingPlanById(@PathVariable(value = "id") Long trainingPlanId) {
-        return new ResponseEntity<>(trainingPlanService.getTrainingPlan(trainingPlanId), HttpStatus.OK);
+    public ResponseEntity<?> getTrainingPlanById(@PathVariable(value = "id") Long trainingPlanId, Principal principal) throws NotFoundException {
+        return new ResponseEntity<>(trainingPlanService.getTrainingPlan(trainingPlanId, principal.getName()), HttpStatus.OK);
     }
 
     @GetMapping(path = "")
@@ -45,7 +55,7 @@ public class TrainingPlanController {
     }
 
     @GetMapping(path = "/my")
-    public ResponseEntity<?> getMyTrainingPlans(Principal principal) {
+    public ResponseEntity<?> getMyTrainingPlans(Principal principal) throws NotFoundException {
         return new ResponseEntity<>(trainingPlanService.getMyTrainingPlans(principal.getName()), HttpStatus.OK);
     }
 
@@ -63,13 +73,7 @@ public class TrainingPlanController {
     @RolesAllowed({ERole.Name.ROLE_TRAINER, ERole.Name.ROLE_BASIC_USER})
     public ResponseEntity<?> addTrainingPlan(@RequestBody @NonNull AddTrainingPlanWithOwnerRequest request, Principal principal) {
         TrainingPlan createdTrainingPlan;
-        try {
             createdTrainingPlan = trainingPlanService.addTrainingPlan(request.getTrainingPlan(), principal.getName(), request.getOwnerId());
-        } catch (Exception e) {
-            System.out.println("Exception message: "+e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-
-        }
         if (createdTrainingPlan == null) {
             return new ResponseEntity<>("Couldn't create training plan!", HttpStatus.CONFLICT);
         }
@@ -77,35 +81,25 @@ public class TrainingPlanController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTrainingPlan(@PathVariable(value = "id") Long trainingPlanId ) {
-        try {
+    public ResponseEntity<?> deleteTrainingPlan(@PathVariable(value = "id") Long trainingPlanId ) throws NotFoundException {
             trainingPlanService.deleteTrainingPlan(trainingPlanId);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.OK);
-        }
         return new ResponseEntity<>("Successfully deleted training plan with id=" + trainingPlanId, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/add-position")
-    public ResponseEntity<?> addPositionToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @RequestBody @NonNull AddTrainingToPlanRequest request, Principal principal) {
+    public ResponseEntity<?> addPositionToTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @RequestBody @NonNull AddTrainingToPlanRequest request, Principal principal) throws NotFoundException, IllegalArgumentException {
         TrainingPosition trainingPosition = null;
-        try {
-            trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+        trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), request.getTimeOfDay(), principal.getName());
+
 
         return new ResponseEntity<>(trainingPosition, HttpStatus.OK);
 
     }
 
     @PatchMapping("/{id}/remove-position/{positionId}")
-    public ResponseEntity<?> removePositionFromTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @PathVariable(value = "positionId")Long positionId, Principal principal) {
-        try {
-            trainingPlanService.removePositionFromTrainingPlan(trainingPlanId, positionId, principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<?> removePositionFromTrainingPlan(@PathVariable(value = "id")Long trainingPlanId, @PathVariable(value = "positionId")Long positionId, Principal principal) throws NotFoundException {
+
+        trainingPlanService.removePositionFromTrainingPlan(trainingPlanId, positionId, principal.getName());
         return new ResponseEntity<>("Position removed!", HttpStatus.OK);
 
     }
@@ -115,8 +109,8 @@ public class TrainingPlanController {
         for (AddTrainingToPlanRequest request:requests) {
             TrainingPosition trainingPosition;
             try {
-                trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), principal.getName());
-            } catch (NotFoundException e) {
+                trainingPosition = trainingPlanService.addPositionToTrainingPlan(trainingPlanId, request.getTrainingId(), request.getDate(), request.getTimeOfDay(), principal.getName());
+            } catch (NotFoundException | IllegalArgumentException e) {
                 return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
             }
             addedPositions.add(trainingPosition);
@@ -131,49 +125,91 @@ public class TrainingPlanController {
     }
 
     @PostMapping("/send-request")
-    public ResponseEntity<?> sendRequestToTrainer(@RequestBody @NonNull MakeRequestToCreateTrainingPlanRequest request, Principal principal) {
+    public ResponseEntity<?> sendRequestToTrainer(@RequestBody @NonNull MakeRequestToCreateTrainingPlanRequest request, Principal principal) throws NotFoundException {
         TrainingPlanRequest newRequest;
-        try {
-            newRequest = trainingPlanService.sendRequestToTrainer(request.getTrainerId(), principal.getName(), request.getMessage());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+        newRequest = trainingPlanService.sendRequestToTrainer(request.getTrainerId(), principal.getName(), request.getMessage());
         return new ResponseEntity<>(newRequest, HttpStatus.OK);
     }
 
     @GetMapping("/get-my-requests")
-    public ResponseEntity<?> getUserRequests(Principal principal) {
+    public ResponseEntity<?> getUserRequests(Principal principal) throws NotFoundException {
         List<TrainingPlanRequest> newRequest;
-        try {
-            newRequest = trainingPlanService.getMyRequests(principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+        newRequest = trainingPlanService.getMyRequests(principal.getName());
         return new ResponseEntity<>(newRequest, HttpStatus.OK);
     }
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
     @GetMapping("/get-trainer-requests")
-    public ResponseEntity<?> getTrainerRequests(Principal principal) {
+    public ResponseEntity<?> getTrainerRequests(Principal principal) throws NotFoundException {
         List<TrainingPlanRequest> newRequest;
-        try {
-            newRequest = trainingPlanService.getTrainersRequests(principal.getName());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        }
+        newRequest = trainingPlanService.getTrainersRequests(principal.getName());
         return new ResponseEntity<>(newRequest, HttpStatus.OK);
     }
 
     @PatchMapping("/request")
-    public ResponseEntity<?> updateRequestStatus(@RequestBody @NonNull ChangeTrainingPlanRequestStatusRequest request, Principal principal) {
+    public ResponseEntity<?> updateRequestStatus(@RequestBody @NonNull ChangeTrainingPlanRequestStatusRequest request, Principal principal) throws NotFoundException {
         TrainingPlanRequest editedRequest;
-        try {
-            editedRequest = trainingPlanService.changeTrainingPlanRequestStatus(principal.getName(), request.getRequestId(), request.getNewStatus());
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+        editedRequest = trainingPlanService.changeTrainingPlanRequestStatus(principal.getName(), request.getRequestId(), request.getNewStatus());
+
         return new ResponseEntity<>(editedRequest, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}/update-position-status")
+    public ResponseEntity<?> updateTrainingPositionStatus(@PathVariable(value = "id") Long trainingPositionId, @RequestParam String newStatus, Principal principal) throws NotFoundException, IllegalArgumentException {
+        return new ResponseEntity<>(trainingPlanService.updateTrainingPositionStatus(trainingPositionId, newStatus, principal.getName()), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> partialUpdateTrainingPlan(@PathVariable(value = "id") Long trainingPlanId, @RequestBody Map<String, Object> fields, Principal principal) throws Exception {
+        // Sanitize and validate the data
+        if (trainingPlanId <= 0 || fields == null || fields.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 400 Invalid claim object received or invalid id or id does not match object
+        }
+
+        TrainingPlan trainingPlan = trainingPlanService.getTrainingPlan(trainingPlanId, principal.getName());
+
+        // Does the object exist?
+        if (trainingPlan == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Claim object does not exist
+        }
+        // Remove id from request, we don't ever want to change the id.
+        // This is not necessary, you can just do it to save time on the reflection
+        // loop used below since we checked the id above
+        fields.remove("trainingPlanId");
+        fields.remove("trainingPositions");
+        fields.forEach((k, v) -> {
+            // use reflection to get field k on object and set it to value v
+            // Change Claim.class to whatver your object is: Object.class
+            Field field = ReflectionUtils.findField(TrainingPlan.class, k); // find field in the object class
+            field.setAccessible(true);
+            if(k.equals("beginningDate")) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                            sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+                    v = sdf.parse((String) v);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (field.getType() == EPlanStatus.class)
+                v = EPlanStatus.valueOf((String) v);
+            ReflectionUtils.setField(field, trainingPlan, v); // set given field for defined object to value V
+        });
+
+        TrainingPlan updated = trainingPlanService.partialUpdateTrainingPlan(trainingPlan);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    @GetMapping("/export/{trainingPlanId}")
+    public ResponseEntity<?> exportTrainingPlan(@PathVariable long trainingPlanId, Principal principal) throws IOException, NotFoundException {
+        TrainingPlan trainingPlan = trainingPlanService.getTrainingPlan(trainingPlanId, principal.getName());
+//        String path = roleRequest.getDocumentImgPath();
+        Document doc = PDFFromTrainingPlan.generatePDFFromTrainingPlan(trainingPlan,"someNewPlan");
+//        File preFile = new File(path);
+
+        InputStreamResource file = new InputStreamResource(new ByteArrayInputStream(IOUtils.toByteArray(PDFFromTrainingPlan.fileStream)));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "someNewPlan")
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(file);
+    }
 }

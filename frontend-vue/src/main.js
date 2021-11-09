@@ -7,17 +7,28 @@ import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
 import vSelect from 'vue-select'
+import { func_global} from './global-func.js'
 
 
 import Default from "@/layouts/Default";
 import Clean from "@/layouts/Clean";
+import Admin from "@/layouts/Admin";
 
 // fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 //sidebar
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import {
+    faDownload,
+    faInfo,
+    faListUl,
+    faPencilAlt,
+    faPlusCircle, faSearch,
+    faTh,
+    faTrash,
+    faUserSecret
+} from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faUserFriends } from '@fortawesome/free-solid-svg-icons'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
@@ -53,7 +64,52 @@ import { func_global} from './global-func.js'
 library.add(faBell)
 library.add(faUserCircle)
 
+import {faChevronUp} from "@fortawesome/free-solid-svg-icons/faChevronUp"
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown"
+import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight"
+import {faChevronLeft} from "@fortawesome/free-solid-svg-icons/faChevronLeft"
+import {faFastBackward} from "@fortawesome/free-solid-svg-icons/faFastBackward"
+import {faFastForward} from "@fortawesome/free-solid-svg-icons/faFastForward"
+
+//sport
+library.add(faPencilAlt)
+library.add(faInfo)
+library.add(faTrash)
+library.add(faPlusCircle)
+library.add(faTh)
+library.add(faListUl)
+library.add(faDownload)
+library.add(faSearch)
+library.add(faChevronUp)
+library.add(faChevronDown)
+library.add(faChevronLeft)
+library.add(faChevronRight)
+library.add(faFastBackward)
+library.add(faFastForward)
+//role request
+import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+library.add(faFilePdf)
+library.add(faInfo)
+library.add(faPen)
+library.add(faQuestion)
+library.add(faTimes)
+library.add(faCheck)
+
+//profile
+library.add(faChevronLeft)
+
+//telemedic
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
+library.add(faCalendarCheck)
+
 const app = createApp(App).use(router);
+app.config.globalProperties.$func_global = func_global
+
+app.config.globalProperties.apiURL = 'http://localhost:8090/'
 app.config.globalProperties.$func_global = func_global
 
 app.use(store)
@@ -62,5 +118,9 @@ app.component('v-select', vSelect)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)
 app.component('clean-layout', Clean)
+app.component('admin-layout', Admin)
+
+app.component('v-select', vSelect)
+
 app.mount('#app');
 

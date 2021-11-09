@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.Data;
 import lombok.Getter;
@@ -9,6 +10,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,7 +34,14 @@ public class Training {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator")
+    @JsonIgnore
     private Profile creator;
+
+    @Transient
+    private int caloriesBurned;
+
+    @Transient
+    private int totalTrainingTimeSeconds;
 
     @Column(name = "isPrivate")
     private boolean isPrivate = false;
@@ -51,6 +62,22 @@ public class Training {
     public int caloriesBurned(double user_weight) {
         return this.exerciseInTrainings.stream().map(ex -> ex.countCaloriesPerExerciseDuration(user_weight)).mapToInt(num -> num).sum();
     }
+//    @Transient
+//    public int getTotalTrainingTimeSeconds() {
+//        return this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries()).mapToInt(num -> num).sum();
+//    }
+
+    @PostLoad
+    public void onTotalTrainingTimeSeconds() {
+        try{
+
+            Stream<Object> a = this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries());
+            IntStream b = a.mapToInt(num -> (int) num);
+            this.totalTrainingTimeSeconds =  b.sum();
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     @Override
     public String toString() {
@@ -68,5 +95,11 @@ public class Training {
 
     public boolean removeExerciseFromTraining(long exerciseId) {
         return exerciseInTrainings.removeIf(e->e.getExercise().getExerciseId() == exerciseId);
+    }
+
+    public Set<SportLabel> getLabels() {
+        Set<SportLabel> labels = new HashSet<>();
+        exerciseInTrainings.forEach(e -> labels.addAll(e.getExercise().getLabels()));
+        return labels;
     }
 }
