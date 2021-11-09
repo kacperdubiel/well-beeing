@@ -40,7 +40,7 @@
         <div style="width: 95%;">
             <v-select
                 style="margin-bottom: 10px;"
-                class="style-chooser px-0 py-2 label-picker"
+                class="px-0 py-2 label-picker"
                 id="labelPicker"
                 multiple v-model="this.chosenNutritionLabels"
                 :options="nutritionLabels"
@@ -53,7 +53,7 @@
         </div>
         <div style="width: 95%;">
             <v-select
-                class="style-chooser px-0 py-2 label-picker"
+                class="px-0 py-2 label-picker"
                 id="labelPicker"
                 multiple v-model="this.chosenMealTypes"
                 :options="this.dishTypes"

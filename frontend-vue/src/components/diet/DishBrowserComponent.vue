@@ -15,7 +15,7 @@
         </div>
         <div style="width: 100%;" class="label-picker-container">
             <v-select
-                class="style-chooser px-0 py-2 label-picker"
+                class="px-0 py-2 label-picker"
                 id="labelPicker"
                 multiple v-model="chosenNutritionLabels"
                 :options="nutritionLabels"

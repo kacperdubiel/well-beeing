@@ -153,7 +153,7 @@
                                     </div>
                                     <div style="margin-bottom: 10px;">
                                         <v-select
-                                            class=" register-form style-chooser px-0 py-2"
+                                            class="px-0 py-2"
                                             multiple v-model="chosenAilmentsSource"
                                             :options="ailmentsSource"
                                             :reduce="name => name.id"
