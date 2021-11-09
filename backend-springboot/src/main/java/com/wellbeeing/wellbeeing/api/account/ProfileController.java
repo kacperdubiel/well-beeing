@@ -10,6 +10,7 @@ import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;

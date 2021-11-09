@@ -2,7 +2,7 @@ package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 
 import java.util.UUID;
 

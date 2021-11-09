@@ -32,29 +32,7 @@ public class ProfileDietCalculation {
     private double suggestedFats;
     @Column
     private double suggestedProteins;
-    /*@Column
-    private double suggestedBreakfastCalories;
-    @Column
-    private double suggestedLunchCalories;
-    @Column
-    private double suggestedDinnerCalories;
-    @Column
-    private double suggestedSnackCalories;
-    @Column
-    private double suggestedSupperCalories;
-    @Column
-    private EGlycemicIndexLevel suggestedBreakfastGlycemic;
-    @Column
-    private EGlycemicIndexLevel suggestedLunchGlycemic;
-    @Column
-    private EGlycemicIndexLevel suggestedDinnerGlycemic;
-    @Column
-    private EGlycemicIndexLevel suggestedSnackGlycemic;
-    @Column
-    private EGlycemicIndexLevel suggestedSupperGlycemic;*/
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "dietCalculation")
-    List<DietCalcMealCaloriesSuggestion> suggestedCaloriesForMeals;
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "dietCalculation")
-    List<DietCalcMealGlycemicIndexSuggestion> suggestedGlycemicIndexForMeals;
-
+    List<DietCalcMealSuggestions> dietCalcMealSuggestions
+            ;
 }

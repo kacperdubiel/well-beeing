@@ -12,7 +12,7 @@ public enum EWeightMeasure {
         this.numberOfGram = numberOfGram;
     }
 
-    public double getNumberOfGram() {
+    public double getNumberOfGrams() {
         return numberOfGram;
     }
 }

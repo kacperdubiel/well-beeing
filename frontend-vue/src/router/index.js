@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Feed from "@/views/social/Feed";
+import DietView from "@/views/diet/DietView"
 import UserMeasuresView from "@/views/telemedic/UserMeasuresView";
 import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
 import UserDoctorConversationsView from "@/views/telemedic/UserDoctorConversationsView";
@@ -40,6 +41,11 @@ const routes = [
     path: '/feed',
     name: 'Feed',
     component: Feed
+  },
+  {
+    path: '/diet',
+    name: 'DietView',
+    component: DietView
   },
   {
     path: '/telemedic/measures',

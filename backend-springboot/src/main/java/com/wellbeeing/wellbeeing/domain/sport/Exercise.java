@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import lombok.*;
-
+import com.wellbeeing.wellbeeing.domain.account.Role;
+//import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;

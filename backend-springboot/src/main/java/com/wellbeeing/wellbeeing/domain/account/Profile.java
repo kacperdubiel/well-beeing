@@ -1,8 +1,10 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
+import com.wellbeeing.wellbeeing.domain.diet.Report;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,8 @@ import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 
 import javax.persistence.*;
+import java.util.*;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +63,6 @@ public class Profile {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
-    //@JsonIgnore
     private ProfileCard profileCard;
 
     @OneToOne(mappedBy="profile", cascade = CascadeType.ALL)
@@ -80,6 +83,13 @@ public class Profile {
     @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<ActivityGoal> activityGoals = new HashSet<>();
+
+    @OneToMany(mappedBy = "reportOwner", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Report> dietReports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    private List<NutritionPlan> nutritionPlans = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

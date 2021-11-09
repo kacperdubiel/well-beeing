@@ -135,6 +135,24 @@ public class ProfileServiceImpl implements ProfileService {
 
         profileDAO.save(actProfile);
         return actProfile;
+    }
 
+    public Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException {
+        Profile actProfile = getProfileById(profileId);
+        if(profile.getProfileImgPath() != null) actProfile.setProfileImgPath(profile.getProfileImgPath());
+        if(profile.getFirstName() != null) actProfile.setFirstName(profile.getFirstName());
+        if(profile.getLastName() != null) actProfile.setLastName(profile.getLastName());
+        if(profile.getESex() != null) actProfile.setESex(profile.getESex());
+        if(profile.getDescription() != null) actProfile.setDescription(profile.getDescription());
+        if(profile.getBirthday() != null) actProfile.setBirthday(profile.getBirthday());
+        actProfile.setProfileUser(profile.getProfileUser());
+        actProfile.setProfileCard(profile.getProfileCard());
+        actProfile.setProfileCard(profile.getProfileCard());
+        actProfile.setTrainingPlans(profile.getTrainingPlans());
+        actProfile.setTrainingPlans(profile.getTrainingPlans());
+        actProfile.setActivityGoals(profile.getActivityGoals());
+        actProfile.setDietReports(profile.getDietReports());
+        profileDAO.save(actProfile);
+        return actProfile;
     }
 }

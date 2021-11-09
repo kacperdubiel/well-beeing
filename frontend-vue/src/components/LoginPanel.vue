@@ -12,7 +12,6 @@
             @focus="clearStatus"
             @keypress="clearStatus"
             />
-
         </div>
         <div class="row w-80">
             <input
@@ -149,6 +148,7 @@ export default {
             const url = `${this.apiURL}authenticate`
             this.axios.post(url, data).then((response) => {
                 this.$store.commit('setToken', response.data['jwt']);
+                localStorage.setItem('token', response.data.jwt)
                 console.log(this.$store.getters.getToken)
                 this.$store.commit('setEmail', this.email);
                 console.log(this.$store.getters.getEmail)

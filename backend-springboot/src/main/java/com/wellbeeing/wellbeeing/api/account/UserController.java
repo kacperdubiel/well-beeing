@@ -19,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -38,9 +37,9 @@ public class UserController {
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> register(@RequestBody @NonNull User user){
+    public ResponseEntity<?> register(@RequestBody @NonNull User user) throws ConflictException {
         if(!userService.register(user))
-            return new ResponseEntity<>(new ErrorMessage("Account already exist", "error"), HttpStatus.CONFLICT);
+            throw new ConflictException("Account already exists");
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
@@ -79,9 +78,9 @@ public class UserController {
     }
 
     @RequestMapping(path = "/add-role-to-user", method = RequestMethod.POST)
-    public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest){
+    public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest) throws ConflictException {
         if(!userService.addRoleToUser(roleToUserRequest.getUsername(), roleToUserRequest.getRole())) {
-            return new ResponseEntity<>(new ErrorMessage("Can't set this role to user!", "error"), HttpStatus.CONFLICT);
+            throw new ConflictException("Role cannot be assigned to user");
         }
         return new ResponseEntity<>("Roles updated", HttpStatus.OK);
     }
@@ -99,7 +98,4 @@ public class UserController {
     public ResponseEntity<?> test(){
         return new ResponseEntity<>("hlo", HttpStatus.OK);
     }
-
-
-
 }

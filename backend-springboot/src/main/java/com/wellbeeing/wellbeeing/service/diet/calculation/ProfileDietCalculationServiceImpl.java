@@ -1,20 +1,17 @@
 package com.wellbeeing.wellbeeing.service.diet.calculation;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.diet.*;
-import com.wellbeeing.wellbeeing.domain.diet.calculation.DietCalcMealCaloriesSuggestion;
-import com.wellbeeing.wellbeeing.domain.diet.calculation.DietCalcMealGlycemicIndexSuggestion;
+import com.wellbeeing.wellbeeing.domain.diet.Ailment;
+import com.wellbeeing.wellbeeing.domain.diet.calculation.DietCalcMealSuggestions;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
 import com.wellbeeing.wellbeeing.domain.diet.type.EBMIResult;
 import com.wellbeeing.wellbeeing.domain.diet.type.EBasicMacro;
 import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
-import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.repository.diet.AilmentDAO;
-import com.wellbeeing.wellbeeing.repository.diet.DietDAO;
 import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
-import javassist.NotFoundException;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,9 +24,9 @@ import java.util.UUID;
 @Service("profileDietCalculationService")
 public class ProfileDietCalculationServiceImpl implements ProfileDietCalculationService {
 
-    private ProfileCardDAO profileCardDAO;
-    private ProfileDAO profileDAO;
+    private ProfileService profileService;
     private ProfileDietCalculationDAO profileDietCalculationDAO;
+    private ProfileCardDAO profileCardDAO;
 
     private BasicMetabolismStrategy basicMetabolismStrategy;
     private CompleteMetabolismStrategy completeMetabolismStrategy;
@@ -39,13 +36,11 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
 
     @Autowired
     public ProfileDietCalculationServiceImpl(@Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO,
-                                             @Qualifier("dietDAO") DietDAO dietDAO,
-                                             @Qualifier("ailmentDAO") AilmentDAO ailmentDAO,
                                              @Qualifier("profileDietCalculationDAO") ProfileDietCalculationDAO profileDietCalculationDAO,
-                                             @Qualifier("profileDAO") ProfileDAO profileDAO){
+                                             @Qualifier("profileService") ProfileService profileService){
         this.profileCardDAO = profileCardDAO;
         this.profileDietCalculationDAO = profileDietCalculationDAO;
-        this.profileDAO = profileDAO;
+        this.profileService = profileService;
 
         this.basicMetabolismStrategy = new HarrisBenedictBasicMetabolismStrategy();
         this.completeMetabolismStrategy = new PalCompleteMetabolismStrategy();
@@ -75,7 +70,7 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
 
     private EBMIResult decideBmiResultType(double bmiValue){
             if(bmiValue < EBMIResult.SEVERELY_UNDERWEIGHT.getHigherRange())
-                return EBMIResult.UNDERWEIGHT;
+                return EBMIResult.SEVERELY_UNDERWEIGHT;
             if(bmiValue < EBMIResult.UNDERWEIGHT.getHigherRange())
                 return EBMIResult.UNDERWEIGHT;
             if(bmiValue < EBMIResult.HEALTHY.getHigherRange())
@@ -95,104 +90,81 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
     }
 
     @Override
-    public ProfileDietCalculation calculateAllSuggestionsByProfileCardId(UUID profileCardId) {
-        ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
-        if(profileCard != null) {
-            double bmi = countBmi(profileCard.getWeight(), profileCard.getHeight());
-            EBMIResult bmiResultType = decideBmiResultType(bmi);
-            double basicMetabolism = basicMetabolismStrategy.calculateBasicMetabolism(profileCard);
-            double completeMetabolism = completeMetabolismStrategy.calculateCompleteMetabolism(basicMetabolism, profileCard);
+    public ProfileDietCalculation calculateAllSuggestionsByProfileId(UUID profileId) throws NotFoundException {
+        Profile profile = profileService.getProfileById(profileId);
+        ProfileCard profileCard = profile.getProfileCard();
+        double bmi = countBmi(profileCard.getWeight(), profileCard.getHeight());
+        EBMIResult bmiResultType = decideBmiResultType(bmi);
+        double basicMetabolism = basicMetabolismStrategy.calculateBasicMetabolism(profileCard);
+        double completeMetabolism = completeMetabolismStrategy.calculateCompleteMetabolism(basicMetabolism, profileCard);
 
-            int changeDueToAilments = countChangeInCaloriesDueToAilments(profileCard.getAilments());
-            int changeDueToGoal = profileCard.getDietGoal().getChangeInCalories();
-            int changeDueToBmiResult = bmiResultType.getSuggestedChangeInCalories();
+        int changeDueToAilments = countChangeInCaloriesDueToAilments(profileCard.getAilments());
+        int changeDueToGoal = profileCard.getDietGoal().getChangeInCalories();
+        int changeDueToBmiResult = bmiResultType.getSuggestedChangeInCalories();
 
-            double suggestedCalories = completeMetabolism + changeDueToAilments + changeDueToGoal + changeDueToBmiResult;
+        double suggestedCalories = completeMetabolism + changeDueToAilments + changeDueToGoal + changeDueToBmiResult;
 
-            HashMap<EBasicMacro, Double> macros = macrosCalcStrategy.calculateMacros(completeMetabolism, profileCard);
-            double suggestedCarbohydrates = macros.get(EBasicMacro.CARBOHYDRATES);
-            double suggestedFats = macros.get(EBasicMacro.FATS);
-            double suggestedProteins = macros.get(EBasicMacro.PROTEINS);
+        HashMap<EBasicMacro, Double> macros = macrosCalcStrategy.calculateMacros(suggestedCalories, profileCard);
+        double suggestedCarbohydrates = macros.get(EBasicMacro.CARBOHYDRATES);
+        double suggestedFats = macros.get(EBasicMacro.FATS);
+        double suggestedProteins = macros.get(EBasicMacro.PROTEINS);
 
-            double suggestedBreakfastCalories = EMealType.BREAKFAST.getSuggestedDailyCaloriesPars() * suggestedCalories;
-            double suggestedLunchCalories = EMealType.LUNCH.getSuggestedDailyCaloriesPars() * suggestedCalories;
-            double suggestedDinnerCalories = EMealType.DINNER.getSuggestedDailyCaloriesPars() * suggestedCalories;
-            double suggestedSnackCalories = EMealType.SNACK.getSuggestedDailyCaloriesPars() * suggestedCalories;
-            double suggestedSupperCalories = EMealType.SUPPER.getSuggestedDailyCaloriesPars() * suggestedCalories;
+        double suggestedBreakfastCalories = EMealType.BREAKFAST.getSuggestedDailyCaloriesPars() * suggestedCalories;
+        double suggestedLunchCalories = EMealType.LUNCH.getSuggestedDailyCaloriesPars() * suggestedCalories;
+        double suggestedDinnerCalories = EMealType.DINNER.getSuggestedDailyCaloriesPars() * suggestedCalories;
+        double suggestedSnackCalories = EMealType.SNACK.getSuggestedDailyCaloriesPars() * suggestedCalories;
+        double suggestedSupperCalories = EMealType.SUPPER.getSuggestedDailyCaloriesPars() * suggestedCalories;
 
-            HashMap<EMealType, EGlycemicIndexLevel> suggestedGlycemicIndexForMeals =
+        HashMap<EMealType, EGlycemicIndexLevel> suggestedGlycemicIndexForMeals =
                     glycemicIndexCalcStrategy.countGlycemicIndexesForMeals(profileCard);
-            EGlycemicIndexLevel suggestedGlycemicForBreakfast = suggestedGlycemicIndexForMeals.get(EMealType.BREAKFAST);
-            EGlycemicIndexLevel suggestedGlycemicForLunch = suggestedGlycemicIndexForMeals.get(EMealType.LUNCH);
-            EGlycemicIndexLevel suggestedGlycemicForDinner = suggestedGlycemicIndexForMeals.get(EMealType.DINNER);
-            EGlycemicIndexLevel suggestedGlycemicForSnack = suggestedGlycemicIndexForMeals.get(EMealType.SNACK);
-            EGlycemicIndexLevel suggestedGlycemicForSupper = suggestedGlycemicIndexForMeals.get(EMealType.SUPPER);
+        EGlycemicIndexLevel suggestedGlycemicForBreakfast = suggestedGlycemicIndexForMeals.get(EMealType.BREAKFAST);
+        EGlycemicIndexLevel suggestedGlycemicForLunch = suggestedGlycemicIndexForMeals.get(EMealType.LUNCH);
+        EGlycemicIndexLevel suggestedGlycemicForDinner = suggestedGlycemicIndexForMeals.get(EMealType.DINNER);
+        EGlycemicIndexLevel suggestedGlycemicForSnack = suggestedGlycemicIndexForMeals.get(EMealType.SNACK);
+        EGlycemicIndexLevel suggestedGlycemicForSupper = suggestedGlycemicIndexForMeals.get(EMealType.SUPPER);
 
-            ProfileDietCalculation profileDietCalculation = ProfileDietCalculation.builder()
-                    .bmi(bmi)
-                    .bmiResultType(bmiResultType)
-                    .basicMetabolism(basicMetabolism)
-                    .suggestedCalories(suggestedCalories)
-                    .suggestedCarbohydrates(suggestedCarbohydrates)
-                    .suggestedFats(suggestedFats)
-                    .suggestedProteins(suggestedProteins)
-                    .suggestedCaloriesForMeals(new ArrayList<>())
-                    .suggestedGlycemicIndexForMeals(new ArrayList<>())
-                    .build();
+        ProfileDietCalculation profileDietCalculation = ProfileDietCalculation.builder()
+                .bmi(bmi)
+                .bmiResultType(bmiResultType)
+                .basicMetabolism(basicMetabolism)
+                .suggestedCalories(suggestedCalories)
+                .suggestedCarbohydrates(suggestedCarbohydrates)
+                .suggestedFats(suggestedFats)
+                .suggestedProteins(suggestedProteins)
+                .dietCalcMealSuggestions(new ArrayList<>())
+                .build();
 
-            profileDietCalculation.getSuggestedCaloriesForMeals().add(DietCalcMealCaloriesSuggestion.builder()
-                    .mealType(EMealType.BREAKFAST)
-                    .numberOfCalories(suggestedBreakfastCalories)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedCaloriesForMeals().add(DietCalcMealCaloriesSuggestion.builder()
-                    .mealType(EMealType.LUNCH)
-                    .numberOfCalories(suggestedLunchCalories)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedCaloriesForMeals().add(DietCalcMealCaloriesSuggestion.builder()
-                    .mealType(EMealType.DINNER)
-                    .numberOfCalories(suggestedDinnerCalories)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedCaloriesForMeals().add(DietCalcMealCaloriesSuggestion.builder()
-                    .mealType(EMealType.SNACK)
-                    .numberOfCalories(suggestedSnackCalories)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedCaloriesForMeals().add(DietCalcMealCaloriesSuggestion.builder()
-                    .mealType(EMealType.SUPPER)
-                    .numberOfCalories(suggestedSupperCalories)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedGlycemicIndexForMeals().add(DietCalcMealGlycemicIndexSuggestion.builder()
-                        .mealType(EMealType.BREAKFAST)
-                    .glycemicIndexLevel(suggestedGlycemicForBreakfast)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedGlycemicIndexForMeals().add(DietCalcMealGlycemicIndexSuggestion.builder()
-                    .mealType(EMealType.LUNCH)
-                    .glycemicIndexLevel(suggestedGlycemicForLunch)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedGlycemicIndexForMeals().add(DietCalcMealGlycemicIndexSuggestion.builder()
-                    .mealType(EMealType.DINNER)
-                    .glycemicIndexLevel(suggestedGlycemicForDinner)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedGlycemicIndexForMeals().add(DietCalcMealGlycemicIndexSuggestion.builder()
-                    .mealType(EMealType.SNACK)
-                    .glycemicIndexLevel(suggestedGlycemicForSnack)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            profileDietCalculation.getSuggestedGlycemicIndexForMeals().add(DietCalcMealGlycemicIndexSuggestion.builder()
-                    .mealType(EMealType.SUPPER)
-                    .glycemicIndexLevel(suggestedGlycemicForSupper)
-                    .dietCalculation(profileDietCalculation)
-                    .build());
-            return profileDietCalculation;
-        }
-        return null;
+        profileDietCalculation.getDietCalcMealSuggestions().add(DietCalcMealSuggestions.builder()
+                .mealType(EMealType.BREAKFAST)
+                .numberOfCalories(suggestedBreakfastCalories)
+                .glycemicIndexLevel(suggestedGlycemicForBreakfast)
+                .dietCalculation(profileDietCalculation)
+                .build());
+        profileDietCalculation.getDietCalcMealSuggestions().add(DietCalcMealSuggestions.builder()
+                .mealType(EMealType.LUNCH)
+                .numberOfCalories(suggestedLunchCalories)
+                .glycemicIndexLevel(suggestedGlycemicForLunch)
+                .dietCalculation(profileDietCalculation)
+                .build());
+        profileDietCalculation.getDietCalcMealSuggestions().add(DietCalcMealSuggestions.builder()
+                .mealType(EMealType.DINNER)
+                .numberOfCalories(suggestedDinnerCalories)
+                .glycemicIndexLevel(suggestedGlycemicForDinner)
+                .dietCalculation(profileDietCalculation)
+                .build());
+        profileDietCalculation.getDietCalcMealSuggestions().add(DietCalcMealSuggestions.builder()
+                .mealType(EMealType.SNACK)
+                .numberOfCalories(suggestedSnackCalories)
+                .glycemicIndexLevel(suggestedGlycemicForSnack)
+                .dietCalculation(profileDietCalculation)
+                .build());
+        profileDietCalculation.getDietCalcMealSuggestions().add(DietCalcMealSuggestions.builder()
+                .mealType(EMealType.SUPPER)
+                .numberOfCalories(suggestedSupperCalories)
+                .glycemicIndexLevel(suggestedGlycemicForSupper)
+                .dietCalculation(profileDietCalculation)
+                .build());
+        return profileDietCalculation;
     }
 
     @Override
@@ -200,49 +172,24 @@ public class ProfileDietCalculationServiceImpl implements ProfileDietCalculation
         ProfileDietCalculation actCalc = profileDietCalculationDAO.findById(profileDietCalculationId).orElse(null);
         if (actCalc != null)
             return actCalc;
-        throw new NotFoundException("Profile diet calculation not found");
-    }
-
-    @Override
-    public ProfileDietCalculation getDietCalculationByProfileCardId(UUID profileCardId) throws NotFoundException {
-        ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
-        if(profileCard != null){
-            return profileCard.getDietCalculations();
-        }
-        throw new NotFoundException("Profile card not found");
-    }
-
-    @Override
-    public ProfileDietCalculation updateDietCalculationByProfileCardId(UUID profileCardId) throws NotFoundException {
-        ProfileCard profileCard = profileCardDAO.findById(profileCardId).orElse(null);
-        if(profileCard != null){
-            ProfileDietCalculation calcForProfileCard = calculateAllSuggestionsByProfileCardId(profileCardId);
-            /*ProfileDietCalculation actCalc = profileCard.getDietCalculations();
-            if(actCalc != null){
-                profileDietCalculationDAO.deleteById(actCalc.getId());
-                calcForProfileCard.setId(actCalc.getId());
-            }*/
-            profileDietCalculationDAO.save(calcForProfileCard);
-            profileCard.setDietCalculations(calcForProfileCard);
-            profileCardDAO.save(profileCard);
-            return calcForProfileCard;
-        }
-       throw new NotFoundException("Profile card not found");
+        throw new NotFoundException("Profile diet calculation with id: " + profileDietCalculationId + " not found");
     }
 
     @Override
     public ProfileDietCalculation getDietCalculationByProfileId(UUID profileId) throws NotFoundException {
-        Profile actProfile = profileDAO.findById(profileId).orElse(null);
-        if(actProfile != null)
-            return getDietCalculationByProfileCardId(actProfile.getProfileCard().getId());
-        throw new NotFoundException("Profile not found");
+        Profile actProfile = profileService.getProfileById(profileId);
+        ProfileCard profileCard = actProfile.getProfileCard();
+        return profileCard.getDietCalculations();
     }
 
     @Override
     public ProfileDietCalculation updateDietCalculationByProfileId(UUID profileId) throws NotFoundException {
-        Profile actProfile = profileDAO.findById(profileId).orElse(null);
-        if(actProfile != null)
-            updateDietCalculationByProfileCardId(actProfile.getProfileCard().getId());
-        throw new NotFoundException("Profile not found");
+        Profile actProfile = profileService.getProfileById(profileId);
+        ProfileCard profileCard = actProfile.getProfileCard();
+        ProfileDietCalculation calcForProfileCard = calculateAllSuggestionsByProfileId(profileId);
+        profileDietCalculationDAO.save(calcForProfileCard);
+        profileCard.setDietCalculations(calcForProfileCard);
+        profileCardDAO.save(profileCard);
+        return calcForProfileCard;
     }
 }

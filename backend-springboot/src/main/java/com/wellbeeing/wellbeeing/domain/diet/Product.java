@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.domain.diet;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,26 +19,18 @@ public class Product {
     @Column
     private String name;
     @Column
-    private double fatsInGrams;
+
+    private double caloriesPerHundredGrams;
     @Column
-    private double carbohydratesInGrams;
+    private double fatsPerHundredGrams;
     @Column
-    private double proteinsInGrams;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "macro_details_id", referencedColumnName = "id")
-    private List<MacroDetail> macroDetails;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "mineral_details_id", referencedColumnName = "id")
-    private List<MacroDetail> mineralDetails;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "mineral_details_id", referencedColumnName = "id")
-    private List<MacroDetail> vitaminDetails;
-
-
-
-
-
-
-
-
+    private double carbohydratesPerHundredGrams;
+    @Column
+    private double proteinsPerHundredGrams;
+    @OneToMany(mappedBy = "elementsProduct", cascade = CascadeType.ALL)
+    private List<ProductMacroDetail> macroDetails = new ArrayList<>();
+    @OneToMany(mappedBy = "elementsProduct")
+    private List<ProductMineralDetail> mineralDetails =  new ArrayList<>();
+    @OneToMany(mappedBy = "elementsProduct")
+    private List<ProductVitaminDetail> vitaminDetails = new ArrayList<>();
 }

@@ -3,6 +3,8 @@ package com.wellbeeing.wellbeeing.domain.diet;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -19,12 +21,19 @@ public class Diet {
     private String name;
     @Column
     private String description;
-    @Column(nullable = false)
+    @ManyToMany
+    @JoinTable(
+            name = "diet_nutrition_label",
+            joinColumns = @JoinColumn(name = "diet_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "id")
+    )
+    private List<NutritionLabel> allowedNutritionLabels = new ArrayList<>();
+    @Column
     private boolean connectedWithMacros;
     @Column
     private int suggestedCarbohydratesForDiet;
     @Column
     private int suggestedProteinsForDiet;
-    @Column()
+    @Column
     private int suggestedFatsForDiet;
 }

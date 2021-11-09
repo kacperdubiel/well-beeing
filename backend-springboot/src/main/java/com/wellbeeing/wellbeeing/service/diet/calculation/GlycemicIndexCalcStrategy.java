@@ -7,5 +7,5 @@ import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
 import java.util.HashMap;
 
 public interface GlycemicIndexCalcStrategy {
-    public HashMap<EMealType, EGlycemicIndexLevel> countGlycemicIndexesForMeals(ProfileCard profileCard);
+    HashMap<EMealType, EGlycemicIndexLevel> countGlycemicIndexesForMeals(ProfileCard profileCard);
 }

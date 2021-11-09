@@ -9,6 +9,7 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
+
 @ToString
 @Getter
 @Setter
@@ -27,9 +28,10 @@ public class SportLabel {
     @JsonIgnore
     @ManyToMany(mappedBy = "labels", fetch = FetchType.EAGER)
     private Set<Exercise> exercises;
-    @ManyToMany(mappedBy = "allowedLabels")
+    @ManyToMany(mappedBy = "allowedSportLabels")
     private List<Ailment> labeledAilments;
 
     public void addLabeledExercise(Exercise exercise) {
         Hibernate.initialize(this.exercises.add(exercise));}
 }
+

@@ -1,11 +1,16 @@
 package com.wellbeeing.wellbeeing;
 
+import com.wellbeeing.wellbeeing.service.files.FileService;
+import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
+import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class WellbeeingApplication /*implements WebMvcConfigurer*/ {
 
-/*	@Override
+	/*@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		argumentResolvers.add(new SpecificationArgumentResolver());
 		argumentResolvers.add(new PageableHandlerMethodArgumentResolver());

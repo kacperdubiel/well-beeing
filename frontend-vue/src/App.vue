@@ -75,8 +75,34 @@ button[class^="btn-panel-"] {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
+button[class^="btn-icon-panel-"] {
+    color: white;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    width: 27px;
+    height: 27px;
+    margin-left: 5px;
+}
+
+button[class^="btn-card-panel-"] {
+    color: white;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    margin: 5px;
+    padding: 0.2rem 0.5rem;
+}
+
+
 .btn-panel-telemedic {
     background-color: var(--TELEMEDIC) !important;
+}
+
+.tab {
+    background-color: var(--GREY2);
+    border-radius: 5px;
+    color: white;
 }
 
 .btn-panel-sport {
@@ -85,6 +111,14 @@ button[class^="btn-panel-"] {
 
 .btn-panel-diet {
     background-color: var(--DIET) !important;
+}
+
+.btn-icon-panel-diet {
+    background-color: var(--DIET);
+}
+
+.btn-card-panel-diet {
+    background-color: var(--DIET);
 }
 
 .btn-panel-social {
@@ -207,5 +241,25 @@ input{
 {
     background-color: var(--SPORT) !Important;
     border: solid 1px var(--SPORT);
+}
+ p.has-error {
+    color: var(--INTENSE-PINK);
+ }
+
+ .modal-diet-content {
+        background-color: white;
+        color: black;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-content: flex-start;
+        align-items: flex-start;
+        justify-content: start;
+        padding: 20px;
+        border-radius: 20px;
+}
+.modal-content {
+    border-radius: 20px;
 }
 </style>

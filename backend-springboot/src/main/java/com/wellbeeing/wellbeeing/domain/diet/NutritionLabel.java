@@ -1,8 +1,11 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,4 +22,7 @@ public class NutritionLabel {
     private String description;
     @Column(unique = true)
     private String name;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "allowedForNutritionLabels" )
+    List<Dish> labelledDishes = new ArrayList<>();
 }
