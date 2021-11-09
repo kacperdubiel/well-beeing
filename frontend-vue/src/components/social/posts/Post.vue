@@ -16,7 +16,7 @@
                             <font-awesome-icon :icon="['fa', 'ellipsis-h']"/>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="more">
-                            <li><a class="dropdown-item" href="#">Edytuj</a></li>
+                            <li><a class="dropdown-item" @click="handleEdit(this.postSource)" data-bs-toggle="modal" data-bs-target="#postEditModal">Edytuj</a></li>
                             <li><a class="dropdown-item" @click="deletePost(this.postSource.postId)">Usuń</a></li>
                         </ul>
                     </div>
@@ -35,7 +35,6 @@
                 <img :src="postPictureSrc" alt="Post picture"  id="post-picture" class="w-100">
             </div>
         </div>
-
     </div>
 </template>
 
@@ -48,7 +47,7 @@ export default {
     data() {
         return {
             profilePictureSrc: "",
-            postPictureSrc: ""
+            postPictureSrc: "",
         }
     },
     methods: {
@@ -75,11 +74,19 @@ export default {
             }).catch(error => {
                 console.log(error.response.status)
             });
+        },
+        handleEdit(post) {
+            this.$emit('edit:post', post)
         }
     },
     mounted() {
         this.downloadProfilePicture()
         this.downloadPostPicture()
+    },
+    watch: {
+        postSource: function (){
+            this.downloadPostPicture()
+        }
     },
     computed: {
         isPostMine() {

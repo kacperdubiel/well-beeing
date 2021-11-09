@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -54,7 +55,7 @@ public class PostController {
         return new ResponseEntity<>(pagePosts, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<?> getPostById(@PathVariable(value = "id") long postId) {
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
@@ -62,6 +63,12 @@ public class PostController {
     @PostMapping(path = "")
     public ResponseEntity<?> addPost(@RequestBody @NonNull Post post, Principal principal) throws NotFoundException {
         Post newPost = postService.addPost(post, principal.getName());
+        return new ResponseEntity<>(newPost, HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updatePost(@PathVariable(value = "id") long postId, @RequestBody Map<String, Object> fields, Principal principal) throws NotFoundException {
+        Post newPost = postService.partialUpdatePost(postId, fields, principal.getName());
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
