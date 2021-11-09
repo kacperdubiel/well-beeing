@@ -36,10 +36,7 @@ import { faComments } from '@fortawesome/free-solid-svg-icons'
 import { faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons'
 import { faBriefcaseMedical } from '@fortawesome/free-solid-svg-icons'
-import { faInfo } from '@fortawesome/free-solid-svg-icons'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import 'vue-select/dist/vue-select.css';
 
 library.add(faUserSecret)
@@ -59,7 +56,6 @@ library.add(faPlusCircle)
 //navbar
 import { faBell } from '@fortawesome/free-regular-svg-icons'
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
-import { func_global} from './global-func.js'
 
 library.add(faBell)
 library.add(faUserCircle)
@@ -73,9 +69,6 @@ import {faFastForward} from "@fortawesome/free-solid-svg-icons/faFastForward"
 
 //sport
 library.add(faPencilAlt)
-library.add(faInfo)
-library.add(faTrash)
-library.add(faPlusCircle)
 library.add(faTh)
 library.add(faListUl)
 library.add(faDownload)
@@ -93,7 +86,6 @@ import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 library.add(faFilePdf)
-library.add(faInfo)
 library.add(faPen)
 library.add(faQuestion)
 library.add(faTimes)
@@ -107,7 +99,6 @@ import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
 library.add(faCalendarCheck)
 
 const app = createApp(App).use(router);
-app.config.globalProperties.$func_global = func_global
 
 app.config.globalProperties.apiURL = 'http://localhost:8090/'
 app.config.globalProperties.$func_global = func_global
@@ -119,8 +110,6 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)
 app.component('clean-layout', Clean)
 app.component('admin-layout', Admin)
-
-app.component('v-select', vSelect)
 
 app.mount('#app');
 

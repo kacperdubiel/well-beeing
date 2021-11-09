@@ -53,8 +53,8 @@ export default {
         }
     },
     mounted() {
-        this.downloadProfilePicture()
-    }
+        this.downloadProfilePicture
+    },
     methods:{
         handleLogout(){
             localStorage.removeItem('token');

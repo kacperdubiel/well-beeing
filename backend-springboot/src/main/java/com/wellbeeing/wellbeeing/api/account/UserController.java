@@ -6,7 +6,6 @@ import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.PasswordException;
 import com.wellbeeing.wellbeeing.domain.message.AuthenticationResponse;
-import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.RoleToUserIdRequest;
 import com.wellbeeing.wellbeeing.domain.message.RoleToUserRequest;
@@ -20,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -80,8 +78,6 @@ public class UserController {
     }
 
     @RequestMapping(path = "/add-role-to-user", method = RequestMethod.POST)
-    public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest){
-    @RequestMapping(path = "/addRoleToUser", method = RequestMethod.POST)
     public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest) throws ConflictException {
         if(!userService.addRoleToUser(roleToUserRequest.getUsername(), roleToUserRequest.getRole())) {
             throw new ConflictException("Role cannot be assigned to user");
@@ -102,7 +98,4 @@ public class UserController {
     public ResponseEntity<?> test(){
         return new ResponseEntity<>("hlo", HttpStatus.OK);
     }
-
-
-
 }

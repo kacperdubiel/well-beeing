@@ -236,7 +236,7 @@ export default {
                     esex: this.formCardData.sex
                 }
             })
-            .then((response) => {this.$emit('save:card'); console.log(response); this.successForm = true})
+            .then((response) => {this.$emit('save:card'); console.log("NO HALOLLLLO"); console.log(response); this.successForm = true})
             .catch(e => {this.errorForm = true;console.log(e);})
             this.submittingForm = false;
         },

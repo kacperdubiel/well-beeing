@@ -135,6 +135,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         profileDAO.save(actProfile);
         return actProfile;
+    }
 
     public Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException {
         Profile actProfile = getProfileById(profileId);
