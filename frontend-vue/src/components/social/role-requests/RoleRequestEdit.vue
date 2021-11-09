@@ -168,7 +168,7 @@ export default {
             this.axios.put(url, this.editedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
                 if (this.editFile) {
-                    this.$func_global.importData(this.roleRequestSource.roleReqId, this.$refs.editfile, this.$store.getters.getToken)
+                    this.$func_global.importData(this.$refs.editfile, this.$store.getters.getToken, 'roleRequest', this.roleRequestSource.roleReqId)
 
                 }
                 // this.clearInputs()
