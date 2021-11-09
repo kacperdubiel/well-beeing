@@ -3,24 +3,26 @@ const apiURL = 'http://localhost:8090/'
 import axios from "axios";
 export const func_global = {
 
-    async importData(myfile, token, type, requestId) {
+    async importData(myfile, token, type, id) {
         // let myfile = this.$refs.myfile;
         let files = myfile.files;
         let file = files[0];
         var formData = new FormData();
         formData.append("file", file);
-        return this.uploadFile(formData, type, token, requestId).then((resp) => {
+        return this.uploadFile(formData, type, token, id).then((resp) => {
             console.log(resp)
         })
 
     },
 
-     async uploadFile (data, type, token, requestId) {
+     async uploadFile (data, type, token, id) {
         let url;
         if (type === 'roleRequest')
-            url = `${apiURL}role-request/import/${requestId}/`
+            url = `${apiURL}role-request/import/${id}/`
         else if (type === 'profilePicture')
             url = `${apiURL}profile/import`
+        else if (type === 'postPicture')
+            url = `${apiURL}post/import/${id}`
          return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
             console.log(response.data)
         }).catch(error => {
@@ -66,6 +68,11 @@ export const func_global = {
     formatDateDatePicker(date) {
         if (date) {
             return moment(String(date)).format('YYYY-MM-DD')
+        }
+    },
+    formatDateDateFromNow(date) {
+        if (date) {
+            return moment(String(date)).locale('pl').fromNow()
         }
     },
     mapRole(role) {

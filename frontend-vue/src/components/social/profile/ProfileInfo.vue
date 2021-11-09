@@ -3,7 +3,7 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img :src="imageSrc" alt="Profile picture"  id="profile-picture" height="100" width="100">
+                <img :src="imageSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
             </div>
 
             <div class="d-flex flex-column align-self-center w-100">
@@ -63,9 +63,7 @@ export default {
 </script>
 
 <style scoped>
-#profile-picture {
-    border-radius: 50%;
-}
+
 
 div[class*="tag-"] {
     border-radius: 20px;
