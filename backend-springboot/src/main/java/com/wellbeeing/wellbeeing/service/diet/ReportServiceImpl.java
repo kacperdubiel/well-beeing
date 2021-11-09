@@ -73,10 +73,12 @@ public class ReportServiceImpl implements ReportService {
         for(ReportDishDetail rdd : dishes){
             if(dishesIds.contains(rdd.getId())){
                 reportDishDetailDAO.deleteById(rdd.getId());
-                report.setDerived();
             }
         }
-        return reportDAO.save(report);
+        entityManager.clear();
+        Report reportUpdated = getReportById(report.getId());
+        reportUpdated.setDerived();
+        return reportDAO.save(reportUpdated);
     }
 
     @Override
@@ -86,10 +88,12 @@ public class ReportServiceImpl implements ReportService {
         for(ReportProductDetail rpd : products){
             if(productsIds.contains(rpd.getId())){
                 reportProductDetailDAO.deleteById(rpd.getId());
-                report.setDerived();
             }
         }
-        return reportDAO.save(report);
+        entityManager.clear();
+        Report reportUpdated = getReportById(report.getId());
+        reportUpdated.setDerived();
+        return reportDAO.save(reportUpdated);
     }
 
     @Override
