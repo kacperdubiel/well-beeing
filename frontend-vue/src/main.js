@@ -9,7 +9,6 @@ import VueAxios from "vue-axios";
 import vSelect from 'vue-select'
 import { func_global} from './global-func.js'
 
-
 import Default from "@/layouts/Default";
 import Clean from "@/layouts/Clean";
 import Admin from "@/layouts/Admin";
@@ -56,7 +55,6 @@ library.add(faPlusCircle)
 //navbar
 import { faBell } from '@fortawesome/free-regular-svg-icons'
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
-
 library.add(faBell)
 library.add(faUserCircle)
 
@@ -69,6 +67,9 @@ import {faFastForward} from "@fortawesome/free-solid-svg-icons/faFastForward"
 
 //sport
 library.add(faPencilAlt)
+library.add(faInfo)
+library.add(faTrash)
+library.add(faPlusCircle)
 library.add(faTh)
 library.add(faListUl)
 library.add(faDownload)
@@ -86,13 +87,15 @@ import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 library.add(faFilePdf)
+library.add(faInfo)
 library.add(faPen)
 library.add(faQuestion)
 library.add(faTimes)
 library.add(faCheck)
 
 //profile
-library.add(faChevronLeft)
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
+library.add(faEllipsisH)
 
 //telemedic
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
