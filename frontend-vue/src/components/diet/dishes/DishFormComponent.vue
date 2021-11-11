@@ -5,13 +5,13 @@
             <h6 class="title">ZDJĘCIE</h6>
         </div>
         <div>
-            <!--<div>
-                <img style="width: 100px; height: 100px" :src="this.imgPath">
+            <div>
+                <img style="width: 100px; height: 100px" :src="this.newDishPhotoSrc">
             </div>
             <div style="flex-direction: column; display: flex;"> 
-                <input type="file" class="form-control-file" accept="image/png, image/jpeg" @change="this.onFileChange">
+                <input type="file" ref="newDishPicture" class="form-control-file" accept="image/png, image/jpeg" @change="this.onFileChange">
                 <button style="width: 150px;" class="btn-card-panel-diet" @click="this.clearPhoto">usuń zdjęcie</button>
-            </div>-->
+            </div>
         </div>
         <hr class="hr-dish title-line"/>
         <div class="title" style="align-items: flex-start; display: flex">
@@ -121,6 +121,9 @@
         <div v-if="this.errorForm" style="margin: 5px;" class="alert alert-danger" role="alert">
             Upewnij się, że poprawnie uzupełniłeś oznaczone gwiazdką dane!
         </div>
+        <div v-if="this.errorFormPhoto" style="margin: 5px;" class="alert alert-danger" role="alert">
+            Nie można przesłać zdjęcia, spróbuj ponownie!
+        </div>
     </div>
 </template>
 
@@ -151,11 +154,13 @@ export default {
             console.log("opened")
             if(this.action === 'UPDATE'){
                 this.fillInputsOnUpdate()
+                this.fillPhotoOnUpdate()
             }
         },
         modalClosed: function () {
             this.clearStatus()
             this.clearInputs()
+            this.clearPhoto()
         }
     },
     data(){
@@ -195,35 +200,17 @@ export default {
             dishDescription: '',
             dishName: '',
             dishRecipe: '',
-            imgPath: '',
-            postFile: '',
 
             productDetailAlert: false,
             successForm: false,
             errorForm: false,
+            errorFormPhoto: false,
+
+            newDishPhotoSrc: '',
+            newPhoto: false,
         }
     },
     methods: {
-        getNutritionLabels(){
-            axios.get('http://localhost:8090/nutrition-label', {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            })
-            .then(data => {
-                this.nutritionLabels = data.data
-            }).catch(e => alert(e))
-        },
-        clearStatus(){
-            this.productDetailAlert= false
-            this.successForm= false
-            this.errorForm= false
-        },
-        clearProductsStatus(){
-            this.actualSelectedProduct = ''
-            this.actualSelectedProductAmount = 0
-            this.actualSelectedProductMeasure = ''
-        },
         fillInputsOnUpdate(){
             this.actualSelectedProduct = '',
             this.actualSelectedProductAmount = 0,
@@ -250,10 +237,35 @@ export default {
             this.dishDescription = this.dish.description,
             this.dishName = this.dish.name,
             this.dishRecipe = this.dish.recipe,
-            this.imgPath = '',
-            this.postFile = '',
+
+            this.newDishPhotoSrc = ''
+            this.newPhoto = false;
 
             this.productDetailAlert = false
+        },
+        fillPhotoOnUpdate(){
+            if (this.dish.imgDishPath != null && this.dish.imgDishPath != '') {
+                const url = `${this.apiURL}dish/${this.dish.id}/photo`
+                const token = localStorage.getItem('token')
+                this.$func_global.downloadPhoto(url, token).then(result => this.newDishPhotoSrc = result)
+            }
+        },
+        onFileChange(e) {
+            this.newDishPhotoSrc = URL.createObjectURL(e.target.files[0]);
+            this.newPhoto = true;
+        },
+
+        //GET DATA FOR DISHES
+
+        getNutritionLabels(){
+            axios.get('http://localhost:8090/nutrition-label', {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(data => {
+                this.nutritionLabels = data.data
+            }).catch(e => alert(e))
         },
         getProductsToSelect(){
             let params = {
@@ -271,6 +283,9 @@ export default {
                     this.productsToSelect = data.data.objects
             }).catch(e => alert(e))
         },
+
+        //ADDING DISH PRODUCT DETAILS IN FORM
+
         addProductDetail(){         
             let detail = {
                 amountOfProduct: this.actualSelectedProductAmount,
@@ -287,17 +302,13 @@ export default {
             this.addedProductDetails.push(detail)
             this.clearProductsStatus()
         },
+
         deleteProductDetail(id){
             this.addedProductDetails = this.addedProductDetails.filter((det) => det.product.id != id)
         },
-        onFileChange(e) {
-            this.postFile = e.target.files[0];
-            this.imgPath = URL.createObjectURL(this.postFile);
-        },
-        clearPhoto() {
-            this.postFile = null
-            this.imgPath = ''
-        },
+
+        //PREPARING DISH DATA DO REQUEST
+
         prepareMealObjectsArray(){
             let result = []
             this.chosenMealTypes.forEach((mealType) => result.push({mealType: mealType}))
@@ -314,41 +325,71 @@ export default {
             this.addedProductDetails.forEach((detail) => result.push({amountOfProduct: detail.amountOfProduct,
             measureType: detail.measureType, product: {id: detail.product.id}}))
             return result;
-
         },
-        prepareData(id){
+        prepareData(id, imgPath){
             let result = {
                     id: id,
                     name: this.dishName,
                     description: this.dishDescription,
                     recipe: this.dishRecipe,
-                    imgDishPath: this.imgPath,
+                    imgDishPath: imgPath,
                     dishProductDetails: this.prepareProductsDetailArray(),
                     dishMealTypes: this.prepareMealObjectsArray(),
                     allowedForNutritionLabels: this.prepareNutritionObjectsArray(),
                 }
             return result;
         },
+
+        //SENDING DISH DATA
+
         updateDish(){
             axios({
                 method: 'put',
                 headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
                 url: "http://localhost:8090/dish/" + this.dish.id + '/dietician',
-                data: this.prepareData(this.dish.id)
+                data: this.prepareData(this.dish.id, this.dish.imgDishPath)
             })
-            .then((response) => {console.log(response);this.$emit("dish:updated");this.successForm=true})
+            .then((response) => {
+                console.log(response);
+                if(this.newPhoto){
+                    this.$func_global.importDataFunc(this.$refs.newDishPicture, localStorage.getItem('token'), 'dishPicture', this.dish.id)
+                    .then((response) => {
+                        console.log(response);this.$emit("dish:updated"); this.successForm=true;
+                    })
+                    .catch(e => {console.log(e); this.errorFormPhoto = true})
+                }
+                else{
+                    console.log(response);this.$emit("dish:updated");this.successForm=true;
+                }
+            })
             .catch(e => {this.errorForm = true;console.log(e);})
         },
+        
         addDish(){
             axios({
                 method: 'post',
                 headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
                 url: "http://localhost:8090/dish/dietician",
-                data: this.prepareData(null)
+                data: this.prepareData(null, null)
             })
-            .then((response) => {console.log(response); this.$emit("dish:updated"); this.successForm=true})
+            .then((response) => {
+                console.log(response);
+                if(this.newPhoto){
+                    this.$func_global.importDataFunc(this.$refs.newDishPicture, localStorage.getItem('token'), 'dishPicture', this.dish.id)
+                    .then((response) => {
+                        console.log(response);this.$emit("dish:updated");this.successForm=true;
+                    })
+                    .catch(e => {console.log(e); this.errorFormPhoto = true})
+                }
+                else{
+                    console.log(response);this.$emit("dish:updated");this.successForm=true;
+                }
+            })
             .catch(e => {this.errorForm = true;console.log(e);})
         },
+
+        //CLEARS
+
         clearInputs(){
             this.actualSelectedProduct = ''
             this.actualSelectedProductAmount = 0
@@ -359,9 +400,23 @@ export default {
             this.dishDescription = ''
             this.dishName = ''
             this.dishRecipe = ''
-            this.imgPath = ''
-            this.postFile = ''
-        }
+        },
+        clearStatus(){
+            this.productDetailAlert= false
+            this.successForm= false
+            this.errorForm= false
+            this.errorFormPhoto= false
+            this.clearPhoto()
+        },
+        clearProductsStatus(){
+            this.actualSelectedProduct = ''
+            this.actualSelectedProductAmount = 0
+            this.actualSelectedProductMeasure = ''
+        },
+        clearPhoto() {
+            this.newDishPhotoSrc = ''
+            this.newPhoto = false;
+        },
     }
 }
 </script>

@@ -17,4 +17,5 @@ public interface DishService {
     boolean deleteDish(UUID dishId) throws NotFoundException;
     Page<Dish> getLabeledDishes(List<UUID> labelIds, int numberOfElements, int page, String namePart);
     List<Dish> getDieticianDishesByDieticianId(UUID dieticianId);
+    Dish updateDishImg(UUID dishId, String fileName) throws NotFoundException;
 }

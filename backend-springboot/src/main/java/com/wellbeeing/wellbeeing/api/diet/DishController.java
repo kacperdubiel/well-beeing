@@ -6,13 +6,18 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.diet.DishService;
+import com.wellbeeing.wellbeeing.service.files.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -23,12 +28,15 @@ import java.util.UUID;
 public class DishController {
     public DishService dishService;
     public UserService userService;
+    public FileService fileService;
 
     @Autowired
     public DishController(@Qualifier("dishService") DishService dishService,
-                          @Qualifier("userService") UserService userService){
+                          @Qualifier("userService") UserService userService,
+                          @Qualifier("fileService") FileService fileService){
         this.dishService = dishService;
         this.userService = userService;
+        this.fileService = fileService;
     }
 
     @RequestMapping(path = "/dish/{dishId}", method = RequestMethod.GET)
@@ -117,5 +125,26 @@ public class DishController {
                 .objects(dishesPage.getContent())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/dish/{dishId}/photo", method = RequestMethod.POST)
+    public ResponseEntity<?> addDishPhoto(Principal principal, MultipartFile file, @PathVariable("dishId") UUID dishId) throws ForbiddenException, NotFoundException {
+        UUID dieticianId = userService.findUserIdByUsername(principal.getName());
+        Dish actDish = dishService.getDishById(dishId);
+        if(!actDish.getDishCreator().getId().equals(dieticianId)){
+            throw new ForbiddenException("Access to dish with id: " + dishId + "forbidden");
+        }
+        String fileName = fileService.save(file);
+        return new ResponseEntity<>(dishService.updateDishImg(dishId, fileName), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/dish/{dishId}/photo", method = RequestMethod.GET)
+    public ResponseEntity<?> getDishPhoto(@PathVariable("dishId") UUID dishId) throws NotFoundException {
+        Dish actDish = dishService.getDishById(dishId);
+        Resource photo = fileService.load(actDish.getImgDishPath());
+        return  ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "dishPhoto")
+                .contentType(MediaType.parseMediaType("image/png"))
+                .body(photo);
     }
 }

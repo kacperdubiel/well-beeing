@@ -1,7 +1,8 @@
 <template>
     <div class="modal-diet-content">
         <div class="row" style="width: 100%;">
-            <div class="col-lg-4" style="border-radius: 10px; height: 200px; width: 200px; background-color: whitesmoke; margin: 4px;">
+            <div class="col-lg-4" style="border-radius: 10px; height: 200px; width: 200px; margin: 4px;">
+                <img style="border-radius: 10px;" class="w-100 p-1 m-1" :src="this.dishPhotoSrc">
             </div>
             <div style="display: flex; flex-direction:column; margin-start: 25px;" class="col-lg-8">
                 <hr class="hr-dish title-line"/>
@@ -102,9 +103,18 @@ export default {
             type: Object
         }
     },
+    watch: {
+        dish: function () {
+            this.downloadPhoto()
+        }
+    },
+    mounted(){
+        this.downloadPhoto()
+    },
     data(){
         return{
-            colors: ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392']
+            colors: ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392'],
+            dishPhotoSrc: 'C:\\Users\\User\\Desktop\\well-beeing\\well-beeing\\frontend-vue\\src\\assets\\bee.png'
         }
     },
     methods: {
@@ -112,7 +122,14 @@ export default {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.round(Math.floor(Math.random() * (max - min)) + min);
-        } 
+        },
+        downloadPhoto(){
+            if (this.dish.imgDishPath != null && this.dish.imgDishPath != '') {
+                const url = `${this.apiURL}dish/${this.dish.id}/photo`
+                const token = localStorage.getItem('token')
+                this.$func_global.downloadPhoto(url, token).then(result => this.dishPhotoSrc = result)
+            }
+        },
     }
 }
 </script>
@@ -158,7 +175,7 @@ export default {
         color: var(--GREY2);
         width: 100%;
         border-color: var(--DIET);
-        border-style: dotted;
+        border-style: solid;
         border-width: 1px
     }
     .bdr{

@@ -143,4 +143,11 @@ public class DishServiceImpl implements DishService {
     public List<Dish> getDieticianDishesByDieticianId(UUID dieticianId) {
         return dishDAO.findByDishCreatorIdAndActive(dieticianId, true);
     }
+
+    @Override
+    public Dish updateDishImg(UUID dishId, String fileName) throws NotFoundException {
+        Dish actDish = getDishById(dishId);
+        actDish.setImgDishPath(fileName);
+        return dishDAO.save(actDish);
+    }
 }
