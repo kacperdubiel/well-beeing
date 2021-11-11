@@ -7,26 +7,32 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-@SpringBootApplication
-public class WellbeeingApplication /*implements WebMvcConfigurer*/ {
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-	/*@Override
+import java.util.List;
+
+@SpringBootApplication
+public class WellbeeingApplication implements WebMvcConfigurer {
+
+	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		argumentResolvers.add(new SpecificationArgumentResolver());
 		argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
-	}*/
+	}
 	public static void main(String[] args) {
 		SpringApplication.run(WellbeeingApplication.class, args);
 	}
 
-/*	@Bean
+	@Bean
 	CommandLineRunner init(@Qualifier("fileService") FileService fileService,
 						   @Qualifier("exerciseService")ExerciseService exerciseService) {
 		return (args) -> {
-			exerciseService.initiateExercises();
-//			fileService.deleteAll();
-//			fileService.init();
+			//exerciseService.initiateExercises();
+			//fileService.deleteAll();
+			//fileService.init();
 		};
-	}*/
-
+	}
 }
