@@ -206,6 +206,7 @@ export default {
     .table-report-info {
         color: var(--GREY2);
         border-style: solid;
+        border-width: 1px;
         border-color: var(--DIET);
         margin-top: 10px;
     }

@@ -15,6 +15,28 @@ export const func_global = {
 
     },
 
+    async importDataFunc(myfile, token, type, id) {
+        // let myfile = this.$refs.myfile;
+        let files = myfile.files;
+        let file = files[0];
+        var formData = new FormData();
+        formData.append("file", file);
+        return this.uploadFileFunc(formData, type, token, id)
+    },
+
+    async uploadFileFunc (data, type, token, id) {
+        let url;
+        if (type === 'roleRequest')
+            url = `${apiURL}role-request/import/${id}/`
+        else if (type === 'profilePicture')
+            url = `${apiURL}profile/import`
+        else if (type === 'postPicture')
+            url = `${apiURL}post/import/${id}`
+        else if(type === 'dishPicture')
+            url = `${apiURL}dish/${id}/photo`
+        return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}})
+    },
+
      async uploadFile (data, type, token, id) {
         let url;
         if (type === 'roleRequest')
@@ -23,7 +45,9 @@ export const func_global = {
             url = `${apiURL}profile/import`
         else if (type === 'postPicture')
             url = `${apiURL}post/import/${id}`
-         return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
+        else if(type === 'dishPicture')
+            url = `${apiURL}dish/${id}/photo`
+        return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
             console.log(response.data)
         }).catch(error => {
             console.log(error.response)

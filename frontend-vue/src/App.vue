@@ -199,6 +199,29 @@ input{
 .style-chooser .vs__deselect {
     fill: var(--GREY3);
 }
+
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+    border-color: rgb(133, 133, 133);
+    text-transform: lowercase;
+    font-variant: small-caps;
+    background-color: white;
+}
+
+.style-chooser-diet .vs__clear,
+.style-chooser-diet .vs__open-indicator {
+    fill: #394066;
+}
+.style-chooser-diet .vs__selected {
+    background-color: var(--DIET);
+    color: white;
+    background-blend-mode: color;
+}
+.style-chooser-diet .vs__deselect {
+    fill: var(--GREY3);
+}
+
 ::-webkit-scrollbar {
     width: 15px;
     height: 15px;
