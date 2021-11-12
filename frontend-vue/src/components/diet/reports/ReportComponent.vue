@@ -8,12 +8,13 @@
             <table class="table table-hover table-borderless">
                 <thead>
                     <tr>
-                        <th class="col-sm-5" scope="col">Produkt</th>
+                        <th class="col-sm-3" scope="col">Produkt</th>
                         <th class="col-sm-1" scope="col">Ilość</th>
                         <th class="col-sm-1" scope="col">Kcal</th>
                         <th class="col-sm-1" scope="col">B</th>
                         <th class="col-sm-1" scope="col">W</th>
                         <th class="col-sm-1" scope="col">T</th>
+                        <th class="col-sm-2" scope="col">IG</th>
                         <th class="col-sm-1" scope="col">Czas</th>
                     </tr>
                 </thead>
@@ -25,6 +26,7 @@
                         <td>{{Math.round(detail.derivedNutritionalValues.derivedProteins)}} g</td>
                         <td>{{Math.round(detail.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
                         <td>{{Math.round(detail.derivedNutritionalValues.derivedFats)}} g</td>
+                        <td>{{this.$func_global.mapGlycemicIndexShort(detail.product.glycemicIndexLevel)}}</td>
                         <td>{{detail.consumingTime.substring(11, 16)}}</td>
                     </tr>
                 </tbody>
@@ -38,12 +40,13 @@
             <table class="table table-hover table-borderless">
                 <thead>
                     <tr>
-                        <th class="col-sm-5" scope="col">Danie</th>
+                        <th class="col-sm-3" scope="col">Danie</th>
                         <th class="col-sm-1" scope="col">Porcje</th>
                         <th class="col-sm-1" scope="col">Kcal</th>
                         <th class="col-sm-1" scope="col">B</th>
                         <th class="col-sm-1" scope="col">W</th>
                         <th class="col-sm-1" scope="col">T</th>
+                        <th class="col-sm-2" scope="col">IG</th>
                         <th class="col-sm-1" scope="col">Czas</th>
                     </tr>
                 </thead>
@@ -55,6 +58,7 @@
                         <td>{{Math.round(detailDish.derivedNutritionalValues.derivedProteins)}} g</td>
                         <td>{{Math.round(detailDish.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
                         <td>{{Math.round(detailDish.derivedNutritionalValues.derivedFats)}} g</td>
+                        <td>{{this.$func_global.mapGlycemicIndexShort(detailDish.dish.glycemicIndexLevel)}}</td>
                         <td>{{detailDish.consumingTime.substring(11, 16)}}</td>
                     </tr>
                 </tbody>

@@ -5,37 +5,62 @@
             <div class="title" style="align-items: flex-start; display: flex">
                 <h6 class="title">PRODUKTY</h6>
             </div>
-            <div class="row">
-                <div class="col-lg-5">
-                    <v-select style="margin 0px; padding: 0px;" @keypress="this.getProductsToSelect" v-model="this.actualSelectedProduct" :options="this.productsToSelect" :reduce="name => name.id" label="name" />
+            <div>
+                <div class="row py-1">
+                    <div class="col-lg-4">
+                        <label class="form-report-label" for="product-report-input">Produkt</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <v-select @click="this.clearProductStatus" id="product-report-input" style="margin 0px; padding: 0px;" v-model="this.actualSelectedProduct" :options="this.productsToSelect" :reduce="name => name.id" label="name" />
+                    </div>
                 </div>
-                <div class="col-lg-1">
-                    <input
-                        style="width: 60px;"
-                        id="productReportInput"
-                        type="number"
-                        min=0
-                        v-model="this.actualSelectedProductAmount"
-                    />
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label class="form-report-label" for="product-amount-report-input">Ilość</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input
+                            @focus="this.clearProductStatus"
+                            style="width: 100%;"
+                            id="product-amount-report-input"
+                            type="number"
+                            class="form-control px-0"
+                            min=0
+                            v-model="this.actualSelectedProductAmount"
+                        />
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <select id="measureProductInput" v-model="this.actualSelectedProductMeasure" class="form-select" aria-label="Product measure">
-                        <option value="GRAM">{{this.$func_global.mapMeasure("GRAM")}}</option>
-                        <option value="MILLI_GRAM">{{this.$func_global.mapMeasure("MILLI_GRAM")}}</option>
-                        <option value="MICRO_GRAM">{{this.$func_global.mapMeasure("MICRO_GRAM")}}</option>
-                        <option value="KILO_GRAM">{{this.$func_global.mapMeasure("KILO_GRAM")}}</option>
-                    </select>
+                <div class="row py-1">
+                    <div class="col-lg-4">
+                        <label class="form-report-label" for="product-measure-input">Miara</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <select @focus="this.clearProductStatus" id="product-measure-input" v-model="this.actualSelectedProductMeasure" class="form-select" aria-label="Product measure">
+                            <option value="GRAM">{{this.$func_global.mapMeasure("GRAM")}}</option>
+                            <option value="MILLI_GRAM">{{this.$func_global.mapMeasure("MILLI_GRAM")}}</option>
+                            <option value="MICRO_GRAM">{{this.$func_global.mapMeasure("MICRO_GRAM")}}</option>
+                            <option value="KILO_GRAM">{{this.$func_global.mapMeasure("KILO_GRAM")}}</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <input v-model="this.actualSelectedProductConsumingTime" id="productTime" type="time"/>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label class="form-report-label" for="product-report-time">Godzina</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input @focus="this.clearProductStatus" v-model="this.actualSelectedProductConsumingTime" class="form-control" id="product-report-time" type="time"/>
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <button @click="this.addProductToReport" class="add-button"><font-awesome-icon :icon="['fa', 'plus-circle']"/></button>
+                <div class="col-lg-4">
+                    <button style="width: 200px;" @click="this.addProductToReport" class="btn-card-panel-diet">Dodaj produkt</button>
                 </div>
+            </div>
+            <div v-if="this.productFormError" style="margin: 5px;" class="alert alert-danger" role="alert">
+                Wprowadź wszystkie dane!
             </div>
             <hr/>
             <div>
-                <table class="table table-borderless table-hover">
+                <table style="color: var(--GREY2)" class="table table-borderless table-hover">
                     <thead>
                         <tr>
                             <th class="col-lg-6" scope="col">Produkt</th>
@@ -57,35 +82,52 @@
                 </table>
             </div>
         <div style="width: 100%; text-align: left;">
-            <hr class="hr-dish title-line"/>
+            <hr style="margin-top: 50px;" class="hr-dish title-line"/>
             <div class="title" style="align-items: flex-start; display: flex">
                 <h6 class="title">DANIA</h6>
             </div>
-            <div class="row">
-                <div class="col-lg-5">
-                    <v-select @keypress="this.getDishesToSelect" v-model="this.actualSelectedDish" :options="this.dishesToSelect" :reduce="name => name.id" label="name" />
+            <div>
+                <div class="row py-1">
+                    <div class="col-lg-4">
+                        <label class="form-report-label" for="report-dish-select">Danie</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <v-select @click="this.clearDishStatus" id="report-dish-select" style="margin 0px; padding: 0px;" v-model="this.actualSelectedDish" :options="this.dishesToSelect" :reduce="name => name.id" label="name" />
+                    </div>
                 </div>
-                <div class="col-lg-1">
-                    <input
-                        style="width: 60px;"
-                        id="dishReportInput"
-                        type="number"
-                        min=1
-                        v-model="this.actualSelectedDishPortions"
-                    />
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label class="form-report-label" for="report-dish-portions-input">Liczba porcji</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input
+                            id="report-dish-portions-input"
+                            type="number"
+                            min=1
+                            class="form-control px-0"
+                            @focus="this.clearDishStatus"
+                            v-model="this.actualSelectedDishPortions"
+                        />
+                    </div>
                 </div>
-                <div class="col-lg-2">
+                <div class="row py-1">
+                    <div class="col-lg-4">
+                        <label class="form-report-label" for="report-dish-time">Godzina</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input @focus="this.clearDishStatus"  class="form-control px-0" v-model="this.actualSelectedDishConsumingTime" id="report-dish-time" type="time"/>
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <input v-model="this.actualSelectedDishConsumingTime" id="productTime" type="time"/>
+                <div class="col-lg-4">
+                    <button style="width: 200px;" @click="this.addDishToReport" class="btn-card-panel-diet">Dodaj danie</button>
                 </div>
-                <div class="col-lg-2">
-                    <button @click="this.addDishToReport" class="add-button"><font-awesome-icon :icon="['fa', 'plus-circle']"/></button>
-                </div>
+            </div>
+            <div v-if="this.dishFormError" style="margin: 5px;" class="alert alert-danger" role="alert">
+                Wprowadź wszystkie dane!
             </div>
             <hr/>
             <div>
-                <table class="table table-borderless table-hover">
+                <table style="color: var(--GREY2)" class="table table-borderless table-hover">
                     <thead>
                         <tr>
                             <th class="col-lg-6" scope="col">Danie</th>
@@ -127,14 +169,32 @@ export default {
             productsToSelect: [],
             actualSelectedProduct: '',
             actualSelectedProductAmount: 100,
-            actualSelectedProductMeasure: '',
+            actualSelectedProductMeasure: 'GRAM',
             actualSelectedProductConsumingTime: '12:00',
 
             dishesToSelect: [],
             actualSelectedDish: '',
             actualSelectedDishPortions: 1,
             actualSelectedDishConsumingTime: '12:00',
+
+            productFormError: false,
+            dishFormError: false
         }
+    },
+    computed: {
+        ivalidProductForm(){
+            return this.actualSelectedProduct === '' || this.actualSelectedProduct == null ||
+                   this.actualSelectedProductAmount === '' || this.actualSelectedProductAmount <= 0 ||
+                   this.actualSelectedProductMeasure === '' ||
+                   this.actualSelectedProductConsumingTime === ''
+
+        },
+        invalidDishForm(){
+            return this.actualSelectedDish === '' || this.actualSelectedDish == null ||
+                   this.actualSelectedDishPortions === '' || this.actualSelectedDishPortions <= 0 ||
+                   this.actualSelectedDishConsumingTime === ''
+        }
+
     },
     watch: {
         report: function () {
@@ -146,6 +206,23 @@ export default {
         this.getDishesToSelect()
     },
     methods: {
+        clearDishInputs(){
+            this.actualSelectedDish= ''
+            this.actualSelectedDishPortions='1'
+            this.actualSelectedDishConsumingTime= '12:00'
+        },
+        clearProductInputs(){
+            this.actualSelectedProduct= ''
+            this.actualSelectedProductAmount= 100
+            this.actualSelectedProductMeasure= 'GRAM'
+            this.actualSelectedProductConsumingTime= '12:00'
+        },
+        clearProductStatus(){
+            this.productFormError = false;
+        },
+        clearDishStatus(){
+            this.dishFormError = false;
+        },
         getProductsToSelect(){
             console.log("SPR")
             let params = {
@@ -182,6 +259,10 @@ export default {
             }).catch(e => alert(e))
         },
         addProductToReport(){
+           if(this.ivalidProductForm){
+               this.productFormError = true
+               return
+           }
            axios({
                 method: 'post',
                 headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
@@ -195,10 +276,14 @@ export default {
                     consumingTime: this.makeConsumingTimestamp(this.actualSelectedProductConsumingTime)
                 }]
             })
-            .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
+            .then((response) => {this.getCurrentReport(); console.log(response); this.clearProductInputs(); this.$emit('updated:report', response.data);})
             .catch(e => {console.log(e);})
         },
         addDishToReport(){
+           if(this.invalidDishForm){
+               this.dishFormError = true
+               return
+           }
            axios({
                 method: 'post',
                 headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
@@ -211,7 +296,7 @@ export default {
                     consumingTime: this.makeConsumingTimestamp(this.actualSelectedDishConsumingTime)
                 }]
             })
-            .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
+            .then((response) => {this.getCurrentReport(); console.log(response); this.clearDishInputs(); this.$emit('updated:report', response.data);})
             .catch(e => {console.log(e);})
         },
         deleteProductFromReport(id){
@@ -290,5 +375,8 @@ export default {
         border: none;
         font-size: 2rem;
         font-weight: bold;
+    }
+    .form-report-label{
+        color: var(--GREY3)
     }
 </style>
