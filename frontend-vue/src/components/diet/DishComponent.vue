@@ -89,6 +89,11 @@
         </table>
         <hr class="hr-dish title-line"/>
         <div class="title" style="align-items: flex-start; display: flex">
+            <h6 class="title">INDEKS GLIKEMICZNY</h6>
+        </div>
+        <p>{{this.$func_global.mapGlycemicIndex(this.dish.glycemicIndexLevel)}}</p>
+        <hr class="hr-dish title-line"/>
+        <div class="title" style="align-items: flex-start; display: flex">
             <h6 class="title">KALORIE</h6>
         </div>
         <h4 style="color: var(--GREY2);"> Łącznie: {{this.dish.derivedNutritionalValues.derivedCalories}} kcal / porcja </h4>
@@ -114,7 +119,7 @@ export default {
     data(){
         return{
             colors: ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392'],
-            dishPhotoSrc: 'C:\\Users\\User\\Desktop\\well-beeing\\well-beeing\\frontend-vue\\src\\assets\\bee.png'
+            dishPhotoSrc: ''
         }
     },
     methods: {
