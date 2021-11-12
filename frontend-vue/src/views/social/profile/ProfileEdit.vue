@@ -413,7 +413,7 @@ export default {
             lastName: "",
             description: "",
             sex: "",
-            birthday: null,
+            birthday: new Date(),
             sportTag: "",
             sportTags: [
                 {label:'-', value:'NONE'},
@@ -464,7 +464,7 @@ export default {
                 this.lastName = response.data['lastName']
                 this.description = response.data['description']
                 this.sex = response.data['esex']
-                this.birthday = response.data['birthday'] === '' ? new Date() : this.$func_global.formatDateDatePicker(response.data['birthday'])
+                this.birthday = response.data['birthday'] === null ? new Date() : this.$func_global.formatDateDatePicker(response.data['birthday'])
                 this.sportTag = response.data['esportTag']
                 this.nutritionTag = response.data['enutritionTag']
             }).catch(error => {
@@ -579,6 +579,8 @@ export default {
                 console.log(response.data)
                 this.successChangePersonalInfo = true
                 this.submittingChangePersonalInfo = false
+                this.$store.commit('setFirstName', this.firstName)
+                this.$store.commit('setLastName', this.lastName)
             }).catch(error => {
                 console.log(error.response.status)
                 this.errorChangePersonalInfo = true
