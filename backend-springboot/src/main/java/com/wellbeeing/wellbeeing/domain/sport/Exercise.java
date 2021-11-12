@@ -55,6 +55,8 @@ public class Exercise {
     @JsonIgnore
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ExerciseInTraining> exerciseInTrainings;
+    @Column
+    private String pathToVideoInstruction;
 
     public Exercise(String name, double met) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;

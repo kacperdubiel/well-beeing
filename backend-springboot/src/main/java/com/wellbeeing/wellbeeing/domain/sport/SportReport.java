@@ -31,7 +31,7 @@ public class SportReport {
     private LocalDate reportDate;
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "sportReport", cascade = CascadeType.ALL)
-    List<ReportExercise> exerciseDetailsList = new ArrayList<>();
+    List<ReportExercise> exerciseList = new ArrayList<>();
 
 //    @LazyCollection(LazyCollectionOption.FALSE)
 //    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
