@@ -22,6 +22,7 @@
                 :reduce="name => name.id"
                 label="name"/>
         </div>
+        <p v-if="this.allItems != 0" style="color: var(--GREY1); text-align:end;">{{this.dishesToShow.length}} / {{this.allItems}} pozycji </p>
         <div style="width: 100%;" v-for="dish in this.dishesToShow" :key="dish.id">
             <dish-browser-element-component @change:dishModal="changeModalDish" :actualDish="dish"></dish-browser-element-component>
         </div>
