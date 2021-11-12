@@ -7,13 +7,15 @@
             <thead>
                 <tr>
                     <th class="col-sm-1" scope="col">Danie</th>
-                    <th class="col-sm-1" scope="col">Data dodania</th>
+                    <th class="col-sm-1" scope="col">Status</th>
+                    <th class="col-sm-1" scope="col">Data utworzenia</th>
                     <th class="col-sm-1" scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="dish in this.dishesToShow" :key="dish.id">
                     <td>{{dish.name}}</td>
+                    <td>{{this.$func_global.mapPublished(dish.draft)}}</td>
                     <td>{{dish.createdDate}}</td>
                     <td style="text-align: end;">
                         <button @click="this.setActualDish(dish)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#dishInfoModal"><font-awesome-icon :icon="['fa', 'info']"/></button>
