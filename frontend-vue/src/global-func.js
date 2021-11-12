@@ -285,16 +285,38 @@ export const func_global = {
             return "Nieznany"
     },
     mapGlycemicIndex(index){
+        if(index == 'VERY_LOW')
+            return "Bardzo niski (0, 10)"
         if(index == 'LOW')
-            return "Niski"
+            return "Niski (11, 30)"
         else if(index == 'MEDIUM')
-            return "Średni"
+            return "Średni (31, 50)"
         else if(index == "HIGH")
-            return "Wysoki"
+            return "Wysoki (51, 70)"
+        else if(index == "VERY_HIGH")
+            return "Bardzo wysoki (71, 100)"
         else if(index == "ANY_RECOMMENDED")
-            return "Niski/średni"
+            return "Niski/średni (0, 50)"
         else if(index == "ANY")
             return "Dowolny"
+        else
+            return "Nieznany"
+    },
+    mapGlycemicIndexShort(index){
+        if(index == 'VERY_LOW')
+            return "(0, 10)"
+        if(index == 'LOW')
+            return "(11, 30)"
+        else if(index == 'MEDIUM')
+            return "(31, 50)"
+        else if(index == "HIGH")
+            return "(51, 70)"
+        else if(index == "VERY_HIGH")
+            return "(71, 100)"
+        else if(index == "ANY_RECOMMENDED")
+            return "(0, 50)"
+        else if(index == "ANY")
+            return "(0, 100)"
         else
             return "Nieznany"
     },
@@ -309,6 +331,12 @@ export const func_global = {
             return "kg"
         else
             return "Nieznana"
+    },
+    mapPublished(draft){
+        if(draft)
+            return "Szkic"
+        else
+            return "Opublikowane"
     },
     proteinCalories(){
         return 4
