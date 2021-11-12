@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.Dish;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
@@ -81,13 +82,13 @@ public class DishController {
 
     //@RolesAllowed(ERole.Name.ROLE_DIETICIAN)
     @RequestMapping(path = "/dish/dietician", method = RequestMethod.POST)
-    public ResponseEntity<?> addDish(Principal principal, @RequestBody @NonNull Dish dish) throws NotFoundException {
-        return new ResponseEntity<>(dishService.addDish(dish, userService.findUserIdByUsername(principal.getName())), HttpStatus.OK);
+    public ResponseEntity<?> addDish(Principal principal, @RequestBody @NonNull Dish dish) throws NotFoundException, ConflictException {
+        return new ResponseEntity<>(dishService.addDish(dish, userService.findUserIdByUsername(principal.getName()), true), HttpStatus.OK);
     }
 
     //@RolesAllowed(ERole.Name.ROLE_DIETICIAN)
     @RequestMapping(path = "/dish/{dishId}/dietician", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateDish(Principal principal, @RequestBody @NonNull Dish dish, @PathVariable("dishId") UUID dishId) throws NotFoundException, ForbiddenException {
+    public ResponseEntity<?> updateDish(Principal principal, @RequestBody @NonNull Dish dish, @PathVariable("dishId") UUID dishId) throws NotFoundException, ForbiddenException, ConflictException {
         UUID dieticianId = userService.findUserIdByUsername(principal.getName());
         Dish actDish = dishService.getDishById(dishId);
         if(!actDish.getDishCreator().getId().equals(dieticianId))
@@ -146,5 +147,25 @@ public class DishController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "dishPhoto")
                 .contentType(MediaType.parseMediaType("image/png"))
                 .body(photo);
+    }
+
+    @RequestMapping(path = "/dish/{dishId}/publish", method = RequestMethod.PUT)
+    public ResponseEntity<?> publish(Principal principal, @PathVariable("dishId") UUID dishId) throws NotFoundException, ForbiddenException {
+        UUID dieticianId = userService.findUserIdByUsername(principal.getName());
+        Dish actDish = dishService.getDishById(dishId);
+        if(!actDish.getDishCreator().getId().equals(dieticianId)){
+            throw new ForbiddenException("Access to dish with id: " + dishId + "forbidden");
+        }
+        return new ResponseEntity<>(dishService.changePublishedState(dishId, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/dish/{dishId}/unpublish", method = RequestMethod.PUT)
+    public ResponseEntity<?> unpublish(Principal principal, @PathVariable("dishId") UUID dishId) throws NotFoundException, ForbiddenException {
+        UUID dieticianId = userService.findUserIdByUsername(principal.getName());
+        Dish actDish = dishService.getDishById(dishId);
+        if(!actDish.getDishCreator().getId().equals(dieticianId)){
+            throw new ForbiddenException("Access to dish with id: " + dishId + "forbidden");
+        }
+        return new ResponseEntity<>(dishService.changePublishedState(dishId, false), HttpStatus.OK);
     }
 }
