@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.repository.social;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.Role;
+import com.wellbeeing.wellbeeing.domain.social.EStatus;
 import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,6 @@ import java.util.UUID;
 public interface RoleRequestDAO extends JpaRepository<RoleRequest, Long>, JpaSpecificationExecutor<RoleRequest> {
 //    Page<RoleRequest> findAllBySubmitterId(UUID submitter_id, Pageable pageable);
     List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmailOrderByAddedDateDesc(String userName);
-    List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmailAndRole(String userName, ERole role);
+    List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatus(String userName, ERole role, EStatus status);
 
 }

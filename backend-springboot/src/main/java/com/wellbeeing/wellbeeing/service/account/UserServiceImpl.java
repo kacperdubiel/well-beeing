@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if(userDAO.findUserByEmail(user.getUsername()).orElse(null) == null){
             Set<Role> roles = new HashSet<>();
             roles.add(roleDAO.findRoleByName(ERole.ROLE_BASIC_USER).orElse(null));
-            user.setRoles(roles);;
+            user.setRoles(roles);
             User newUser = new User(user.getUsername(),
                     BCrypt.hashpw(user.getPassword(), BCrypt.gensalt("$2a$")), user.getRoles());
             userDAO.save(newUser);
