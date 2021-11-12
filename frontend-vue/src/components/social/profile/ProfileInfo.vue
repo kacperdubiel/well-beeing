@@ -3,7 +3,8 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img :src="imageSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
+                <img v-if="this.$store.getters.getProfileImageSrc" :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
+                <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="100" width="100">
             </div>
 
             <div class="d-flex flex-column align-self-center w-100">
@@ -41,11 +42,6 @@
 <script>
 export default {
     name: "ProfileInfo",
-    data() {
-        return {
-            imageSrc: ''
-        }
-    },
     props: {
         profileSource: Object
     },
@@ -53,7 +49,7 @@ export default {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
             const token = this.$store.getters.getToken;
-            this.$func_global.downloadPhoto(url, token).then(result => this.imageSrc = result)
+            this.$func_global.downloadPhoto(url, token).then(result => this.$store.commit('setProfileImageSrc', result))
         }
     },
     mounted() {
