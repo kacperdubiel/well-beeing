@@ -1,4 +1,5 @@
 package com.wellbeeing.wellbeeing.domain.diet;
+import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,4 +34,7 @@ public class Product {
     private List<ProductMineralDetail> mineralDetails =  new ArrayList<>();
     @OneToMany(mappedBy = "elementsProduct")
     private List<ProductVitaminDetail> vitaminDetails = new ArrayList<>();
+    @Column
+    @Enumerated(EnumType.STRING)
+    private EGlycemicIndexLevel glycemicIndexLevel;
 }

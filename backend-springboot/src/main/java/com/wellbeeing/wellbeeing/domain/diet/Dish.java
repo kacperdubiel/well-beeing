@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,13 +20,13 @@ public class Dish implements NutritionalValueDerivable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    @Column(unique = true)
     private String name;
     @Column
     private String imgDishPath;
     @Column
     private String description;
-    @Column
+    @Column(length = 1000)
     private String recipe;
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
     List<DishProductDetail> dishProductDetails = new ArrayList<>();
@@ -53,6 +54,11 @@ public class Dish implements NutritionalValueDerivable{
     NutritionalValueDerivedData derivedNutritionalValues;
     @Column
     private boolean active = true;
+    @Column
+    private boolean draft = true;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private EGlycemicIndexLevel glycemicIndexLevel;
 
     @Override
     public double countCalories() {
