@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.diet.DishDAO;
@@ -59,7 +60,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public Page<Dish> getDishesWithNameLike(String namePart, int numberOfElements, int page) {
-        return dishDAO.findByNameLikeIgnoreCase(namePart,
+        return dishDAO.findActivePublishedByNameLikeIgnoreCase(namePart,
                 PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
 
@@ -76,7 +77,9 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public Dish addDish(Dish dish, UUID creatorId) throws NotFoundException {
+    public Dish addDish(Dish dish, UUID creatorId, boolean nameCheck) throws NotFoundException, ConflictException {
+        if(nameCheck)
+            checkName(dish);
         dish.setDerivedNutritionalValues(new NutritionalValueDerivedData());
         dish.setCreatedDate(LocalDate.now());
         dish.setDishCreator(profileDAO.findProfileByProfileUserId(creatorId).orElse(null));
@@ -102,14 +105,21 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public Dish updateDish(Dish dish, UUID dishId) throws NotFoundException {
+    public Dish updateDish(Dish dish, UUID dishId) throws NotFoundException, ConflictException {
         Dish dishToUpdate = getDishById(dishId);
+        if(!dish.getName().equals(dishToUpdate.getName()))
+            checkName(dish);
         dishToUpdate.getDishProductDetails().forEach(d -> dishProductDetailDAO.deleteById(d.getId()));
         dishToUpdate.getDishMealTypes().forEach(d -> dishMealTypeDAO.deleteById(d.getId()));
         dishDAO.save(dishToUpdate);
 
         dish.setId(dishToUpdate.getId());
-        return addDish(dish, dishToUpdate.getDishCreator().getId());
+        return addDish(dish, dishToUpdate.getDishCreator().getId(), false);
+    }
+
+    private void checkName(Dish dish) throws ConflictException {
+        if(dishDAO.findAllByName(dish.getName()).size() > 0)
+            throw new ConflictException("Dish with name + " + dish.getName() + " already exists");
     }
 
     @Override
@@ -136,7 +146,7 @@ public class DishServiceImpl implements DishService {
                 resultDishes.add(dish.getId());
             }
         }
-        return dishDAO.findByDishIds(resultDishes, namePart, PageRequest.of(page, numberOfElements, Sort.by("name")));
+        return dishDAO.findActivePublishedByDishIds(resultDishes, namePart, PageRequest.of(page, numberOfElements, Sort.by("name")));
     }
 
     @Override
@@ -149,5 +159,12 @@ public class DishServiceImpl implements DishService {
         Dish actDish = getDishById(dishId);
         actDish.setImgDishPath(fileName);
         return dishDAO.save(actDish);
+    }
+
+    @Override
+    public Dish changePublishedState(UUID dishId, boolean draft) throws NotFoundException {
+        Dish dish = getDishById(dishId);
+        dish.setDraft(draft);
+        return dishDAO.save(dish);
     }
 }
