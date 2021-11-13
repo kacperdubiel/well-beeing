@@ -1,14 +1,19 @@
 <template>
     <div class="section-bg telemedic-section">
         <header>
-            <div class="row mb-4">
-                <div class="col-2">
+            <div class="d-flex flex-row mb-4 align-items-center align-left">
+                <div class="mx-3">
                     <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
                 </div>
-                <div class="col">
-                    <h3 v-if="user" class="align-left">
+                <div v-if="user" class="d-flex flex-row align-items-center" @click="openProfile(user.id)">
+                    <div>
+                        <user-avatar-component :profileId="user.id"
+                                               :height="45" :width="45"
+                        />
+                    </div>
+                    <div class="h4 ms-3">
                         {{ user.firstName }} {{ user.lastName }}
-                    </h3>
+                    </div>
                 </div>
             </div>
         </header>
@@ -19,11 +24,13 @@
 </template>
 
 <script>
+import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
 import MeasuresComponent from "@/components/telemedic/MeasuresComponent";
 
 export default {
     name: 'DoctorUserProfileView',
     components: {
+        UserAvatarComponent,
         MeasuresComponent
     },
     data() {
@@ -45,6 +52,9 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
+        },
+        openProfile(profileId){
+            this.$router.push({ name: 'ProfileView', params: { profileId: profileId } });
         },
     },
     created(){

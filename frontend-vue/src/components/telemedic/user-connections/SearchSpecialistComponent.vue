@@ -83,7 +83,12 @@
                         <tbody>
                             <tr v-for="specialist in specialists" v-bind:key="specialist.id">
                                 <td>
-                                    {{ specialist.firstName }} {{ specialist.lastName }}
+                                    <user-avatar-component :profileId="specialist.id"
+                                                           :height="40" :width="40"
+                                    />
+                                    <span class="mx-2">
+                                        {{ specialist.firstName }} {{ specialist.lastName }}
+                                    </span>
                                 </td>
 
                                 <td v-if="connectionType === 'WITH_DOCTOR'">
@@ -111,11 +116,12 @@
 </template>
 
 <script>
+import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
 
 export default {
     name: 'SearchSpecialistComponent',
     components: {
-
+        UserAvatarComponent
     },
     props: {
         connectionType: String

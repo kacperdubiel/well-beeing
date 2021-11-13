@@ -4,8 +4,8 @@
             Błąd ładowania.
         </div>
         <div v-if="componentError === false" class="container">
-            <div v-if="connectionType !== 'WITH_USER'" class="row justify-content-between">
-                <div class="col-10 col-md-7">
+            <div class="row justify-content-between">
+                <div v-if="connectionType !== 'WITH_USER'"  class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
                         <option :value="true">
                             Moi pacjenci
@@ -14,6 +14,9 @@
                             Oczekujące zgłoszenia
                         </option>
                     </select>
+                </div>
+                <div v-else>
+                    Oczekujący na akceptacje
                 </div>
             </div>
 
@@ -107,13 +110,13 @@
                         </thead>
                         <tbody>
                             <tr v-for="connection in userConnections" v-bind:key="connection.id">
-                                <td v-if="selectedAcceptState" class="user-name-link">
-                                    <span @click="$emit('open-profile', connection.profile.id)">
+                                <td class="clickable" @click="$emit('open-profile', connection.profile.id, this.selectedAcceptState)">
+                                    <user-avatar-component :profileId="connection.profile.id"
+                                                           :height="40" :width="40"
+                                    />
+                                    <span v-if="connection.profile.id !== userId" class="mx-2">
                                         {{ connection.profile.firstName }} {{ connection.profile.lastName }}
                                     </span>
-                                </td>
-                                <td v-if="!selectedAcceptState">
-                                    {{ connection.profile.firstName }} {{ connection.profile.lastName }}
                                 </td>
 
                                 <td class="align-right">
@@ -142,11 +145,12 @@
 </template>
 
 <script>
+import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
 
 export default {
     name: 'UserConnectionsToMeComponent',
     components: {
-
+        UserAvatarComponent
     },
     props: {
         connectionType: String
@@ -308,10 +312,6 @@ export default {
     color: white;
     margin-top: 20px;
     text-align: left;
-}
-
-.user-name-link span {
-    cursor: pointer;
 }
 
 .connections-table tbody tr:hover {

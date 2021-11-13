@@ -87,11 +87,27 @@
                         </thead>
                         <tbody>
                             <tr v-for="connection in userConnections" v-bind:key="connection.id">
-                                <td v-if="connection.profile.id !== userId">
-                                    {{ connection.profile.firstName }} {{ connection.profile.lastName }}
+                                <td v-if="connection.profile.id !== userId"
+                                    @click="$emit('open-profile', connection.profile.id, this.selectedAcceptState)"
+                                    class="clickable"
+                                >
+                                    <user-avatar-component :profileId="connection.profile.id"
+                                                           :height="40" :width="40"
+                                    />
+                                    <span class="mx-2">
+                                        {{ connection.profile.firstName }} {{ connection.profile.lastName }}
+                                    </span>
                                 </td>
-                                <td v-else>
-                                    {{ connection.connectedWith.firstName }} {{ connection.connectedWith.lastName }}
+                                <td v-else
+                                    @click="$emit('open-profile', connection.connectedWith.id, this.selectedAcceptState)"
+                                    class="clickable"
+                                >
+                                    <user-avatar-component :profileId="connection.connectedWith.id"
+                                                           :height="40" :width="40"
+                                    />
+                                    <span class="mx-2">
+                                        {{ connection.connectedWith.firstName }} {{ connection.connectedWith.lastName }}
+                                    </span>
                                 </td>
 
                                 <td v-if="connectionType === 'WITH_DOCTOR'">
@@ -123,11 +139,12 @@
 </template>
 
 <script>
+import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
 
 export default {
     name: 'UserConnectionsFromMeComponent',
     components: {
-
+        UserAvatarComponent
     },
     props: {
         connectionType: String

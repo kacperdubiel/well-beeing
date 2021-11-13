@@ -6,6 +6,7 @@
         </header>
         <section>
             <user-connections-from-me-component connection-type="WITH_DOCTOR"
+                                                v-on:open-profile="openProfile"
                                                 v-on:open-conversation="openConversation"
                                                 v-on:search-specialist="openSearchSpecialist"/>
         </section>
@@ -28,6 +29,9 @@ export default {
         }
     },
     methods: {
+        openProfile(profileId){
+            this.$router.push({ name: 'ProfileView', params: { profileId: profileId } });
+        },
         openConversation(conversationId){
             this.$router.push({ name: 'UserDoctorConversationView', params: { conversationId: conversationId } });
         },
