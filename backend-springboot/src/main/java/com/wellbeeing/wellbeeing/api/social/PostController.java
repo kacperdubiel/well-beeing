@@ -6,6 +6,7 @@ import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.files.FileService;
+import com.wellbeeing.wellbeeing.service.social.LikeService;
 import com.wellbeeing.wellbeeing.service.social.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,17 +34,20 @@ public class PostController {
 
     @Autowired
     private PostService postService;
-    private UserService userService;
-    private ProfileService profileService;
+    private final UserService userService;
+    private final ProfileService profileService;
+    private final LikeService likeService;
     private final FileService fileService;
 
     public PostController(@Qualifier("postService") PostService postService,
                           @Qualifier("userService") UserService userService,
                           @Qualifier("profileService") ProfileService profileService,
+                          @Qualifier("likeService") LikeService likeService,
                           @Qualifier("fileService") FileService fileService) {
         this.postService = postService;
         this.userService = userService;
         this.profileService = profileService;
+        this.likeService = likeService;
         this.fileService = fileService;
     }
 
@@ -99,5 +103,11 @@ public class PostController {
         postService.deletePost(postId, principal.getName());
         Post deletedPost = postService.getPost(postId);
         return new ResponseEntity<>(deletedPost, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/{postId}/react")
+    public ResponseEntity<?> reactToPost(@PathVariable long postId, Principal principal) throws NotFoundException {
+        likeService.reactToPost(postId, principal.getName());
+        return new ResponseEntity<>("Reaction made", HttpStatus.OK);
     }
 }

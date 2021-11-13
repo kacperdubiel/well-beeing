@@ -1,7 +1,9 @@
 package com.wellbeeing.wellbeeing.domain.social;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "likes")
 @Entity
 public class Like {
@@ -18,19 +21,19 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long likeId;
     @Column
-    private Date addedDate;
+    private Date addedDate = new Date();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
+    @Getter(onMethod_=@JsonIgnore)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "liker_id")
     private Profile liker;
 
-    public Like(@JsonProperty("addedDate") Date addedDate, @JsonProperty("post") Post post,
+    public Like(@JsonProperty("post") Post post,
                 @JsonProperty("liker") Profile liker) {
-        this.addedDate = addedDate;
         this.post = post;
         this.liker = liker;
     }
