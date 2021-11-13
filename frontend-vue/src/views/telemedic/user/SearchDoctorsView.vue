@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
-import SearchSpecialistComponent from "@/components/telemedic/SearchSpecialistComponent";
+import TelemedicNavbar from "@/components/telemedic/navbars/TelemedicNavbar";
+import SearchSpecialistComponent from "@/components/telemedic/user-connections/SearchSpecialistComponent";
 
 export default {
     name: 'UserDoctorsView',

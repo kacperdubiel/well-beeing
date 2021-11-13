@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import DoctorNavbar from "@/components/telemedic/DoctorNavbar";
-import ConversationsComponent from "@/components/telemedic/ConversationsComponent";
+import DoctorNavbar from "@/components/telemedic/navbars/DoctorNavbar";
+import ConversationsComponent from "@/components/telemedic/communicator/ConversationsComponent";
 
 export default {
     name: 'DoctorUserConversationsView',

@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
-import UserConnectionsFromMeComponent from "@/components/telemedic/UserConnectionsFromMeComponent";
+import TelemedicNavbar from "@/components/telemedic/navbars/TelemedicNavbar";
+import UserConnectionsFromMeComponent from "@/components/telemedic/user-connections/UserConnectionsFromMeComponent";
 
 export default {
     name: 'UserDoctorsView',

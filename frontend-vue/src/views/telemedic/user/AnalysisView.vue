@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
+import TelemedicNavbar from "@/components/telemedic/navbars/TelemedicNavbar";
 
 export default {
     name: 'AnalysisView',

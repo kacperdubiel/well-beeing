@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import MessagesComponent from "@/components/telemedic/MessagesComponent";
+import MessagesComponent from "@/components/telemedic/communicator/MessagesComponent";
 
 export default {
     name: 'ConversationComponent',

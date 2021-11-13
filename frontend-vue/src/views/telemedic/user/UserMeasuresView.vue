@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import TelemedicNavbar from "@/components/telemedic/TelemedicNavbar";
+import TelemedicNavbar from "@/components/telemedic/navbars/TelemedicNavbar";
 import MeasuresComponent from "@/components/telemedic/MeasuresComponent";
 
 export default {
