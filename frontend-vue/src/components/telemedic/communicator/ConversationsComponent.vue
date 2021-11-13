@@ -9,7 +9,13 @@
                 @click="$emit('open-conversation', conversation.id)"
             >
                 <div class="col-2 col-xl-1">
-                    <font-awesome-icon :icon="['far', 'user-circle']" size="3x"/>
+                    <user-avatar-component v-if="conversation.firstProfile.id !== userId"
+                                                   :profileId="conversation.firstProfile.id"
+                                                   :height="45" :width="45"
+                    />
+                    <user-avatar-component v-else :profileId="conversation.secondProfile.id"
+                                                   :height="45" :width="45"
+                    />
                 </div>
                 <div class="col-7 col-xl-8" v-bind:class="{ 'bold-text': isMsgRead(conversation) }">
                     <div class="align-left">
@@ -41,10 +47,13 @@
 </template>
 
 <script>
-import moment from "moment";
+import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
 
 export default {
     name: "ConversationsComponent",
+    components: {
+        UserAvatarComponent
+    },
     props: {
         connectionType: String,
         asSpecialist: Boolean,
