@@ -50,6 +50,13 @@ export const func_global = {
             return data
         });
     },
+    truncate(text, length, suffix){
+        if (text.length > length) {
+            return text.substring(0, length) + suffix;
+        } else {
+            return text;
+        }
+    },
     formatDate(date) {
         if (date) {
             return moment(String(date)).format('DD/MM/YYYY')

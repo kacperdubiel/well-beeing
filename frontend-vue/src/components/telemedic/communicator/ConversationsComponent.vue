@@ -25,7 +25,7 @@
                             Ty:
                         </span>
                         <span v-if="conversation.lastMessage.messageType === 'TEXT'">
-                            {{ truncate(conversation.lastMessage.data, 70, "...") }}
+                            {{ this.$func_global.truncate(conversation.lastMessage.data, 70, "...") }}
                         </span>
                         <span v-if="conversation.lastMessage.messageType === 'IMAGE'">
                             Wysłano zdjęcie.
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="col-3 col-xl-3 align-right">
-                    {{ timeFromNow(conversation.lastMessage.createDate ) }}
+                    {{ this.$func_global.formatDateDateFromNow(conversation.lastMessage.createDate ) }}
                 </div>
             </div>
         </div>
@@ -103,19 +103,6 @@ export default {
                         (conversation.firstProfile.id === this.userId && !conversation.readByFirstUser) ||
                         (conversation.secondProfile.id === this.userId && !conversation.readBySecondUser)
                     );
-        },
-        truncate(text, length, suffix){
-            if (text.length > length) {
-                return text.substring(0, length) + suffix;
-            } else {
-                return text;
-            }
-        },
-        timeFromNow(date){
-            if (date) {
-                moment.locale("pl");
-                return moment(String(date)).fromNow();
-            }
         },
     },
     created() {
