@@ -42,9 +42,6 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public boolean deleteLike(Like like) {
-
-        //usunac z posta?
-
         likeDAO.delete(like);
         return true;
     }

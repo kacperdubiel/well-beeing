@@ -101,6 +101,16 @@ library.add(faEllipsisH)
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
 library.add(faCalendarCheck)
 
+//post
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
+import { faCommentAlt } from '@fortawesome/free-regular-svg-icons'
+import { faShareSquare } from '@fortawesome/free-regular-svg-icons'
+library.add(faHeart)
+library.add(farHeart)
+library.add(faCommentAlt)
+library.add(faShareSquare)
+
 const app = createApp(App).use(router);
 
 app.config.globalProperties.apiURL = 'http://localhost:8090/'
