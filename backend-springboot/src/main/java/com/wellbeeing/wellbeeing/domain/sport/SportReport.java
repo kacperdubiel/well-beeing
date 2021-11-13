@@ -30,10 +30,30 @@ public class SportReport {
     @Column
     private LocalDate reportDate;
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "sportReport", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sportReport", cascade = CascadeType.ALL, orphanRemoval=true)
     List<ReportExercise> exerciseList = new ArrayList<>();
-
+    @Transient
+    private int caloriesBurned;
+    @Transient
+    private int totalTimeSeconds;
 //    @LazyCollection(LazyCollectionOption.FALSE)
 //    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
 //    List<ReportDishDetail> dishDetailsList = new ArrayList<>();
+    public void removeReportExerciseFromReport(ReportExercise reportExercise){
+        exerciseList.remove(reportExercise);
+    }
+
+    public void preUpdate() {
+        countTotalCalories();
+        countTotalSeconds();
+    }
+
+    public void countTotalCalories(){
+        this.exerciseList.forEach(ReportExercise::countCalories);
+        this.caloriesBurned = this.exerciseList.stream().map(ReportExercise::getCaloriesBurned).mapToInt(num -> num).sum();
+    }
+
+    public void countTotalSeconds(){
+        this.totalTimeSeconds = this.exerciseList.stream().map(ReportExercise::getSeconds).mapToInt(num -> num).sum();
+    }
 }

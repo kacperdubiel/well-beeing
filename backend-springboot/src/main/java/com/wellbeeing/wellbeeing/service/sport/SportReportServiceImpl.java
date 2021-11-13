@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("sportReportService")
@@ -56,14 +54,20 @@ public class SportReportServiceImpl implements SportReportService{
     @Override
     public SportReport getSportReportById(UUID reportId) throws NotFoundException {
         SportReport report = sportReportDAO.findById(reportId).orElse(null);
-        if(report != null)
-            return report;
-        throw new NotFoundException("Sport report with id: " + reportId +" not found");
+        if(report == null)
+            throw new NotFoundException("Sport report with id: " + reportId +" not found");
 
+        double weight = report.getReportOwner().getProfileCard().getWeight();
+        report.getExerciseList().forEach(re -> {
+            re.getExercise().setCaloriesBurned(re.getExercise().countCaloriesPerHour(weight));
+        });
+        report.preUpdate();
+        return report;
     }
 
     @Override
     public List<ReportExercise> getReportExercisesByReportId(UUID reportId) throws NotFoundException {
+
         return getSportReportById(reportId).getExerciseList();
 
     }
@@ -72,15 +76,16 @@ public class SportReportServiceImpl implements SportReportService{
     public SportReport deleteExercisesFromReportByReportId(UUID reportId, List<Long> exercisesIds) throws NotFoundException {
         SportReport report = getSportReportById(reportId);
         List<ReportExercise> exercises = report.getExerciseList();
-        for(ReportExercise re : exercises){
-            if(exercisesIds.contains(re.getId())){
-                reportExerciseDAO.deleteById(re.getId());
+        for(Long id : exercisesIds) {
+            ReportExercise found = reportExerciseDAO.findById(id).orElse(null);
+            if(found != null && exercises.contains(found)){
+                report.removeReportExerciseFromReport(found);
             }
         }
-        entityManager.clear();
-        SportReport reportUpdated = getSportReportById(report.getId());
+//        entityManager.clear();
+//        SportReport reportUpdated = getSportReportById(report.getId());
 //        reportUpdated.setDerived();
-        return sportReportDAO.save(reportUpdated);
+        return sportReportDAO.save(report);
     }
 
     @Override
@@ -134,8 +139,17 @@ public class SportReportServiceImpl implements SportReportService{
         Profile profile = profileDAO.findById(profileId).orElse(null);
         if(profile == null)
             throw new NotFoundException("Profile with id: " + profileId +" not found");
-        return profile.getSportReports().stream().filter
+        double weight = profile.getProfileCard().getWeight();
+
+        List<SportReport> reports = profile.getSportReports().stream().filter
                 (r -> r.getReportDate().equals(date)).collect(Collectors.toList());
+        reports.forEach(re -> {
+            re.getExerciseList().forEach(ex -> {
+                ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(weight));
+            });
+            re.preUpdate();
+        });
+        return reports;
 
     }
 
@@ -144,7 +158,16 @@ public class SportReportServiceImpl implements SportReportService{
         Profile profile = profileDAO.findById(profileId).orElse(null);
         if(profile == null)
             throw new NotFoundException("Profile with id: " + profileId + " not found");
-        return profile.getSportReports();
+        double weight = profile.getProfileCard().getWeight();
+
+        List<SportReport> reports = profile.getSportReports();
+        reports.forEach(re -> {
+            re.getExerciseList().forEach(ex -> {
+                ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(weight));
+            });
+            re.preUpdate();
+        });
+        return reports;
     }
 
     @Override
@@ -152,8 +175,16 @@ public class SportReportServiceImpl implements SportReportService{
         Profile profile = profileDAO.findById(profileId).orElse(null);
         if(profile == null)
             throw new NotFoundException("Profile with id: " + profileId + " not found");
-        return profile.getSportReports().stream().filter
+        double weight = profile.getProfileCard().getWeight();
+        List<SportReport> reports = profile.getSportReports().stream().filter
                         (r -> r.getReportDate().getMonth().getValue() == month && r.getReportDate().getYear() == year)
                 .collect(Collectors.toList());
+        reports.forEach(re -> {
+            re.getExerciseList().forEach(ex -> {
+                ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(weight));
+            });
+            re.preUpdate();
+        });
+        return reports;
     }
 }

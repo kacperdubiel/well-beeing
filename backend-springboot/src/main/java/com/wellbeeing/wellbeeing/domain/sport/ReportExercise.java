@@ -6,6 +6,7 @@ import com.wellbeeing.wellbeeing.domain.diet.NutritionalValueDerivable;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionalValueDerivedData;
 import com.wellbeeing.wellbeeing.domain.diet.Report;
 import lombok.*;
+import org.mapstruct.control.DeepClone;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DeepClone
 public class ReportExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +33,7 @@ public class ReportExercise {
     @Column
     private LocalDateTime exercisingTime;
     @Column
-    private double seconds;
+    private int seconds;
     @Transient
     private double minutes;
     @Transient
@@ -41,9 +43,9 @@ public class ReportExercise {
 
     @PostLoad
     private void setTimePostLoad(){
-        this.setMinutes(this.seconds/60);
-        this.setHours(this.seconds/3600);
-        this.countCalories();
+        this.setMinutes((double)this.seconds/60);
+        this.setHours((double)this.seconds/3600);
+//        this.countCalories();
     }
 
     public void countCalories(){

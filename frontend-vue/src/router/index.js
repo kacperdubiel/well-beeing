@@ -21,6 +21,7 @@ import ExerciseView from "@/components/sport/exercise/ExerciseView";
 import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView";
 import ProfileView from "@/views/social/profile/ProfileView";
 import ProfileEdit from "@/views/social/profile/ProfileEdit";
+import SportReportsComponent from "@/components/sport/SportReportsComponent";
 
 const routes = [
   {
@@ -117,6 +118,11 @@ const routes = [
         path: 'training-plans',
         name: 'TrainingPlansView',
         component: TrainingPlansView
+      },
+      {
+        path: 'reports',
+        name: 'SportReportsComponent',
+        component: SportReportsComponent
       }
     ]
   },

@@ -17,8 +17,8 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{ name: 'SportView' }">
-                    <span class="nav-link">Aktywność</span>
+                <router-link :to="{ name: 'SportReportsComponent' }">
+                    <span class="nav-link">Raporty</span>
                 </router-link>
             </li>
             <li class="nav-item item-link">

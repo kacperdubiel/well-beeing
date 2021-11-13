@@ -67,8 +67,8 @@ public class SportReportController {
         return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/{reportId}/dish")
-    public ResponseEntity<?> addDishesToReportByReportId(Principal principal,
+    @PostMapping(path = "/{reportId}/exercise")
+    public ResponseEntity<?> addExercisesToReportByReportId(Principal principal,
                                                          @PathVariable("reportId")UUID reportId,
                                                          @RequestBody @NonNull List<ReportExercise> exercises) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
