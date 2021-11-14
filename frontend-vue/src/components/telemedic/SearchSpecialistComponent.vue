@@ -174,9 +174,23 @@ export default {
             } else if(this.connectionType === "WITH_DIETICIAN"){
                 endpoint = "dieticians";
             } else if(this.connectionType === "WITH_TRAINER"){
-                endpoint = "trainers";
+                endpoint = "profile/trainers";
             }
-
+            if(this.connectionType === "WITH_TRAINER") {
+                this.axios.get(`${this.apiURL}${endpoint}?firstName=${this.searchValue}&lastName=${this.searchValue}&role=ROLE_TRAINER`, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$store.getters.getToken
+                    }
+                })
+                    .then(response => {
+                        this.specialistsPage = response.data;
+                        this.specialists = response.data["content"];
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    })
+                return
+            }
             this.axios.get(`${this.apiURL}${endpoint}?like=${this.searchValue}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken

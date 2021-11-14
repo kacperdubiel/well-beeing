@@ -22,7 +22,7 @@
                 </router-link>
             </li>
             <li class="nav-item item-link">
-                <router-link :to="{ name: 'SportView' }">
+                <router-link :to="{ name: 'UserTrainersView' }">
                     <span class="nav-link">Trenerzy</span>
                 </router-link>
             </li>

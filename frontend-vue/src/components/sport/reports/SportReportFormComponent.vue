@@ -129,7 +129,11 @@ export default {
             actualSelectedExerciseMeasure: 's',
             actualSelectedExerciseExercisingTime: '12:00',
 
-            trainingsToSelect: []
+            trainingsToSelect: [],
+            actualSelectedTraining: '',
+            actualSelectedTrainingTime: 3600,
+            actualSelectedTrainingMeasure: 's',
+            actualSelectedTrainingExercisingTime: '12:00',
             // productsToSelect: [],
             // actualSelectedProduct: '',
             // actualSelectedProductAmount: 100,
@@ -151,6 +155,7 @@ export default {
         // this.getProductsToSelect()
         // this.getDishesToSelect()
         this.getExercisesToSelect()
+        this.getTrainingsToSelect()
     },
     methods: {
         getExercisesToSelect(){
@@ -175,7 +180,7 @@ export default {
                 }
             })
             .then(response => {
-                    console.log("POBIERAM TRANINGI DO SELECTA")
+                    console.log("POBIERAM TRENINGI DO SELECTA")
                     console.log(response.data)
                     this.trainingsToSelect = response.data['content']
             }).catch(e => alert(e))
@@ -194,6 +199,20 @@ export default {
                 .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
                 .catch(e => {console.log(e);})
         }, // TRAINING
+        addTrainingToReport(){
+            const url = `${this.apiURL}sport/report/${this.report.id}/training`
+            const token = this.$store.getters.getToken;
+            let data= [{
+                training: {
+                    trainingId: this.actualSelectedTraining
+                },
+                seconds: this.actualSelectedTrainingTime,
+                exercisingTime: this.makeConsumingTimestamp(this.actualSelectedTrainingExercisingTime)
+            }]
+            axios.post(url,data, {headers: {Authorization: `Bearer ${token}`}})
+                .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
+                .catch(e => {console.log(e);})
+        },
         addDishToReport(){
            axios({
                 method: 'post',
@@ -217,27 +236,12 @@ export default {
                 .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
                 .catch(e => {console.log(e);})
         },
-        deleteProductFromReport(id){
-           axios({
-                method: 'delete',
-                headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
-                url: "http://localhost:8090/report/" + this.report.id + "/product",
-                data: [id]
-            })
-            .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data); })
-            .catch(e => {console.log(e);})
-        },
-        deleteDishFromReport(id){
-           const url = `${this.apiURL}sport/report/${this.report.id}/exercise`
-           const token = this.$store.getters.getToken;
-           axios({
-                method: 'delete',
-                headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
-                url: "http://localhost:8090/sport/report/" + this.report.id + "/dish",
-                data: [id]
-            })
-            .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data); })
-            .catch(e => {console.log(e);})
+        deleteTrainingFromReport(id){
+            const url = `${this.apiURL}sport/report/${this.report.id}/training`
+            const token = this.$store.getters.getToken;
+            axios.delete(url, {headers: {Authorization: `Bearer ${token}`}, data: [id]})
+                .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
+                .catch(e => {console.log(e);})
         },
         getCurrentReport(){
             const url = `${this.apiURL}sport/report/${this.report.id}`
