@@ -37,8 +37,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> getMyPosts(Profile creatorParam, Pageable pageable) {
-        return postDAO.findAllByCreatorProfileUserEmail(creatorParam, pageable);
+    public Page<Post> getUsersPosts(Profile creatorParam, Pageable pageable) {
+        return postDAO.findAllByCreator(creatorParam, pageable);
     }
 
     @Override

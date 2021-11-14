@@ -4,7 +4,7 @@
             <profile-info :profile-source="profile" v-if="profile"/>
         </div>
 
-        <div class="row mx-4 py-2">
+        <div class="row mx-4 py-2" v-if="!this.$route.params.profileId">
             <new-post v-if="profile" @refresh:posts="getMyPosts"/>
         </div>
 
@@ -54,7 +54,15 @@ export default {
             });
         },
         getMyPosts() {
-            const url = `${this.apiURL}post/my`
+            const url = `${this.apiURL}posts/my`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.posts = response.data['content']
+            })
+        },
+        getPostsByUserId(userId) {
+            const url = `${this.apiURL}posts/${userId}`
             const token = this.$store.getters.getToken;
             this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
@@ -64,8 +72,9 @@ export default {
     },
     mounted() {
         if (this.$route.params.profileId) {
-            console.log('id')
-            this.getProfileById()
+            console.log('idddd', this.$route.params.profileId)
+            this.getProfileById(this.$route.params.profileId)
+            this.getPostsByUserId(this.$route.params.profileId)
 
         }
         else {

@@ -4,12 +4,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="likesListModalLabel">Polubienia</h4>
-                    <button type="button" class="btn-close" id="modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" id="likes-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid p-0">
                         <div v-for="like in likesSource" :key="like.liker.id">
-                            <profile-on-list-item :profile-source="like.liker" class="my-2 ms-1"/>
+                            <profile-on-list-item :profile-source="like.liker" class="my-2 ms-1" @redirect:profile="redirectToProfile"/>
                         </div>
 
                     </div>
@@ -28,6 +28,13 @@ export default {
     },
     components: {
         ProfileOnListItem
+    },
+    methods: {
+        redirectToProfile(id) {
+            document.getElementById('likes-modal-close').click();
+            console.log('prifileIDDDDD', id)
+            this.$router.push({ name: 'ProfileView', params: {profileId: id} })
+        }
     }
 }
 </script>

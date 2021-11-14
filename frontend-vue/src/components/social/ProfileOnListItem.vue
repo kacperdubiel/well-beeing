@@ -6,7 +6,7 @@
         </div>
 
         <div class="d-flex flex-column align-self-center w-100">
-            <h5 class="ms-2">
+            <h5 class="ms-2" @click="handleRedirect(this.profileSource.id)">
                 {{this.profileSource.firstName}} {{this.profileSource.lastName}}
             </h5>
         </div>
@@ -31,6 +31,9 @@ export default {
             const token = this.$store.getters.getToken;
             this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
+        handleRedirect(profileId) {
+            this.$emit('redirect:profile', profileId)
+        }
     },
     mounted() {
         this.downloadProfilePicture()

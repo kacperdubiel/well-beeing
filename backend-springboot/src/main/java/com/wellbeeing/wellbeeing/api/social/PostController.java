@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
-@RequestMapping(path = "/post")
 @RestController
 public class PostController {
 
@@ -51,32 +50,39 @@ public class PostController {
         this.fileService = fileService;
     }
 
-    @GetMapping(path = "/my")
+    @GetMapping(path = "/posts/my")
     public ResponseEntity<?> getMyPosts(@PageableDefault(sort = {"addedDate"}, size = 20, direction = Sort.Direction.DESC) Pageable pageable, Principal principal) throws NotFoundException {
         UUID userId = userService.findUserIdByUsername(principal.getName());
         Profile profile = profileService.getProfileById(userId);
-        Page<Post> pagePosts = postService.getMyPosts(profile, pageable);
+        Page<Post> pagePosts = postService.getUsersPosts(profile, pageable);
         return new ResponseEntity<>(pagePosts, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/posts/{userId}")
+    public ResponseEntity<?> getPostsByUserId(@PageableDefault(sort = {"addedDate"}, size = 20, direction = Sort.Direction.DESC) Pageable pageable, @PathVariable UUID userId) throws NotFoundException {
+        Profile profile = profileService.getProfileById(userId);
+        Page<Post> pagePosts = postService.getUsersPosts(profile, pageable);
+        return new ResponseEntity<>(pagePosts, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/post/{id}")
     public ResponseEntity<?> getPostById(@PathVariable(value = "id") long postId) {
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
 
-    @PostMapping(path = "")
+    @PostMapping(path = "/post")
     public ResponseEntity<?> addPost(@RequestBody @NonNull Post post, Principal principal) throws NotFoundException {
         Post newPost = postService.addPost(post, principal.getName());
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/post/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePost(@PathVariable(value = "id") long postId, @RequestBody Map<String, Object> fields, Principal principal) throws NotFoundException {
         Post newPost = postService.partialUpdatePost(postId, fields, principal.getName());
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
-    @PostMapping("/import/{postId}")
+    @PostMapping("/post/import/{postId}")
     public ResponseEntity<?> importData(MultipartFile file, @PathVariable long postId, Principal principal) throws NotFoundException {
 
         String fileName = fileService.save(file);
@@ -88,7 +94,7 @@ public class PostController {
         return new ResponseEntity<>("Sent", HttpStatus.OK);
     }
 
-    @GetMapping("/export/{postId}")
+    @GetMapping("/post/export/{postId}")
     public ResponseEntity<?> exportData(@PathVariable long postId) {
         Post post = postService.getPost(postId);
         Resource file = fileService.load(post.getPostImgPath());
@@ -98,14 +104,14 @@ public class PostController {
                 .body(file);
     }
 
-    @PatchMapping(path = "/{id}/delete")
+    @PatchMapping(path = "/post/{id}/delete")
     public ResponseEntity<?> deletePost(@PathVariable(value = "id") long postId, Principal principal) throws NotFoundException {
         postService.deletePost(postId, principal.getName());
         Post deletedPost = postService.getPost(postId);
         return new ResponseEntity<>(deletedPost, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/{postId}/react")
+    @PostMapping(path = "/post/{postId}/react")
     public ResponseEntity<?> reactToPost(@PathVariable long postId, Principal principal) throws NotFoundException {
         likeService.reactToPost(postId, principal.getName());
         return new ResponseEntity<>("Reaction made", HttpStatus.OK);

@@ -17,7 +17,7 @@ import java.util.UUID;
 @Repository("postDAO")
 public interface PostDAO extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.creator = :creatorParam AND p.isDeleted = false")
-    Page<Post> findAllByCreatorProfileUserEmail(Profile creatorParam, Pageable pageable);
+    Page<Post> findAllByCreator(Profile creatorParam, Pageable pageable);
     Optional<Post> findPostByPostId(long postId);
     List<Post> findPostByOriginalPostPostId(long postId);
 }

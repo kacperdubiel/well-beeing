@@ -133,7 +133,10 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.post(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
-                this.$parent.$parent.getMyPosts()
+                if(this.isPostMine)
+                    this.$parent.$parent.getMyPosts()
+                else
+                    this.$parent.$parent.getPostsByUserId(this.$route.params.profileId)
             }).catch(error => {
                 console.log(error.response.status)
             });
