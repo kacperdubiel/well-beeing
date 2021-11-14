@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.service.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
@@ -18,10 +19,13 @@ import java.util.UUID;
 @Service("measureService")
 public class MeasureServiceImpl implements MeasureService {
     private MeasureDAO measureDAO;
+    private MeasureTypeService measureTypeService;
 
     @Autowired
-    public MeasureServiceImpl(@Qualifier("measureDAO") MeasureDAO measureDAO){
+    public MeasureServiceImpl(@Qualifier("measureDAO") MeasureDAO measureDAO,
+                              @Qualifier("measureTypeService") MeasureTypeService measureTypeService){
         this.measureDAO = measureDAO;
+        this.measureTypeService = measureTypeService;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class MeasureServiceImpl implements MeasureService {
     }
 
     @Override
-    public Measure addMeasure(Measure measure) throws ConflictException {
+    public Measure addMeasure(Measure measure) throws ConflictException, NotFoundException, IllegalArgumentException {
         UUID measureId = measure.getId();
         if(measureId != null){
             Measure measureResult = measureDAO.findById(measureId).orElse(null);
@@ -50,11 +54,16 @@ public class MeasureServiceImpl implements MeasureService {
             }
         }
 
+        MeasureType measureType = measureTypeService.getMeasureTypeById(measure.getMeasureType().getId());
+        if(measure.getValue() < measureType.getMinValue() || measure.getValue() > measureType.getMaxValue()){
+            throw new IllegalArgumentException("Measure value is invalid!");
+        }
+
         return measureDAO.save(measure);
     }
 
     @Override
-    public Measure updateMeasure(Measure updatedMeasure) throws NotFoundException {
+    public Measure updateMeasure(Measure updatedMeasure) throws NotFoundException, IllegalArgumentException {
         UUID measureId = updatedMeasure.getId();
 
         if(measureId == null){
@@ -64,6 +73,11 @@ public class MeasureServiceImpl implements MeasureService {
         Measure measureResult = measureDAO.findById(measureId).orElse(null);
         if(measureResult == null) {
             throw new NotFoundException("Measure with id: " + measureId + " not found!");
+        }
+
+        MeasureType measureType = measureTypeService.getMeasureTypeById(updatedMeasure.getMeasureType().getId());
+        if(updatedMeasure.getValue() < measureType.getMinValue() || updatedMeasure.getValue() > measureType.getMaxValue()){
+            throw new IllegalArgumentException("Measure value is invalid!");
         }
 
         return measureDAO.save(updatedMeasure);

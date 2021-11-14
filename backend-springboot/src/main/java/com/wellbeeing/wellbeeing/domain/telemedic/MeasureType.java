@@ -25,6 +25,10 @@ public class MeasureType {
     private String name;
     @Column(name = "unit")
     private String unit;
+    @Column
+    private double minValue;
+    @Column
+    private double maxValue;
 
     @JsonIgnore
     @OneToMany(mappedBy = "measureType")
