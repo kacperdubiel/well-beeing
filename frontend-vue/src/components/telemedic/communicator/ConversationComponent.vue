@@ -1,19 +1,30 @@
 <template>
     <div>
         <header>
-            <div class="row mb-3 pb-3 bottom-border">
-                <div class="col-1">
+            <div class="d-flex flex-row mb-4 align-items-center align-left bottom-border pb-3">
+                <div class="mx-3">
                     <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
                 </div>
-                <div class="col">
-                    <h3 v-if="conversation" class="align-left">
-                        <span v-if="conversation.firstProfile.id !== userId">
-                            {{ conversation.firstProfile.firstName }} {{ conversation.firstProfile.lastName }}
-                        </span>
-                        <span v-else>
-                            {{ conversation.secondProfile.firstName }} {{ conversation.secondProfile.lastName }}
-                        </span>
-                    </h3>
+                <div v-if="conversation && conversation.firstProfile.id !== userId"
+                     class="d-flex flex-row align-items-center clickable" @click="openProfile(conversation.firstProfile.id)">
+                    <div>
+                        <user-avatar-component :profileId="conversation.firstProfile.id"
+                                               :height="45" :width="45"
+                        />
+                    </div>
+                    <div class="h4 ms-3">
+                        {{ conversation.firstProfile.firstName }} {{ conversation.firstProfile.lastName }}
+                    </div>
+                </div>
+                <div v-else-if="conversation" class="d-flex flex-row align-items-center clickable" @click="openProfile(conversation.secondProfile.id)">
+                    <div>
+                        <user-avatar-component :profileId="conversation.secondProfile.id"
+                                               :height="45" :width="45"
+                        />
+                    </div>
+                    <div class="h4 ms-3">
+                        {{ conversation.secondProfile.firstName }} {{ conversation.secondProfile.lastName }}
+                    </div>
                 </div>
             </div>
         </header>
@@ -24,11 +35,13 @@
 </template>
 
 <script>
+import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
 import MessagesComponent from "@/components/telemedic/communicator/MessagesComponent";
 
 export default {
     name: 'ConversationComponent',
     components: {
+        UserAvatarComponent,
         MessagesComponent
     },
     props: {
@@ -67,6 +80,9 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
+        },
+        openProfile(profileId){
+            this.$router.push({ name: 'ProfileView', params: { profileId: profileId } });
         },
     },
     created(){
