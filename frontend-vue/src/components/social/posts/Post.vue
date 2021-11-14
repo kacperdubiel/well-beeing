@@ -3,7 +3,7 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img v-if="this.$store.getters.getProfileImageSrc" :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
 
@@ -38,17 +38,30 @@
         </div>
         <div class="d-flex flex-row px-4 py-2 align-items-center">
             <div class="d-flex flex-column text-start" v-if="this.postSource.likes.length > 0">
-                <div class="text-start d-flex align-items-center ms-3 interact">
-                    <font-awesome-icon id="heart-icon" :icon="['fa', 'heart']" class="me-2"/>
-                    {{this.postSource.likes.length}}
-                </div>
+                <button data-bs-toggle="modal" data-bs-target="#likesListModal" class="no-bg-open-modal" @click="handleGetLikes(this.postSource.likes)">
+                    <div class="text-start d-flex align-items-center ms-3 interact" >
+                        <font-awesome-icon id="heart-icon" :icon="['fa', 'heart']" class="me-2"/>
+                        <span>
+                            {{this.postSource.likes.length}}
+                        </span>
 
+                    </div>
+                </button>
             </div>
             <div class="d-flex flex-column text-start ms-auto pe-3">
-                {{this.postSource.comments.length}} komentarzy
+                <button class="no-bg-open-modal">
+                    <span>
+                        {{this.postSource.comments.length}} komentarzy
+                    </span>
+
+                </button>
             </div>
             <div class="d-flex flex-column text-start">
-                {{this.postSource.comments.length}} udostępnień
+                <button class="no-bg-open-modal">
+                    <span>
+                        {{this.postSource.comments.length}} udostępnień
+                    </span>
+                </button>
             </div>
         </div>
 
@@ -86,7 +99,8 @@ export default {
     },
     data() {
         return {
-            postPictureSrc: ""
+            postPictureSrc: "",
+            profilePictureSrc: "",
         }
     },
     methods: {
@@ -94,7 +108,7 @@ export default {
             const url = `${this.apiURL}profile/export/${this.postSource.creator.id}`
             const token = this.$store.getters.getToken;
             console.log('profile')
-            this.$func_global.downloadPhoto(url, token).then(result => this.$store.commit('setProfileImageSrc', result))
+            this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
         downloadPostPicture () {
             if (this.postSource.postImgPath) {
@@ -127,6 +141,9 @@ export default {
         handleEdit(post) {
             this.$emit('edit:post', post)
         },
+        handleGetLikes(likes) {
+            this.$emit('get:likes', likes)
+        }
 
     },
     mounted() {
@@ -182,5 +199,15 @@ h6 {
 .no-bg {
     color: white;
     border-radius: 5px;
+}
+
+.no-bg-open-modal {
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.no-bg-open-modal span:hover {
+    border-bottom: 1px solid white;
 }
 </style>
