@@ -25,9 +25,9 @@ public class MeasureType {
     private String name;
     @Column(name = "unit")
     private String unit;
-    @Column
+    @Column(nullable = false)
     private double minValue;
-    @Column
+    @Column(nullable = false)
     private double maxValue;
 
     @JsonIgnore
