@@ -262,6 +262,33 @@ input{
     background-color: var(--SPORT) !Important;
     border: solid 1px var(--SPORT);
 }
+
+.pagination > li.admin-page > a {
+    background-color: white;
+    color: var(--GREY3);
+}
+
+.pagination > li.admin-page > a:focus,
+.pagination > li.admin-page > a:hover,
+.pagination > li.admin-page > span:focus,
+.pagination > li.admin-page > span:hover {
+    color: white;
+    background-color: var(--GREY3);
+    border-color: var(--GREY3);
+    cursor: pointer;
+}
+
+.pagination > .admin-page.active > a {
+    color: white;
+    background-color: var(--GREY3) !Important;
+    border: solid 1px var(--GREY3) !Important;
+}
+
+.pagination > li.admin-page.disabled > a {
+    color: var(--GREY1);
+    background-color: white;
+}
+
  p.has-error {
     color: var(--INTENSE-PINK);
  }
