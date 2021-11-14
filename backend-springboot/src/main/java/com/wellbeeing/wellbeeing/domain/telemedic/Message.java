@@ -23,7 +23,7 @@ public class Message {
 
     @Column(nullable = false)
     private EMessageType messageType;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="TEXT")
     private String data;
     @Column
     private Date createDate;
