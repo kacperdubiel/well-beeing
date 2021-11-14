@@ -21,7 +21,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title ms-2" id="addMeasureModalLabel"> Podaj wynik pomiaru </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
+                            <button id="close-add-modal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
                         </div>
                         <div class="modal-body">
                             <div class="container-fluid">
@@ -31,12 +31,17 @@
                                             type="number"
                                             v-model="measureValue"
                                             class="form-control"
+                                            :class="{ 'has-error': this.measureValueError}"
                                             min="0" max="1000"
                                             step="0.5"
                                         />
                                         <span v-if="selectedMeasureType" class="input-group-text">
                                             {{ selectedMeasureType.unit }}
                                         </span>
+                                    </div>
+                                    <div v-if="measureValueError" class="text-danger align-left">
+                                        Wartość musi być pomiędzy {{ selectedMeasureType.minValue }}
+                                        a {{ selectedMeasureType.maxValue }} {{ selectedMeasureType.unit }}.
                                     </div>
                                     <div class="row mt-3">
                                         <date-picker v-model="measureDate" mode="dateTime" is24hr>
@@ -60,7 +65,7 @@
                                             <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="clearInputs">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="addMeasure">Dodaj</button>
+                                            <button class="btn-panel-telemedic p-2" @click="addMeasure">Dodaj</button>
                                         </div>
                                     </div>
                                 </div>
@@ -77,7 +82,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title ms-2" id="editMeasureModalLabel"> Edytuj wynik pomiaru </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
+                            <button id="close-edit-modal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
                         </div>
                         <div class="modal-body">
                             <div class="container-fluid" id="modal-container">
@@ -87,11 +92,17 @@
                                             type="number"
                                             v-model="measureValue"
                                             class="form-control"
+                                            :class="{ 'has-error': this.measureValueError}"
                                             min="0" max="1000"
-                                            step="0.5"/>
+                                            step="0.5"
+                                        />
                                         <span v-if="selectedMeasureType" class="input-group-text">
                                             {{ selectedMeasureType.unit }}
                                         </span>
+                                    </div>
+                                    <div v-if="measureValueError" class="text-danger align-left">
+                                        Wartość musi być pomiędzy {{ selectedMeasureType.minValue }}
+                                        a {{ selectedMeasureType.maxValue }} {{ selectedMeasureType.unit }}.
                                     </div>
                                     <div class="row mt-3">
                                         <date-picker v-model="measureDate" mode="dateTime" is24hr>
@@ -115,7 +126,7 @@
                                             <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="clearInputs">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="editMeasure">Zmień</button>
+                                            <button class="btn-panel-telemedic p-2" @click="editMeasure">Zmień</button>
                                         </div>
                                     </div>
                                 </div>
@@ -213,9 +224,11 @@ export default {
             measures: {},
             measuresPage: {},
             measureDate: new Date(),
-            measureValue: 0,
+            measureValue: null,
             selectedMeasure: {},
-            isModificationAllowed: false
+            isModificationAllowed: false,
+
+            measureValueError: false,
         }
     },
     watch: {
@@ -290,7 +303,6 @@ export default {
                 },
                 "measureDate": this.measureDate,
             }
-            // console.log("DATA: " + JSON.stringify(data));
 
             this.axios({
                 method: 'post',
@@ -301,8 +313,14 @@ export default {
                 .then(() => {
                     this.getMeasures();
                     this.clearInputs();
+                    this.measureValueError = false;
+                    this.closeAddModal();
                 }).catch(e => {
-                    console.log(e);
+                    if(e.response.status === 400){
+                        this.measureValueError = true;
+                    } else {
+                        console.log(e);
+                    }
                 })
         },
         editMeasure() {
@@ -321,8 +339,14 @@ export default {
                 .then(() => {
                     this.getMeasures();
                     this.clearInputs();
+                    this.measureValueError = false;
+                    this.closeEditModal();
                 }).catch(e => {
+                if(e.response.status === 400){
+                    this.measureValueError = true;
+                } else {
                     console.log(e);
+                }
                 })
         },
         deleteMeasure(){
@@ -338,9 +362,16 @@ export default {
                     console.log(e);
                 })
         },
+        closeAddModal() {
+            document.getElementById('close-add-modal').click();
+        },
+        closeEditModal() {
+            document.getElementById('close-edit-modal').click();
+        },
         clearInputs(){
             this.measureDate = new Date();
-            this.measureValue = 0;
+            this.measureValue = null;
+            this.measureValueError = false;
         }
     },
     created(){
