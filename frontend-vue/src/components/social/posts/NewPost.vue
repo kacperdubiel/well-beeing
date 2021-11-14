@@ -92,7 +92,8 @@ export default {
                 // this.getMyRoleRequests()
                 this.successPost = true
                 this.submittingPost = false
-                this.$emit('refresh:posts')
+                console.log('DATATATATTATA',response.data)
+                this.$emit('refresh:posts', 0, false, 0)
             }).catch(error => {
                 console.log(error.response)
             });

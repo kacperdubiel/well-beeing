@@ -28,7 +28,7 @@ export default {
     },
     methods: {
         setModalPost(post) {
-            this.modalPost = post
+            this.modalPost = Object.assign({},post)
         },
         setLikesList(likes) {
             this.likesModal = likes

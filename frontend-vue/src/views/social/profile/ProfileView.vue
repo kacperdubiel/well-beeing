@@ -4,7 +4,7 @@
             <profile-info :profile-source="profile" v-if="profile"/>
         </div>
 
-        <div class="row mx-4 py-2" v-if="!this.$route.params.profileId">
+        <div class="row mx-4 py-2" v-if="!this.$route.params.profileId || this.$route.params.profileId === this.$store.getters.getProfileId">
             <new-post v-if="profile" @refresh:posts="getPosts"/>
         </div>
 
@@ -33,9 +33,12 @@ export default {
             userNavigation: {
                 nextPage: 0,
                 pageSize: 5,
-                last: false
+                last: false,
+                currentPage: 0
             },
             scrolledToBottom: true,
+            loaded: false
+
         }
     },
     methods: {
@@ -54,7 +57,38 @@ export default {
                 console.log(error.response.status)
             });
         },
-        getPosts() {
+        getEditedPost(postId) {
+            const url = `${this.apiURL}post/${postId}`
+            const token = this.$store.getters.getToken;
+
+            return this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                const index = this.posts.findIndex((post => post.postId === postId));
+                this.posts[index] = response.data
+            })
+        },
+        getPostsAfterDelete() {
+            this.userNavigation.nextPage = 0
+            this.loaded = false
+            const pages = this.userNavigation.currentPage
+            console.log('DELETE PAGES: ', pages+1)
+            this.getPosts(this.userNavigation.nextPage, false, pages+1)
+            // for (let i = 0; i < pages+1; i++) {
+            //     if (i === 0) {
+            //         const x = this.getPosts(this.userNavigation.nextPage, false).then(() => {
+            //             return 'x'
+            //         })
+            //         console.log(x)
+            //     }
+            //     else {
+            //         const x = this.getPosts(this.userNavigation.nextPage, true).then(() => {
+            //             return 'x'
+            //         })
+            //         console.log(x)
+            //     }
+            // }
+            this.loaded = true
+        },
+        getPosts(page, isScroll, pagesAfterDelete) {
             let url;
             if(!this.$route.params.profileId) {
                 url = `${this.apiURL}posts/my`
@@ -62,26 +96,38 @@ export default {
                 url = `${this.apiURL}posts/${this.$route.params.profileId}`
             }
             const token = this.$store.getters.getToken;
-
+            console.log('PAGE: ', page)
             const myParams = {
-                page: this.userNavigation.nextPage,
+                page: page,
                 size: this.userNavigation.pageSize
             }
-            // console.log("get posts pre, last: ", this.userNavigation.last)
+            if(this.userNavigation.last && isScroll)
+                return
+
+            console.log('PreGET: ', page, isScroll)
 
             return this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log('POST GET: ', page, isScroll)
+
                 console.log(response.data)
-                // console.log("get posts post, last: ", this.userNavigation.last)
-                // console.log("set last ", this.userNavigation.last)
-                if(!this.userNavigation.last)
+                if(!this.userNavigation.last && isScroll)
                     this.posts = this.posts.concat(response.data['content'])
+                else if (!isScroll) {
+                    this.posts = response.data['content']
+                    this.userNavigation.nextPage = 0
+                }
+
+                this.loaded = true
                 this.userNavigation.last = response.data['last']
+                this.userNavigation.currentPage = response.data['number']
 
                 if (!this.userNavigation.last) {
-                    this.userNavigation.nextPage += 1
+                    this.userNavigation.nextPage = this.userNavigation.currentPage+1
+                }
+                if(pagesAfterDelete>1) {
+                    this.getPosts(this.userNavigation.nextPage, true, pagesAfterDelete-1)
                 }
                 return 'sth'
-
             })
         },
         scroll () {
@@ -92,9 +138,10 @@ export default {
                 // console.log(window.innerHeight, ' = ')
                 // console.log(document.documentElement.offsetHeight)
                 if (bottomOfWindow) {
-                    if (!this.userNavigation.last && this.scrolledToBottom) {
+                    console.log('isLoaded?  ', this.loaded)
+                    if (!this.userNavigation.last && this.scrolledToBottom && this.loaded) {
                         this.scrolledToBottom = false
-                        this.getPosts().then((response) => {
+                        this.getPosts(this.userNavigation.nextPage, true, 0).then((response) => {
                             setTimeout(() => {
                                 this.scrolledToBottom = true
                             }, 300)
@@ -104,13 +151,14 @@ export default {
                         })
                     }
                 }
+                console.log(bottomOfWindow, ' ', this.scrolledToBottom)
             }
         }
     },
 
     created() {
         this.getProfile()
-        this.getPosts()
+        this.getPosts(this.userNavigation.nextPage, false, 0)
     },
     mounted () {
         this.scroll()

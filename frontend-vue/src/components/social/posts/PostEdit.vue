@@ -125,12 +125,12 @@ export default {
                     this.$func_global.importData(this.$refs.newPostPicture, this.$store.getters.getToken, 'postPicture', this.editedPostSource.postId).then((response) => {
                         console.log(response)
                         document.getElementById('modal-close').click();
-                        this.$parent.$parent.getPosts()
+                        this.$parent.$parent.getEditedPost(this.editedPostSource.postId)
                     })
 
                 } else {
                     document.getElementById('modal-close').click();
-                    this.$parent.$parent.getPosts()
+                    this.$parent.$parent.getEditedPost(this.editedPostSource.postId)
                 }
 
 

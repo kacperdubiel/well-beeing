@@ -14,7 +14,7 @@
                 <div class="text-start d-flex justify-content-between ms-3">
                     <h3>{{this.profileSource.firstName}} {{this.profileSource.lastName}}</h3>
 
-                    <button class="btn-white ms-auto fw-bolder" v-if="!this.$route.params.profileId">
+                    <button class="btn-white ms-auto fw-bolder" v-if="!this.$route.params.profileId || this.$route.params.profileId === this.$store.getters.getProfileId">
                         <router-link :to="{ name: 'ProfileEdit' }">
                             Edytuj profil
                         </router-link>

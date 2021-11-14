@@ -123,7 +123,7 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
-                this.$parent.$parent.getPosts()
+                this.$parent.$parent.getPostsAfterDelete()
             }).catch(error => {
                 console.log(error.response.status)
             });
@@ -134,7 +134,7 @@ export default {
             this.axios.post(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
 
-                this.$parent.$parent.getPosts()
+                this.$parent.$parent.getEditedPost(postId)
             }).catch(error => {
                 console.log(error.response.status)
             });

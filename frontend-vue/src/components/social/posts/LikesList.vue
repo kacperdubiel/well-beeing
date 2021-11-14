@@ -32,8 +32,10 @@ export default {
     methods: {
         redirectToProfile(id) {
             document.getElementById('likes-modal-close').click();
-            console.log('prifileIDDDDD', id)
-            this.$router.push({ name: 'ProfileView', params: {profileId: id} })
+            if(id === this.$store.getters.getProfileId)
+                this.$router.push({ name: 'MyProfileView'})
+            else
+                this.$router.push({ name: 'ProfileView', params: {profileId: id} })
         }
     }
 }
