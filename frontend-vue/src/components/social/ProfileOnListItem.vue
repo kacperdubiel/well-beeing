@@ -5,7 +5,7 @@
             <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="50" width="50">
         </div>
 
-        <div class="d-flex flex-column align-self-center w-100">
+        <div class="d-flex flex-column align-self-center">
             <h5 class="ms-2" @click="handleRedirect(this.profileSource.id)">
                 {{this.profileSource.firstName}} {{this.profileSource.lastName}}
             </h5>
@@ -42,5 +42,7 @@ export default {
 </script>
 
 <style scoped>
-
+h5:hover {
+    text-decoration: underline;
+}
 </style>

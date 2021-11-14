@@ -32,8 +32,6 @@ export default {
         },
         setLikesList(likes) {
             this.likesModal = likes
-            console.log('ustawiam')
-
         }
     }
 }

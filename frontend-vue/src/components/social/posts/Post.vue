@@ -123,7 +123,7 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
-                this.$parent.$parent.getMyPosts()
+                this.$parent.$parent.getPosts()
             }).catch(error => {
                 console.log(error.response.status)
             });
@@ -133,10 +133,8 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.post(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
-                if(this.isPostMine)
-                    this.$parent.$parent.getMyPosts()
-                else
-                    this.$parent.$parent.getPostsByUserId(this.$route.params.profileId)
+
+                this.$parent.$parent.getPosts()
             }).catch(error => {
                 console.log(error.response.status)
             });
