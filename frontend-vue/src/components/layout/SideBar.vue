@@ -98,7 +98,7 @@
             </router-link>
         </div>
         <div class="side-menu" v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')">
-            <router-link to="/">
+            <router-link :to="{ name: 'TrainerUsersView' }">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col ps-2">
                         PANEL TRENERA

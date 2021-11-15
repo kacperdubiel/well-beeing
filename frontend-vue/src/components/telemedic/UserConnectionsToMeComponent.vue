@@ -8,7 +8,7 @@
                 <div class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
                         <option :value="true">
-                            Moi pacjenci
+                            {{connectionType === 'WITH_TRAINER' ? 'Moi podopieczni' : 'Moi pacjenci'}}
                         </option>
                         <option :value="false">
                             Oczekujące zgłoszenia

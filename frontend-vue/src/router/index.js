@@ -27,6 +27,11 @@ import UserTrainerConversationView from "@/views/sport/trainers/UserTrainerConve
 import UserTrainerConversationsView from "@/views/sport/trainers/UserTrainerConversationsView";
 import SearchTrainersView from "@/views/sport/trainers/SearchTrainersView";
 import UserTrainersView from "@/views/sport/trainers/UserTrainersView";
+import TrainerUsersView from "@/views/sport/trainers/TrainerUsersView";
+import TrainerUserProfileView from "@/views/sport/trainers/TrainerUserProfileView";
+import TrainerUserConversationsView from "@/views/sport/trainers/TrainerUserConversationsView";
+import TrainerUserConversationView from "@/views/sport/trainers/TrainerUserConversationView";
+import SportTrainerView from "@/views/sport/SportTrainerView";
 
 const routes = [
   {
@@ -130,25 +135,53 @@ const routes = [
         component: SportReportsComponent
       },
       {
-        path: '/user-trainers',
+        path: 'user-trainers',
         name: 'UserTrainersView',
         component: UserTrainersView
       },
       {
-        path: '/user-trainers/search',
+        path: 'user-trainers/search',
         name: 'SearchTrainersView',
         component: SearchTrainersView
       },
       {
-        path: '/conversations',
+        path: 'conversations',
         name: 'UserTrainerConversationsView',
         component: UserTrainerConversationsView
       },
       {
-        path: '/conversations/:conversationId',
+        path: 'conversations/:conversationId',
         name: 'UserTrainerConversationView',
         component: UserTrainerConversationView
       },
+    ]
+  },
+  {
+    path: '/sport/trainer',
+    redirect: {name: 'TrainingPlansView'},
+    name: 'SportTrainerView',
+    component: SportTrainerView,
+    children: [
+      {
+        path: 'users',
+        name: 'TrainerUsersView',
+        component: TrainerUsersView
+      },
+      {
+        path: 'users/:userId',
+        name: 'TrainerUserProfileView',
+        component: TrainerUserProfileView
+      },
+      {
+        path: 'conversations',
+        name: 'TrainerUserConversationsView',
+        component: TrainerUserConversationsView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'TrainerUserConversationView',
+        component: TrainerUserConversationView
+      }
     ]
   },
   {
