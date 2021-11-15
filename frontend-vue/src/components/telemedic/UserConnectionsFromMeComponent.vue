@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="m-3" >
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>

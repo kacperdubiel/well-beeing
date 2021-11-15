@@ -2,7 +2,11 @@ package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
@@ -75,6 +79,36 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
         exerciseDAO.save(ex);
         sportLabelDAO.save(label);
         return true;
+    }
+
+    @Override
+    public SportLabel addSportLabel(SportLabel sportLabel, String creatorName) throws NotFoundException, ForbiddenException {
+        User user = userDAO.findUserByEmail(creatorName).orElse(null);
+        if (user == null)
+            throw new NotFoundException("There's no user with email=" + creatorName);
+        boolean hasPermission = user.getRoles().stream().map(Role::getRole).anyMatch(r -> r.equals(ERole.ROLE_ADMIN) || r.equals(ERole.ROLE_TRAINER));
+        if(!hasPermission)
+            throw new ForbiddenException("You have no permission to add Sport Labels!");
+        try {
+            sportLabelDAO.save(sportLabel);
+            return sportLabel;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public boolean deleteSportLabel(long sportLabelId, String userName) throws NotFoundException {
+        return false;
+    }
+
+    @Override
+    public SportLabel getSportLabelById(Long labelId) throws NotFoundException {
+        SportLabel sportLabel = sportLabelDAO.findById(labelId).orElse(null);
+        if(sportLabel != null)
+            return sportLabel;
+        throw new NotFoundException("Sport label with id: " + labelId + " not found");
     }
 
     @Override

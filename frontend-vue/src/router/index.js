@@ -21,6 +21,17 @@ import ExerciseView from "@/components/sport/exercise/ExerciseView";
 import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView";
 import ProfileView from "@/views/social/profile/ProfileView";
 import ProfileEdit from "@/views/social/profile/ProfileEdit";
+import SportReportsComponent from "@/components/sport/SportReportsComponent";
+import TrainersView from "@/views/sport/trainers/TrainersView";
+import UserTrainerConversationView from "@/views/sport/trainers/UserTrainerConversationView";
+import UserTrainerConversationsView from "@/views/sport/trainers/UserTrainerConversationsView";
+import SearchTrainersView from "@/views/sport/trainers/SearchTrainersView";
+import UserTrainersView from "@/views/sport/trainers/UserTrainersView";
+import TrainerUsersView from "@/views/sport/trainers/TrainerUsersView";
+import TrainerUserProfileView from "@/views/sport/trainers/TrainerUserProfileView";
+import TrainerUserConversationsView from "@/views/sport/trainers/TrainerUserConversationsView";
+import TrainerUserConversationView from "@/views/sport/trainers/TrainerUserConversationView";
+import SportTrainerView from "@/views/sport/SportTrainerView";
 
 const routes = [
   {
@@ -117,6 +128,59 @@ const routes = [
         path: 'training-plans',
         name: 'TrainingPlansView',
         component: TrainingPlansView
+      },
+      {
+        path: 'reports',
+        name: 'SportReportsComponent',
+        component: SportReportsComponent
+      },
+      {
+        path: 'user-trainers',
+        name: 'UserTrainersView',
+        component: UserTrainersView
+      },
+      {
+        path: 'user-trainers/search',
+        name: 'SearchTrainersView',
+        component: SearchTrainersView
+      },
+      {
+        path: 'conversations',
+        name: 'UserTrainerConversationsView',
+        component: UserTrainerConversationsView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'UserTrainerConversationView',
+        component: UserTrainerConversationView
+      },
+    ]
+  },
+  {
+    path: '/sport/trainer',
+    redirect: {name: 'TrainingPlansView'},
+    name: 'SportTrainerView',
+    component: SportTrainerView,
+    children: [
+      {
+        path: 'users',
+        name: 'TrainerUsersView',
+        component: TrainerUsersView
+      },
+      {
+        path: 'users/:userId',
+        name: 'TrainerUserProfileView',
+        component: TrainerUserProfileView
+      },
+      {
+        path: 'conversations',
+        name: 'TrainerUserConversationsView',
+        component: TrainerUserConversationsView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'TrainerUserConversationView',
+        component: TrainerUserConversationView
       }
     ]
   },
