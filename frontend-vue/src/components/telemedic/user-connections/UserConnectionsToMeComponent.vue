@@ -138,6 +138,9 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div v-if="userConnections && userConnections.length === 0" class="row mb-2">
+                        Brak wpisów.
+                    </div>
                 </div>
             </div>
         </div>

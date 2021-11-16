@@ -4,7 +4,10 @@
             Błąd ładowania.
         </div>
         <div v-if="componentError === false" class="container mt-4">
-            <div v-if="conversations" class="row mb-2 bottom-border"></div>
+            <div v-if="conversations && conversations.length === 0" class="row mb-2">
+                Brak wiadomości.
+            </div>
+            <div v-if="conversations && conversations.length > 0" class="row mb-2 bottom-border"></div>
             <div v-for="conversation in conversations" v-bind:key="conversation.id" class="row pb-2 mb-2 bottom-border clickable"
                 @click="$emit('open-conversation', conversation.id)"
             >

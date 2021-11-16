@@ -180,25 +180,28 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="measure in measures" v-bind:key="measure.id">
-                            <td>{{ this.$func_global.formatDate(measure.measureDate) }}</td>
-                            <td>{{ this.$func_global.formatTime(measure.measureDate) }}</td>
-                            <td>{{ measure.value }} {{ measure.measureType.unit }}</td>
-                            <td v-if="this.isModificationAllowed" class="align-right">
-                                <button class="btn-white m-r-5 btn-hover"
-                                        data-bs-toggle="modal" data-bs-target="#editMeasureModal"
-                                        @click="selectMeasure(measure)">
-                                    <font-awesome-icon :icon="['fa', 'pen']" />
-                                </button>
-                                <button class="btn-white btn-hover"
-                                        data-bs-toggle="modal" data-bs-target="#deleteMeasureModal"
-                                        @click="selectMeasure(measure)">
-                                    <font-awesome-icon :icon="['fa', 'trash']" />
-                                </button>
-                            </td>
-                        </tr>
+                            <tr v-for="measure in measures" v-bind:key="measure.id">
+                                <td>{{ this.$func_global.formatDate(measure.measureDate) }}</td>
+                                <td>{{ this.$func_global.formatTime(measure.measureDate) }}</td>
+                                <td>{{ measure.value }} {{ measure.measureType.unit }}</td>
+                                <td v-if="this.isModificationAllowed" class="align-right">
+                                    <button class="btn-white m-r-5 btn-hover"
+                                            data-bs-toggle="modal" data-bs-target="#editMeasureModal"
+                                            @click="selectMeasure(measure)">
+                                        <font-awesome-icon :icon="['fa', 'pen']" />
+                                    </button>
+                                    <button class="btn-white btn-hover"
+                                            data-bs-toggle="modal" data-bs-target="#deleteMeasureModal"
+                                            @click="selectMeasure(measure)">
+                                        <font-awesome-icon :icon="['fa', 'trash']" />
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                    <div v-if="measures && measures.length === 0" class="row mb-2">
+                        Brak wpisów.
+                    </div>
                 </div>
             </div>
         </div>
