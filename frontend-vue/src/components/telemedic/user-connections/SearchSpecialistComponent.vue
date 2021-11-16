@@ -111,6 +111,40 @@
                     </table>
                 </div>
             </div>
+
+            <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
+                <nav>
+                    <ul class="pagination justify-content-center my-auto">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                            <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
+                                <font-awesome-icon :icon="['fa', 'fast-backward']" />
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                            <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
+                                <font-awesome-icon :icon="['fa', 'chevron-left']" />
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page}"
+                            v-for="page in navigation.pagesNavbar" :key="page"
+                        >
+                            <a class="page-link" @click="goToPage(page)" >
+                                {{page+1}}
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                            <a class="page-link" @click="goToPage(navigation.currentPage+1)">
+                                <font-awesome-icon :icon="['fa', 'chevron-right']" />
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                            <a class="page-link" @click="goToPage(navigation.totalPages-1)">
+                                <font-awesome-icon :icon="['fa', 'fast-forward']" />
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </template>
@@ -132,7 +166,7 @@ export default {
             doctorSpecializations: {},
             selectedDoctorSpecialization: null,
 
-            specialistsPage: {},
+            navigation: {},
             specialists: {},
             selectedSpecialist: {},
             searchValue: "",
@@ -183,18 +217,43 @@ export default {
                 endpoint = "trainers";
             }
 
-            this.axios.get(`${this.apiURL}${endpoint}?like=${this.searchValue}`, {
+            this.axios.get(`${this.apiURL}${endpoint}?like=${this.searchValue}`
+                + `&page=${this.navigation.toGoPage ?? 0}`, {
                 headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
             })
                 .then(response => {
-                    this.specialistsPage = response.data;
+                    this.navigation = response.data;
+                    this.getPagesNavbar();
+                    this.navigation.toGoPage = this.navigation.currentPage;
                     this.specialists = response.data.objects;
                 })
                 .catch(e => {
                     console.log(e);
                 })
+        },
+        getPagesNavbar(){
+            this.navigation.pagesNavbar = []
+            if (this.navigation.currentPage > 1)
+                this.navigation.pagesNavbar.push(this.navigation.currentPage-2);
+            if (this.navigation.currentPage !== 0)
+                this.navigation.pagesNavbar.push(this.navigation.currentPage-1);
+            for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
+                this.navigation.pagesNavbar.push(i);
+                if (i === this.navigation.currentPage + 2)
+                    break;
+            }
+        },
+        goToPage(pageNo) {
+            this.navigation.toGoPage = pageNo;
+            this.getSpecialists();
+        },
+        isPageFirst(){
+            return this.navigation.currentPage === 0;
+        },
+        isPageLast(){
+            return this.navigation.currentPage === this.navigation.totalPages - 1;
         },
         selectSpecialist(specialist){
             this.connectionDone = false;
