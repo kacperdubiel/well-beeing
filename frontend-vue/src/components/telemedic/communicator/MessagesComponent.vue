@@ -1,7 +1,7 @@
 <template>
     <div class="container px-3 pb-1">
         <div id="messages-box">
-            <div v-if="navigation.currentPage + 1 !== navigation.totalPages" class="mb-4">
+            <div v-if="navigation.totalPages > 1 && navigation.currentPage + 1 !== navigation.totalPages" class="mb-4">
                 <button class="btn-white shadow px-3 py-1" @click="loadMoreMessages">
                     Wczytaj więcej...
                 </button>
