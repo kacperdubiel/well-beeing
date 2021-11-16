@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 public interface PostService {
-    Page<Post> getMyPosts(Profile creatorParam, Pageable pageable);
+    Page<Post> getUsersPosts(Profile creatorParam, Pageable pageable);
     Post getPost(long postId);
 
     Post addPost(Post post, String creatorName) throws NotFoundException;

@@ -23,6 +23,8 @@ export const func_global = {
             url = `${apiURL}profile/import`
         else if (type === 'postPicture')
             url = `${apiURL}post/import/${id}`
+        else if (type === 'exerciseVideo')
+            url = `${apiURL}sport/exercise/import/${id}`
          return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
             console.log(response.data)
         }).catch(error => {
@@ -44,6 +46,17 @@ export const func_global = {
         const urlCreator = window.URL || window.webkitURL;
         return axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'}, responseType: 'arraybuffer'}).then((response) => {
             data = new Blob([response.data], { type: 'image/png' })
+            return urlCreator.createObjectURL(data);
+        }).catch(error => {
+            console.log(error.response.status)
+            return data
+        });
+    },
+    async downloadMp4Video (url, token) {
+        let data
+        const urlCreator = window.URL || window.webkitURL;
+        return axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'}, responseType: 'arraybuffer'}).then((response) => {
+            data = new Blob([response.data], { type: 'video/mp4' })
             return urlCreator.createObjectURL(data);
         }).catch(error => {
             console.log(error.response.status)

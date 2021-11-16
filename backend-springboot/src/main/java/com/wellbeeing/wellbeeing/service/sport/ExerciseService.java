@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
@@ -16,22 +17,25 @@ import java.util.UUID;
 
 public interface ExerciseService {
     Exercise addExercise(Exercise exercise, String creatorName) throws NotFoundException;
-    boolean addLabelToExerciseByLabelId(long exerciseId, long labelId) throws NotFoundException;
-    boolean addLabelToExerciseByLabelName(long exerciseId, String labelName) throws NotFoundException;
     boolean deleteExercise(long exerciseId) throws NotFoundException;
     Exercise getExercise(long exerciseId);
     Exercise getExercise(long exerciseId, String userName) throws NotFoundException;
     List<Exercise> getAllExercises();
-    List<SportLabel> getAllSportLabels();
     Page<Exercise> getAllExercises(Pageable pageable);
     Page<Exercise> getAllExercisesFiltered(Specification<Exercise> exerciseSpec,
                                            Pageable pageable, String userName) throws NotFoundException;
-
     List<Exercise> getExercisesByType(EExerciseType type);
     List<Exercise> getExercisesByCreatorId(UUID creatorId);
     Exercise updateExercise(Exercise exercise) throws NotFoundException;
     Exercise partialUpdateExercise(Exercise exercise);
     void initiateExercises();
+    // LABELS
+    List<SportLabel> getAllSportLabels();
+    SportLabel getSportLabelById(Long labelId) throws NotFoundException;
+    boolean addLabelToExerciseByLabelId(long exerciseId, long labelId) throws NotFoundException;
+    SportLabel addSportLabel(SportLabel sportLabel, String creatorName) throws NotFoundException, ForbiddenException;
+    boolean deleteSportLabel(long sportLabelId, String userName) throws NotFoundException;
+    boolean addLabelToExerciseByLabelName(long exerciseId, String labelName) throws NotFoundException;
 
     Map<Long, Integer> getCaloriesBurnedFromUser(List<Exercise> exercises, String userName) throws NotFoundException;
 }

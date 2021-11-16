@@ -50,6 +50,12 @@
                                 <p class="form-label">{{ edit ? 'Poprzednia instrukcja' : 'Instrukcja' }}</p>
                                 <p class="info-value" v-html="exercise.instruction"></p>
                             </div>
+                            <div class="row text-start pb-3" v-if="this.exercise.pathToVideoInstruction">
+                                <p class="form-label">Instrukcja wideo</p>
+                                <div class="col">
+                                    <video :src="instructionVideoSrc" class="w-100 h-100" controls id="exercise-video"/>
+                                </div>
+                            </div>
                             <div class="row mt-3 " v-if="this.edit">
                                 <h5 class="modal-title mt-3 text-start ps-0">Edytowane ćwiczenie</h5>
                             </div>
@@ -197,6 +203,7 @@ export default {
             met: 0.0,
             description: "",
             instruction: "",
+            instructionVideoSrc: "",
             errorEditExercise: false,
             successEditExercise: false,
             nameTaken: false,
@@ -268,6 +275,14 @@ export default {
         randomColor(seed) {
             let availableColors = ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392']
             return availableColors[seed % availableColors.length];
+        },
+        downloadExerciseInstructionVideo () {
+            if (this.exercise.pathToVideoInstruction) {
+                const url = `${this.apiURL}sport/exercise/export/${this.exercise.exerciseId}`
+                const token = this.$store.getters.getToken;
+                console.log('post')
+                this.$func_global.downloadMp4Video(url, token).then(result => this.instructionVideoSrc = result)
+            }
         }
     },
     computed: {
@@ -289,6 +304,11 @@ export default {
     },
     mounted() {
         this.getLabels()
+    },
+    watch: {
+        exercise: function () {
+            this.downloadExerciseInstructionVideo();
+        }
     }
 }
 </script>

@@ -1,7 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.social;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

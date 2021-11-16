@@ -1,0 +1,48 @@
+http://localhost:8090/measure-types
+
+{
+	"name": "Tętno",
+	"unit": "udzerzeń/min"
+}
+
+
+
+{
+	"name": "Poziom cukru",
+	"unit": "mg/dL"
+}
+
+
+
+{
+	"name": "Temperatura",
+	"unit": "°C"
+}
+
+
+==================================
+
+http://localhost:8090/doctor-specializations
+
+{
+	"name": "Kardiolog"
+}
+
+
+{
+	"name": "Psycholog"
+}
+
+
+{
+	"name": "Dermatolog"
+}
+
+
+===================================
+
+http://localhost:8090/doctors/{ID_DOKTORA}/doctor-specializations
+
+{
+	"id": "{ID_SPECJALIZACJI}"
+}

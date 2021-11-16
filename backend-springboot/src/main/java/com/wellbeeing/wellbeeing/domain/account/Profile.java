@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.domain.account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.Report;
+import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
@@ -87,6 +88,11 @@ public class Profile {
     @OneToMany(mappedBy = "reportOwner", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Report> dietReports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reportOwner", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<SportReport> sportReports = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<NutritionPlan> nutritionPlans = new ArrayList<>();

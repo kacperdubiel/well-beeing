@@ -2,7 +2,7 @@
     <div class="section-2-bg">
         <div class="d-flex flex-row px-4 py-3">
             <div class="d-flex flex-column text-start">
-                <img v-if="this.$store.getters.getProfileImageSrc" :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
             <div class="d-flex flex-column align-self-center w-100 ms-3">
@@ -57,6 +57,7 @@ export default {
                 postImgPath: null
 
             },
+            profilePictureSrc: "",
             submittingPost: false,
             successPost: false,
             errorPost: false
@@ -66,7 +67,7 @@ export default {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
             const token = this.$store.getters.getToken;
-            this.$func_global.downloadPhoto(url, token).then(result => this.$store.commit('setProfileImageSrc', result))
+            this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
         addPost() {
             this.submittingPost = true
@@ -91,7 +92,8 @@ export default {
                 // this.getMyRoleRequests()
                 this.successPost = true
                 this.submittingPost = false
-                this.$emit('refresh:posts')
+                console.log('DATATATATTATA',response.data)
+                this.$emit('refresh:posts', 0, false, 0)
             }).catch(error => {
                 console.log(error.response)
             });

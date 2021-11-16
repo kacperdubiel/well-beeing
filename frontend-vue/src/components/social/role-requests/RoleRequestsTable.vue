@@ -112,7 +112,7 @@ export default {
                 "userId": id,
                 "role": role
             }
-            this.axios.put(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+            this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
             }).catch(error => {
                 console.log(error.response)
