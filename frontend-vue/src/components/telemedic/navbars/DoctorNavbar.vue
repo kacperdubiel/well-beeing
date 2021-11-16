@@ -11,6 +11,11 @@
                     Wiadomości
                 </router-link>
             </li>
+            <li class="nav-item">
+                <router-link :to="{ name: 'DoctorMeasureTypesView' }" class="nav-link" active-class="active">
+                    Typy pomiarów
+                </router-link>
+            </li>
         </ul>
     </div>
 </template>

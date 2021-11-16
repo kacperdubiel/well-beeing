@@ -11,6 +11,7 @@ import DoctorUserProfileView from "@/views/telemedic/doctor/DoctorUserProfileVie
 import SearchDoctorsView from "@/views/telemedic/user/SearchDoctorsView";
 import DoctorUserConversationsView from "@/views/telemedic/doctor/DoctorUserConversationsView";
 import DoctorUserConversationView from "@/views/telemedic/doctor/DoctorUserConversationView";
+import DoctorMeasureTypesView from "@/views/telemedic/doctor/DoctorMeasureTypesView";
 import FeedView from "@/views/social/feed/FeedView";
 import RoleRequestsView from "@/views/social/role-requests/RoleRequestsView";
 import LoginAdminView from "@/views/social/admin/LoginAdminView";
@@ -96,6 +97,11 @@ const routes = [
     path: '/doctor/conversations/:conversationId',
     name: 'DoctorUserConversationView',
     component: DoctorUserConversationView
+  },
+  {
+    path: '/doctor/measure-types',
+    name: 'DoctorMeasureTypesView',
+    component: DoctorMeasureTypesView
   },
   {
     path: '/sport',
