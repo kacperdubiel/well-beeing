@@ -49,25 +49,11 @@ export default {
     },
     data() {
         return {
-            userId: "",
+            userId: this.$store.getters.getProfileId,
             conversation: null,
         }
     },
     methods: {
-        getProfile(){
-            this.axios.get(`${this.apiURL}profile/my`, {
-                headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
-                }
-            })
-                .then(response => {
-                    this.userId = response.data.id;
-                    this.getConversation();
-                })
-                .catch(e => {
-                    console.log(e);
-                })
-        },
         getConversation(){
             this.axios.get(`${this.apiURL}conversations/${this.conversationId}`, {
                 headers: {
@@ -86,7 +72,7 @@ export default {
         },
     },
     created(){
-        this.getProfile();
+        this.getConversation();
     },
 }
 </script>

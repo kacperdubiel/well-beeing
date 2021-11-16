@@ -22,26 +22,14 @@ export default {
     },
     data() {
         return {
-            userId: "",
+            userId: this.$store.getters.getProfileId,
         }
     },
     methods: {
-        getProfile(){
-            this.axios.get(`${this.apiURL}profile/my`, {
-                headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
-                }
-            })
-                .then(response => {
-                    this.userId = response.data.id;
-                })
-                .catch(e => {
-                    console.log(e);
-                })
-        },
+
     },
     created() {
-        this.getProfile();
+
     },
 }
 </script>

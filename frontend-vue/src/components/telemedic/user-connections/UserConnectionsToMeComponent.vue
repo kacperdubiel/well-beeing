@@ -198,7 +198,7 @@ export default {
             selectedAcceptState: true,
             navigation: {},
             userConnections: {},
-            userId: "",
+            userId: this.$store.getters.getProfileId,
             selectedUserConnection: {},
         }
     },
@@ -213,24 +213,10 @@ export default {
                 this.connectionType === "WITH_DIETICIAN" || this.connectionType === "WITH_TRAINER")
             {
                 this.componentError = false;
-                this.getProfile();
+                this.getUserConnections();
             } else {
                 this.componentError = true;
             }
-        },
-        getProfile(){
-            this.axios.get(`${this.apiURL}profile/my`, {
-                headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
-                }
-            })
-                .then(response => {
-                    this.userId = response.data.id;
-                    this.getUserConnections();
-                })
-                .catch(e => {
-                    console.log(e);
-                })
         },
         getUserConnections() {
             this.axios.get(`${this.apiURL}profile-connections/to-me/type/${this.connectionType}/`

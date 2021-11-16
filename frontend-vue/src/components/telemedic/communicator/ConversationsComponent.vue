@@ -99,7 +99,7 @@ export default {
         return {
             componentError: null,
 
-            userId: "",
+            userId: this.$store.getters.getProfileId,
             navigation: {},
             conversations: {},
         }
@@ -110,25 +110,10 @@ export default {
                 this.connectionType === "WITH_DIETICIAN" || this.connectionType === "WITH_TRAINER")
             {
                 this.componentError = false;
-                this.getProfile();
+                this.getConversations();
             } else {
                 this.componentError = true;
             }
-        },
-        getProfile(){
-            this.axios.get(`${this.apiURL}profile/my`, {
-                headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
-                }
-            })
-                .then(response => {
-                    this.userId = response.data.id;
-                    this.getConversations();
-                })
-                .catch(e => {
-                    this.componentError = true;
-                    console.log(e);
-                })
         },
         getConversations() {
             this.axios.get(`${this.apiURL}conversations/as-specialist/${this.asSpecialist}/type/${this.connectionType}`

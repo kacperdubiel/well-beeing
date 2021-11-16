@@ -279,21 +279,6 @@ export default {
         }
     },
     methods: {
-        getProfile(){
-            this.axios.get(`${this.apiURL}profile/my`, {
-                headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
-                }
-            })
-                .then(response => {
-                    if(this.userId === response.data.id){
-                        this.isModificationAllowed = true;
-                    }
-                })
-                .catch(e => {
-                    console.log(e);
-                })
-        },
         getMeasureTypes() {
             this.axios.get(`${this.apiURL}measure-types`, {
                 headers: {
@@ -304,12 +289,17 @@ export default {
                     this.measureTypes = response.data;
                     if(response.data.length > 0){
                         this.selectedMeasureType = response.data[0];
-                        this.getProfile();
+                        this.setModificationAllowed();
                     }
                 })
                 .catch(e => {
                     console.log(e);
                 })
+        },
+        setModificationAllowed(){
+            if(this.userId === this.$store.getters.getProfileId){
+                this.isModificationAllowed = true;
+            }
         },
         getMeasures() {
             if(this.userId && this.userId.length > 0){
