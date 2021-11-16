@@ -278,7 +278,7 @@ export default {
                     this.connectionResultMsg = "Zapisano. Poczekaj na akceptację przez specjalistę.";
                     this.connectionDone = true;
                 }).catch(() => {
-                    this.connectionResultMsg = "Nie udało się zapisać.";
+                    this.connectionResultMsg = "Nie udało się zapisać. Prawdopodobnie zrobiłeś to już wczesniej.";
                     this.connectionDone = true;
                 })
         },
