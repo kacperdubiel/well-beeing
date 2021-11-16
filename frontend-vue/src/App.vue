@@ -233,6 +233,36 @@ input{
     padding: 25px 20px;
 }
 
+.pagination > li.telemedic-page > a
+{
+    background-color: white;
+    color: var(--TELEMEDIC);
+}
+
+.pagination > li.telemedic-page > a:focus,
+.pagination > li.telemedic-page > a:hover,
+.pagination > li.telemedic-page > span:focus,
+.pagination > li.telemedic-page > span:hover
+{
+    color: white;
+    background-color: var(--TELEMEDIC);
+    border-color: var(--TELEMEDIC);
+    cursor: pointer;
+}
+
+.pagination > .telemedic-page.active > a
+{
+    color: white;
+    background-color: var(--TELEMEDIC) !Important;
+    border: solid 1px var(--TELEMEDIC) !Important;
+}
+
+.pagination > .telemedic-page.active > a:hover
+{
+    background-color: var(--TELEMEDIC) !Important;
+    border: solid 1px var(--TELEMEDIC);
+}
+
 .pagination > li.sport-page > a
 {
     background-color: white;
