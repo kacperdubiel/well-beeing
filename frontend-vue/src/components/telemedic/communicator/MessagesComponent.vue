@@ -26,6 +26,37 @@
                    type="text" class="form-control" placeholder="Napisz wiadomość..."
             >
         </div>
+
+        <!-- Modal - Info -->
+        <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title ms-2" id="infoModalLabel"> Błąd </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="col-11 mx-auto">
+                                <div class="row">
+                                    Wiadomość nie została wysłana. Prawdopodobnie użytkownik nie jest zapisany do specjalisty.
+                                </div>
+
+                                <div class="row justify-content-end mt-3">
+                                    <div class="col-3">
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Potwierdź</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal-opener" data-bs-toggle="modal" data-bs-target="#infoModal"></div>
     </div>
 </template>
 
@@ -140,6 +171,7 @@ export default {
                         this.messageText = "";
                     })
                     .catch(e => {
+                        document.getElementById('modal-opener').click();
                         console.log(e);
                     })
             }
@@ -205,6 +237,14 @@ export default {
 
 .your-message-sport {
     background-color: var(--SPORT);
+}
+
+.modal-header, .modal-body {
+    color: black;
+}
+
+.modal-dialog-centered {
+    min-height: calc(60% - 3.5rem);
 }
 
 </style>
