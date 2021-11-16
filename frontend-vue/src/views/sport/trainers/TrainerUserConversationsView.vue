@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import ConversationsComponent from "@/components/telemedic/ConversationsComponent";
+import ConversationsComponent from "@/components/telemedic/communicator/ConversationsComponent";
 
 export default {
     name: 'TrainerUserConversationsView',

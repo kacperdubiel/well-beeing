@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import SearchSpecialistComponent from "@/components/telemedic/SearchSpecialistComponent";
+import SearchSpecialistComponent from "@/components/telemedic/user-connections/SearchSpecialistComponent";
 
 export default {
     name: "SearchTrainersView",

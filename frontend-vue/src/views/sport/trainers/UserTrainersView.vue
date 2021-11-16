@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import UserConnectionsFromMeComponent from "@/components/telemedic/UserConnectionsFromMeComponent";
+import UserConnectionsFromMeComponent from "@/components/telemedic/user-connections/UserConnectionsFromMeComponent";
 
 export default {
     name: "UserTrainersView",
