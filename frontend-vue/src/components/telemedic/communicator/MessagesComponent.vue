@@ -1,6 +1,11 @@
 <template>
     <div class="container px-3 pb-1">
         <div id="messages-box">
+            <div v-if="navigation.currentPage + 1 !== navigation.totalPages" class="mb-4">
+                <button class="btn-white shadow px-3 py-1" @click="loadMoreMessages">
+                    Wczytaj więcej...
+                </button>
+            </div>
             <div v-for="message in messages" v-bind:key="message.id" class="message-row">
                 <div class="message-datetime">
                     {{ this.$func_global.formatDateTime(message.createDate) }}
@@ -34,7 +39,7 @@ export default {
     },
     data() {
         return {
-            messagesPage: {},
+            navigation: {},
             messages: {},
 
             messageText: "",
@@ -66,7 +71,7 @@ export default {
                 }
             })
                 .then(response => {
-                    this.messagesPage = response.data;
+                    this.navigation = response.data;
                     const messagesResult = response.data.objects;
                     this.messages = messagesResult.reverse();
                 })
@@ -77,7 +82,23 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
-
+        },
+        loadMoreMessages(){
+            this.axios.get(`${this.apiURL}conversations/${this.conversation.id}/messages`
+                + `?page=${this.navigation.currentPage + 1}`, {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    this.navigation = response.data;
+                    let messagesResult = response.data.objects;
+                    messagesResult.reverse().push(...this.messages)
+                    this.messages = messagesResult;
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
         markAsRead(){
             this.axios({
@@ -135,6 +156,10 @@ export default {
     height: 45vh;
     overflow-y: auto;
     padding-right: 10px;
+}
+
+.btn-panel-telemedic{
+    font-size: medium;
 }
 
 .message-row {
