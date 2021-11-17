@@ -220,11 +220,13 @@ export default {
                 this.filters.lastNameSearch = myParams.name
                 this.filters.lastExerciseNameSearch = myParams.exerciseName
                 this.userNavigation.pagesNavbar = []
+                if (this.navigation.currentPage > 1)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage-2)
                 if (this.navigation.currentPage !== 0)
                     this.userNavigation.pagesNavbar.push(this.navigation.currentPage-1)
                 for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
                     this.userNavigation.pagesNavbar.push(i)
-                    if (i === this.navigation.currentPage + 3)
+                    if (i === this.navigation.currentPage + 2)
                         break;
                 }
                 // this.userNavigation.pagesNavbar.push(this.navigation.currentPage+1)

@@ -5,12 +5,10 @@ import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.domain.sport.ReportExercise;
+import com.wellbeeing.wellbeeing.domain.sport.ReportTraining;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
-import com.wellbeeing.wellbeeing.repository.sport.ReportExerciseDAO;
-import com.wellbeeing.wellbeeing.repository.sport.SportReportDAO;
-import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
+import com.wellbeeing.wellbeeing.repository.sport.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,7 @@ public class SportReportServiceImpl implements SportReportService{
     public TrainingDAO trainingDAO;
     public ExerciseDAO exerciseDAO;
     public ReportExerciseDAO reportExerciseDAO;
+    public ReportTrainingDAO reportTrainingDAO;
 //    public ReportDishDetailDAO reportDishDetailDAO;
 
     public ExerciseService exerciseService;
@@ -40,6 +39,7 @@ public class SportReportServiceImpl implements SportReportService{
                                   @Qualifier("exerciseService") ExerciseService exerciseService,
                                   @Qualifier("profileDAO") ProfileDAO profileDAO,
                                   @Qualifier("reportExerciseDAO") ReportExerciseDAO reportExerciseDAO,
+                                  @Qualifier("reportTrainingDAO") ReportTrainingDAO reportTrainingDAO,
                                   EntityManager entityManager){
         this.sportReportDAO = sportReportDAO;
         this.exerciseDAO = exerciseDAO;
@@ -186,5 +186,34 @@ public class SportReportServiceImpl implements SportReportService{
             re.preUpdate();
         });
         return reports;
+    }
+
+    @Override
+    public SportReport deleteTrainingsFromReportByReportId(UUID reportId, List<Long> trainingsIds) throws NotFoundException {
+        SportReport report = getSportReportById(reportId);
+        List<ReportTraining> trainings = report.getTrainingList();
+        for(Long id : trainingsIds) {
+            ReportTraining found = reportTrainingDAO.findById(id).orElse(null);
+            if(found != null && trainings.contains(found)){
+                report.removeReportTrainingFromReport(found);
+            }
+        }
+//        entityManager.clear();
+//        SportReport reportUpdated = getSportReportById(report.getId());
+//        reportUpdated.setDerived();
+        return sportReportDAO.save(report);
+    }
+
+    @Override
+    public SportReport addTrainingsToReportByReportId(List<ReportTraining> trainings, UUID reportId) throws NotFoundException {
+        SportReport report = getSportReportById(reportId);
+        for (ReportTraining tr : trainings) {
+            tr.setSportReport(report);
+            ReportTraining rdd = reportTrainingDAO.saveAndFlush(tr);
+            entityManager.clear();
+            ReportTraining newTraining = reportTrainingDAO.findById(rdd.getId()).orElse(null);
+        }
+        report = getSportReportById(reportId);
+        return sportReportDAO.save(report);
     }
 }
