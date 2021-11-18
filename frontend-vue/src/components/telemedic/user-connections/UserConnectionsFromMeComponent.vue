@@ -77,7 +77,10 @@
 
             <div class="row">
                 <div class="col-12">
-                    <table class="table connections-table">
+                    <table class="table connections-table" :class="{
+                        'connections-table-telemedic': connectionType === 'WITH_DOCTOR',
+                        'connections-table-sport': connectionType === 'WITH_TRAINER',
+                        'connections-table-diet': connectionType === 'WITH_DIETICIAN'}">
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
@@ -348,6 +351,14 @@ export default {
 
 .connections-table tbody tr:hover {
     background-color: var(--TELEMEDIC);
+}
+
+.connections-table-sport tbody tr:hover {
+    background-color: var(--SPORT);
+}
+
+.connections-table-diet tbody tr:hover {
+    background-color: var(--DIET);
 }
 
 .specialization-list {

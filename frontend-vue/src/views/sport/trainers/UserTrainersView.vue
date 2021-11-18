@@ -2,6 +2,7 @@
     <div>
         <section>
             <user-connections-from-me-component connection-type="WITH_TRAINER"
+                                                v-on:open-profile="openProfile"
                                                 v-on:open-conversation="openConversation"
                                                 v-on:search-specialist="openSearchSpecialist"/>
         </section>
@@ -15,6 +16,9 @@ export default {
     name: "UserTrainersView",
     components:{UserConnectionsFromMeComponent},
     methods: {
+        openProfile(profileId){
+            this.$router.push({ name: 'ProfileView', params: { profileId: profileId } });
+        },
         openConversation(conversationId){
             this.$router.push({ name: 'UserTrainerConversationView', params: { conversationId: conversationId } });
         },

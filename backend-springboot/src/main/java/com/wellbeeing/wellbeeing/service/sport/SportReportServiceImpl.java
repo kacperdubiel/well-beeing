@@ -47,6 +47,7 @@ public class SportReportServiceImpl implements SportReportService{
         this.exerciseService = exerciseService;
         this.profileDAO = profileDAO;
         this.reportExerciseDAO = reportExerciseDAO;
+        this.reportTrainingDAO = reportTrainingDAO;
 
         this.entityManager = entityManager;
     }
@@ -60,6 +61,10 @@ public class SportReportServiceImpl implements SportReportService{
         double weight = report.getReportOwner().getProfileCard().getWeight();
         report.getExerciseList().forEach(re -> {
             re.getExercise().setCaloriesBurned(re.getExercise().countCaloriesPerHour(weight));
+        });
+        report.getTrainingList().forEach(tr -> {
+            tr.getTraining().setCaloriesBurned(tr.getTraining().caloriesBurned(weight));
+            tr.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(weight)));
         });
         report.preUpdate();
         return report;
@@ -147,6 +152,10 @@ public class SportReportServiceImpl implements SportReportService{
             re.getExerciseList().forEach(ex -> {
                 ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(weight));
             });
+            re.getTrainingList().forEach(tr -> {
+                tr.getTraining().setCaloriesBurned(tr.getTraining().caloriesBurned(weight));
+                tr.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(weight)));
+            });
             re.preUpdate();
         });
         return reports;
@@ -165,6 +174,10 @@ public class SportReportServiceImpl implements SportReportService{
             re.getExerciseList().forEach(ex -> {
                 ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(weight));
             });
+            re.getTrainingList().forEach(tr -> {
+                tr.getTraining().setCaloriesBurned(tr.getTraining().caloriesBurned(weight));
+                tr.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(weight)));
+            });
             re.preUpdate();
         });
         return reports;
@@ -182,6 +195,10 @@ public class SportReportServiceImpl implements SportReportService{
         reports.forEach(re -> {
             re.getExerciseList().forEach(ex -> {
                 ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(weight));
+            });
+            re.getTrainingList().forEach(tr -> {
+                tr.getTraining().setCaloriesBurned(tr.getTraining().caloriesBurned(weight));
+                tr.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(weight)));
             });
             re.preUpdate();
         });

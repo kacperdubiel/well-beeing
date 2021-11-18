@@ -21,8 +21,12 @@ export default {
         }
     },
     methods: {
-        openProfile(profileId){
-            this.$router.push({ name: 'TrainerUserProfileView', params: { userId: profileId } });
+        openProfile(profileId, isAccepted){
+            if(isAccepted){
+                this.$router.push({ name: 'TrainerUserProfileView', params: { userId: profileId } });
+            } else {
+                this.$router.push({ name: 'ProfileView', params: { profileId: profileId } });
+            }
         },
         openConversation(conversationId){
             this.$router.push({ name: 'TrainerUserConversationView', params: { conversationId: conversationId } });

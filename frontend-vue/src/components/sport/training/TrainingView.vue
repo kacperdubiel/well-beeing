@@ -319,6 +319,8 @@ span {
 
 .button-icon {
     cursor: pointer;
+    color: var(--SPORT);
+    background-color: transparent;
 }
 .filter-control {
     font-size: small;

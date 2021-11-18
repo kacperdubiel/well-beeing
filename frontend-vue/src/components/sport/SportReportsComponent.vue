@@ -22,15 +22,15 @@
             <tr>
                 <th class="col-sm-3" scope="col">Data</th>
                 <th class="col-sm-3" scope="col">Spalone kalorie</th>
-                <th class="col-sm-1" scope="col">Czas</th>
+                <th class="col-sm-2" scope="col">Czas</th>
                 <th class="col-sm-3" scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="report in reportsToShow" :key="report.id">
                 <td>{{report.reportDate}}</td>
-                <td>2400 kcal</td>
-                <td>180 min</td>
+                <td>{{Math.round(report.caloriesBurned)}} kcal</td>
+                <td>{{this.$func_global.getTimePrettyFromSeconds(report.totalTimeSeconds)}}</td>
                 <td style="text-align: end;">
                     <button @click="this.setActualReport(report)" class="btn-white mx-2" data-bs-toggle="modal" data-bs-target="#sportReportModal"><font-awesome-icon :icon="['fa', 'info']"/></button>
                     <button @click="this.setActualReport(report)" class="btn-white" data-bs-toggle="modal" data-bs-target="#sportReportFormModal"><font-awesome-icon :icon="['fa', 'edit']"/></button>
@@ -104,12 +104,7 @@ export default {
             showConflictError: false,
             actualMonth: '',
             actualModalReport: {
-                derivedNutritionalValues: {
-                    derivedProteins: 0,
-                    derivedFats: 0,
-                    derivedCarbohydrates: 0,
-                    derivedCalories: 0
-                }
+
             },
             closeInfoModal: false
         }
