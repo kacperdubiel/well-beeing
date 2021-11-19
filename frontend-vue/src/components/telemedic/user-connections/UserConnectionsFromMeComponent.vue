@@ -95,6 +95,7 @@
                                     class="clickable"
                                 >
                                     <user-avatar-component :profileId="connection.profile.id"
+                                                           :isActive="this.$func_global.getIsActive5minutes(connection.profile.lastRequestTime)"
                                                            :height="40" :width="40"
                                     />
                                     <span class="mx-2">
@@ -106,6 +107,7 @@
                                     class="clickable"
                                 >
                                     <user-avatar-component :profileId="connection.connectedWith.id"
+                                                           :isActive="this.$func_global.getIsActive5minutes(connection.connectedWith.lastRequestTime)"
                                                            :height="40" :width="40"
                                     />
                                     <span class="mx-2">
@@ -144,29 +146,44 @@
             <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
                 <nav>
                     <ul class="pagination justify-content-center my-auto">
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
+                        'sport-page' : connectionType === 'WITH_TRAINER',
+                        'telemedic-page' : connectionType === 'WITH_DOCTOR',
+                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'fast-backward']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
+                        'sport-page' : connectionType === 'WITH_TRAINER',
+                        'telemedic-page' : connectionType === 'WITH_DOCTOR',
+                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'chevron-left']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page}"
+                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
+                        'sport-page' : connectionType === 'WITH_TRAINER',
+                        'telemedic-page' : connectionType === 'WITH_DOCTOR',
+                        'diet-page' : connectionType === 'WITH_DIETICIAN'}"
                             v-for="page in navigation.pagesNavbar" :key="page"
                         >
                             <a class="page-link" @click="goToPage(page)" >
                                 {{page+1}}
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER',
+                        'telemedic-page' : connectionType === 'WITH_DOCTOR',
+                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage+1)">
                                 <font-awesome-icon :icon="['fa', 'chevron-right']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER',
+                        'telemedic-page' : connectionType === 'WITH_DOCTOR',
+                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.totalPages-1)">
                                 <font-awesome-icon :icon="['fa', 'fast-forward']" />
                             </a>

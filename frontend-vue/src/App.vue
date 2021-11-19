@@ -108,7 +108,9 @@ button[class^="btn-card-panel-"] {
 .btn-panel-sport {
     background-color: var(--SPORT) !important;
 }
-
+.btn-icon-panel-sport {
+    background-color: var(--SPORT) !important;
+}
 .btn-panel-diet {
     background-color: var(--DIET) !important;
 }
@@ -339,4 +341,11 @@ input{
 .modal-content {
     border-radius: 20px;
 }
+.circle {
+    height: 15px;
+    width: 15px;
+    background-color: lawngreen;
+    border-radius: 50%;
+    display: inline-block;
+ }
 </style>

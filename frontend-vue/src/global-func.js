@@ -95,6 +95,13 @@ export const func_global = {
             return moment(String(date)).locale('pl').fromNow()
         }
     },
+    getIsActive5minutes(userLastRequestTime) {
+        console.log('Something')
+        let duration = moment.duration(moment(new Date()).diff(userLastRequestTime));
+        let minutes = duration.asMinutes()
+        console.log('minutes: ', minutes)
+        return minutes < 5
+    },
     mapRole(role) {
         if(role === 'ROLE_DIETICIAN')
             return 'Dietetyk'

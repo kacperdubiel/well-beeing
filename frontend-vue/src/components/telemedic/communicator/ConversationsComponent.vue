@@ -13,10 +13,12 @@
             >
                 <div class="col-2 col-xl-1">
                     <user-avatar-component v-if="conversation.firstProfile.id !== userId"
+                                                   :isActive="this.$func_global.getIsActive5minutes(conversation.firstProfile.lastRequestTime)"
                                                    :profileId="conversation.firstProfile.id"
                                                    :height="45" :width="45"
                     />
-                    <user-avatar-component v-else :profileId="conversation.secondProfile.id"
+                    <user-avatar-component v-else :isActive="this.$func_global.getIsActive5minutes(conversation.secondProfile.lastRequestTime)"
+                                                   :profileId="conversation.secondProfile.id"
                                                    :height="45" :width="45"
                     />
                 </div>
@@ -49,29 +51,34 @@
             <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
                 <nav>
                     <ul class="pagination justify-content-center my-auto">
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
+                        'sport-page' : connectionType === 'WITH_TRAINER'}">
                             <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'fast-backward']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
+                        'sport-page' : connectionType === 'WITH_TRAINER'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'chevron-left']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page}"
+                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
+                        'sport-page' : connectionType === 'WITH_TRAINER'}"
                             v-for="page in navigation.pagesNavbar" :key="page"
                         >
                             <a class="page-link" @click="goToPage(page)" >
                                 {{page+1}}
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage+1)">
                                 <font-awesome-icon :icon="['fa', 'chevron-right']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER'}">
                             <a class="page-link" @click="goToPage(navigation.totalPages-1)">
                                 <font-awesome-icon :icon="['fa', 'fast-forward']" />
                             </a>

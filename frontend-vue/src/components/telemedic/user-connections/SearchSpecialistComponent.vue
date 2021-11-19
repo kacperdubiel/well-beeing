@@ -51,13 +51,28 @@
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
-                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2"
+                                                    :class="{
+                                                    'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
+                                                    'btn-panel-sport':connectionType === 'WITH_TRAINER',
+                                                    'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    data-bs-dismiss="modal">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2" @click="connectWithSpecialist">
+                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2"
+                                                    :class="{
+                                                    'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
+                                                    'btn-panel-sport':connectionType === 'WITH_TRAINER',
+                                                    'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    @click="connectWithSpecialist">
                                                 <span>Zapisz</span>
                                             </button>
-                                            <button v-else class="btn-panel-telemedic p-2" data-bs-dismiss="modal">
+                                            <button v-else class="btn-panel-telemedic p-2"
+                                                    :class="{
+                                                    'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
+                                                    'btn-panel-sport':connectionType === 'WITH_TRAINER',
+                                                    'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    data-bs-dismiss="modal">
                                                 <span>Zamknij</span>
                                             </button>
                                         </div>
@@ -72,7 +87,9 @@
 
             <div class="row">
                 <div class="col-12">
-                    <table class="table specialists-table">
+                    <table class="table specialists-table" :class="{'specialists-table':connectionType === 'WITH_DOCTOR',
+                                                'trainers-table':connectionType === 'WITH_TRAINER',
+                                                'dieticians-table':connectionType === 'WITH_DIETICIAN'}">
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
@@ -333,6 +350,14 @@ export default {
 
 .specialists-table tbody tr:hover {
     background-color: var(--TELEMEDIC);
+}
+
+.trainers-table tbody tr:hover {
+    background-color: var(--SPORT);
+}
+
+.dieticians-table tbody tr:hover {
+    background-color: var(--DIET);
 }
 
 .specialization-list {

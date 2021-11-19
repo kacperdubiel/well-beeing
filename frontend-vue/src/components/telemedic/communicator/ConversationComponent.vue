@@ -9,6 +9,7 @@
                      class="d-flex flex-row align-items-center clickable" @click="openProfile(conversation.firstProfile.id)">
                     <div>
                         <user-avatar-component :profileId="conversation.firstProfile.id"
+                                               :isActive="this.$func_global.getIsActive5minutes(conversation.firstProfile.lastRequestTime)"
                                                :height="45" :width="45"
                         />
                     </div>
@@ -19,6 +20,7 @@
                 <div v-else-if="conversation" class="d-flex flex-row align-items-center clickable" @click="openProfile(conversation.secondProfile.id)">
                     <div>
                         <user-avatar-component :profileId="conversation.secondProfile.id"
+                                               :isActive="this.$func_global.getIsActive5minutes(conversation.secondProfile.lastRequestTime)"
                                                :height="45" :width="45"
                         />
                     </div>
