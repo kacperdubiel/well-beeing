@@ -166,8 +166,11 @@ export default {
         getExercisesToSelect(){
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
-            console.log("SPR")
+            const myParams = {
+                size: 500,
+            }
             axios.get(url, {
+                params: myParams,
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -179,7 +182,11 @@ export default {
         getTrainingsToSelect(){
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
+            const myParams = {
+                size: 500,
+            }
             axios.get(url, {
+                params: myParams,
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
