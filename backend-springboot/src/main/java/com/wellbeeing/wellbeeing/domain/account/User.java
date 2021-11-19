@@ -12,6 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +40,8 @@ public class User implements UserDetails {
     @OneToOne(mappedBy="profileUser", cascade = CascadeType.ALL)
     @JsonIgnore
     private Profile profile;
-
+    @Column
+    private LocalDateTime lastRequestTime;
 
     public User() {
     }
