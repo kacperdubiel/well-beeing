@@ -4,17 +4,23 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Comment;
 import com.wellbeeing.wellbeeing.domain.social.Post;
+import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.social.CommentService;
 import com.wellbeeing.wellbeeing.service.social.LikeService;
 import com.wellbeeing.wellbeeing.service.social.PostService;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,9 +50,15 @@ public class CommentController {
     }
 
 
-    @GetMapping(path = "/post/{postId}/comments")
-    public ResponseEntity<?> getCommentsByPostId(@PathVariable long postId, @PageableDefault(sort = {"addedDate"}, size = 5, direction = Sort.Direction.DESC) Pageable pageable) throws NotFoundException {
-        Page<Comment> pageComments = commentService.getCommentsByPostId(postId, pageable);
+    @GetMapping(path = "/post/comments")
+    public ResponseEntity<?> getCommentsByPostId(
+            @Join(path= "post", alias = "p")
+            @And({
+                    @Spec(path = "p.postId", params="postId", spec = Equal.class),
+                    @Spec(path="isDeleted", spec= Equal.class, constVal="false"),
+            }) Specification<Comment> comSpec,
+            @PageableDefault(sort = {"addedDate"}, size = 5, direction = Sort.Direction.DESC) Pageable pageable) throws NotFoundException {
+        Page<Comment> pageComments = commentService.getCommentsByPostId(comSpec, pageable);
         return new ResponseEntity<>(pageComments, HttpStatus.OK);
     }
 

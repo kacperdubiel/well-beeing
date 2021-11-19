@@ -11,6 +11,7 @@ import com.wellbeeing.wellbeeing.repository.social.PostDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Page<Comment> getCommentsByPostId(long postId, Pageable pageable) {
-        return commentDAO.findAllByPostPostId(postId, pageable);
+    public Page<Comment> getCommentsByPostId(Specification<Comment> comSpec, Pageable pageable) {
+        return commentDAO.findAll(comSpec, pageable);
     }
 
     @Override

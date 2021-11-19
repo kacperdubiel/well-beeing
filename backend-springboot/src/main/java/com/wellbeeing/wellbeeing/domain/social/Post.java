@@ -52,13 +52,4 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
-
-    public void addLikeToPost(Like like) {
-        this.likes.add(like);
-    }
-
-    public void addCommentToPost(Comment comment) {
-        this.comments.add(comment);
-    }
-
 }
