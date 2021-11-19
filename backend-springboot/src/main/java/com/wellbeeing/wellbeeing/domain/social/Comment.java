@@ -1,7 +1,9 @@
 package com.wellbeeing.wellbeeing.domain.social;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Comment {
     @Id
@@ -20,32 +23,16 @@ public class Comment {
     @Column
     private String comContent;
     @Column
-    private Date addedDate;
+    private Date addedDate = new Date();
+    @Column
+    private boolean isDeleted = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
+    @Getter(onMethod_=@JsonIgnore)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "commenter_id")
     private Profile commenter;
-
-    public Comment(@JsonProperty("comContent") String comContent, @JsonProperty("addedDate") Date addedDate,
-                   @JsonProperty("post") Post post, @JsonProperty("commenter") Profile commenter) {
-        this.comContent = comContent;
-        this.addedDate = addedDate;
-        this.post = post;
-        this.commenter = commenter;
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "comment_id=" + commentId +
-                ", comContent='" + comContent + '\'' +
-                ", addedDate=" + addedDate +
-                ", post=" + post +
-                ", commenter=" + commenter +
-                '}';
-    }
 }
