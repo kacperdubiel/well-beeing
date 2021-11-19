@@ -33,6 +33,7 @@ import TrainerUserProfileView from "@/views/sport/trainers/TrainerUserProfileVie
 import TrainerUserConversationsView from "@/views/sport/trainers/TrainerUserConversationsView";
 import TrainerUserConversationView from "@/views/sport/trainers/TrainerUserConversationView";
 import SportTrainerView from "@/views/sport/SportTrainerView";
+import TrainingPlanRequest from "@/views/sport/TrainingPlanRequest";
 
 const routes = [
   {
@@ -187,6 +188,11 @@ const routes = [
         path: 'conversations/:conversationId',
         name: 'TrainerUserConversationView',
         component: TrainerUserConversationView
+      },
+      {
+        path: 'requests',
+        name: 'TrainingPlanRequest',
+        component: TrainingPlanRequest
       }
     ]
   },
