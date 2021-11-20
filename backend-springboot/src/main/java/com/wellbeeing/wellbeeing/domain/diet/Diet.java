@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,19 +22,9 @@ public class Diet {
     private String name;
     @Column
     private String description;
-    @ManyToMany
-    @JoinTable(
-            name = "diet_nutrition_label",
-            joinColumns = @JoinColumn(name = "diet_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "id")
-    )
+    @ManyToMany(mappedBy = "labeledDiets")
+    @JsonIgnore
     private List<NutritionLabel> allowedNutritionLabels = new ArrayList<>();
     @Column
     private boolean connectedWithMacros;
-    @Column
-    private int suggestedCarbohydratesForDiet;
-    @Column
-    private int suggestedProteinsForDiet;
-    @Column
-    private int suggestedFatsForDiet;
 }

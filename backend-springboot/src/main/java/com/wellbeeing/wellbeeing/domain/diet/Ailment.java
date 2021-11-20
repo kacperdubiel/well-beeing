@@ -1,10 +1,11 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EAilmentType;
 import lombok.*;
-import com.wellbeeing.wellbeeing.domain.SportLabel;
+
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,13 +26,9 @@ public class Ailment {
     @Enumerated(EnumType.STRING)
     @Column
     private EAilmentType type;
-    @ManyToMany
-    @JoinTable(
-            name = "ailment_nutrition_label",
-            joinColumns = @JoinColumn(name = "ailment_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "id")
-    )
-    private List<NutritionLabel> allowedNutritionLabels = new ArrayList<>();
+    @ManyToMany(mappedBy = "labeledAilments")
+    @JsonIgnore
+    private List<NutritionLabel> allowedNutritionLabels;
     @ManyToMany
     @JoinTable(
             name = "ailment_sportLabel",
@@ -40,9 +37,9 @@ public class Ailment {
     )
     private List<SportLabel> allowedSportLabels;
     @Column
-    private int changeInCalories;
+    private double changeInCalories;
     @Column
-    private int changeInProteinsGramPerKilogram;
+    private double changeInProteinsGramPerKilogram;
     @Column
     private boolean isLowGlycemicIndexRecommended;
 }
