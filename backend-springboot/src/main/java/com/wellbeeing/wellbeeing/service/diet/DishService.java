@@ -6,6 +6,7 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface DishService {
@@ -17,7 +18,8 @@ public interface DishService {
     Dish updateDish(Dish dish, UUID dishId) throws NotFoundException, ConflictException;
     boolean deleteDish(UUID dishId) throws NotFoundException;
     Page<Dish> getLabeledDishes(List<UUID> labelIds, int numberOfElements, int page, String namePart);
-    List<Dish> getDieticianDishesByDieticianId(UUID dieticianId);
+    Page<Dish> getDieticianDishesByDieticianId(UUID dieticianId, int page, int size);
     Dish updateDishImg(UUID dishId, String fileName) throws NotFoundException;
     Dish changePublishedState(UUID dishId, boolean draft) throws NotFoundException;
+    Map<String, Map<String, Double>> countDetailedElementsAmountsByDishId(UUID dishId) throws NotFoundException;
 }
