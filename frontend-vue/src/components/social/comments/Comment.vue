@@ -16,7 +16,18 @@
                 <span class="comment">
                     {{this.commentSource.comContent}}
                 </span>
-
+                <div class="d-flex flex-row mt-1">
+                    <div class="d-flex flex-column">
+                        <button class="no-bg-btn text-start ms-2" v-if="isCommentMine">
+                            <span class="fw-bolder">Edytuj</span>
+                        </button>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <button class="no-bg-btn text-start ms-1" v-if="isCommentMine" @click="deleteComment">
+                            <span class="fw-bolder">Usuń</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -39,6 +50,21 @@ export default {
             const token = this.$store.getters.getToken;
             this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
+        deleteComment() {
+            const url = `${this.apiURL}comment/${this.commentSource.commentId}/delete`
+            const token = this.$store.getters.getToken;
+            this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.$parent.$parent.getCommentsAfterDelete()
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+        }
+    },
+    computed: {
+        isCommentMine() {
+            return this.commentSource.commenter.id === this.$store.getters.getProfileId
+        },
     },
     mounted() {
         this.downloadProfilePicture()
@@ -60,5 +86,9 @@ export default {
 #time {
     font-size: 14px;
     color: var(--GREY1);
+}
+
+.no-bg-btn {
+    font-size: 14px;
 }
 </style>

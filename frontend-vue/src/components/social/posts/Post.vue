@@ -50,7 +50,7 @@
                 </button>
             </div>
             <div class="d-flex flex-column text-start ms-auto pe-3" v-if="this.commentsNavigation.totalElements > 0">
-                <button class="no-bg-open-modal" @click="showComments" >
+                <button class="no-bg-btn" @click="showComments" >
                     <span>
                         {{this.commentsNavigation.totalElements}} komentarzy
                     </span>
@@ -58,7 +58,7 @@
                 </button>
             </div>
             <div class="d-flex flex-column text-start">
-                <button class="no-bg-open-modal">
+                <button class="no-bg-btn">
                     <span>
 <!--                        {{this.postSource.comments.length}} -->
                         0 udostępnień
@@ -93,9 +93,9 @@
         <comments-list v-if="displayComments && comments !== []" :comments-source="comments"/>
         <div class="row mb-3">
             <button
-                class="no-bg-open-modal text-start ms-4 mb-3"
+                class="no-bg-btn text-start ms-4 mb-3"
                 v-if="!commentsNavigation.isLast && displayComments"
-                @click="getComments(this.commentsNavigation.nextPage)"
+                @click="getComments(this.commentsNavigation.nextPage, 0)"
             >
                 <span >Załaduj więcej komentarzy</span>
             </button>
@@ -183,7 +183,15 @@ export default {
         showComments() {
             this.displayComments = true
         },
-        getComments(page) {
+        getCommentsAfterDelete() {
+            this.commentsNavigation.nextPage = 0
+            this.loaded = false
+            const pages = this.commentsNavigation.currentPage
+            console.log('DELETE PAGES: ', pages+1)
+            this.getComments(this.commentsNavigation.nextPage, pages+1)
+            this.loaded = true
+        },
+        getComments(page, pagesAfterDelete) {
             const url = `${this.apiURL}post/comments`
             const token = this.$store.getters.getToken;
             console.log('PAGE: ', page)
@@ -212,17 +220,14 @@ export default {
                     this.comments = this.comments.concat(response.data['content'])
 
                 }
-
-
-
                 if (!this.commentsNavigation.isLast)
                     this.commentsNavigation.nextPage = this.commentsNavigation.currentPage+1
                 else
                     this.commentsNavigation.nextPage = 0
-                //
-                // if(pagesAfterDelete>1) {
-                //     this.getPosts(this.commentsNavigation.nextPage, true, pagesAfterDelete-1)
-                // }
+
+                if(pagesAfterDelete>1) {
+                    this.getComments(this.commentsNavigation.nextPage, true, pagesAfterDelete-1)
+                }
 
             })
         },
@@ -231,7 +236,7 @@ export default {
     mounted() {
         this.downloadProfilePicture()
         this.downloadPostPicture()
-        this.getComments(0)
+        this.getComments(0, 0)
     },
     watch: {
         postSource: function (){
@@ -282,15 +287,5 @@ h6 {
 .no-bg {
     color: white;
     border-radius: 5px;
-}
-
-.no-bg-open-modal {
-    background-color: transparent;
-    border: none;
-    color: white;
-}
-
-.no-bg-open-modal span:hover {
-    border-bottom: 1px solid white;
 }
 </style>

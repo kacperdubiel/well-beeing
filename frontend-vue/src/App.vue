@@ -63,6 +63,15 @@ body {
     padding: 0.2rem 0.5rem;
     font-size: 1rem;
 }
+.no-bg-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.no-bg-btn span:hover {
+    border-bottom: 1px solid white;
+}
 
 button[class^="btn-panel-"] {
     color: white;
