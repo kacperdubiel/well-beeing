@@ -193,6 +193,7 @@ export default {
                 this.$store.commit('setLastName', response.data['lastName']);
                 this.$store.commit('setProfileId', response.data['id']);
                 this.$store.commit('setProfileImageSrc', response.data['profileImgPath']);
+                localStorage.setItem('userId', response.data['id'])
                 console.log(this.$store.getters.getFirstName)
                 console.log(this.$store.getters.getLastName)
                 console.log(this.$store.getters.getProfileId)

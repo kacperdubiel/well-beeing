@@ -14,7 +14,14 @@
                 <dish-browser-component :key="dishesChanger"></dish-browser-component>
             </tab-component>
             <tab-component title="Dietetycy">
-                Dietetycyyy
+                <div style="flex-direction: row; display: flex; width: 100%">
+                    <user-connections-from-me-component v-if="!this.searchSpecialist"
+                                                connection-type="WITH_DIETICIAN"
+                                                v-on:open-conversation="openConversation"
+                                                v-on:search-specialist="openSearchSpecialist">
+                    </user-connections-from-me-component>
+                    <search-specialist-component @comeback="this.searchSpecialist=false" :routerUsage="false" v-if="this.searchSpecialist" connection-type="WITH_DIETICIAN"/>
+                </div>
             </tab-component>
             <tab-component title="Obsługa dań">
                 <dietician-dishes-component @dishes:updated="onDishesUpdated"></dietician-dishes-component>
@@ -31,12 +38,15 @@ import CalculationsComponent from '../../components/diet/CalculationsComponent.v
 import DishBrowserComponent from '../../components/diet/DishBrowserComponent.vue'
 import ProfileReportsComponent from '../../components/diet/reports/ProfileReportsComponent.vue'
 import DieticianDishesComponent from '../../components/diet/dishes/DieticianDishesComponent.vue'
+import UserConnectionsFromMeComponent from "@/components/telemedic/UserConnectionsFromMeComponent.vue";
+import SearchSpecialistComponent from "@/components/telemedic/SearchSpecialistComponent.vue";
 export default {
     name: "DietView",
     data(){
         return {
             calcChanger: false,
-            dishesChanger: false
+            dishesChanger: false,
+            searchSpecialist: false,
         }
     },
     components: {
@@ -46,26 +56,26 @@ export default {
         CalculationsComponent,
         DishBrowserComponent,
         ProfileReportsComponent,
-        DieticianDishesComponent
-    },
-    mounted(){
-        this.redirectIfLogout()
+        DieticianDishesComponent,
+        UserConnectionsFromMeComponent,
+        SearchSpecialistComponent
     },
     methods: {
         onDishesUpdated(){
-            console.log("JEST NOWY DISZ !!!!!")
             this.dishesChanger = !this.dishesChanger
-        },
-        redirectIfLogout(){
-            if(!localStorage.getItem('token')){
-                this.$router.push(this.$route.query.redirect || '/')
-                return true;
-            }
-            return false;
         },
         onCardUpdated(){
             this.calcChanger = !this.calcChanger
-        }
+        },
+        openConversation(conversationId){
+           // this.$router.push({ name: 'UserDoctorConversationView', params: { conversationId: conversationId } });
+           console.log("hehe1")
+        },
+        openSearchSpecialist(){
+           // this.$router.push({ name: 'SearchDoctorsView' });
+           console.log("hehe2")
+           this.searchSpecialist = true
+        },
     }
 }
 </script>

@@ -51,7 +51,7 @@
             </router-link>
         </div>
         <div class="mt-4 side-menu">
-            <router-link to="/diet">
+            <router-link :to="{name: 'DietViewMain'}">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'utensils']" />
@@ -89,7 +89,7 @@
 
 
         <div class="side-menu" v-if="this.$store.getters.getRoles.includes('ROLE_DIETICIAN')">
-            <router-link to="/">
+            <router-link :to="{ name: 'DieticianViewMain' }">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col ps-2">
                         PANEL DIETETYKA

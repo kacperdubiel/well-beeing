@@ -10,6 +10,9 @@
                         <router-link class="nav-link" :to="{name: 'RoleRequestsViewAdmin'}">Prośby o nadanie roli</router-link>
                     </li>
                     <li class="nav-item">
+                        <router-link class="nav-link" :to="{name: 'DataImportsViewAdmin'}">Import danych</router-link>
+                    </li>
+                    <li class="nav-item">
                         <router-link class="nav-link" :to="{name: 'LoginAdminView'}">Inne</router-link>
                     </li>
 
