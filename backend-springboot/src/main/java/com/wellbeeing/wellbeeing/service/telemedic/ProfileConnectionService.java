@@ -17,6 +17,8 @@ public interface ProfileConnectionService {
             Profile connectedWith, EConnectionType connectionType, boolean isAccepted, int page, int size);
     ProfileConnection getProfileConnectionByProfileAndConnectedWithAndType(
             Profile profile, Profile connectedWith, EConnectionType connectionType);
+    ProfileConnection getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(
+            Profile profile, Profile connectedWith, EConnectionType connectionType);
     ProfileConnection addProfileConnection(ProfileConnection profileConnection) throws ConflictException, NotFoundException;
     ProfileConnection markAsAccepted(ProfileConnection updatedProfileConnection) throws NotFoundException, ConflictException;
     void deleteProfileConnectionById(UUID profileConnectionId) throws NotFoundException;

@@ -62,6 +62,10 @@ public class CsvProductImporter {
                         .carbohydratesPerHundredGrams(carbs)
                         .fatsPerHundredGrams(fats)
                         .proteinsPerHundredGrams(proteins)
+                        .fiberPerHundredGrams(1)
+                        .cholesterolPerHundredGrams(1)
+                        .caffeinePerHundredGrams(1)
+                        .saltPerHundredGrams(1)
                         .macroDetails(new ArrayList<>())
                         .vitaminDetails(new ArrayList<>())
                         .mineralDetails(new ArrayList<>())
@@ -85,21 +89,25 @@ public class CsvProductImporter {
         NutritionLabel nl1 = NutritionLabel.builder()
                 .name("KETO")
                 .description("KETO")
+                .active(true)
                 .build();
         nutritionLabelDAO.save(nl1);
         NutritionLabel nl2 = NutritionLabel.builder()
                 .name("WEGAŃSKIE")
                 .description("WEGAŃSKIE")
+                .active(true)
                 .build();
         nutritionLabelDAO.save(nl2);
         NutritionLabel nl3 = NutritionLabel.builder()
                 .name("BEZGLUTENOWE")
                 .description("BEZGLUTENOWE")
+                .active(true)
                 .build();
         nutritionLabelDAO.save(nl3);
         NutritionLabel nl4 = NutritionLabel.builder()
                 .name("WEGETARIAŃSKIE")
                 .description("WEGETARIAŃSKIE")
+                .active(true)
                 .build();
         nutritionLabelDAO.save(nl4);
     }

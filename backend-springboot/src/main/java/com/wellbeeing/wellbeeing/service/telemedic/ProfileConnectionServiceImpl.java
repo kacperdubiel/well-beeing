@@ -72,6 +72,11 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     }
 
     @Override
+    public ProfileConnection getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(Profile profile, Profile connectedWith, EConnectionType connectionType) {
+        return profileConnectionDAO.findByProfileAndConnectedWithAndConnectionTypeAndIsAccepted(profile, connectedWith, connectionType, true);
+    }
+
+    @Override
     public ProfileConnection addProfileConnection(ProfileConnection profileConnection)
             throws ConflictException, NotFoundException
     {
