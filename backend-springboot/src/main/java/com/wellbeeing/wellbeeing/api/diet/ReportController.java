@@ -1,13 +1,18 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.diet.Report;
 import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
 import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
+import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.diet.ReportService;
+import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -25,12 +30,18 @@ import java.util.UUID;
 public class ReportController {
     private ReportService reportService;
     private UserService userService;
+    private ProfileService profileService;
+    private ProfileConnectionService profileConnectionService;
 
     @Autowired
     public ReportController(@Qualifier("reportService") ReportService reportService,
-                            @Qualifier("userService") UserService userService){
+                            @Qualifier("userService") UserService userService,
+                            @Qualifier("profileConnectionService") ProfileConnectionService profileConnectionService,
+                            @Qualifier("profileService") ProfileService profileService){
         this.reportService = reportService;
         this.userService = userService;
+        this.profileConnectionService = profileConnectionService;
+        this.profileService = profileService;
     }
 
     @RequestMapping(path = "/report/{reportId}", method = RequestMethod.GET)
@@ -147,5 +158,20 @@ public class ReportController {
                                                      @RequestParam(value = "year", defaultValue = "2020") int year) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         return new ResponseEntity<>(reportService.getReportsByMonthAndProfileId(month, year, profileId), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/report/profile/{profileId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getProfileReportByMonthAndYear(Principal principal,
+                                                     @PathVariable("profileId") UUID profileId,
+                                                     @RequestParam(value = "month", defaultValue = "1" ) int month,
+                                                     @RequestParam(value = "year", defaultValue = "2020") int year) throws NotFoundException, ForbiddenException {
+        UUID dieticianId = userService.findUserIdByUsername(principal.getName());
+        Profile dieticianProfile = profileService.getProfileById(dieticianId);
+        Profile userProfile = profileService.getProfileById(profileId);
+
+        ProfileConnection pc = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(userProfile, dieticianProfile, EConnectionType.WITH_DIETICIAN);
+        if(pc != null)
+            return new ResponseEntity<>(reportService.getReportsByMonthAndProfileId(month, year, profileId), HttpStatus.OK);
+        throw new ForbiddenException("There is no connection with profile with id" + profileId);
     }
 }

@@ -98,9 +98,19 @@ public class DishController {
 
     //@RolesAllowed(ERole.Name.ROLE_DIETICIAN)
     @RequestMapping(path = "/dish/dietician", method = RequestMethod.GET)
-    public ResponseEntity<?> getDieticianDishes(Principal principal){
+    public ResponseEntity<?> getDieticianDishes(Principal principal,
+                                                @RequestParam(value = "page", defaultValue = "0") int page,
+                                                @RequestParam(value = "size", defaultValue = "10") int size)
+    {
         UUID dieticianId = userService.findUserIdByUsername(principal.getName());
-        return new ResponseEntity<>(dishService.getDieticianDishesByDieticianId(dieticianId), HttpStatus.OK);
+        Page<Dish> dishesPage = dishService.getDieticianDishesByDieticianId(dieticianId, page, size);
+        PaginatedResponse response = PaginatedResponse.builder()
+                .currentPage(dishesPage.getNumber())
+                .totalItems(dishesPage.getTotalElements())
+                .totalPages(dishesPage.getTotalPages())
+                .objects(dishesPage.getContent())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //@RolesAllowed(ERole.Name.ROLE_DIETICIAN)
