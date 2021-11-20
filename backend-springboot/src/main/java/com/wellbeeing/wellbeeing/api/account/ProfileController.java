@@ -3,23 +3,17 @@ package com.wellbeeing.wellbeeing.api.account;
 import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.account.DoctorSpecializationService;
-import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
-import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.service.files.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -122,5 +116,20 @@ public class ProfileController {
     @GetMapping(path = "/trainers")
     public ResponseEntity<?> getTrainersProfiles() {
         return new ResponseEntity<>(profileService.getTrainersProfiles(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/dieticians")
+    public ResponseEntity<?> getDieticiansProfiles(@RequestParam(value = "like", defaultValue = "") String like,
+                                                   @RequestParam(value = "page", defaultValue = "0") String page,
+                                                   @RequestParam(value = "size", defaultValue = "10") String size) {
+        Page<Profile> dieticians = profileService.getDieticiansProfiles(like, Integer.parseInt(page), Integer.parseInt(size));
+        PaginatedResponse response = PaginatedResponse.builder()
+                .currentPage(dieticians.getNumber())
+                .totalItems(dieticians.getTotalElements())
+                .totalPages(dieticians.getTotalPages())
+                .objects(dieticians.getContent())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
