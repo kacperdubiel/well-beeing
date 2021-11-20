@@ -51,7 +51,8 @@
             <div class="d-flex flex-column text-start ms-auto pe-3">
                 <button class="no-bg-open-modal">
                     <span>
-                        {{this.postSource.comments.length}} komentarzy
+<!--                        {{this.postSource.comments.length}}  -->
+                        0 komentarzy
                     </span>
 
                 </button>
@@ -59,7 +60,8 @@
             <div class="d-flex flex-column text-start">
                 <button class="no-bg-open-modal">
                     <span>
-                        {{this.postSource.comments.length}} udostępnień
+<!--                        {{this.postSource.comments.length}} -->
+                        0 udostępnień
                     </span>
                 </button>
             </div>
@@ -74,7 +76,7 @@
                 </button>
             </div>
             <div class="col px-1">
-                <button class="no-bg interact w-100">
+                <button class="no-bg interact w-100" @click="addNewComment">
                     <font-awesome-icon :icon="['far', 'comment-alt']" class="me-2"/>
                     Dodaj komentarz
                 </button>
@@ -87,20 +89,25 @@
             </div>
 
         </div>
-
+        <new-comment v-if="addingComment" :post-id="this.postSource.postId"/>
     </div>
 </template>
 
 <script>
+import NewComment from "@/components/social/comments/NewComment";
 export default {
     name: "Post",
     props: {
         postSource: Object
     },
+    components: {
+        NewComment
+    },
     data() {
         return {
             postPictureSrc: "",
             profilePictureSrc: "",
+            addingComment: false
         }
     },
     methods: {
@@ -144,6 +151,9 @@ export default {
         },
         handleGetLikes(likes) {
             this.$emit('get:likes', likes)
+        },
+        addNewComment() {
+            this.addingComment = true
         }
 
     },

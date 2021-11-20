@@ -97,9 +97,6 @@ export default {
             }).catch(error => {
                 console.log(error.response)
             });
-
-
-
         },
         clearStatusPost() {
             this.successPost = false
@@ -118,7 +115,7 @@ export default {
     },
     computed: {
         invalidPostContent() {
-            return this.postContent === ""
+            return this.post.postContent === ""
         },
     }
 }
