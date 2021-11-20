@@ -33,12 +33,48 @@ public class ReportDishDetail implements NutritionalValueDerivable {
             @AttributeOverride( name = "derivedCalories", column = @Column(name = "derived_calories")),
             @AttributeOverride( name = "derivedFats", column = @Column(name = "derived_fats")),
             @AttributeOverride( name = "derivedProteins", column = @Column(name = "derived_proteins")),
-            @AttributeOverride( name = "derivedCarbohydrates", column = @Column(name = "derived_carbohydrates"))
+            @AttributeOverride( name = "derivedCarbohydrates", column = @Column(name = "derived_carbohydrates")),
+            @AttributeOverride( name = "derivedFiber", column = @Column(name = "derived_fiber")),
+            @AttributeOverride( name = "derivedSalt", column = @Column(name = "derived_salt")),
+            @AttributeOverride( name = "derivedCholesterol", column = @Column(name = "derived_cholesterol")),
+            @AttributeOverride( name = "derivedCaffeine", column = @Column(name = "derived_caffeine")),
+            @AttributeOverride( name = "derivedSugar", column = @Column(name = "derived_sugar")),
+            @AttributeOverride( name = "derivedSaturatedFats", column = @Column(name = "derived_saturated_fats"))
     })
     NutritionalValueDerivedData derivedNutritionalValues;
 
     public double countFats(){
         return this.getDish().getDerivedNutritionalValues().getDerivedFats() * this.getPortions();
+    }
+
+    @Override
+    public double countFiber() {
+        return this.getDish().getDerivedNutritionalValues().getDerivedFiber() * this.getPortions();
+    }
+
+    @Override
+    public double countSalt() {
+        return this.getDish().getDerivedNutritionalValues().getDerivedSalt() * this.getPortions();
+    }
+
+    @Override
+    public double countCholesterol() {
+        return this.getDish().getDerivedNutritionalValues().getDerivedCholesterol() * this.getPortions();
+    }
+
+    @Override
+    public double countCaffeine() {
+        return this.getDish().getDerivedNutritionalValues().getDerivedCaffeine() * this.getPortions();
+    }
+
+    @Override
+    public double countSugar() {
+        return this.getDish().getDerivedNutritionalValues().getDerivedSugar() * this.getPortions();
+    }
+
+    @Override
+    public double countSaturatedFats() {
+        return this.getDish().getDerivedNutritionalValues().getDerivedSaturatedFats() * this.getPortions();
     }
 
     public double countCarbohydrates(){
@@ -59,5 +95,11 @@ public class ReportDishDetail implements NutritionalValueDerivable {
         this.derivedNutritionalValues.setDerivedCarbohydrates(countCarbohydrates());
         this.derivedNutritionalValues.setDerivedFats(countFats());
         this.derivedNutritionalValues.setDerivedProteins(countProteins());
+        this.derivedNutritionalValues.setDerivedFiber(countFiber());
+        this.derivedNutritionalValues.setDerivedCholesterol(countCholesterol());
+        this.derivedNutritionalValues.setDerivedSalt(countSalt());
+        this.derivedNutritionalValues.setDerivedCaffeine(countCaffeine());
+        this.derivedNutritionalValues.setDerivedSugar(countSugar());
+        this.derivedNutritionalValues.setDerivedSaturatedFats(countSaturatedFats());
     }
 }

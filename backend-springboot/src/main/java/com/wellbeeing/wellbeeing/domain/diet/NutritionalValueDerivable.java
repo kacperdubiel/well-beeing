@@ -5,5 +5,11 @@ public interface NutritionalValueDerivable {
     double countCarbohydrates();
     double countProteins();
     double countFats();
+    double countFiber();
+    double countSalt();
+    double countCholesterol();
+    double countCaffeine();
+    double countSugar();
+    double countSaturatedFats();
     void setDerived();
 }

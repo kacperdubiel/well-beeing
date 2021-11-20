@@ -10,6 +10,7 @@ public enum EVitamin {
     C,
     D,
     E,
+    PP,
     K,
     FOLIC_ACID,
     BIOTIN

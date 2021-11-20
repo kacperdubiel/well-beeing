@@ -46,4 +46,41 @@ public abstract class ProductAmountDetail implements NutritionalValueDerivable {
         return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
                 this.getProduct().getCaloriesPerHundredGrams()/100;
     }
+
+    @Override
+    public double countFiber(){
+        return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
+                this.getProduct().getFiberPerHundredGrams()/100;
+    }
+
+    @Override
+    public double countSalt(){
+        return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
+                this.getProduct().getSaltPerHundredGrams()/100;
+    }
+
+    @Override
+    public double countCaffeine(){
+        return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
+                this.getProduct().getCholesterolPerHundredGrams()/100;
+    }
+
+    @Override
+    public double countCholesterol(){
+        return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
+                this.getProduct().getCholesterolPerHundredGrams()/100;
+    }
+
+    @Override
+    public double countSugar(){
+        return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
+                this.getProduct().getSugarsPerHundredGrams()/100;
+    }
+
+    @Override
+    public double countSaturatedFats(){
+        return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
+                this.getProduct().getSaturatedFatsPerHundredGrams()/100;
+    }
+
 }
