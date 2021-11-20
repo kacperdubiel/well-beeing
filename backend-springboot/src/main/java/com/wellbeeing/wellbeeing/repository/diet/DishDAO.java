@@ -26,5 +26,5 @@ public interface DishDAO  extends PagingAndSortingRepository<Dish, UUID> {
     List<Dish> findAllByName(String name);
     @Query( "select d from Dish d where d.id in :ids and d.active = true and d.draft = false and (:nameLike = '' or (lower(d.name) like lower(concat('%', :nameLike,'%'))))" )
     Page<Dish> findActivePublishedByDishIds(@Param("ids") List<UUID> dishIdList, @Param("nameLike") String nameLike, Pageable pageable);
-    List<Dish> findByDishCreatorIdAndActive(UUID dieticianId, boolean active);
+    Page<Dish> findByDishCreatorIdAndActive(UUID dieticianId, boolean active, Pageable pageable);
 }
