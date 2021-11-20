@@ -37,6 +37,7 @@
             </div>
         </div>
         <div class="d-flex flex-row px-4 py-2 align-items-center">
+
             <div class="d-flex flex-column text-start" v-if="this.postSource.likes.length > 0">
                 <button data-bs-toggle="modal" data-bs-target="#likesListModal" class="no-bg-open-modal" @click="handleGetLikes(this.postSource.likes)">
                     <div class="text-start d-flex align-items-center ms-3 interact" >
@@ -48,11 +49,10 @@
                     </div>
                 </button>
             </div>
-            <div class="d-flex flex-column text-start ms-auto pe-3">
-                <button class="no-bg-open-modal">
+            <div class="d-flex flex-column text-start ms-auto pe-3" v-if="this.commentsNavigation.totalElements > 0">
+                <button class="no-bg-open-modal" @click="showComments" >
                     <span>
-<!--                        {{this.postSource.comments.length}}  -->
-                        0 komentarzy
+                        {{this.commentsNavigation.totalElements}} komentarzy
                     </span>
 
                 </button>
@@ -89,25 +89,49 @@
             </div>
 
         </div>
-        <new-comment v-if="addingComment" :post-id="this.postSource.postId"/>
+        <new-comment v-if="addingComment" :post-id="this.postSource.postId" @refresh:comments="getComments"/>
+        <comments-list v-if="displayComments && comments !== []" :comments-source="comments"/>
+        <div class="row mb-3">
+            <button
+                class="no-bg-open-modal text-start ms-4 mb-3"
+                v-if="!commentsNavigation.isLast && displayComments"
+                @click="getComments(this.commentsNavigation.nextPage)"
+            >
+                <span >Załaduj więcej komentarzy</span>
+            </button>
+        </div>
+
+
     </div>
 </template>
 
 <script>
 import NewComment from "@/components/social/comments/NewComment";
+import CommentsList from "@/components/social/comments/CommentsList";
 export default {
     name: "Post",
     props: {
         postSource: Object
     },
     components: {
-        NewComment
+        NewComment,
+        CommentsList
     },
     data() {
         return {
             postPictureSrc: "",
             profilePictureSrc: "",
-            addingComment: false
+            addingComment: false,
+            displayComments: false,
+            comments: [],
+            commentsNavigation: {
+                totalElements: 0,
+                nextPage: 0,
+                pageSize: 5,
+                isFirst: false,
+                isLast: false,
+                currentPage: 0
+            },
         }
     },
     methods: {
@@ -154,12 +178,60 @@ export default {
         },
         addNewComment() {
             this.addingComment = true
-        }
+            this.displayComments = true
+        },
+        showComments() {
+            this.displayComments = true
+        },
+        getComments(page) {
+            const url = `${this.apiURL}post/comments`
+            const token = this.$store.getters.getToken;
+            console.log('PAGE: ', page)
+            const myParams = {
+                page: page,
+                size: this.commentsNavigation.pageSize,
+                postId: this.postSource.postId
+            }
+            if(this.commentsNavigation.last)
+                return
+
+            console.log('PreGET: ', page)
+
+            return this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log('POST GET: ', page)
+                this.loaded = true
+                this.commentsNavigation.isLast = response.data['last']
+                this.commentsNavigation.isFirst = response.data['first']
+                this.commentsNavigation.currentPage = response.data['number']
+                this.commentsNavigation.totalElements = response.data['totalElements']
+                console.log(response.data)
+                if(this.commentsNavigation.isFirst)
+                    this.comments = response.data['content']
+                else {
+                    console.log('wincyj')
+                    this.comments = this.comments.concat(response.data['content'])
+
+                }
+
+
+
+                if (!this.commentsNavigation.isLast)
+                    this.commentsNavigation.nextPage = this.commentsNavigation.currentPage+1
+                else
+                    this.commentsNavigation.nextPage = 0
+                //
+                // if(pagesAfterDelete>1) {
+                //     this.getPosts(this.commentsNavigation.nextPage, true, pagesAfterDelete-1)
+                // }
+
+            })
+        },
 
     },
     mounted() {
         this.downloadProfilePicture()
         this.downloadPostPicture()
+        this.getComments(0)
     },
     watch: {
         postSource: function (){

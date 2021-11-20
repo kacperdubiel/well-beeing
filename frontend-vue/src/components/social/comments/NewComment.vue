@@ -66,7 +66,7 @@ export default {
                 this.comment.comContent =""
                 this.successComment = true
                 this.submittingComment = false
-                // this.$emit('refresh:posts', 0, false, 0)
+                this.$emit('refresh:comments', 0)
             }).catch(error => {
                 console.log(error.response)
             });
