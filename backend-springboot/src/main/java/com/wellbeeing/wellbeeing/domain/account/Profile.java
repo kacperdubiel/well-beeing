@@ -59,8 +59,8 @@ public class Profile {
     private DoctorProfile doctorProfile;
     @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
     private TrainerProfile trainerProfile;
-    // TODO: Add dietician profile link!
-
+    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    private DieticianProfile dieticianProfile;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;

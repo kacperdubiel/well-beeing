@@ -82,6 +82,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Page<Profile> getDieticiansProfiles(String like, int page, int size) {
+        return profileDAO.findProfileByDieticianProfileExists(PageRequest.of(page, size, Sort.by("lastName")), like);
+    }
+
+    @Override
     public Profile partialUpdateProfile(UUID profileId, Map<String, Object> fields) throws NotFoundException {
 
         Profile actProfile = profileDAO.findById(profileId).orElse(null);

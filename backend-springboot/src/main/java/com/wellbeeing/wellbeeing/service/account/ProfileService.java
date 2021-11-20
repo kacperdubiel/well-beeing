@@ -3,9 +3,8 @@ package com.wellbeeing.wellbeeing.service.account;
 import com.wellbeeing.wellbeeing.domain.account.DoctorProfile;
 import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
-import org.springframework.stereotype.Service;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -18,5 +17,6 @@ public interface ProfileService {
     Page<Profile> getDoctorsBySpecialization(DoctorSpecialization specialization, String like, int page, int size);
     DoctorProfile addDoctorSpecializationToDoctor(UUID doctorId, UUID doctorSpecializationId) throws NotFoundException;
     List<TrainerProfile> getTrainersProfiles();
+    Page<Profile> getDieticiansProfiles(String like, int page, int size);
     Profile partialUpdateProfile(UUID profileId, Map<String, Object> fields) throws NotFoundException;
 }
