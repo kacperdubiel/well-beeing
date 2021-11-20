@@ -1,4 +1,5 @@
 <template>
+<div class="tab-content">
     <div class="container-fluid">
         <div  style="width: 100%;">
             <input
@@ -19,7 +20,7 @@
                 id="labelPicker"
                 multiple v-model="chosenNutritionLabels"
                 :options="nutritionLabels"
-                :reduce="name => name.id"
+                :reduce="name => name.nutritionLabelId"
                 label="name"/>
         </div>
         <p v-if="this.allItems != 0" style="color: var(--GREY1); text-align:end;">{{this.dishesToShow.length}} / {{this.allItems}} pozycji </p>
@@ -42,6 +43,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </template>
 

@@ -13,7 +13,7 @@
                     <div class="label-node px-2 py-1 mx-1 my-1"
                         v-for="label in dish.allowedForNutritionLabels"
                         v-bind:style="{backgroundColor: this.colors[this.getRandomInt(0, 100) % this.colors.length]}"
-                        :key="label.id">{{label.name}}
+                        :key="label.nutritionLabelId">{{label.name}}
                     </div>
                 </div>
                 <hr class="hr-dish title-line"/>
@@ -63,12 +63,12 @@
         </table>
         <hr class="hr-dish title-line"/>
         <div class="title" style="align-items: flex-start; display: flex">
-            <h6 class="title">MAKROELEMENTY</h6>
+            <h6 class="title">MAKROELEMENTY I INNE</h6>
         </div>
         <table class="table table-borderless table-hover table-dish-info">
             <thead>
                 <tr>
-                    <th class="col-lg-9">Makro</th>
+                    <th class="col-lg-9">Element</th>
                     <th class="col-lg-3">Ilość</th>
                 </tr>
             </thead>
@@ -84,6 +84,22 @@
                 <tr>
                     <th scope="row">Tłuszcze</th>
                     <td>{{Math.round(this.dish.derivedNutritionalValues.derivedFats)}} g</td>
+                </tr>
+                <tr>
+                    <th scope="row">Cholesterol</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedCholesterol)}} g</td>
+                </tr>
+                <tr>
+                    <th scope="row">Błonnik</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedFiber)}} g</td>
+                </tr>
+                <tr>
+                    <th scope="row">Sól</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedSalt)}} g</td>
+                </tr>
+                <tr>
+                    <th scope="row">Kofeina</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedCaffeine)}} g</td>
                 </tr>
             </tbody>
         </table>

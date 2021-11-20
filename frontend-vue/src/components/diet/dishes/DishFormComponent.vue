@@ -47,7 +47,7 @@
                 id="labelPicker"
                 multiple v-model="this.chosenNutritionLabels"
                 :options="nutritionLabels"
-                :reduce="name => name.id"
+                :reduce="name => name.nutritionLabelId"
                 label="name"/>
         </div>
         <hr class="hr-dish title-line"/>
@@ -277,7 +277,7 @@ export default {
                 },
             ],
             actualSelectedProduct: '',
-            actualSelectedProductAmount: 0,
+            actualSelectedProductAmount: '',
             actualSelectedProductMeasure: '',
             actualSelectedGlycemicIndex: '',
 
@@ -304,12 +304,12 @@ export default {
     methods: {
         fillInputsOnUpdate(){
             this.actualSelectedProduct = '',
-            this.actualSelectedProductAmount = 0,
+            this.actualSelectedProductAmount = '',
             this.actualSelectedProductMeasure = '',
 
             this.actualSelectedGlycemicIndex = this.dish.glycemicIndexLevel,
             this.chosenNutritionLabels = [],
-            this.dish.allowedForNutritionLabels.forEach((elem) => this.chosenNutritionLabels.push(elem.id))
+            this.dish.allowedForNutritionLabels.forEach((elem) => this.chosenNutritionLabels.push(elem.nutritionLabelId))
 
             this.chosenMealTypes= [],
             this.dish.dishMealTypes.forEach((elem) => this.chosenMealTypes.push(elem.mealType))
@@ -412,7 +412,7 @@ export default {
         },
         prepareNutritionObjectsArray(){
             let result = []
-            this.chosenNutritionLabels.forEach((nutritionLabel) => result.push({id: nutritionLabel}))
+            this.chosenNutritionLabels.forEach((nutritionLabel) => result.push({nutritionLabelId: nutritionLabel}))
             return result;
 
         },
@@ -509,7 +509,7 @@ export default {
 
         clearInputs(){
             this.actualSelectedProduct = ''
-            this.actualSelectedProductAmount = 0
+            this.actualSelectedProductAmount = ''
             this.actualSelectedProductMeasure = ''
             this.chosenNutritionLabels = []
             this.chosenMealTypes= []
@@ -517,6 +517,7 @@ export default {
             this.dishDescription = ''
             this.dishName = ''
             this.dishRecipe = ''
+            this.actualSelectedGlycemicIndex = ''
             this.actualSelectedProductMeasure = ''
             this.toPublish = false;
         },
@@ -529,7 +530,7 @@ export default {
         },
         clearProductsStatus(){
             this.actualSelectedProduct = ''
-            this.actualSelectedProductAmount = 0
+            this.actualSelectedProductAmount = ''
             this.actualSelectedProductMeasure = ''
         },
         clearPhoto() {
