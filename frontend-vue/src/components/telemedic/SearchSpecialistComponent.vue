@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div class="container-fluid">
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>
-        <div v-if="componentError === false" class="container">
+        <div v-if="componentError === false">
             <div class="row">
                 <div class="col-1">
-                    <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
+                    <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="this.comeback"/>
                 </div>
                 <div class="col align-left">
                     <h3>
@@ -118,7 +118,7 @@ export default {
 
     },
     props: {
-        connectionType: String
+        connectionType: String,
     },
     data() {
         return {
@@ -153,7 +153,7 @@ export default {
         getDoctorSpecializations() {
             this.axios.get(`${this.apiURL}doctor-specializations`, {
                 headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
                 }
             })
                 .then(response => {
@@ -172,14 +172,14 @@ export default {
             if(this.connectionType === "WITH_DOCTOR"){
                 endpoint = `profile/doctors/doctor-specializations/${this.selectedDoctorSpecialization.id}`;
             } else if(this.connectionType === "WITH_DIETICIAN"){
-                endpoint = "dieticians";
+                endpoint = "profile/dieticians";
             } else if(this.connectionType === "WITH_TRAINER"){
                 endpoint = "trainers";
             }
 
             this.axios.get(`${this.apiURL}${endpoint}?like=${this.searchValue}`, {
                 headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
                 }
             })
                 .then(response => {
@@ -206,7 +206,8 @@ export default {
             this.axios({
                 method: 'post',
                 url: `${this.apiURL}profile-connections`,
-                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                headers: { Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
+                 },
                 data: data
             })
                 .then(() => {
@@ -217,6 +218,9 @@ export default {
                     this.connectionDone = true;
                 })
         },
+        comeback(){
+            this.$router.go(-1)
+        }
     },
     created(){
         this.isConnectionTypeCorrect();
@@ -253,7 +257,7 @@ export default {
 }
 
 .specialists-table tbody tr:hover {
-    background-color: var(--TELEMEDIC);
+    background-color: var(--GREY1);
 }
 
 .specialization-list {

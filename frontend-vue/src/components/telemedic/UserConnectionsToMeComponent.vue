@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="container-fluid">
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>
-        <div v-if="componentError === false" class="container">
+        <div v-if="componentError === false">
             <div v-if="connectionType !== 'WITH_USER'" class="row justify-content-between">
                 <div class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
@@ -180,7 +180,7 @@ export default {
         getProfile(){
             this.axios.get(`${this.apiURL}profile/my`, {
                 headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
                 }
             })
                 .then(response => {
@@ -194,7 +194,7 @@ export default {
         getUserConnections() {
             this.axios.get(`${this.apiURL}profile-connections/to-me/type/${this.connectionType}/accepted/${this.selectedAcceptState}`, {
                 headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
                 }
             })
                 .then(response => {
@@ -213,7 +213,8 @@ export default {
                 this.axios({
                     method: 'delete',
                     url: `${this.apiURL}profile-connections/${this.selectedUserConnection.id}`,
-                    headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
+                     },
                 }).then(() => {
                     this.getUserConnections();
                 }).catch(e => {
@@ -226,7 +227,8 @@ export default {
                 this.axios({
                     method: 'put',
                     url: `${this.apiURL}profile-connections/${this.selectedUserConnection.id}/mark-as-accepted`,
-                    headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') //this.$store.getters.getToken
+                     },
                 }).then(() => {
                     this.getUserConnections();
                 }).catch(e => {
@@ -237,7 +239,7 @@ export default {
         getConversation(profileId){
             this.axios.get(`${this.apiURL}conversations/profile/${profileId}/type/${this.connectionType}`, {
                 headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
                 }
             })
                 .then(response => {
@@ -261,7 +263,8 @@ export default {
 
             this.axios({
                 method: 'post',
-                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                headers: { Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
+                 },
                 url: `${this.apiURL}conversations`,
                 data: data
             })
@@ -315,7 +318,7 @@ export default {
 }
 
 .connections-table tbody tr:hover {
-    background-color: var(--TELEMEDIC);
+    background-color: var(--GREY1);
 }
 
 </style>

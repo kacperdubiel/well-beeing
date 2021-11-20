@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="container-fluid">
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>
-        <div v-if="componentError === false" class="container mt-4">
+        <div v-if="componentError === false" class="mt-4">
             <div v-if="conversations" class="row mb-2 bottom-border"></div>
             <div v-for="conversation in conversations" v-bind:key="conversation.id" class="row pb-2 mb-2 bottom-border clickable"
                 @click="$emit('open-conversation', conversation.id)"
@@ -72,7 +72,7 @@ export default {
         getProfile(){
             this.axios.get(`${this.apiURL}profile/my`, {
                 headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
                 }
             })
                 .then(response => {
@@ -87,7 +87,7 @@ export default {
         getConversations() {
             this.axios.get(`${this.apiURL}conversations/as-specialist/${this.asSpecialist}/type/${this.connectionType}`, {
                 headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
                 }
             })
                 .then(response => {

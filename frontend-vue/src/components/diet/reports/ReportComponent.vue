@@ -5,71 +5,129 @@
             <div class="title" style="align-items: flex-start; display: flex">
                 <h6 class="title">PRODUKTY</h6>
             </div>
-            <table class="table table-hover table-borderless">
-                <thead>
-                    <tr>
-                        <th class="col-sm-3" scope="col">Produkt</th>
-                        <th class="col-sm-1" scope="col">Ilość</th>
-                        <th class="col-sm-1" scope="col">Kcal</th>
-                        <th class="col-sm-1" scope="col">B</th>
-                        <th class="col-sm-1" scope="col">W</th>
-                        <th class="col-sm-1" scope="col">T</th>
-                        <th class="col-sm-2" scope="col">IG</th>
-                        <th class="col-sm-1" scope="col">Czas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="detail in this.report.productDetailsList" :key="detail.id">
-                        <th scope="row">{{detail.product.name}}</th>
-                        <td>{{detail.amountOfProduct}} {{this.$func_global.mapMeasure(detail.measureType)}}</td>
-                        <td>{{Math.round(detail.derivedNutritionalValues.derivedCalories)}}</td>
-                        <td>{{Math.round(detail.derivedNutritionalValues.derivedProteins)}} g</td>
-                        <td>{{Math.round(detail.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
-                        <td>{{Math.round(detail.derivedNutritionalValues.derivedFats)}} g</td>
-                        <td>{{this.$func_global.mapGlycemicIndexShort(detail.product.glycemicIndexLevel)}}</td>
-                        <td>{{detail.consumingTime.substring(11, 16)}}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="accordion" id="accordion-products">
+                <div v-for="detail in this.report.productDetailsList" :key="detail.id" class="accordion-item">
+                    <h2 class="accordion-header" :id="'product-heading-' + detail.id">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse-product' + detail.id" aria-expanded="true" aria-controls="collapse-product">
+                            <div style="width: 100%;" class="row">
+                                <b class="col-lg-7 p-0 m-0">{{detail.product.name}}</b>
+                                <p class="col-lg-3">{{detail.amountOfProduct}} {{this.$func_global.mapMeasure(detail.measureType)}}</p>
+                                <p class="col-lg-2">{{detail.consumingTime.substring(11, 16)}}</p>
+                            </div>
+                        </button>
+                    </h2>
+                    <div :id="'collapse-product' + detail.id" class="accordion-collapse collapse" :aria-labelledby="'product-heading' + detail.id" data-bs-parent="#accordion-products">
+                        <table style="text-align: center;" class="table table-hover table-report-info p-2">
+                            <tbody>
+                                <tr>
+                                    <th>Kalorie</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedCalories)}} kcal</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-lg-6">Białka</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedProteins)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Węglowodany</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Tłuszcze</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedFats)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Cholesterol</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedCholesterol)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Błonnik</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedFiber)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Sól</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedSalt)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Kofeina</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedCaffeine)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Indeks glikemiczny</th>
+                                    <td>{{this.$func_global.mapGlycemicIndex(detail.product.glycemicIndexLevel)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <div style="width: 100%; text-align: left;">
             <hr class="hr-dish title-line"/>
             <div class="title" style="align-items: flex-start; display: flex">
                 <h6 class="title">DANIA</h6>
             </div>
-            <table class="table table-hover table-borderless">
-                <thead>
-                    <tr>
-                        <th class="col-sm-3" scope="col">Danie</th>
-                        <th class="col-sm-1" scope="col">Porcje</th>
-                        <th class="col-sm-1" scope="col">Kcal</th>
-                        <th class="col-sm-1" scope="col">B</th>
-                        <th class="col-sm-1" scope="col">W</th>
-                        <th class="col-sm-1" scope="col">T</th>
-                        <th class="col-sm-2" scope="col">IG</th>
-                        <th class="col-sm-1" scope="col">Czas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="detailDish in this.report.dishDetailsList" :key="detailDish.id">
-                        <th scope="row">{{detailDish.dish.name}}</th>
-                        <td>{{detailDish.portions}}</td>
-                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedCalories)}}</td>
-                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedProteins)}} g</td>
-                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
-                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedFats)}} g</td>
-                        <td>{{this.$func_global.mapGlycemicIndexShort(detailDish.dish.glycemicIndexLevel)}}</td>
-                        <td>{{detailDish.consumingTime.substring(11, 16)}}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="accordion" id="accordion-dishes">
+                <div v-for="dishDetail in this.report.dishDetailsList" :key="dishDetail.id" class="accordion-item">
+                    <h2 class="accordion-header" :id="'dish-heading-' + dishDetail.id">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse-dish' + dishDetail.id" aria-expanded="true" aria-controls="collapse-dish">
+                            <div style="width: 100%;" class="row">
+                                <b class="col-lg-7 p-0 m-0">{{dishDetail.dish.name}}</b>
+                                <p class="col-lg-3">{{dishDetail.portions}} porcji</p>
+                                <p class="col-lg-2">{{dishDetail.consumingTime.substring(11, 16)}}</p>
+                            </div>
+                        </button>
+                    </h2>
+                    <div :id="'collapse-dish' + dishDetail.id" class="accordion-collapse collapse" :aria-labelledby="'dish-heading' + dishDetail.id" data-bs-parent="#accordion-dishes">
+                        <table style="text-align: center;" class="table table-hover table-report-info p-2">
+                            <tbody>
+                                <tr>
+                                    <th>Kalorie</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedCalories)}} kcal</td>
+                                </tr>
+                                <tr>
+                                    <th class="col-lg-6">Białka</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedProteins)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Węglowodany</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Tłuszcze</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedFats)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Cholesterol</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedCholesterol)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Błonnik</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedFiber)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Sól</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedSalt)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Kofeina</th>
+                                    <td>{{Math.round(dishDetail.derivedNutritionalValues.derivedCaffeine)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Indeks glikemiczny</th>
+                                    <td>{{this.$func_global.mapGlycemicIndex(dishDetail.dish.glycemicIndexLevel)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <hr class="hr-dish title-line"/>
         <div class="title" style="align-items: flex-start; display: flex">
                 <h6 class="title">PODSUMOWANIE</h6>
         </div>
         <div style="align-items: center; display: flex; width:100%;">
-            <table class="table table-report-info">
+            <table class="table">
                 <tbody>
                     <tr>
                         <th class="col-lg-6">Białka</th>
@@ -86,6 +144,22 @@
                     <tr>
                         <th>Kalorie</th>
                         <td>{{Math.round(report.derivedNutritionalValues.derivedCalories)}} kcal</td>
+                    </tr>
+                    <tr>
+                        <th>Cholesterol</th>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedCholesterol)}} g</td>
+                    </tr>
+                    <tr>
+                        <th>Błonnik</th>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedFiber)}} g</td>
+                    </tr>
+                    <tr>
+                        <th>Sól</th>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedSalt)}} g</td>
+                    </tr>
+                    <tr>
+                        <th>Kofeina</th>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedCaffeine)}} g</td>
                     </tr>
                 </tbody>
             </table>
@@ -219,4 +293,21 @@ export default {
         border-radius: 10px;
         overflow: hidden;
     }
+
+    .accordion-button.collapsed {
+        background: white;
+        color: black;
+        border-color: black;
+    }
+
+    .accordion-button {
+        background: var(--DIET);
+        color: white;
+        border-color: black;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+    }
+
 </style>

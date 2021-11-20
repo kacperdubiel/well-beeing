@@ -168,14 +168,14 @@ export default {
 
             productsToSelect: [],
             actualSelectedProduct: '',
-            actualSelectedProductAmount: 100,
-            actualSelectedProductMeasure: 'GRAM',
-            actualSelectedProductConsumingTime: '12:00',
+            actualSelectedProductAmount: '',
+            actualSelectedProductMeasure: '',
+            actualSelectedProductConsumingTime: '',
 
             dishesToSelect: [],
             actualSelectedDish: '',
-            actualSelectedDishPortions: 1,
-            actualSelectedDishConsumingTime: '12:00',
+            actualSelectedDishPortions: '',
+            actualSelectedDishConsumingTime: '',
 
             productFormError: false,
             dishFormError: false
@@ -208,14 +208,14 @@ export default {
     methods: {
         clearDishInputs(){
             this.actualSelectedDish= ''
-            this.actualSelectedDishPortions='1'
-            this.actualSelectedDishConsumingTime= '12:00'
+            this.actualSelectedDishPortions=''
+            this.actualSelectedDishConsumingTime= ''
         },
         clearProductInputs(){
             this.actualSelectedProduct= ''
-            this.actualSelectedProductAmount= 100
-            this.actualSelectedProductMeasure= 'GRAM'
-            this.actualSelectedProductConsumingTime= '12:00'
+            this.actualSelectedProductAmount= ''
+            this.actualSelectedProductMeasure= ''
+            this.actualSelectedProductConsumingTime= ''
         },
         clearProductStatus(){
             this.productFormError = false;
