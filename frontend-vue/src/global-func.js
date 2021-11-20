@@ -12,7 +12,6 @@ export const func_global = {
         return this.uploadFile(formData, type, token, id).then((resp) => {
             console.log(resp)
         })
-
     },
 
     async importDataFunc(myfile, token, type, id) {
@@ -21,7 +20,9 @@ export const func_global = {
         let file = files[0];
         var formData = new FormData();
         formData.append("file", file);
-        return this.uploadFileFunc(formData, type, token, id)
+        return this.uploadFileFunc(formData, type, token, id).then((resp) => {
+            console.log(resp)
+        })
     },
 
     async uploadFileFunc (data, type, token, id) {
@@ -34,6 +35,14 @@ export const func_global = {
             url = `${apiURL}post/import/${id}`
         else if(type === 'dishPicture')
             url = `${apiURL}dish/${id}/photo`
+        else if(type === 'importProducts'){
+            console.log("jestem sb")
+            url = `${apiURL}import/products`
+        }
+        else if(type === 'importDiets')
+            url = `${apiURL}import/diets`
+        else if(type === 'importAilments')
+            url = `${apiURL}import/ailments`
         return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}})
     },
 

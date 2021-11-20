@@ -1,6 +1,25 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import DietView from "@/views/diet/DietView"
+//import DietView from "@/views/diet/DietView"
+
+import DietViewMain from "@/views/diet/DietViewMain"
+import DietCardView from "@/views/diet/DietCardView"
+import DietReportsView from "@/views/diet/DietReportsView"
+import DietDishBrowserView from "@/views/diet/DietDishBrowserView"
+import DietCalculationsView from "@/views/diet/DietCalculationsView"
+import DietSpecialistsView from "@/views/diet/DietSpecialistsView"
+import DietSpecialistsSearchView from "@/views/diet/DietSpecialistsSearchView"
+import DieticianViewMain from "@/views/diet/DieticianViewMain"
+import UserDieticianAllConversationsView from "@/views/diet/UserDieticianAllConversationsView";
+import UserDieticianConversationView from "@/views/diet/UserDieticianConversationView";
+
+import DieticianUserAllConversationsView from "@/views/diet/DieticianUserAllConversationsView";
+import DieticianUserConversationView from "@/views/diet/DieticianUserConversationView";
+import DieticianDishesView from "@/views/diet/DieticianDishesView";
+import DieticianUsersView from "@/views/diet/DieticianUsersView";
+import DieticianLabelsView from "@/views/diet/DieticianLabelsView";
+import DieticianUserProfileView from "@/views/diet/DieticianUserProfileView";
+
 import UserMeasuresView from "@/views/telemedic/UserMeasuresView";
 import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
 import UserDoctorConversationsView from "@/views/telemedic/UserDoctorConversationsView";
@@ -15,6 +34,7 @@ import FeedView from "@/views/social/feed/FeedView";
 import RoleRequestsView from "@/views/social/role-requests/RoleRequestsView";
 import LoginAdminView from "@/views/social/admin/LoginAdminView";
 import RoleRequestViewAdmin from "@/views/social/admin/RoleRequestsViewAdmin";
+import DataImportsViewAdmin from "@/views/social/admin/DataImportsViewAdmin";
 import SportView from "@/views/sport/SportView";
 import TrainingView from "@/components/sport/training/TrainingView";
 import ExerciseView from "@/components/sport/exercise/ExerciseView";
@@ -44,8 +64,89 @@ const routes = [
   },
   {
     path: '/diet',
-    name: 'DietView',
-    component: DietView
+    redirect: {name: 'DietCardView'},
+    name: 'DietViewMain',
+    component: DietViewMain,
+    children: [
+      {
+        path: 'card',
+        name: 'DietCardView',
+        component: DietCardView,
+      },
+      {
+        path: 'calculations',
+        name: 'DietCalculationsView',
+        component: DietCalculationsView
+      },
+      {
+        path: 'reports',
+        name: 'DietReportsView',
+        component: DietReportsView
+      },
+      {
+        path: 'dishes',
+        name: 'DietDishBrowserView',
+        component: DietDishBrowserView
+      },
+      {
+        path: 'dieticians',
+        name: 'DietSpecialistsView',
+        component: DietSpecialistsView
+      },
+      {
+        path: 'dieticians/search',
+        name: 'DietSpecialistsSearchView',
+        component: DietSpecialistsSearchView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'UserDieticianConversationView',
+        component: UserDieticianConversationView
+      },
+      {
+        path: 'conversations',
+        name: 'UserDieticianAllConversationsView',
+        component: UserDieticianAllConversationsView
+      },
+    ]
+  },
+  {
+    path: '/dietician',
+    name: 'DieticianViewMain',
+    redirect: {name: 'DieticianUsersView'},
+    component: DieticianViewMain,
+    children: [
+      {
+        path: 'conversations/:conversationId',
+        name: 'DieticianUserConversationView',
+        component: DieticianUserConversationView
+      },
+      {
+        path: 'conversations',
+        name: 'DieticianUserAllConversationsView',
+        component: DieticianUserAllConversationsView
+      },
+      {
+        path: 'users',
+        name: 'DieticianUsersView',
+        component: DieticianUsersView
+      },
+      {
+        path: 'dishes',
+        name: 'DieticianDishesView',
+        component: DieticianDishesView
+      },
+      {
+        path: 'users/:userId',
+        name: 'DieticianUserProfileView',
+        component: DieticianUserProfileView
+      },
+      {
+        path: 'labels',
+        name: 'DieticianLabelsView',
+        component: DieticianLabelsView
+      },
+    ]
   },
   {
     path: '/telemedic/measures',
@@ -136,6 +237,12 @@ const routes = [
     name: 'RoleRequestsViewAdmin',
     meta: { layout: "admin"},
     component: RoleRequestViewAdmin
+  },
+  {
+    path: '/admin/imports',
+    name: 'DataImportsViewAdmin',
+    meta: { layout: "admin"},
+    component: DataImportsViewAdmin
   },
   {
     path: '/profile/:profileId',
