@@ -47,17 +47,9 @@ public class Post {
     private Set<Post> sharingPosts = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
-
-    public void addLikeToPost(Like like) {
-        this.likes.add(like);
-    }
-
-    public void addCommentToPost(Comment comment) {
-        this.comments.add(comment);
-    }
-
 }

@@ -3,25 +3,29 @@
 
 
         <div class="row w-80 mb-3">
+            <label for="login-mail" class="form-label text-start text-white fw-bolder">Adres e-mail:</label>
             <input
-            type="email"
-            placeholder="Adres-email"
-            v-model="email"
-            class="login-input"
-            :class="{ 'has-error': submittingLogin && invalidEmail || wrongLoginData}"
-            @focus="clearStatus"
-            @keypress="clearStatus"
+                id="login-mail"
+                type="email"
+                placeholder="Adres-email"
+                v-model="email"
+                class="login-input"
+                :class="{ 'has-error': submittingLogin && invalidEmail || wrongLoginData}"
+                @focus="clearStatus"
+                @keypress="clearStatus"
             />
         </div>
-        <div class="row w-80">
+        <div class="row w-80 mb-1">
+            <label for="login-password" class="form-label text-start text-white fw-bolder">Hasło:</label>
             <input
-            type="password"
-            placeholder="Hasło"
-            v-model="password"
-            class="login-input"
-            :class="{ 'has-error': submittingLogin && invalidPassword || wrongLoginData}"
-            @focus="clearStatus"
-            @keypress="clearStatus"
+                id="login-password"
+                type="password"
+                placeholder="Hasło"
+                v-model="password"
+                class="login-input"
+                :class="{ 'has-error': submittingLogin && invalidPassword || wrongLoginData}"
+                @focus="clearStatus"
+                @keypress="clearStatus"
             />
         </div>
         <div class="row w-80 text-end">
@@ -32,7 +36,7 @@
                 Proszę uzupełnić wszystkie dane poprawnie!
             </p>
         </div>
-        <div class="row w-80 mt-2 mb-5">
+        <div class="row w-80 mt-4 mb-5">
             <button class="account-btn pink-btn" @click="login">
                 Zaloguj się
             </button>
@@ -55,7 +59,9 @@
                             <div class="container-fluid" id="modal-container">
                                 <div v-if="!successRegister" class="col-11 mx-auto">
                                     <div class="row">
+                                        <label for="register-mail" class="form-label text-start">Adres e-mail:</label>
                                         <input
+                                            id="register-mail"
                                             type="email"
                                             placeholder="Adres-email"
                                             v-model="newEmail"
@@ -70,13 +76,28 @@
                                             Do tego e-mail'a jest już przypisane konto!
                                         </p>
                                     </div>
-                                    <div class="row mt-3">
+                                    <div class="row mt-2">
+                                        <label for="register-password" class="form-label text-start">Hasło:</label>
                                         <input
+                                            id="register-password"
                                             type="password"
                                             placeholder="Hasło"
                                             v-model="newPassword"
                                             class="register-input p-2"
-                                            :class="{ 'has-error': submittingRegister && invalidNewPassword}"
+                                            :class="{ 'has-error': submittingRegister && (invalidNewPassword || invalidEqualPassword)}"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
+                                        />
+                                    </div>
+                                    <div class="row mt-2">
+                                        <label for="register-password-second" class="form-label text-start">Powtórz hasło:</label>
+                                        <input
+                                            id="register-password-second"
+                                            type="password"
+                                            placeholder="Powtórz hasło"
+                                            v-model="newPasswordSecond"
+                                            class="register-input p-2"
+                                            :class="{ 'has-error': submittingRegister && (invalidNewPasswordSecond || invalidEqualPassword)}"
                                             @focus="clearStatus"
                                             @keypress="clearStatus"
                                         />
@@ -86,11 +107,16 @@
                                             Proszę uzupełnić wszystkie dane poprawnie!
                                         </p>
                                     </div>
-                                    <div class="row justify-content-end mt-3">
-                                        <div class="col-4">
+                                    <div v-if="errorEqualPassword" class="row text-end">
+                                        <p class="has-error m-0">
+                                            Podane hasła się różnią!
+                                        </p>
+                                    </div>
+                                    <div class="row justify-content-center mt-5">
+                                        <div class="col-6">
                                             <button class="register-btn grey-btn p-2" @click="clearInputs(); clearStatusWithTimeout()" data-bs-dismiss="modal">Anuluj</button>
                                         </div>
-                                        <div class="col-4">
+                                        <div class="col-6">
                                             <button class="register-btn pink-btn p-2" @click="register">Rejestruj</button>
                                         </div>
                                     </div>
@@ -123,9 +149,11 @@ export default {
             password: "",
             newEmail: "",
             newPassword: "",
+            newPasswordSecond: "",
             wrongLoginData: false,
             errorLogin: false,
             errorRegister: false,
+            errorEqualPassword: false,
             successRegister: false,
             emailTaken: false,
             submittingLogin: false,
@@ -165,10 +193,16 @@ export default {
             console.log('email: ' + this.newEmail + ' pass: ' + this.newPassword)
             this.submittingRegister = true
             this.clearStatus()
-            if (this.invalidNewEmail || this.invalidNewPassword) {
+            if (this.invalidNewEmail || this.invalidNewPassword || this.invalidNewPasswordSecond) {
                 this.errorRegister = true
                 return
             }
+
+            if (this.invalidEqualPassword) {
+                this.errorEqualPassword = true
+                return
+            }
+
             const data = {
                 "email": this.newEmail,
                 "password": this.newPassword
@@ -211,6 +245,7 @@ export default {
         clearStatus() {
             this.errorLogin = false
             this.errorRegister = false
+            this.errorEqualPassword = false
             this.wrongLoginData = false
             this.successRegister = false
             this.emailTaken = false
@@ -225,6 +260,7 @@ export default {
             this.password = ""
             this.newEmail = ""
             this.newPassword = ""
+            this.newPasswordSecond = ""
         }
 
     },
@@ -240,7 +276,13 @@ export default {
         },
         invalidNewPassword() {
             return this.newPassword === ''
-        }
+        },
+        invalidNewPasswordSecond() {
+            return this.newPasswordSecond === ''
+        },
+        invalidEqualPassword() {
+            return this.newPassword !== this.newPasswordSecond
+        },
     }
 }
 </script>
@@ -251,20 +293,21 @@ export default {
 }
 
 .w-80 {
-    height: 8%;
     width: 80%;
 }
 
 .login-input, .account-btn {
-    height: 100%;
-    width: 100%;
-    border-radius: 25px;
+    border-radius: 15px;
     border: none;
+
+}
+
+.login-input {
+    box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.15) !important;
+    padding: 15px 10px;
 }
 
 .register-input {
-    height: 200%;
-    width: 100%;
     border-radius: 25px;
     border-color: var(--GREY2);
 }
@@ -273,6 +316,8 @@ export default {
     color: white;
     font-size: 2vw;
     font-weight: bold;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    padding: 5px;
 }
 
 .pink-btn {
@@ -296,7 +341,7 @@ p.has-error {
     color: white;
     font-size: 120%;
     font-weight: bold;
-    border-radius: 25px;
+    border-radius: 15px;
     border: none;
     width: 100%;
 }
