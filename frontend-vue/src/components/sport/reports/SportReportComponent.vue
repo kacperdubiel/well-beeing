@@ -3,7 +3,7 @@
         <div style="width: 100%; text-align: left;">
             <hr class="hr-pos title-line"/>
             <div class="title" style="align-items: flex-start; display: flex">
-                <h6 class="title">PRODUKTY</h6>
+                <h6 class="title">ĆWICZENIA</h6>
             </div>
             <table class="table table-hover table-borderless">
                 <thead>
