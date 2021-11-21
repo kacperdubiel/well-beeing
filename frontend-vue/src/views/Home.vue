@@ -68,7 +68,7 @@ export default {
 }
 
 #content {
-    height: 100%;
+    height: 80vh;
 }
 
 #info {

@@ -185,16 +185,12 @@ export default {
         },
         getCommentsAfterDelete() {
             this.commentsNavigation.nextPage = 0
-            this.loaded = false
             const pages = this.commentsNavigation.currentPage
-            console.log('DELETE PAGES: ', pages+1)
             this.getComments(this.commentsNavigation.nextPage, pages+1)
-            this.loaded = true
         },
         getComments(page, pagesAfterDelete) {
             const url = `${this.apiURL}post/comments`
             const token = this.$store.getters.getToken;
-            console.log('PAGE: ', page)
             const myParams = {
                 page: page,
                 size: this.commentsNavigation.pageSize,
@@ -203,23 +199,18 @@ export default {
             if(this.commentsNavigation.last)
                 return
 
-            console.log('PreGET: ', page)
-
             return this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log('POST GET: ', page)
-                this.loaded = true
                 this.commentsNavigation.isLast = response.data['last']
                 this.commentsNavigation.isFirst = response.data['first']
                 this.commentsNavigation.currentPage = response.data['number']
                 this.commentsNavigation.totalElements = response.data['totalElements']
                 console.log(response.data)
+
                 if(this.commentsNavigation.isFirst)
                     this.comments = response.data['content']
-                else {
-                    console.log('wincyj')
+                else
                     this.comments = this.comments.concat(response.data['content'])
 
-                }
                 if (!this.commentsNavigation.isLast)
                     this.commentsNavigation.nextPage = this.commentsNavigation.currentPage+1
                 else
@@ -228,7 +219,6 @@ export default {
                 if(pagesAfterDelete>1) {
                     this.getComments(this.commentsNavigation.nextPage, true, pagesAfterDelete-1)
                 }
-
             })
         },
 

@@ -2,7 +2,7 @@
     <div id="panel">
 
 
-        <div class="row w-80 mb-3">
+        <div class="row w-80 mb-4">
             <input
             type="email"
             placeholder="Adres-email"
@@ -256,15 +256,21 @@ export default {
 }
 
 .login-input, .account-btn {
-    height: 100%;
-    width: 100%;
-    border-radius: 25px;
+    border-radius: 15px;
     border: none;
+
+}
+
+.login-input {
+    height: 120%;
+    box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.account-btn {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
 .register-input {
-    height: 200%;
-    width: 100%;
     border-radius: 25px;
     border-color: var(--GREY2);
 }

@@ -89,7 +89,6 @@ export default {
                 if (this.post.postImgPath !== null)
                     this.$func_global.importData(this.$refs.postPicture, this.$store.getters.getToken, 'postPicture', postId)
                 this.clearInputs()
-                // this.getMyRoleRequests()
                 this.successPost = true
                 this.submittingPost = false
                 console.log('DATATATATTATA',response.data)
