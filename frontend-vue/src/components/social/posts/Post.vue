@@ -188,6 +188,15 @@ export default {
             const pages = this.commentsNavigation.currentPage
             this.getComments(this.commentsNavigation.nextPage, pages+1)
         },
+        getEditedComment(commentId) {
+            const url = `${this.apiURL}comment/${commentId}`
+            const token = this.$store.getters.getToken;
+
+            return this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                const index = this.comments.findIndex((com => com.commentId === commentId));
+                this.comments[index] = response.data
+            })
+        },
         getComments(page, pagesAfterDelete) {
             const url = `${this.apiURL}post/comments`
             const token = this.$store.getters.getToken;

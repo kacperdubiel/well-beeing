@@ -18,7 +18,7 @@
                             @focus="clearStatus"
                             @keypress="clearStatus"
                         >
-                    </textarea>
+                        </textarea>
                     </form>
                 </div>
             </div>
@@ -51,7 +51,7 @@ export default {
             this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
         addComment() {
-            this.successComment = true
+            this.submittingComment = true
             this.clearStatus()
 
             if (this.invalidComment) {
@@ -74,12 +74,6 @@ export default {
         clearStatus() {
             this.successComment = false
             this.errorComment = false
-        },
-        submitOnEnter(event){
-            if(event.which === 13 && !event.shiftKey){
-                event.target.form.dispatchEvent(new Event("submit", {cancelable: true}));
-                event.preventDefault();
-            }
         },
         handleUserKeyPress(e) {
             if (e.key === "Enter" && !e.shiftKey) {

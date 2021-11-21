@@ -50,6 +50,11 @@ public class CommentController {
     }
 
 
+    @GetMapping(path = "/comment/{commentId}")
+    public ResponseEntity<?> getPostById(@PathVariable long commentId) {
+        return new ResponseEntity<>(commentService.getComment(commentId), HttpStatus.OK);
+    }
+
     @GetMapping(path = "/post/comments")
     public ResponseEntity<?> getCommentsByPostId(
             @Join(path= "post", alias = "p")
