@@ -1,19 +1,38 @@
 package com.wellbeeing.wellbeeing.api.account;
 
+import com.sun.org.apache.xpath.internal.operations.Equals;
 import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
+import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
+import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.service.account.DoctorSpecializationService;
+import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
+import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
-import com.wellbeeing.wellbeeing.service.files.FileService;
+import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.domain.NotNull;
+import net.kaczmarzyk.spring.data.jpa.domain.Null;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -114,8 +133,15 @@ public class ProfileController {
     }
 
     @GetMapping(path = "/trainers")
-    public ResponseEntity<?> getTrainersProfiles() {
-        return new ResponseEntity<>(profileService.getTrainersProfiles(), HttpStatus.OK);
+    public ResponseEntity<?> getTrainersProfiles(
+            @Join(path = "profileUser", alias = "us")
+            @Join(path = "us.roles", alias = "r")
+                 @And({
+                     @Spec(path = "firstName", spec = LikeIgnoreCase.class),
+                     @Spec(path = "r.name", params = "role", spec= Equal.class)
+                 }) Specification<Profile> profileSpec,
+             @PageableDefault(sort = {"firstName"}, size = 20) Pageable pageable, Principal principal) {
+        return new ResponseEntity<>(profileService.getTrainersProfiles(profileSpec, pageable), HttpStatus.OK);
     }
 
     @GetMapping(path = "/dieticians")

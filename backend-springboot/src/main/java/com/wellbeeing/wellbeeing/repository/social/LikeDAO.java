@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository("likeDAO")
 public interface LikeDAO extends JpaRepository<Like, Long> {
     List<Like> findAllByPost_PostId(long post_id);
+    Optional<Like> findByPostPostIdAndLikerProfileUserEmail(long postId, String userEmail);
+    Optional<Like> findByLikeId(long likeId);
 }

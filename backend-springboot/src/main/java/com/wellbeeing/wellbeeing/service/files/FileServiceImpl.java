@@ -51,6 +51,8 @@ public class FileServiceImpl implements FileService{
             return newName;
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
+
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
     }

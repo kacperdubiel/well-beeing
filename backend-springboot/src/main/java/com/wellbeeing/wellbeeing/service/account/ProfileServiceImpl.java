@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -140,6 +142,21 @@ public class ProfileServiceImpl implements ProfileService {
 
         profileDAO.save(actProfile);
         return actProfile;
+    }
+
+    @Override
+    public TrainerProfile getTrainerProfileById(UUID trainerProfileId) throws NotFoundException {
+        TrainerProfile trainerProfile = trainerDAO.findById(trainerProfileId).orElse(null);
+        if(trainerProfile == null) {
+            throw new NotFoundException("Trainer profile with id: " + trainerProfileId + " not found");
+        }
+
+        return trainerProfile;
+    }
+
+    @Override
+    public Page<Profile> getTrainersProfiles(Specification<Profile> spec, Pageable pageable) {
+        return profileDAO.findAll(spec, pageable);
     }
 
     public Profile updateProfile(Profile profile, UUID profileId) throws NotFoundException {

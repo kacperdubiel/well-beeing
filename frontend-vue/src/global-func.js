@@ -12,7 +12,6 @@ export const func_global = {
         return this.uploadFile(formData, type, token, id).then((resp) => {
             console.log(resp)
         })
-    },
 
     async importDataFunc(myfile, token, type, id) {
         // let myfile = this.$refs.myfile;
@@ -50,6 +49,8 @@ export const func_global = {
             url = `${apiURL}profile/import`
         else if (type === 'postPicture')
             url = `${apiURL}post/import/${id}`
+        else if (type === 'exerciseVideo')
+            url = `${apiURL}sport/exercise/import/${id}`
         else if(type === 'dishPicture')
             url = `${apiURL}dish/${id}/photo`
         return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
@@ -79,6 +80,24 @@ export const func_global = {
             return data
         });
     },
+    async downloadMp4Video (url, token) {
+        let data
+        const urlCreator = window.URL || window.webkitURL;
+        return axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'}, responseType: 'arraybuffer'}).then((response) => {
+            data = new Blob([response.data], { type: 'video/mp4' })
+            return urlCreator.createObjectURL(data);
+        }).catch(error => {
+            console.log(error.response.status)
+            return data
+        });
+    },
+    truncate(text, length, suffix){
+        if (text.length > length) {
+            return text.substring(0, length) + suffix;
+        } else {
+            return text;
+        }
+    },
     formatDate(date) {
         if (date) {
             return moment(String(date)).format('DD/MM/YYYY')
@@ -103,6 +122,13 @@ export const func_global = {
         if (date) {
             return moment(String(date)).locale('pl').fromNow()
         }
+    },
+    getIsActive5minutes(userLastRequestTime) {
+        console.log('Something')
+        let duration = moment.duration(moment(new Date()).diff(userLastRequestTime));
+        let minutes = duration.asMinutes()
+        console.log('minutes: ', minutes)
+        return minutes < 5
     },
     mapRole(role) {
         if(role === 'ROLE_DIETICIAN')
@@ -399,7 +425,7 @@ export const func_global = {
         if(mineral == 'CALCIUM')
             return 'Wapń [mg]'
         if(mineral == 'Iron')
-            return 'Żelazo [mg]'       
+            return 'Żelazo [mg]'
         else
             return mineral
     },

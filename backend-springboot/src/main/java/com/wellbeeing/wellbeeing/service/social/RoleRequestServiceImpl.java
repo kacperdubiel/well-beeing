@@ -141,7 +141,7 @@ public class RoleRequestServiceImpl implements RoleRequestService {
             targetRoleRequest.setComment(roleRequest.getComment());
             roleRequestDAO.save(targetRoleRequest);
 
-            List<RoleRequest> reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRole(userMail, targetRoleRequest.getRole());
+            List<RoleRequest> reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatus(userMail, targetRoleRequest.getRole(), EStatus.PENDING);
             reqsToCancel.forEach(r -> {
                 r.setStatus(EStatus.CANCELLED);
                 roleRequestDAO.save(r);

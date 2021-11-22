@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.domain.account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.Report;
+import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
@@ -13,6 +14,7 @@ import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import java.util.Date;
@@ -49,6 +51,8 @@ public class Profile {
     @Enumerated(EnumType.STRING)
     @Column
     private ENutritionTag eNutritionTag;
+    @Column
+    private LocalDateTime lastRequestTime;
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
@@ -87,6 +91,11 @@ public class Profile {
     @OneToMany(mappedBy = "reportOwner", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Report> dietReports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reportOwner", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<SportReport> sportReports = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<NutritionPlan> nutritionPlans = new ArrayList<>();

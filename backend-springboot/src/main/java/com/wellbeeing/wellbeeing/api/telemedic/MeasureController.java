@@ -4,6 +4,7 @@ package com.wellbeeing.wellbeeing.api.telemedic;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.telemedic.*;
@@ -97,8 +98,7 @@ public class MeasureController {
 
     @RequestMapping(path = "measures", method = RequestMethod.POST)
     public ResponseEntity<?> addMeasure(@RequestBody @NonNull Measure measure, Principal principal)
-            throws ConflictException, NotFoundException
-    {
+            throws ConflictException, NotFoundException, IllegalArgumentException {
         UUID userId = userService.findUserIdByUsername(principal.getName());
         Profile owner = profileService.getProfileById(userId);
         measure.setOwner(owner);
@@ -109,8 +109,7 @@ public class MeasureController {
 
     @RequestMapping(path = "measures", method = RequestMethod.PUT)
     public ResponseEntity<?> updateMeasure(@RequestBody @NonNull Measure measure, Principal principal)
-            throws ForbiddenException, NotFoundException
-    {
+            throws ForbiddenException, NotFoundException, IllegalArgumentException {
         UUID userId = userService.findUserIdByUsername(principal.getName());
         Measure measureResult = measureService.getMeasureById(measure.getId());
         if(!measureResult.getOwner().getId().equals(userId)){

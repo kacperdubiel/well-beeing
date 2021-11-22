@@ -23,13 +23,18 @@
                     <font-awesome-icon :icon="['far', 'bell']" size="2x" class="navbar-icon"/>
                 </div>
                 <div class="col-2 d-flex align-self-center align-items-center">
-                    <img :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  class="profile-picture" height="40" width="40">
+                    <img v-if="this.$store.getters.getProfileImageSrc" :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  class="profile-picture" height="40" width="40">
+                    <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="40" width="40">
                     <div class="dropdown">
                         <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-profile" data-bs-toggle="dropdown" aria-expanded="false">
                             Cześć, {{this.$store.getters.getFirstName}}!
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdown-profile">
-                            <li><a class="dropdown-item" href="#">Ustawienia</a></li>
+                            <li>
+                                <router-link class="dropdown-item" :to="{ name: 'ProfileEdit' }">
+                                    Ustawienia
+                                </router-link>
+                            </li>
                             <li><a @click="handleLogout" class="dropdown-item" href="#">Wyloguj się</a></li>
                         </ul>
                     </div>

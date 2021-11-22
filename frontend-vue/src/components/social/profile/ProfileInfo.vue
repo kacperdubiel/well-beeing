@@ -3,7 +3,10 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img :src="imageSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
+                <img v-if="!this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
+                <img v-else-if="this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
+
+                <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="100" width="100">
             </div>
 
             <div class="d-flex flex-column align-self-center w-100">
@@ -11,7 +14,7 @@
                 <div class="text-start d-flex justify-content-between ms-3">
                     <h3>{{this.profileSource.firstName}} {{this.profileSource.lastName}}</h3>
 
-                    <button class="btn-white ms-auto fw-bolder">
+                    <button class="btn-white ms-auto fw-bolder" v-if="!this.$route.params.profileId || this.$route.params.profileId === this.$store.getters.getProfileId">
                         <router-link :to="{ name: 'ProfileEdit' }">
                             Edytuj profil
                         </router-link>
@@ -43,21 +46,29 @@ export default {
     name: "ProfileInfo",
     data() {
         return {
-            imageSrc: ''
+            profilePictureSrc: ""
         }
     },
     props: {
         profileSource: Object
     },
     methods: {
-        downloadProfilePicture () {
+        downloadMyProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
             const token = this.$store.getters.getToken;
-            this.$func_global.downloadPhoto(url, token).then(result => this.imageSrc = result)
+            this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
+        },
+        downloadProfilePictureByProfileId (profileId) {
+            const url = `${this.apiURL}profile/export/${profileId}`
+            const token = this.$store.getters.getToken;
+            this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         }
     },
     mounted() {
-        this.downloadProfilePicture()
+        if(this.$route.params.profileId)
+            this.downloadProfilePictureByProfileId(this.$route.params.profileId)
+        else
+            this.downloadMyProfilePicture()
     }
 }
 </script>

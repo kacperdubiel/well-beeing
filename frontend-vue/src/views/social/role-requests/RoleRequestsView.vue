@@ -65,7 +65,7 @@
                 </p>
             </div>
 
-            <div class="row mt-5">
+            <div class="row mt-5 pb-3">
                 <div class="col-4 offset-7">
                     <button class="btn-panel-social" @click="submitRoleRequest">Wyślij prośbę</button>
                 </div>
@@ -162,7 +162,22 @@ export default {
             }).catch(error => {
                 console.log(error.response.status)
             });
-        }
+        },
+        getUserInfo () {
+            const url = `${this.apiURL}profile/my`
+            const token = this.$store.getters.getToken;
+
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                let roles = []
+                response.data['roles'].forEach((e) => {
+                    roles.push(e['role'])
+                })
+                this.$store.commit('setRoles', roles);
+                console.log('role', this.$store.getters.getRoles)
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
     },
     computed: {
         invalidRole() {
@@ -174,6 +189,7 @@ export default {
     },
     mounted() {
         this.getMyRoleRequests()
+        this.getUserInfo()
     }
 }
 </script>

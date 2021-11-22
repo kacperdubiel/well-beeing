@@ -3,8 +3,11 @@ package com.wellbeeing.wellbeeing.service.account;
 import com.wellbeeing.wellbeeing.domain.account.DoctorProfile;
 import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -19,4 +22,6 @@ public interface ProfileService {
     List<TrainerProfile> getTrainersProfiles();
     Page<Profile> getDieticiansProfiles(String like, int page, int size);
     Profile partialUpdateProfile(UUID profileId, Map<String, Object> fields) throws NotFoundException;
+    TrainerProfile getTrainerProfileById(UUID doctorProfileId) throws NotFoundException;
+    Page<Profile> getTrainersProfiles(Specification<Profile> spec, Pageable pageable);
 }

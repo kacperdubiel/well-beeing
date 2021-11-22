@@ -1,7 +1,17 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-//import DietView from "@/views/diet/DietView"
-
+import DietView from "@/views/diet/DietView"
+import UserMeasuresView from "@/views/telemedic/user/UserMeasuresView";
+import UserDoctorsView from "@/views/telemedic/user/UserDoctorsView";
+import UserDoctorConversationsView from "@/views/telemedic/user/UserDoctorConversationsView";
+import UserDoctorConversationView from "@/views/telemedic/user/UserDoctorConversationView";
+import AnalysisView from "@/views/telemedic/user/AnalysisView";
+import DoctorUsersView from "@/views/telemedic/doctor/DoctorUsersView";
+import DoctorUserProfileView from "@/views/telemedic/doctor/DoctorUserProfileView";
+import SearchDoctorsView from "@/views/telemedic/user/SearchDoctorsView";
+import DoctorUserConversationsView from "@/views/telemedic/doctor/DoctorUserConversationsView";
+import DoctorUserConversationView from "@/views/telemedic/doctor/DoctorUserConversationView";
+import DoctorMeasureTypesView from "@/views/telemedic/doctor/DoctorMeasureTypesView";
 import DietViewMain from "@/views/diet/DietViewMain"
 import DietCardView from "@/views/diet/DietCardView"
 import DietReportsView from "@/views/diet/DietReportsView"
@@ -12,14 +22,12 @@ import DietSpecialistsSearchView from "@/views/diet/DietSpecialistsSearchView"
 import DieticianViewMain from "@/views/diet/DieticianViewMain"
 import UserDieticianAllConversationsView from "@/views/diet/UserDieticianAllConversationsView";
 import UserDieticianConversationView from "@/views/diet/UserDieticianConversationView";
-
 import DieticianUserAllConversationsView from "@/views/diet/DieticianUserAllConversationsView";
 import DieticianUserConversationView from "@/views/diet/DieticianUserConversationView";
 import DieticianDishesView from "@/views/diet/DieticianDishesView";
 import DieticianUsersView from "@/views/diet/DieticianUsersView";
 import DieticianLabelsView from "@/views/diet/DieticianLabelsView";
 import DieticianUserProfileView from "@/views/diet/DieticianUserProfileView";
-
 import UserMeasuresView from "@/views/telemedic/UserMeasuresView";
 import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
 import UserDoctorConversationsView from "@/views/telemedic/UserDoctorConversationsView";
@@ -41,6 +49,18 @@ import ExerciseView from "@/components/sport/exercise/ExerciseView";
 import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView";
 import ProfileView from "@/views/social/profile/ProfileView";
 import ProfileEdit from "@/views/social/profile/ProfileEdit";
+import SportReportsComponent from "@/components/sport/SportReportsComponent";
+import TrainersView from "@/views/sport/trainers/TrainersView";
+import UserTrainerConversationView from "@/views/sport/trainers/UserTrainerConversationView";
+import UserTrainerConversationsView from "@/views/sport/trainers/UserTrainerConversationsView";
+import SearchTrainersView from "@/views/sport/trainers/SearchTrainersView";
+import UserTrainersView from "@/views/sport/trainers/UserTrainersView";
+import TrainerUsersView from "@/views/sport/trainers/TrainerUsersView";
+import TrainerUserProfileView from "@/views/sport/trainers/TrainerUserProfileView";
+import TrainerUserConversationsView from "@/views/sport/trainers/TrainerUserConversationsView";
+import TrainerUserConversationView from "@/views/sport/trainers/TrainerUserConversationView";
+import SportTrainerView from "@/views/sport/SportTrainerView";
+import TrainingPlanRequest from "@/views/sport/TrainingPlanRequest";
 
 const routes = [
   {
@@ -199,6 +219,11 @@ const routes = [
     component: DoctorUserConversationView
   },
   {
+    path: '/doctor/measure-types',
+    name: 'DoctorMeasureTypesView',
+    component: DoctorMeasureTypesView
+  },
+  {
     path: '/sport',
     redirect: {name: 'TrainingPlansView'},
     name: 'SportView',
@@ -218,6 +243,64 @@ const routes = [
         path: 'training-plans',
         name: 'TrainingPlansView',
         component: TrainingPlansView
+      },
+      {
+        path: 'reports',
+        name: 'SportReportsComponent',
+        component: SportReportsComponent
+      },
+      {
+        path: 'user-trainers',
+        name: 'UserTrainersView',
+        component: UserTrainersView
+      },
+      {
+        path: 'user-trainers/search',
+        name: 'SearchTrainersView',
+        component: SearchTrainersView
+      },
+      {
+        path: 'conversations',
+        name: 'UserTrainerConversationsView',
+        component: UserTrainerConversationsView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'UserTrainerConversationView',
+        component: UserTrainerConversationView
+      },
+    ]
+  },
+  {
+    path: '/sport/trainer',
+    redirect: {name: 'TrainingPlansView'},
+    name: 'SportTrainerView',
+    component: SportTrainerView,
+    children: [
+      {
+        path: 'users',
+        name: 'TrainerUsersView',
+        component: TrainerUsersView
+      },
+      {
+        path: 'users/:userId',
+        name: 'TrainerUserProfileView',
+        component: TrainerUserProfileView
+      },
+      {
+        path: 'conversations',
+        name: 'TrainerUserConversationsView',
+        component: TrainerUserConversationsView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'TrainerUserConversationView',
+        component: TrainerUserConversationView
+      },
+      {
+        path: 'requests',
+        name: 'TrainingPlanRequest',
+        component: TrainingPlanRequest
       }
     ]
   },

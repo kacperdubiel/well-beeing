@@ -78,6 +78,7 @@ public class UserController {
     }
 
     @RequestMapping(path = "/add-role-to-user", method = RequestMethod.POST)
+    @RolesAllowed(ERole.Name.ROLE_ADMIN)
     public ResponseEntity<?> addRoleToUser(@RequestBody @NonNull RoleToUserRequest roleToUserRequest) throws ConflictException {
         if(!userService.addRoleToUser(roleToUserRequest.getUsername(), roleToUserRequest.getRole())) {
             throw new ConflictException("Role cannot be assigned to user");

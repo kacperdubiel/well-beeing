@@ -2,7 +2,8 @@
     <div class="section-2-bg">
         <div class="d-flex flex-row px-4 py-3">
             <div class="d-flex flex-column text-start">
-                <img :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
             <div class="d-flex flex-column align-self-center w-100 ms-3">
                 <div class="grow-wrap">
@@ -57,7 +58,6 @@ export default {
 
             },
             profilePictureSrc: "",
-
             submittingPost: false,
             successPost: false,
             errorPost: false
@@ -89,16 +89,13 @@ export default {
                 if (this.post.postImgPath !== null)
                     this.$func_global.importData(this.$refs.postPicture, this.$store.getters.getToken, 'postPicture', postId)
                 this.clearInputs()
-                // this.getMyRoleRequests()
                 this.successPost = true
                 this.submittingPost = false
-                this.$emit('refresh:posts')
+                console.log('DATATATATTATA',response.data)
+                this.$emit('refresh:posts', 0, false, 0)
             }).catch(error => {
                 console.log(error.response)
             });
-
-
-
         },
         clearStatusPost() {
             this.successPost = false
@@ -117,7 +114,7 @@ export default {
     },
     computed: {
         invalidPostContent() {
-            return this.postContent === ""
+            return this.post.postContent === ""
         },
     }
 }

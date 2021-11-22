@@ -37,13 +37,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> getMyPosts(Profile creatorParam, Pageable pageable) {
-        return postDAO.findAllByCreatorProfileUserEmail(creatorParam, pageable);
+    public Page<Post> getUsersPosts(Profile creatorParam, Pageable pageable) {
+        return postDAO.findAllByCreator(creatorParam, pageable);
     }
 
     @Override
     public Post getPost(long postId) {
-        return postDAO.findPostByPostId(postId);
+        return postDAO.findPostByPostId(postId).orElse(null);
     }
 
     @Override
@@ -63,9 +63,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post updatePost(long id, Post post, String updaterName) throws NotFoundException {
         post.setPostId(id);
-        Post targetPost = postDAO.findPostByPostId(id);
+        Post targetPost = postDAO.findPostByPostId(id).orElse(null);
 
-        if (targetPost == null)
+        if (targetPost == null || targetPost.isDeleted())
             throw new NotFoundException(String.format("There's no post with id=%d", id));
 
         Profile updaterProfile = userDAO.findUserByEmail(updaterName).orElse(null).getProfile();
@@ -81,9 +81,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post partialUpdatePost(long id, Map<String, Object> fields, String updaterName) throws NotFoundException {
-        Post targetPost = postDAO.findPostByPostId(id);
+        Post targetPost = postDAO.findPostByPostId(id).orElse(null);
 
-        if (targetPost == null || fields == null || fields.isEmpty())
+        if (targetPost == null || targetPost.isDeleted() || fields == null || fields.isEmpty())
             throw new NotFoundException("Bad request!");
 
         Profile updaterProfile = userDAO.findUserByEmail(updaterName).orElse(null).getProfile();
@@ -123,9 +123,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public boolean deletePost(long postId, String cancellerName) throws NotFoundException {
-        Post targetPost = postDAO.findPostByPostId(postId);
+        Post targetPost = postDAO.findPostByPostId(postId).orElse(null);
 
-        if (targetPost == null)
+        if (targetPost == null || targetPost.isDeleted())
             throw new NotFoundException(String.format("There's no post with id=%d", postId));
 
         Profile cancellerProfile = userDAO.findUserByEmail(cancellerName).orElse(null).getProfile();

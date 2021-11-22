@@ -21,7 +21,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title ms-2" id="addMeasureModalLabel"> Podaj wynik pomiaru </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
+                            <button id="close-add-modal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
                         </div>
                         <div class="modal-body">
                             <div class="container-fluid">
@@ -31,12 +31,17 @@
                                             type="number"
                                             v-model="measureValue"
                                             class="form-control"
+                                            :class="{ 'has-error': this.measureValueError}"
                                             min="0" max="1000"
                                             step="0.5"
                                         />
                                         <span v-if="selectedMeasureType" class="input-group-text">
                                             {{ selectedMeasureType.unit }}
                                         </span>
+                                    </div>
+                                    <div v-if="measureValueError" class="text-danger align-left">
+                                        Wartość musi być pomiędzy {{ selectedMeasureType.minValue }}
+                                        a {{ selectedMeasureType.maxValue }} {{ selectedMeasureType.unit }}.
                                     </div>
                                     <div class="row mt-3">
                                         <date-picker v-model="measureDate" mode="dateTime" is24hr>
@@ -60,7 +65,7 @@
                                             <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="clearInputs">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="addMeasure">Dodaj</button>
+                                            <button class="btn-panel-telemedic p-2" @click="addMeasure">Dodaj</button>
                                         </div>
                                     </div>
                                 </div>
@@ -77,7 +82,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title ms-2" id="editMeasureModalLabel"> Edytuj wynik pomiaru </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
+                            <button id="close-edit-modal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs"></button>
                         </div>
                         <div class="modal-body">
                             <div class="container-fluid" id="modal-container">
@@ -87,11 +92,17 @@
                                             type="number"
                                             v-model="measureValue"
                                             class="form-control"
+                                            :class="{ 'has-error': this.measureValueError}"
                                             min="0" max="1000"
-                                            step="0.5"/>
+                                            step="0.5"
+                                        />
                                         <span v-if="selectedMeasureType" class="input-group-text">
                                             {{ selectedMeasureType.unit }}
                                         </span>
+                                    </div>
+                                    <div v-if="measureValueError" class="text-danger align-left">
+                                        Wartość musi być pomiędzy {{ selectedMeasureType.minValue }}
+                                        a {{ selectedMeasureType.maxValue }} {{ selectedMeasureType.unit }}.
                                     </div>
                                     <div class="row mt-3">
                                         <date-picker v-model="measureDate" mode="dateTime" is24hr>
@@ -115,7 +126,7 @@
                                             <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="clearInputs">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="editMeasure">Zmień</button>
+                                            <button class="btn-panel-telemedic p-2" @click="editMeasure">Zmień</button>
                                         </div>
                                     </div>
                                 </div>
@@ -169,26 +180,63 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="measure in measures" v-bind:key="measure.id">
-                            <td>{{ this.$func_global.formatDate(measure.measureDate) }}</td>
-                            <td>{{ this.$func_global.formatTime(measure.measureDate) }}</td>
-                            <td>{{ measure.value }} {{ measure.measureType.unit }}</td>
-                            <td v-if="this.isModificationAllowed" class="align-right">
-                                <button class="btn-white m-r-5 btn-hover"
-                                        data-bs-toggle="modal" data-bs-target="#editMeasureModal"
-                                        @click="selectMeasure(measure)">
-                                    <font-awesome-icon :icon="['fa', 'pen']" />
-                                </button>
-                                <button class="btn-white btn-hover"
-                                        data-bs-toggle="modal" data-bs-target="#deleteMeasureModal"
-                                        @click="selectMeasure(measure)">
-                                    <font-awesome-icon :icon="['fa', 'trash']" />
-                                </button>
-                            </td>
-                        </tr>
+                            <tr v-for="measure in measures" v-bind:key="measure.id">
+                                <td>{{ this.$func_global.formatDate(measure.measureDate) }}</td>
+                                <td>{{ this.$func_global.formatTime(measure.measureDate) }}</td>
+                                <td>{{ measure.value }} {{ measure.measureType.unit }}</td>
+                                <td v-if="this.isModificationAllowed" class="align-right">
+                                    <button class="btn-white m-r-5 btn-hover"
+                                            data-bs-toggle="modal" data-bs-target="#editMeasureModal"
+                                            @click="selectMeasure(measure)">
+                                        <font-awesome-icon :icon="['fa', 'pen']" />
+                                    </button>
+                                    <button class="btn-white btn-hover"
+                                            data-bs-toggle="modal" data-bs-target="#deleteMeasureModal"
+                                            @click="selectMeasure(measure)">
+                                        <font-awesome-icon :icon="['fa', 'trash']" />
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                    <div v-if="measures && measures.length === 0" class="row mb-2">
+                        Brak wpisów.
+                    </div>
                 </div>
+            </div>
+
+            <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
+                <nav>
+                    <ul class="pagination justify-content-center my-auto">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                            <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
+                                <font-awesome-icon :icon="['fa', 'fast-backward']" />
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                            <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
+                                <font-awesome-icon :icon="['fa', 'chevron-left']" />
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page}"
+                            v-for="page in navigation.pagesNavbar" :key="page"
+                        >
+                            <a class="page-link" @click="goToPage(page)" >
+                                {{page+1}}
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                            <a class="page-link" @click="goToPage(navigation.currentPage+1)">
+                                <font-awesome-icon :icon="['fa', 'chevron-right']" />
+                            </a>
+                        </li>
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                            <a class="page-link" @click="goToPage(navigation.totalPages-1)">
+                                <font-awesome-icon :icon="['fa', 'fast-forward']" />
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -210,12 +258,14 @@ export default {
             measureTypes: {},
             selectedMeasureType: null,
 
+            navigation: {},
             measures: {},
-            measuresPage: {},
             measureDate: new Date(),
-            measureValue: 0,
+            measureValue: null,
             selectedMeasure: {},
-            isModificationAllowed: false
+            isModificationAllowed: false,
+
+            measureValueError: false,
         }
     },
     watch: {
@@ -229,21 +279,6 @@ export default {
         }
     },
     methods: {
-        getProfile(){
-            this.axios.get(`${this.apiURL}profile/my`, {
-                headers: {
-                    Authorization: 'Bearer ' + this.$store.getters.getToken
-                }
-            })
-                .then(response => {
-                    if(this.userId === response.data.id){
-                        this.isModificationAllowed = true;
-                    }
-                })
-                .catch(e => {
-                    console.log(e);
-                })
-        },
         getMeasureTypes() {
             this.axios.get(`${this.apiURL}measure-types`, {
                 headers: {
@@ -254,28 +289,58 @@ export default {
                     this.measureTypes = response.data;
                     if(response.data.length > 0){
                         this.selectedMeasureType = response.data[0];
-                        this.getProfile();
+                        this.setModificationAllowed();
                     }
                 })
                 .catch(e => {
                     console.log(e);
                 })
         },
+        setModificationAllowed(){
+            if(this.userId === this.$store.getters.getProfileId){
+                this.isModificationAllowed = true;
+            }
+        },
         getMeasures() {
             if(this.userId && this.userId.length > 0){
-                this.axios.get(`${this.apiURL}measures/user/${this.userId}/type/${this.selectedMeasureType.id}`, {
+                this.axios.get(`${this.apiURL}measures/user/${this.userId}/type/${this.selectedMeasureType.id}`
+                    + `?page=${this.navigation.toGoPage ?? 0}`, {
                     headers: {
                         Authorization: 'Bearer ' + this.$store.getters.getToken
                     }
                 })
                     .then(response => {
-                        this.measuresPage = response.data;
+                        this.navigation = response.data;
+                        this.getPagesNavbar();
+                        this.navigation.toGoPage = this.navigation.currentPage;
                         this.measures = response.data.objects;
                     })
                     .catch(e => {
                         console.log(e);
                     })
             }
+        },
+        getPagesNavbar(){
+            this.navigation.pagesNavbar = []
+            if (this.navigation.currentPage > 1)
+                this.navigation.pagesNavbar.push(this.navigation.currentPage-2);
+            if (this.navigation.currentPage !== 0)
+                this.navigation.pagesNavbar.push(this.navigation.currentPage-1);
+            for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
+                this.navigation.pagesNavbar.push(i);
+                if (i === this.navigation.currentPage + 2)
+                    break;
+            }
+        },
+        goToPage(pageNo) {
+            this.navigation.toGoPage = pageNo;
+            this.getMeasures();
+        },
+        isPageFirst(){
+            return this.navigation.currentPage === 0;
+        },
+        isPageLast(){
+            return this.navigation.currentPage === this.navigation.totalPages - 1;
         },
         selectMeasure(measure){
             this.selectedMeasure = measure;
@@ -290,7 +355,6 @@ export default {
                 },
                 "measureDate": this.measureDate,
             }
-            // console.log("DATA: " + JSON.stringify(data));
 
             this.axios({
                 method: 'post',
@@ -301,8 +365,14 @@ export default {
                 .then(() => {
                     this.getMeasures();
                     this.clearInputs();
+                    this.measureValueError = false;
+                    this.closeAddModal();
                 }).catch(e => {
-                    console.log(e);
+                    if(e.response.status === 400){
+                        this.measureValueError = true;
+                    } else {
+                        console.log(e);
+                    }
                 })
         },
         editMeasure() {
@@ -321,8 +391,14 @@ export default {
                 .then(() => {
                     this.getMeasures();
                     this.clearInputs();
+                    this.measureValueError = false;
+                    this.closeEditModal();
                 }).catch(e => {
+                if(e.response.status === 400){
+                    this.measureValueError = true;
+                } else {
                     console.log(e);
+                }
                 })
         },
         deleteMeasure(){
@@ -338,9 +414,16 @@ export default {
                     console.log(e);
                 })
         },
+        closeAddModal() {
+            document.getElementById('close-add-modal').click();
+        },
+        closeEditModal() {
+            document.getElementById('close-edit-modal').click();
+        },
         clearInputs(){
             this.measureDate = new Date();
-            this.measureValue = 0;
+            this.measureValue = null;
+            this.measureValueError = false;
         }
     },
     created(){

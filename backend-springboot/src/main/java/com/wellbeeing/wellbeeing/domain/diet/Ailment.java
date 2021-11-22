@@ -3,11 +3,12 @@ package com.wellbeeing.wellbeeing.domain.diet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EAilmentType;
+import com.wellbeeing.wellbeeing.domain.sport.SportLabelAilment;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import lombok.*;
-
+import com.wellbeeing.wellbeeing.domain.SportLabel;
 import javax.persistence.*;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Builder
@@ -36,6 +37,9 @@ public class Ailment {
             inverseJoinColumns = @JoinColumn(name = "sport_label_id", referencedColumnName = "sportLabel_Id")
     )
     private List<SportLabel> allowedSportLabels;
+    @JsonIgnore
+    @OneToMany(mappedBy = "ailment", cascade = CascadeType.ALL)
+    private Set<SportLabelAilment> sportLabels = new HashSet<>();
     @Column
     private double changeInCalories;
     @Column

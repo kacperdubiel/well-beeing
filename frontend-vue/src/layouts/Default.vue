@@ -8,7 +8,7 @@
                 <div class="col-md-2 d-none d-md-block ps-4 pe-2">
                     <side-bar />
                 </div>
-                <div class="col-md-8 col-sm-10 px-4">
+                <div class="col-md-8 col-sm-10 px-4 mb-3">
                     <slot />
                 </div>
                 <div class="col-md-2 d-none d-md-block ps-2 pe-4">

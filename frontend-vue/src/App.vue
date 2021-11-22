@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <component :is="layout">
-            <router-view/>
+            <router-view :key="$route.path"/>
         </component>
     </div>
 </template>
@@ -63,6 +63,15 @@ body {
     padding: 0.2rem 0.5rem;
     font-size: 1rem;
 }
+.no-bg-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.no-bg-btn span:hover {
+    border-bottom: 1px solid white;
+}
 
 button[class^="btn-panel-"] {
     color: white;
@@ -119,7 +128,9 @@ button[class^="btn-card-panel-"] {
 .btn-panel-sport {
     background-color: var(--SPORT) !important;
 }
-
+.btn-icon-panel-sport {
+    background-color: var(--SPORT) !important;
+}
 .btn-panel-diet {
     background-color: var(--DIET) !important;
 }
@@ -267,6 +278,36 @@ input{
     padding: 25px 20px;
 }
 
+.pagination > li.telemedic-page > a
+{
+    background-color: white;
+    color: var(--TELEMEDIC);
+}
+
+.pagination > li.telemedic-page > a:focus,
+.pagination > li.telemedic-page > a:hover,
+.pagination > li.telemedic-page > span:focus,
+.pagination > li.telemedic-page > span:hover
+{
+    color: white;
+    background-color: var(--TELEMEDIC);
+    border-color: var(--TELEMEDIC);
+    cursor: pointer;
+}
+
+.pagination > .telemedic-page.active > a
+{
+    color: white;
+    background-color: var(--TELEMEDIC) !Important;
+    border: solid 1px var(--TELEMEDIC) !Important;
+}
+
+.pagination > .telemedic-page.active > a:hover
+{
+    background-color: var(--TELEMEDIC) !Important;
+    border: solid 1px var(--TELEMEDIC);
+}
+
 .pagination > li.sport-page > a
 {
     background-color: white;
@@ -327,6 +368,33 @@ input{
     background-color: var(--DIET) !Important;
     border: solid 1px var(--DIET);
 }
+
+.pagination > li.admin-page > a {
+    background-color: white;
+    color: var(--GREY3);
+}
+
+.pagination > li.admin-page > a:focus,
+.pagination > li.admin-page > a:hover,
+.pagination > li.admin-page > span:focus,
+.pagination > li.admin-page > span:hover {
+    color: white;
+    background-color: var(--GREY3);
+    border-color: var(--GREY3);
+    cursor: pointer;
+}
+
+.pagination > .admin-page.active > a {
+    color: white;
+    background-color: var(--GREY3) !Important;
+    border: solid 1px var(--GREY3) !Important;
+}
+
+.pagination > li.admin-page.disabled > a {
+    color: var(--GREY1);
+    background-color: white;
+}
+
  p.has-error {
     color: var(--INTENSE-PINK);
  }
@@ -347,4 +415,11 @@ input{
 .modal-content {
     border-radius: 20px;
 }
+.circle {
+    height: 15px;
+    width: 15px;
+    background-color: lawngreen;
+    border-radius: 50%;
+    display: inline-block;
+ }
 </style>
