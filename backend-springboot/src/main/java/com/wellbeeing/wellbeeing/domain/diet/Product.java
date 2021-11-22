@@ -17,7 +17,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    @Column(unique = true)
     private String name;
     @Column
     private double caloriesPerHundredGrams;

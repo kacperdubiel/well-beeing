@@ -20,9 +20,7 @@ export const func_global = {
         let file = files[0];
         var formData = new FormData();
         formData.append("file", file);
-        return this.uploadFileFunc(formData, type, token, id).then((resp) => {
-            console.log(resp)
-        })
+        return this.uploadFileFunc(formData, type, token, id)
     },
 
     async uploadFileFunc (data, type, token, id) {
@@ -35,10 +33,8 @@ export const func_global = {
             url = `${apiURL}post/import/${id}`
         else if(type === 'dishPicture')
             url = `${apiURL}dish/${id}/photo`
-        else if(type === 'importProducts'){
-            console.log("jestem sb")
+        else if(type === 'importProducts')
             url = `${apiURL}import/products`
-        }
         else if(type === 'importDiets')
             url = `${apiURL}import/diets`
         else if(type === 'importAilments')
@@ -340,6 +336,72 @@ export const func_global = {
             return "kg"
         else
             return "Nieznana"
+    },
+    mapVitamin(vit){
+        if(vit == 'FOLIC_ACID')
+            return 'Kwas foliowy [mcg]'
+        if(vit == 'BIOTIN')
+            return 'Biotyna [mcg]'
+        if(vit == 'A')
+            return 'A [mcg]'
+        if(vit == 'B1')
+            return 'B1 [mg]'
+        if(vit == 'B2')
+            return 'B2 [mg]'
+        if(vit == 'B5')
+            return 'B5 [mg]'
+        if(vit == 'B6')
+            return 'B6 [mg]'
+        if(vit == 'B12')
+            return 'B12 [mcg]'
+        if(vit == 'C')
+            return 'C [mg]'
+        if(vit == 'D')
+            return 'D [mcg]'
+        if(vit == 'E')
+            return 'E [mg]'
+        if(vit == 'PP')
+            return 'PP [mg]'
+        if(vit == 'K')
+            return 'K [mg]'
+        else
+            return vit
+    },
+    mapMacro(macro){
+        if(macro == 'VEGETABLE_PROTEINS')
+            return 'Białka roślinne [g]'
+        if(macro == 'ANIMAL_PROTEINS')
+            return 'Białka zwierzęce [g]'
+        if(macro == 'POLYUNSATURATED_FATS')
+            return 'Tłuszcze wielonienasycone [g]'
+        if(macro == 'MONOUNSATURATED_FATS')
+            return 'Tłuszcze jednonienasycone [g]'
+        else
+            return macro
+    },
+    mapMineral(mineral){
+        if(mineral == 'ZINC')
+            return 'Cynk [mg]'
+        if(mineral == 'PHOSPHORUS')
+            return 'Fosfor [mg]'
+        if(mineral == 'IODINE')
+            return 'Jod [mcg]'
+        if(mineral == 'MAGNESIUM')
+            return 'Magnez [mg]'
+        if(mineral == 'COPPER')
+            return 'Miedź [mg]'
+        if(mineral == 'POTASSIUM')
+            return 'Potas [mg]'
+        if(mineral == 'SELENIUM')
+            return 'Selen [mcg]'
+        if(mineral == 'SODIUM')
+            return 'Sód [mg]'
+        if(mineral == 'CALCIUM')
+            return 'Wapń [mg]'
+        if(mineral == 'Iron')
+            return 'Żelazo [mg]'       
+        else
+            return mineral
     },
     mapPublished(draft){
         if(draft)

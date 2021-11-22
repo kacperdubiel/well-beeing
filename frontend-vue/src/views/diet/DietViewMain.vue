@@ -75,7 +75,6 @@ a {
 }
 .nav-link {
     color: white;
-    border-color: var(--DIET);
 
 }
 .nav-link:hover {
