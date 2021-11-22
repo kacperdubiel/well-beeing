@@ -60,8 +60,7 @@
             <div class="d-flex flex-column text-start">
                 <button class="no-bg-btn">
                     <span>
-<!--                        {{this.postSource.comments.length}} -->
-                        0 udostępnień
+                        {{this.postSource.sharingCounter}} udostępnień
                     </span>
                 </button>
             </div>

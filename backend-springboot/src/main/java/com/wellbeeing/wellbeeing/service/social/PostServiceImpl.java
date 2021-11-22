@@ -38,6 +38,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Post findOriginalPost(Post post) {
+        if (post.isSharing())
+            return findOriginalPost(post.getOriginalPost());
+        else
+            return post;
+    }
+
+    @Override
     public Post addPost(Post post, String creatorName) throws NotFoundException {
         User user = userDAO.findUserByEmail(creatorName).orElse(null);
 
@@ -65,9 +73,14 @@ public class PostServiceImpl implements PostService {
         if (sharedPost == null || sharedPost.isDeleted())
             throw new NotFoundException(String.format("There's no post with id=%d", postId));
 
+        sharedPost = findOriginalPost(sharedPost);
+
         Post sharingPost = new Post(post.getPostContent(), user.getProfile(), sharedPost);
-        postDAO.save(sharingPost);
+
+        sharedPost.increaseSharingCounter();
+
         postDAO.save(sharedPost);
+        postDAO.save(sharingPost);
         return sharingPost;
     }
 

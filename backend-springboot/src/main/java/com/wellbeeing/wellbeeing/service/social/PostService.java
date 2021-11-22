@@ -11,6 +11,7 @@ import java.util.Map;
 public interface PostService {
     Page<Post> getUsersPosts(Profile creatorParam, Pageable pageable);
     Post getPost(long postId);
+    Post findOriginalPost(Post post);
 
     Post addPost(Post post, String creatorName) throws NotFoundException;
     Post sharePost(long postId, Post post, String creatorName) throws NotFoundException;
