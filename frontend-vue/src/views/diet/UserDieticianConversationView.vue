@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ConversationComponent from "@/components/telemedic/ConversationComponent";
+import ConversationComponent from "@/components/telemedic/communicator/ConversationComponent";
 export default {
     name: "UserDieticianConversationView",
     components: {

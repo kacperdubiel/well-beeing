@@ -12,6 +12,7 @@ export const func_global = {
         return this.uploadFile(formData, type, token, id).then((resp) => {
             console.log(resp)
         })
+    },
 
     async importDataFunc(myfile, token, type, id) {
         // let myfile = this.$refs.myfile;

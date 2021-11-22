@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SearchSpecialistComponent from "@/components/telemedic/SearchSpecialistComponent.vue";
+import SearchSpecialistComponent from "@/components/telemedic/user-connections/SearchSpecialistComponent.vue";
 export default {
     name: "DietSpecialistsSearchView",
     components: {

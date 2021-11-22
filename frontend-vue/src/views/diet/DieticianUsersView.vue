@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import UserConnectionsToMeComponent from "@/components/telemedic/UserConnectionsToMeComponent.vue";
+import UserConnectionsToMeComponent from "@/components/telemedic/user-connections/UserConnectionsToMeComponent.vue";
 export default {
     name: "DieticianUsersView",
     components: {

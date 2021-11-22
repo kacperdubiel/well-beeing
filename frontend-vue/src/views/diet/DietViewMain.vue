@@ -23,12 +23,12 @@
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'DietSpecialistsView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DietSpecialistsView' }">Dietetycy</span>
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DietSpecialistsView' || this.$route.name === 'DietSpecialistsSearchView' }">Dietetycy</span>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'UserDieticianAllConversationsView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'UserDieticianAllConversationsView' }">Wiadomości</span>
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'UserDieticianAllConversationsView' || this.$route.name === 'UserDieticianConversationView'  }">Wiadomości</span>
                 </router-link>
             </li>
         </ul>

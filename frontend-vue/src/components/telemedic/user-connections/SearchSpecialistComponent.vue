@@ -3,7 +3,7 @@
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>
-        <div v-if="componentError === false" class="container">
+        <div v-if="componentError === false">
             <div class="row">
                 <div class="col-1">
                     <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>

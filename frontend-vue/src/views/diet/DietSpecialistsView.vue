@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import UserConnectionsFromMeComponent from "@/components/telemedic/UserConnectionsFromMeComponent.vue";
+import UserConnectionsFromMeComponent from "@/components/telemedic/user-connections/UserConnectionsFromMeComponent.vue";
 export default {
     name: "DietSpecialistsView",
     components: {

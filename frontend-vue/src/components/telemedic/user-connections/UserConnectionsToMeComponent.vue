@@ -3,7 +3,7 @@
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>
-        <div v-if="componentError === false" class="container">
+        <div v-if="componentError === false">
             <div class="row justify-content-between">
                 <div v-if="connectionType !== 'WITH_USER'"  class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
@@ -142,7 +142,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div v-if="userConnections && userConnections.length === 0" class="row mb-2">
+                    <div v-if="userConnections && userConnections.length === 0" class="container mb-3">
                         Brak wpisów.
                     </div>
                 </div>

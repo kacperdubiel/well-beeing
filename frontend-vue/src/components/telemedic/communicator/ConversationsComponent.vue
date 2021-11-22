@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container-fluid">
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>
@@ -52,19 +52,19 @@
                 <nav>
                     <ul class="pagination justify-content-center my-auto">
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
-                        'sport-page' : connectionType === 'WITH_TRAINER'}">
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'fast-backward']" />
                             </a>
                         </li>
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
-                        'sport-page' : connectionType === 'WITH_TRAINER'}">
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'chevron-left']" />
                             </a>
                         </li>
                         <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
-                        'sport-page' : connectionType === 'WITH_TRAINER'}"
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}"
                             v-for="page in navigation.pagesNavbar" :key="page"
                         >
                             <a class="page-link" @click="goToPage(page)" >
@@ -72,13 +72,13 @@
                             </a>
                         </li>
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
-                        'sport-page' : connectionType === 'WITH_TRAINER'}">
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage+1)">
                                 <font-awesome-icon :icon="['fa', 'chevron-right']" />
                             </a>
                         </li>
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
-                        'sport-page' : connectionType === 'WITH_TRAINER'}">
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.totalPages-1)">
                                 <font-awesome-icon :icon="['fa', 'fast-forward']" />
                             </a>

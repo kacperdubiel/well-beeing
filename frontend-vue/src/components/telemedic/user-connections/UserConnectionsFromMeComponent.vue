@@ -1,9 +1,9 @@
 <template>
     <div class="container-fluid m-3">
-        <div v-if="componentError === true" class="container">
+        <div v-if="componentError === true">
             Błąd ładowania.
         </div>
-        <div v-if="componentError === false" class="container">
+        <div v-if="componentError === false">
             <div class="row justify-content-between">
                 <div class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
@@ -137,7 +137,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div v-if="userConnections && userConnections.length === 0" class="row mb-2">
+                    <div v-if="userConnections && userConnections.length === 0" class="container mt-2">
                         Brak wpisów.
                     </div>
                 </div>

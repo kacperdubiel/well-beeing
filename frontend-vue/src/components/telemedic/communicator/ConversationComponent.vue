@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container-fluid">
         <header>
             <div class="d-flex flex-row mb-4 align-items-center align-left bottom-border pb-3">
                 <div class="mx-3">

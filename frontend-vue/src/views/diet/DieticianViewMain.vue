@@ -16,6 +16,11 @@
                     <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianLabelsView' }">Etykiety</span>
                 </router-link>
             </li>
+            <li class="nav-item">
+                <router-link :to="{ name: 'DieticianUserAllConversationsView' }">
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianUserAllConversationsView' || this.$route.name === 'DieticianUserConversationView'  }">Wiadomości</span>
+                </router-link>
+            </li>
         </ul>
         <router-view></router-view>
     </div>
@@ -60,7 +65,6 @@ a {
 }
 .nav-link {
     color: white;
-    border-color: var(--DIET);
 
 }
 .nav-link:hover {

@@ -58,7 +58,7 @@ export default {
         }
     },
     mounted() {
-        this.downloadProfilePicture
+        this.downloadProfilePicture()
     }
 }
 </script>

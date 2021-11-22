@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import DietView from "@/views/diet/DietView"
+//import DietView from "@/views/diet/DietView"
 import UserMeasuresView from "@/views/telemedic/user/UserMeasuresView";
 import UserDoctorsView from "@/views/telemedic/user/UserDoctorsView";
 import UserDoctorConversationsView from "@/views/telemedic/user/UserDoctorConversationsView";
@@ -28,16 +28,6 @@ import DieticianDishesView from "@/views/diet/DieticianDishesView";
 import DieticianUsersView from "@/views/diet/DieticianUsersView";
 import DieticianLabelsView from "@/views/diet/DieticianLabelsView";
 import DieticianUserProfileView from "@/views/diet/DieticianUserProfileView";
-import UserMeasuresView from "@/views/telemedic/UserMeasuresView";
-import UserDoctorsView from "@/views/telemedic/UserDoctorsView";
-import UserDoctorConversationsView from "@/views/telemedic/UserDoctorConversationsView";
-import UserDoctorConversationView from "@/views/telemedic/UserDoctorConversationView";
-import AnalysisView from "@/views/telemedic/AnalysisView";
-import DoctorUsersView from "@/views/telemedic/DoctorUsersView";
-import DoctorUserProfileView from "@/views/telemedic/DoctorUserProfileView";
-import SearchDoctorsView from "@/views/telemedic/SearchDoctorsView";
-import DoctorUserConversationsView from "@/views/telemedic/DoctorUserConversationsView";
-import DoctorUserConversationView from "@/views/telemedic/DoctorUserConversationView";
 import FeedView from "@/views/social/feed/FeedView";
 import RoleRequestsView from "@/views/social/role-requests/RoleRequestsView";
 import LoginAdminView from "@/views/social/admin/LoginAdminView";
@@ -50,7 +40,7 @@ import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView
 import ProfileView from "@/views/social/profile/ProfileView";
 import ProfileEdit from "@/views/social/profile/ProfileEdit";
 import SportReportsComponent from "@/components/sport/SportReportsComponent";
-import TrainersView from "@/views/sport/trainers/TrainersView";
+//import TrainersView from "@/views/sport/trainers/TrainersView";
 import UserTrainerConversationView from "@/views/sport/trainers/UserTrainerConversationView";
 import UserTrainerConversationsView from "@/views/sport/trainers/UserTrainerConversationsView";
 import SearchTrainersView from "@/views/sport/trainers/SearchTrainersView";
