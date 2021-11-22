@@ -86,7 +86,7 @@
                 </button>
             </div>
             <div class="col px-1 interact">
-                <button class="no-bg interact w-100">
+                <button class="no-bg interact w-100" @click="handleShare(this.postSource.postId)" data-bs-toggle="modal" data-bs-target="#postShareModal">
                     <font-awesome-icon :icon="['far', 'share-square']" class="me-2"/>
                     Udostępnij
                 </button>
@@ -178,6 +178,9 @@ export default {
         },
         handleEdit(post) {
             this.$emit('edit:post', post)
+        },
+        handleShare(postId) {
+            this.$emit('share:post', postId)
         },
         handleGetLikes(likes) {
             this.$emit('get:likes', likes)
