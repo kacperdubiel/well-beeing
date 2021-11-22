@@ -32,8 +32,16 @@
                                     <td>{{Math.round(detail.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
                                 </tr>
                                 <tr>
+                                    <th>Cukry</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedSugar)}} g</td>
+                                </tr>
+                                <tr>
                                     <th>Tłuszcze</th>
                                     <td>{{Math.round(detail.derivedNutritionalValues.derivedFats)}} g</td>
+                                </tr>
+                                <tr>
+                                    <th>Tłuszcze nasycone</th>
+                                    <td>{{Math.round(detail.derivedNutritionalValues.derivedSaturatedFats)}} g</td>
                                 </tr>
                                 <tr>
                                     <th>Cholesterol</th>
@@ -127,8 +135,12 @@
                 <h6 class="title">PODSUMOWANIE</h6>
         </div>
         <div style="align-items: center; display: flex; width:100%;">
-            <table class="table">
+            <table class="table table-hover">
                 <tbody>
+                    <tr>
+                        <th>Kalorie</th>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedCalories)}} kcal</td>
+                    </tr>
                     <tr>
                         <th class="col-lg-6">Białka</th>
                         <td>{{Math.round(report.derivedNutritionalValues.derivedProteins)}} g</td>
@@ -138,12 +150,16 @@
                         <td>{{Math.round(report.derivedNutritionalValues.derivedCarbohydrates)}} g</td>
                     </tr>
                     <tr>
+                        <th>Cukry</th>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedSugar)}} g</td>
+                    </tr>
+                    <tr>
                         <th>Tłuszcze</th>
                         <td>{{Math.round(report.derivedNutritionalValues.derivedFats)}} g</td>
                     </tr>
                     <tr>
-                        <th>Kalorie</th>
-                        <td>{{Math.round(report.derivedNutritionalValues.derivedCalories)}} kcal</td>
+                        <th>Tłuszcze nasycone</th>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedSaturatedFats)}} g</td>
                     </tr>
                     <tr>
                         <th>Cholesterol</th>
@@ -178,13 +194,13 @@
                 <h6 class="title">WITAMINY</h6>
                 <table class="table table-hover table-borderless">
                     <tr>
-                        <th class="col-sm-3" scope="col">Nazwa</th>
-                        <th class="col-sm-7" scope="col">Ilość</th>
+                        <th class="col-sm-6" scope="col">Nazwa</th>
+                        <th class="col-sm-6" scope="col">Ilość</th>
                     </tr>
                     <tbody>
                         <tr v-for="(value, key) in this.reportDetails.vitaminsMicroGram" :key="key">
-                            <th class="col-sm-2" scope="row">{{key}}</th>
-                            <td class="col-sm-2">{{value}} mcg</td>
+                            <th class="col-sm-2" scope="row">{{this.$func_global.mapVitamin(key)}}</th>
+                            <td class="col-sm-2">{{Math.round(value*100) / 100}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -193,13 +209,13 @@
                 <h6 class="title">MINERAŁY</h6>
                 <table class="table table-hover table-borderless">
                     <tr>
-                        <th class="col-sm-3" scope="col">Nazwa</th>
-                        <th class="col-sm-7" scope="col">Ilość</th>
+                        <th class="col-sm-6" scope="col">Nazwa</th>
+                        <th class="col-sm-6" scope="col">Ilość</th>
                     </tr>
                     <tbody>
                         <tr v-for="(value, key) in this.reportDetails.mineralsMilliGram" :key="key">
-                            <th class="col-sm-3" scope="row">{{key}}</th>
-                            <td class="col-sm-9">{{value}} mg</td>
+                            <th class="col-sm-3" scope="row">{{this.$func_global.mapMineral(key)}}</th>
+                            <td class="col-sm-7">{{Math.round(value*100) / 100}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -208,13 +224,13 @@
                 <h6 class="title">MAKROELEMENTY</h6>
                 <table class="table table-hover table-borderless">
                     <tr>
-                        <th class="col-sm-3" scope="col">Nazwa</th>
-                        <th class="col-sm-7" scope="col">Ilość</th>
+                        <th class="col-sm-6" scope="col">Nazwa</th>
+                        <th class="col-sm-6" scope="col">Ilość</th>
                     </tr>
                     <tbody>
                         <tr v-for="(value, key) in this.reportDetails.macroDetailsGram" :key="key">
-                            <th class="col-sm-5" scope="row">{{key}}</th>
-                            <td class="col-sm-7">{{value}} g</td>
+                            <th class="col-sm-3" scope="row">{{this.$func_global.mapMacro(key)}}</th>
+                            <td class="col-sm-7">{{Math.round(value*100) / 100}}</td>
                         </tr>
                     </tbody>
                 </table>

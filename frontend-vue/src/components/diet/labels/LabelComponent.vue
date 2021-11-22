@@ -16,7 +16,7 @@
         </div>
         <hr class="hr-dish title-line"/>
         <div class="title start-flex">
-            <h6 class="title">ETYKIETA NIEZALECANA DLA CHORÓB / ALERGII / STANÓW FIZYCZNYCH</h6>
+            <h6 class="title">ZALECANA DLA CHORÓB / ALERGII / STANÓW FIZYCZNYCH</h6>
         </div>
         <div>
             <ul class="list-group list-group-flush">
@@ -27,7 +27,7 @@
         </div>
         <hr class="hr-dish title-line"/>
         <div class="title start-flex">
-            <h6 class="title">ETYKIETA NIEZALECANA DLA DIET</h6>
+            <h6 class="title">ZALECANA DLA DIET</h6>
         </div>
         <div>
             <ul class="list-group list-group-flush">

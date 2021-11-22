@@ -14,8 +14,8 @@
             <thead>
                 <tr>
                     <th class="col-sm-4" scope="col">Nazwa</th>
-                    <th class="col-sm-2" scope="col">Wykluczone dolegliwości</th>
-                    <th class="col-sm-2" scope="col">Wykluczone diety</th>
+                    <th class="col-sm-2" scope="col">Dolegliwości</th>
+                    <th class="col-sm-2" scope="col">Diety</th>
                     <th class="col-sm-4" scope="col"></th>
                 </tr>
             </thead>
