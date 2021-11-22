@@ -17,12 +17,13 @@
                         <div class="row">
                             <div class="col">
                                 <div class="grow-wrap">
-                                <textarea
-                                    class="textarea js-autoresize w-100"
-                                    v-model="sharingPost.postContent"
-                                    placeholder="Jeśli chcesz, dodaj opis do posta..."
-                                >
-                                </textarea>
+                                    <textarea
+                                        :id="sharedPostId"
+                                        class="textarea js-autoresize w-100"
+                                        v-model="sharingPost.postContent"
+                                        placeholder="Jeśli chcesz, dodaj opis do posta..."
+                                    >
+                                    </textarea>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +71,13 @@ export default {
     },
     mounted() {
         setResizeListeners(this.$el, ".js-autoresize")
+        document.getElementById(String(this.sharedPostId)).style.height = '80px'
     },
+    watch: {
+        sharedPostId: function () {
+            this.sharingPost.postContent = ""
+        }
+    }
 }
 </script>
 

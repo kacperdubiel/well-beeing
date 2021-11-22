@@ -1,8 +1,8 @@
 <template>
     <div v-if="postsSource" class="container-fluid p-0">
         <post v-for="post in postsSource" :key="post.postId" :post-source="post" class="mb-4" @edit:post="setModalPost" @share:post="setModalPostId" @get:likes="setLikesList"/>
-        <post-edit :edited-post-source="modalPost" />
-        <post-share :shared-post-id="modalPostId" :key="modalPostId"/>
+        <post-edit :edited-post-source="modalPost"/>
+        <post-share :shared-post-id="modalPostId"/>
         <likes-list :likes-source="likesModal" />
     </div>
 </template>
@@ -17,7 +17,7 @@ export default {
     data() {
         return {
             modalPost: Object,
-            modalPostId: 0,
+            modalPostId: Number,
             likesModal: []
         }
     },

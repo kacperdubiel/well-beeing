@@ -38,7 +38,7 @@
         </div>
         <div class="row text-start pb-3" v-if="this.postSource.originalPost">
             <div class="col">
-                <shared-post :post-source="this.postSource.originalPost" class="m-2"/>
+                <shared-post :post-source="this.postSource.originalPost" class="my-2 mx-4"/>
             </div>
         </div>
         <div class="d-flex flex-row px-4 py-2 align-items-center">
@@ -62,13 +62,13 @@
 
                 </button>
             </div>
-            <div class="d-flex flex-column text-start">
-                <button class="no-bg-btn">
-                    <span>
-                        {{this.postSource.sharingCounter}} {{this.$func_global.mapShareForm(this.postSource.sharingCounter)}}
-                    </span>
-                </button>
-            </div>
+<!--            <div class="d-flex flex-column text-start">-->
+<!--                <button class="no-bg-btn">-->
+<!--                    <span>-->
+<!--                        {{this.postSource.sharingCounter}} {{this.$func_global.mapShareForm(this.postSource.sharingCounter)}}-->
+<!--                    </span>-->
+<!--                </button>-->
+<!--            </div>-->
         </div>
 
         <div class="row mx-4 py-2 align-items-center" id="interactions">

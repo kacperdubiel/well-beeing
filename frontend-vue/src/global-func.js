@@ -105,6 +105,8 @@ export const func_global = {
     mapCommentForm(counter) {
         if(counter === 1)
             return 'komentarz'
+        else if(counter === 12 || counter === 13 || counter === 14)
+            return 'komentarzy'
         else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
             return 'komentarze'
         else
@@ -113,6 +115,8 @@ export const func_global = {
     mapShareForm(counter) {
         if(counter === 1)
             return 'udostępnienie'
+        else if(counter === 12 || counter === 13 || counter === 14)
+            return 'udostępnień'
         else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
             return 'udostępnienia'
         else
