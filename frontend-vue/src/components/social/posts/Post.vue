@@ -39,10 +39,10 @@
         <div class="d-flex flex-row px-4 py-2 align-items-center">
 
             <div class="d-flex flex-column text-start" v-if="this.postSource.likes.length > 0">
-                <button data-bs-toggle="modal" data-bs-target="#likesListModal" class="no-bg-open-modal" @click="handleGetLikes(this.postSource.likes)">
+                <button data-bs-toggle="modal" data-bs-target="#likesListModal" class="no-bg-btn" @click="handleGetLikes(this.postSource.likes)">
                     <div class="text-start d-flex align-items-center ms-3 interact" >
                         <font-awesome-icon id="heart-icon" :icon="['fa', 'heart']" class="me-2"/>
-                        <span>
+                        <span class="text-center">
                             {{this.postSource.likes.length}}
                         </span>
 
@@ -283,6 +283,7 @@ h6 {
 .no-bg:hover {
     background-color: var(--GREY2);
 }
+
 .no-bg {
     color: white;
     border-radius: 5px;

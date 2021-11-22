@@ -76,6 +76,12 @@ public class PostController {
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/post/{postId}/share")
+    public ResponseEntity<?> sharePost(@PathVariable long postId, @RequestBody @NonNull Post post, Principal principal) throws NotFoundException {
+        Post sharingPost = postService.sharePost(postId, post, principal.getName());
+        return new ResponseEntity<>(sharingPost, HttpStatus.OK);
+    }
+
     @PatchMapping(path = "/post/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePost(@PathVariable(value = "id") long postId, @RequestBody Map<String, Object> fields, Principal principal) throws NotFoundException {
         Post newPost = postService.partialUpdatePost(postId, fields, principal.getName());

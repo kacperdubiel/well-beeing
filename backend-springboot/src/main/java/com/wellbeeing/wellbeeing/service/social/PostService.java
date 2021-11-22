@@ -13,6 +13,7 @@ public interface PostService {
     Post getPost(long postId);
 
     Post addPost(Post post, String creatorName) throws NotFoundException;
+    Post sharePost(long postId, Post post, String creatorName) throws NotFoundException;
     Post partialUpdatePost(long id, Map<String, Object> fields, String updaterName) throws NotFoundException;
 
     Post updatePost(long id, Post post, String updaterName) throws NotFoundException;

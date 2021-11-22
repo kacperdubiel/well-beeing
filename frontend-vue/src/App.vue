@@ -70,7 +70,7 @@ body {
 }
 
 .no-bg-btn span:hover {
-    border-bottom: 1px solid white;
+    text-decoration: underline;
 }
 
 button[class^="btn-panel-"] {

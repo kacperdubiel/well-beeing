@@ -52,4 +52,12 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
+
+    public Post(String postContent, Profile creator, Post originalPost) {
+        this.postImgPath = null;
+        this.postContent = postContent;
+        this.creator = creator;
+        this.isSharing = true;
+        this.originalPost = originalPost;
+    }
 }

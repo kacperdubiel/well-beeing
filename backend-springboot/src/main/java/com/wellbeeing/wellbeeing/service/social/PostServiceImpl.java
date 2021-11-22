@@ -1,12 +1,8 @@
 package com.wellbeeing.wellbeeing.service.social;
-
-import com.wellbeeing.wellbeeing.domain.account.ESex;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.social.ENutritionTag;
 import com.wellbeeing.wellbeeing.domain.social.EPrivacy;
-import com.wellbeeing.wellbeeing.domain.social.ESportTag;
 import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.social.PostDAO;
@@ -18,12 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 @Service("postService")
 public class PostServiceImpl implements PostService {
@@ -58,6 +49,26 @@ public class PostServiceImpl implements PostService {
         post.setCreator(user.getProfile());
         postDAO.save(post);
         return post;
+    }
+
+    @Override
+    public Post sharePost(long postId, Post post, String creatorName) throws NotFoundException {
+        User user = userDAO.findUserByEmail(creatorName).orElse(null);
+
+        if (user == null)
+        {
+            throw new UsernameNotFoundException("User: " + creatorName + " not found");
+        }
+
+        Post sharedPost = postDAO.findPostByPostId(postId).orElse(null);
+
+        if (sharedPost == null || sharedPost.isDeleted())
+            throw new NotFoundException(String.format("There's no post with id=%d", postId));
+
+        Post sharingPost = new Post(post.getPostContent(), user.getProfile(), sharedPost);
+        postDAO.save(sharingPost);
+        postDAO.save(sharedPost);
+        return sharingPost;
     }
 
     @Override
