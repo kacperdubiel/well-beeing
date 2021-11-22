@@ -43,197 +43,225 @@ public class CsvImportServiceImpl implements CsvImportService {
     }
 
     @Override
-    public boolean importProducts(MultipartFile productsToImport) {
+    public ArrayList<String> importProducts(MultipartFile productsToImport) {
         String productsPath = fileService.save(productsToImport);
         Path file = Paths.get(uploadPath)
                 .resolve(productsPath);
-
+        ArrayList<String> errorMessages = new ArrayList<>();
         try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.ISO_8859_1)){
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;
             while((line = br.readLine()) != null){
-                String[] attributes = line.split(";");
+                try {
+                    String[] attributes = line.split(";");
 
-                String name = checkAndReturnPosition(0, attributes, lineNumber, header, "STRING");
-                String glycemicIndex = checkAndReturnPosition(1, attributes, lineNumber, header, "STRING");
-                if(mapGlycemicIndex(glycemicIndex).equals(EGlycemicIndexLevel.ANY))
-                    throw new InvalidImportDataException("invalid glycemic index enum value: " + header[1] + "line" + lineNumber);
-                String calories = checkAndReturnPosition(2, attributes, lineNumber, header, "DOUBLE");
-                String fats = checkAndReturnPosition(3, attributes, lineNumber, header, "DOUBLE");
-                String saturatedFats = checkAndReturnPosition(4, attributes, lineNumber, header, "DOUBLE");
-                String carbohydrates = checkAndReturnPosition(5, attributes, lineNumber, header, "DOUBLE");
-                String sugar = checkAndReturnPosition(6, attributes, lineNumber, header, "DOUBLE");
-                String proteins = checkAndReturnPosition(7, attributes, lineNumber, header, "DOUBLE");
-                String fiber = checkAndReturnPosition(8, attributes, lineNumber, header, "DOUBLE");
-                String cholesterol= checkAndReturnPosition(9, attributes, lineNumber, header, "DOUBLE");
-                String salt=checkAndReturnPosition(10, attributes, lineNumber, header, "DOUBLE");
-                String caffeine=checkAndReturnPosition(11, attributes, lineNumber, header, "DOUBLE");
+                    String name = checkAndReturnPosition(0, attributes, lineNumber, header, "STRING");
+                    String glycemicIndex = checkAndReturnPosition(1, attributes, lineNumber, header, "STRING");
+                    if (mapGlycemicIndex(glycemicIndex).equals(EGlycemicIndexLevel.ANY))
+                        throw new InvalidImportDataException("invalid glycemic index enum value: " + header[1] + "line" + lineNumber);
+                    String calories = checkAndReturnPosition(2, attributes, lineNumber, header, "DOUBLE");
+                    String fats = checkAndReturnPosition(3, attributes, lineNumber, header, "DOUBLE");
+                    String saturatedFats = checkAndReturnPosition(4, attributes, lineNumber, header, "DOUBLE");
+                    String carbohydrates = checkAndReturnPosition(5, attributes, lineNumber, header, "DOUBLE");
+                    String sugar = checkAndReturnPosition(6, attributes, lineNumber, header, "DOUBLE");
+                    String proteins = checkAndReturnPosition(7, attributes, lineNumber, header, "DOUBLE");
+                    String fiber = checkAndReturnPosition(8, attributes, lineNumber, header, "DOUBLE");
+                    String cholesterol = checkAndReturnPosition(9, attributes, lineNumber, header, "DOUBLE");
+                    String salt = checkAndReturnPosition(10, attributes, lineNumber, header, "DOUBLE");
+                    String caffeine = checkAndReturnPosition(11, attributes, lineNumber, header, "DOUBLE");
 
-                String vegeProteins=checkAndReturnPosition(12, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String animalProteins=checkAndReturnPosition(13, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String polyunsaturatedFats=checkAndReturnPosition(14, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String monounsaturatedFats=checkAndReturnPosition(15, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String vegeProteins = checkAndReturnPosition(12, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String animalProteins = checkAndReturnPosition(13, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String polyunsaturatedFats = checkAndReturnPosition(14, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String monounsaturatedFats = checkAndReturnPosition(15, attributes, lineNumber, header, "DOUBLE_NULLABLE");
 
-                String zinc=checkAndReturnPosition(16, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String phosphorus=checkAndReturnPosition(17, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String iodine=checkAndReturnPosition(18, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String magnesium=checkAndReturnPosition(19, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String copper=checkAndReturnPosition(20, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String potassium=checkAndReturnPosition(21, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String selenium=checkAndReturnPosition(22, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String sodium=checkAndReturnPosition(23, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String calcium=checkAndReturnPosition(24, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String iron=checkAndReturnPosition(25, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String zinc = checkAndReturnPosition(16, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String phosphorus = checkAndReturnPosition(17, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String iodine = checkAndReturnPosition(18, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String magnesium = checkAndReturnPosition(19, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String copper = checkAndReturnPosition(20, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String potassium = checkAndReturnPosition(21, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String selenium = checkAndReturnPosition(22, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String sodium = checkAndReturnPosition(23, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String calcium = checkAndReturnPosition(24, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String iron = checkAndReturnPosition(25, attributes, lineNumber, header, "DOUBLE_NULLABLE");
 
-                String a=checkAndReturnPosition(26, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String b1=checkAndReturnPosition(27, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String b2=checkAndReturnPosition(28, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String b5=checkAndReturnPosition(29, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String b6=checkAndReturnPosition(30, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String b12=checkAndReturnPosition(31, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String c=checkAndReturnPosition(32, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String d=checkAndReturnPosition(33, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String e=checkAndReturnPosition(34, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String pp=checkAndReturnPosition(35, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String k=checkAndReturnPosition(36, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String folic=checkAndReturnPosition(37, attributes, lineNumber, header, "DOUBLE_NULLABLE");
-                String biotin=checkAndReturnPosition(38, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String a = checkAndReturnPosition(26, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String b1 = checkAndReturnPosition(27, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String b2 = checkAndReturnPosition(28, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String b5 = checkAndReturnPosition(29, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String b6 = checkAndReturnPosition(30, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String b12 = checkAndReturnPosition(31, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String c = checkAndReturnPosition(32, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String d = checkAndReturnPosition(33, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String e = checkAndReturnPosition(34, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String pp = checkAndReturnPosition(35, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String k = checkAndReturnPosition(36, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String folic = checkAndReturnPosition(37, attributes, lineNumber, header, "DOUBLE_NULLABLE");
+                    String biotin = checkAndReturnPosition(38, attributes, lineNumber, header, "DOUBLE_NULLABLE");
 
-                Product newProd = Product.builder()
-                        .name(name)
-                        .glycemicIndexLevel(mapGlycemicIndex(glycemicIndex))
-                        .caloriesPerHundredGrams(Double.parseDouble(calories))
-                        .fatsPerHundredGrams(Double.parseDouble(fats))
-                        .saturatedFatsPerHundredGrams(Double.parseDouble(saturatedFats))
-                        .carbohydratesPerHundredGrams(Double.parseDouble(carbohydrates))
-                        .sugarsPerHundredGrams(Double.parseDouble(sugar))
-                        .proteinsPerHundredGrams(Double.parseDouble(proteins))
-                        .fiberPerHundredGrams(Double.parseDouble(fiber))
-                        .cholesterolPerHundredGrams(Double.parseDouble(cholesterol))
-                        .saltPerHundredGrams(Double.parseDouble(salt))
-                        .caffeinePerHundredGrams(Double.parseDouble(caffeine))
-                        .build();
-                Product savedProd = productDAO.save(newProd);
+                    Product newProd = Product.builder()
+                            .name(name)
+                            .glycemicIndexLevel(mapGlycemicIndex(glycemicIndex))
+                            .caloriesPerHundredGrams(Double.parseDouble(calories))
+                            .fatsPerHundredGrams(Double.parseDouble(fats))
+                            .saturatedFatsPerHundredGrams(Double.parseDouble(saturatedFats))
+                            .carbohydratesPerHundredGrams(Double.parseDouble(carbohydrates))
+                            .sugarsPerHundredGrams(Double.parseDouble(sugar))
+                            .proteinsPerHundredGrams(Double.parseDouble(proteins))
+                            .fiberPerHundredGrams(Double.parseDouble(fiber))
+                            .cholesterolPerHundredGrams(Double.parseDouble(cholesterol))
+                            .saltPerHundredGrams(Double.parseDouble(salt))
+                            .caffeinePerHundredGrams(Double.parseDouble(caffeine))
+                            .build();
+                    Product savedProd = productDAO.save(newProd);
 
-                savedProd.setMacroDetails(new ArrayList<>());
-                savedProd.setVitaminDetails(new ArrayList<>());
-                savedProd.setMineralDetails(new ArrayList<>());
+                    savedProd.setMacroDetails(new ArrayList<>());
+                    savedProd.setVitaminDetails(new ArrayList<>());
+                    savedProd.setMineralDetails(new ArrayList<>());
 
-                addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.A, a);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B1, b1);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B2, b2);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B5, b5);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B6, b6);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B12, b12);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.C, c);
-                addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.D, d);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.E, e);
-                addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.PP, pp);
-                addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.K, k);
-                addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.FOLIC_ACID, folic);
-                addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.BIOTIN, biotin);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.A, a);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B1, b1);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B2, b2);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B5, b5);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B6, b6);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.B12, b12);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.C, c);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.D, d);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.E, e);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EVitamin.PP, pp);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.K, k);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.FOLIC_ACID, folic);
+                    addVitaminToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EVitamin.BIOTIN, biotin);
 
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.ZINC, zinc);
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.PHOSPHORUS, phosphorus);
-                addMineralToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EMineral.IODINE, iodine);
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.MAGNESIUM, magnesium);
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.COPPER, copper);
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.POTASSIUM, potassium);
-                addMineralToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EMineral.SELENIUM, selenium);
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.SODIUM, sodium);
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.CALCIUM, calcium);
-                addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.IRON, iron);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.ZINC, zinc);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.PHOSPHORUS, phosphorus);
+                    addMineralToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EMineral.IODINE, iodine);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.MAGNESIUM, magnesium);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.COPPER, copper);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.POTASSIUM, potassium);
+                    addMineralToProduct(savedProd, EWeightMeasure.MICRO_GRAM, EMineral.SELENIUM, selenium);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.SODIUM, sodium);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.CALCIUM, calcium);
+                    addMineralToProduct(savedProd, EWeightMeasure.MILLI_GRAM, EMineral.IRON, iron);
 
-                addDetailedMacroToProduct(savedProd, EDetailedMacro.ANIMAL_PROTEINS, animalProteins);
-                addDetailedMacroToProduct(savedProd, EDetailedMacro.VEGETABLE_PROTEINS, vegeProteins);
-                addDetailedMacroToProduct(savedProd, EDetailedMacro.MONOUNSATURATED_FATS, monounsaturatedFats);
-                addDetailedMacroToProduct(savedProd, EDetailedMacro.POLYUNSATURATED_FATS, polyunsaturatedFats);
+                    addDetailedMacroToProduct(savedProd, EDetailedMacro.ANIMAL_PROTEINS, animalProteins);
+                    addDetailedMacroToProduct(savedProd, EDetailedMacro.VEGETABLE_PROTEINS, vegeProteins);
+                    addDetailedMacroToProduct(savedProd, EDetailedMacro.MONOUNSATURATED_FATS, monounsaturatedFats);
+                    addDetailedMacroToProduct(savedProd, EDetailedMacro.POLYUNSATURATED_FATS, polyunsaturatedFats);
 
-                productDAO.save(savedProd);
-                lineNumber++;
+                    productDAO.save(savedProd);
+                    lineNumber++;
+                }
+                catch(InvalidImportDataException e){
+                    errorMessages.add(e.getMessage());
+                    lineNumber++;
+
+                }
+                catch(Exception e){
+                    errorMessages.add("Unknown error in line " + lineNumber);
+                    lineNumber++;
+                }
             }
         }
-        catch (IOException | InvalidImportDataException ioe) {
+        catch (IOException ioe) {
             ioe.printStackTrace();
-            return false;
+            errorMessages.add(ioe.getMessage());
         }
-        return true;
+        return errorMessages;
     }
 
     @Override
-    public boolean importAilments(MultipartFile ailmentsToImport) {
+    public ArrayList<String> importAilments(MultipartFile ailmentsToImport) {
         String ailmentsPath = fileService.save(ailmentsToImport);
         Path file = Paths.get(uploadPath)
                 .resolve(ailmentsPath);
-
+        ArrayList<String> errorMessages = new ArrayList<>();
         try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.US_ASCII)){
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;
             while((line = br.readLine()) != null){
-                String[] attributes = line.split(";");
-                String name = checkAndReturnPosition(0, attributes, lineNumber, header, "STRING");
-                String description = checkAndReturnPosition(1, attributes, lineNumber, header, "STRING");
-                String type = checkAndReturnPosition(2, attributes, lineNumber, header, "STRING");
-                if(mapAilmentType(type) == null){
-                    throw new InvalidImportDataException("invalid ailment type enum value: " + header[2] + "line" + lineNumber);
+                try {
+                    String[] attributes = line.split(";");
+                    String name = checkAndReturnPosition(0, attributes, lineNumber, header, "STRING");
+                    String description = checkAndReturnPosition(1, attributes, lineNumber, header, "STRING");
+                    String type = checkAndReturnPosition(2, attributes, lineNumber, header, "STRING");
+                    if (mapAilmentType(type) == null) {
+                        throw new InvalidImportDataException("invalid ailment type enum value: " + header[2] + "line" + lineNumber);
+                    }
+                    String caloriesChange = checkAndReturnPosition(3, attributes, lineNumber, header, "DOUBLE");
+                    String proteinChange = checkAndReturnPosition(4, attributes, lineNumber, header, "DOUBLE");
+                    String glycemic = checkAndReturnPosition(5, attributes, lineNumber, header, "STRING");
+
+                    Ailment newAilment = Ailment.builder()
+                            .name(name)
+                            .description(description)
+                            .type(mapAilmentType(type))
+                            .isLowGlycemicIndexRecommended(mapBoolean(glycemic))
+                            .changeInCalories(Double.parseDouble(caloriesChange))
+                            .changeInProteinsGramPerKilogram(Double.parseDouble(proteinChange))
+                            .build();
+                    ailmentDAO.save(newAilment);
+
+                    lineNumber++;
                 }
-                String caloriesChange = checkAndReturnPosition(3, attributes, lineNumber, header, "DOUBLE");
-                String proteinChange = checkAndReturnPosition(4, attributes, lineNumber, header, "DOUBLE");
-                String glycemic = checkAndReturnPosition(5, attributes, lineNumber, header, "STRING");
-
-                Ailment newAilment = Ailment.builder()
-                        .name(name)
-                        .description(description)
-                        .type(mapAilmentType(type))
-                        .isLowGlycemicIndexRecommended(mapBoolean(glycemic))
-                        .changeInCalories(Double.parseDouble(caloriesChange))
-                        .changeInProteinsGramPerKilogram(Double.parseDouble(proteinChange))
-                        .build();
-                ailmentDAO.save(newAilment);
-
-                lineNumber++;
+                catch (InvalidImportDataException e){
+                    errorMessages.add(e.getMessage());
+                    lineNumber++;
+                }
+                catch (Exception e){
+                    errorMessages.add("Unknown exception in line " + lineNumber);
+                    lineNumber++;
+                }
             }
         }
-        catch (IOException | InvalidImportDataException ioe) {
-            ioe.printStackTrace();
-            return false;
+        catch (IOException ioe) {
+            errorMessages.add(ioe.getMessage());
         }
-        return true;
+        return errorMessages;
     }
 
     @Override
-    public boolean importDiets(MultipartFile dietsToImport) {
+    public ArrayList<String> importDiets(MultipartFile dietsToImport) {
         String dietsPath = fileService.save(dietsToImport);
         Path file = Paths.get(uploadPath)
                 .resolve(dietsPath);
+        ArrayList<String> errorMessages = new ArrayList<>();
 
-        try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.US_ASCII)){
+        try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.US_ASCII)) {
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;
-            while((line = br.readLine()) != null){
-                String[] attributes = line.split(";");
-                String name = checkAndReturnPosition(0, attributes, lineNumber, header, "STRING");
-                String description = checkAndReturnPosition(1, attributes, lineNumber, header, "STRING");
-                String connectedWithMacros = checkAndReturnPosition(2, attributes, lineNumber, header, "STRING");
+            while ((line = br.readLine()) != null) {
+                try {
+                    String[] attributes = line.split(";");
+                    String name = checkAndReturnPosition(0, attributes, lineNumber, header, "STRING");
+                    String description = checkAndReturnPosition(1, attributes, lineNumber, header, "STRING");
+                    String connectedWithMacros = checkAndReturnPosition(2, attributes, lineNumber, header, "STRING");
 
-                Diet newDiet = Diet.builder()
-                        .name(name)
-                        .description(description)
-                        .connectedWithMacros(mapBoolean(connectedWithMacros))
-                        .build();
+                    Diet newDiet = Diet.builder()
+                            .name(name)
+                            .description(description)
+                            .connectedWithMacros(mapBoolean(connectedWithMacros))
+                            .build();
 
-                dietDAO.save(newDiet);
-                lineNumber++;
+                    dietDAO.save(newDiet);
+                    lineNumber++;
+                } catch (InvalidImportDataException e) {
+                    errorMessages.add(e.getMessage());
+                    lineNumber++;
+                } catch (Exception e) {
+                    errorMessages.add("Unknown exception in line " + lineNumber);
+                    lineNumber++;
+                }
             }
-        }
-        catch (IOException | InvalidImportDataException ioe) {
+        } catch (IOException ioe) {
             ioe.printStackTrace();
-            return false;
+            errorMessages.add(ioe.getMessage());
         }
-        return true;
+        return errorMessages;
     }
 
     private boolean checkIfNotEmpty(String input){

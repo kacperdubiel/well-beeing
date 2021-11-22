@@ -2,10 +2,12 @@ package com.wellbeeing.wellbeeing.service.diet;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+
 public interface CsvImportService {
 
-    boolean importProducts(MultipartFile products);
-    boolean importAilments(MultipartFile ailments);
-    boolean importDiets(MultipartFile diets);
+    ArrayList<String> importProducts(MultipartFile products);
+    ArrayList<String> importAilments(MultipartFile ailments);
+    ArrayList<String> importDiets(MultipartFile diets);
 
 }
