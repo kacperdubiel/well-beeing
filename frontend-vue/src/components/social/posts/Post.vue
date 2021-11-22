@@ -36,6 +36,11 @@
                 <img :src="postPictureSrc" alt="Post picture"  id="post-picture" class="w-100">
             </div>
         </div>
+        <div class="row text-start pb-3" v-if="this.postSource.originalPost">
+            <div class="col">
+                <shared-post :post-source="this.postSource.originalPost" class="m-2"/>
+            </div>
+        </div>
         <div class="d-flex flex-row px-4 py-2 align-items-center">
 
             <div class="d-flex flex-column text-start" v-if="this.postSource.likes.length > 0">
@@ -107,6 +112,7 @@
 <script>
 import NewComment from "@/components/social/comments/NewComment";
 import CommentsList from "@/components/social/comments/CommentsList";
+import SharedPost from "@/components/social/posts/SharedPost";
 export default {
     name: "Post",
     props: {
@@ -114,7 +120,8 @@ export default {
     },
     components: {
         NewComment,
-        CommentsList
+        CommentsList,
+        SharedPost
     },
     data() {
         return {

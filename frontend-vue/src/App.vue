@@ -45,10 +45,16 @@ body {
 }
 
 .section-2-bg {
+     background-color: var(--GREY3);
+     border-radius: 20px;
+     color: white;
+     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+ }
+
+.shared-section-bg {
     background-color: var(--GREY3);
-    border-radius: 20px;
+    border: 1px solid var(--GREY1);
     color: white;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
 .sticky-top {
