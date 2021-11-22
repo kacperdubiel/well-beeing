@@ -3,12 +3,14 @@
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <router-link :to="{ name: 'TrainerUsersView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainerUsersView' }">Podopieczni</span>
+                    <span class="nav-link"
+                          v-bind:class="{ active: this.$route.name === 'TrainerUsersView' || this.$route.name === 'TrainerUserProfileView' }">Podopieczni</span>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'TrainerUserConversationsView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainerUserConversationsView' || this.$route.name === 'TrainerUserConversationView' }">Wiadomości</span>
+                    <span class="nav-link"
+                          v-bind:class="{ active: this.$route.name === 'TrainerUserConversationsView' || this.$route.name === 'TrainerUserConversationView' }">Wiadomości</span>
                 </router-link>
             </li>
             <li class="nav-item">
@@ -33,7 +35,7 @@ export default {
     border-bottom-color: var(--SPORT);
 }
 
-.sport-tabs{
+.sport-tabs {
     margin-bottom: 20px;
 }
 

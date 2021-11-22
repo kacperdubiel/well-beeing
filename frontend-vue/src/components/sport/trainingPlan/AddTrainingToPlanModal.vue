@@ -1,17 +1,20 @@
 <template>
-    <div class="modal fade" id="addTrainingToPlanModal" tabindex="-1" aria-labelledby="addTrainingToPlanModalLabel" aria-hidden="true">
+    <div id="addTrainingToPlanModal" aria-hidden="true" aria-labelledby="addTrainingToPlanModalLabel" class="modal fade "
+         tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title ms-2" id="addTrainingToPlanModalLabel">Dodawanie treningu do planu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" ref="closeModal" aria-label="Close" @click="clearStatus()"></button>
+                    <h5 id="addTrainingToPlanModalLabel" class="modal-title ms-2">Dodawanie treningu do planu</h5>
+                    <button ref="closeModal" aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"
+                            @click="clearStatus()"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid" id="modal-container">
+                    <div id="modal-container" class="container-fluid">
                         <div class="row mt-3 mx-4">
 
                             <div class="col-8 align-content-start text-start">
-                                <p class="form-label">Data treningu : {{this.$store.getters.getTrainingPositionDate != null ? this.$func_global.dateDayMonth(this.$store.getters.getTrainingPositionDate) : ''}}</p>
+                                <p class="form-label">Data treningu :
+                                    {{ this.$store.getters.getTrainingPositionDate != null ? this.$func_global.dateDayMonth(this.$store.getters.getTrainingPositionDate) : '' }}</p>
 
                             </div>
                         </div>
@@ -22,14 +25,16 @@
                             <div class="col-9 justify-content-start text-start float-start">
                                 <select
                                     v-model="timeOfDay"
-                                    class="register-input p-2"
                                     :class="{ 'has-error': submittingAddTrainingToPlan && invalidTimeOfDay}"
+                                    class="register-input p-2"
                                     style="border-radius: 5px"
                                     @focus="clearStatus"
                                     @keypress="clearStatus"
                                 >
                                     <option disabled value="">Wybierz porę dnia</option>
-                                    <option v-for="op in ['MORNING', 'NOON', 'AFTERNOON', 'EVENING', 'NIGHT']" :key="op">{{ op }}</option>
+                                    <option v-for="op in ['MORNING', 'NOON', 'AFTERNOON', 'EVENING', 'NIGHT']"
+                                            :key="op">{{ op }}
+                                    </option>
                                 </select>
                                 <div v-if="invalidTimeOfDay && submittingAddTrainingToPlan" class="row text-end">
                                     <p class="has-error m-0">
@@ -42,16 +47,19 @@
                         <div class="row mt-3 mx-4">
                             <div class="col-12 mx-auto form-group ">
                                 <div class="row my-2 align-items-center justify-content-end">
-                                    <span class="col-2 float-end" v-bind:class="{'active-view': !this.isListView}" @click="setListView(false)">
-                                        <font-awesome-icon  class="icon" :icon="['fa', 'th']" />
+                                    <span class="col-2 float-end" v-bind:class="{'active-view': !this.isListView}"
+                                          @click="setListView(false)">
+                                        <font-awesome-icon :icon="['fa', 'th']" class="icon"/>
                                     </span>
-                                                            <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}" @click="setListView(true)">
-                                        <font-awesome-icon  class="icon" :icon="['fa', 'list-ul']" />
+                                    <span class="col-2 float-end" v-bind:class="{'active-view': this.isListView}"
+                                          @click="setListView(true)">
+                                        <font-awesome-icon :icon="['fa', 'list-ul']" class="icon"/>
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <TrainingsGridComponent v-if="!isListView" :mode="'toPlan'" :trainings-source="trainingsSource"/>
+                        <TrainingsGridComponent v-if="!isListView" :mode="'toPlan'"
+                                                :trainings-source="trainingsSource"/>
                         <TrainingsListComponent v-if="isListView" :mode="'toPlan'" :trainings-source="trainingsSource"/>
                         <div v-if="errorAddTrainingToPlan && !invalidTimeOfDay" class="row text-end">
                             <p class="has-error m-0">
@@ -71,19 +79,20 @@
 <script>
 import TrainingsGridComponent from "@/components/sport/training/TrainingsGridComponent";
 import TrainingsListComponent from "@/components/sport/training/TrainingsListComponent";
+
 export default {
     name: "AddTrainingToPlanModal",
     components: {TrainingsListComponent, TrainingsGridComponent},
     data() {
-      return {
-          trainingId: -1,
-          timeOfDay: '',
-          date: '',
-          submittingAddTrainingToPlan: false,
-          successAddTrainingToPlan: false,
-          errorAddTrainingToPlan: false,
-          isListView: true,
-      }
+        return {
+            trainingId: -1,
+            timeOfDay: '',
+            date: '',
+            submittingAddTrainingToPlan: false,
+            successAddTrainingToPlan: false,
+            errorAddTrainingToPlan: false,
+            isListView: true,
+        }
     },
     props: {
         trainingsSource: Array,
@@ -145,7 +154,7 @@ export default {
         }
     }
 }
-Date.prototype.addDays = function(days) {
+Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
     return date;
@@ -165,18 +174,22 @@ p.has-error {
     color: var(--INTENSE-PINK);
     /*font-weight: bold;*/
 }
+
 .modal-title {
     color: var(--SPORT);
 }
+
 .modal-body {
     background-color: var(--GREY2);
 }
+
 .form-label {
     color: white;
     font-weight: bold;
     text-align: left;
     padding-left: 0;
 }
+
 .register-btn {
     color: white;
     font-weight: bold;
@@ -186,10 +199,12 @@ p.has-error {
     max-width: 800px;
     width: 40%;
 }
+
 .register-btn {
     color: white;
     font-weight: bold;
 }
+
 .active-view {
     color: var(--SPORT);
 }
