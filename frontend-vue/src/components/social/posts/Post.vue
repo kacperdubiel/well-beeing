@@ -57,7 +57,7 @@
             <div class="d-flex flex-column text-start ms-auto pe-3" v-if="this.commentsNavigation.totalElements > 0">
                 <button class="no-bg-btn" @click="showComments" >
                     <span>
-                        {{this.commentsNavigation.totalElements}} komentarzy
+                        {{this.commentsNavigation.totalElements}} {{this.$func_global.mapCommentForm(this.commentsNavigation.totalElements)}}
                     </span>
 
                 </button>
@@ -65,7 +65,7 @@
             <div class="d-flex flex-column text-start">
                 <button class="no-bg-btn">
                     <span>
-                        {{this.postSource.sharingCounter}} udostępnień
+                        {{this.postSource.sharingCounter}} {{this.$func_global.mapShareForm(this.postSource.sharingCounter)}}
                     </span>
                 </button>
             </div>

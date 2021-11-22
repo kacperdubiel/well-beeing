@@ -102,6 +102,22 @@ export const func_global = {
         console.log('minutes: ', minutes)
         return minutes < 5
     },
+    mapCommentForm(counter) {
+        if(counter === 1)
+            return 'komentarz'
+        else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
+            return 'komentarze'
+        else
+            return 'komentarzy'
+    },
+    mapShareForm(counter) {
+        if(counter === 1)
+            return 'udostępnienie'
+        else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
+            return 'udostępnienia'
+        else
+            return 'udostępnień'
+    },
     mapRole(role) {
         if(role === 'ROLE_DIETICIAN')
             return 'Dietetyk'
