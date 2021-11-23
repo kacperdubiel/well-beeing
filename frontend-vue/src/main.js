@@ -21,7 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
     faDownload,
     faInfo,
-    faListUl,
+    faListUl, faPaperPlane,
     faPencilAlt,
     faPlusCircle, faSearch,
     faTh,
@@ -80,6 +80,7 @@ library.add(faChevronLeft)
 library.add(faChevronRight)
 library.add(faFastBackward)
 library.add(faFastForward)
+library.add(faPaperPlane)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'

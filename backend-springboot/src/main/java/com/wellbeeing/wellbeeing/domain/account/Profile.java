@@ -3,25 +3,18 @@ package com.wellbeeing.wellbeeing.domain.account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.Report;
-import com.wellbeeing.wellbeeing.domain.sport.SportReport;
-import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
+import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
-import lombok.NoArgsConstructor;
-
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.List;
 @Getter
 @Setter
 @Builder
@@ -59,9 +52,9 @@ public class Profile {
     @JsonIgnore
     private User profileUser;
 
-    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL)
     private DoctorProfile doctorProfile;
-    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL)
     private TrainerProfile trainerProfile;
     // TODO: Add dietician profile link!
 
@@ -69,7 +62,7 @@ public class Profile {
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
 
-    @OneToOne(mappedBy="profile", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
     @JsonIgnore
     private Settings settings;
 
@@ -102,14 +95,14 @@ public class Profile {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name="user_roles",
+            name = "user_roles",
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Like> profileLikes = new HashSet<>();
 
     @JsonIgnore

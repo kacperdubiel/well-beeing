@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="add-exercise row my-2 align-items-center">
-            <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj</span>
+            <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj trening</span>
             <span class="col-2 float-end button-icon">
                 <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-toggle="modal"
                                    href="#addTrainingModal"/>
