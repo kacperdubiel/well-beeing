@@ -1,6 +1,8 @@
 package com.wellbeeing.wellbeeing.api.social;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
@@ -75,27 +77,27 @@ public class RoleRequestController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<?> submitRoleRequest(@RequestBody @NonNull RoleRequest roleRequest, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> submitRoleRequest(@RequestBody @NonNull RoleRequest roleRequest, Principal principal) throws NotFoundException, ForbiddenException {
         RoleRequest createdRoleRequest = roleRequestService.submitRoleRequest(roleRequest, principal.getName());
         return new ResponseEntity<>(createdRoleRequest, HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<?> updateRoleRequest(@PathVariable(value = "id") Long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> updateRoleRequest(@PathVariable(value = "id") Long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest, Principal principal) throws NotFoundException, ForbiddenException {
         roleRequest.setRoleReqId(roleRequestId);
         roleRequestService.updateRoleRequest(roleRequest, principal.getName());
         return new ResponseEntity<>(roleRequest, HttpStatus.OK);
     }
 
     @PatchMapping(path = "/{id}/cancel")
-    public ResponseEntity<?> cancelRoleRequest(@PathVariable(value = "id") Long roleRequestId, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> cancelRoleRequest(@PathVariable(value = "id") Long roleRequestId, Principal principal) throws NotFoundException, ForbiddenException {
         roleRequestService.cancelRoleRequest(roleRequestId, principal.getName());
         RoleRequest cancelledRoleRequest = roleRequestService.getRoleRequest(roleRequestId);
         return new ResponseEntity<>(cancelledRoleRequest, HttpStatus.OK);
     }
 
     @PatchMapping(path = "/{id}/process")
-    public ResponseEntity<?> processRoleRequest(@PathVariable(value = "id") Long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest) throws NotFoundException {
+    public ResponseEntity<?> processRoleRequest(@PathVariable(value = "id") Long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException {
         roleRequest.setRoleReqId(roleRequestId);
         roleRequestService.processRoleRequest(roleRequest);
         RoleRequest processedRoleRequest = roleRequestService.getRoleRequest(roleRequestId);
@@ -103,7 +105,7 @@ public class RoleRequestController {
     }
 
     @PostMapping("/import/{requestId}")
-    public ResponseEntity<?> importData(MultipartFile file, @PathVariable long requestId, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> importData(MultipartFile file, @PathVariable long requestId, Principal principal) throws NotFoundException, ForbiddenException {
 
         String fileName = fileService.save(file);
 

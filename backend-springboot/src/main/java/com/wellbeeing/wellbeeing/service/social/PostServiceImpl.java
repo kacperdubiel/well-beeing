@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.social;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.EPrivacy;
 import com.wellbeeing.wellbeeing.domain.social.Post;
@@ -85,7 +86,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(long id, Post post, String updaterName) throws NotFoundException {
+    public Post updatePost(long id, Post post, String updaterName) throws NotFoundException, ForbiddenException {
         post.setPostId(id);
         Post targetPost = postDAO.findPostByPostId(id).orElse(null);
 
@@ -96,7 +97,7 @@ public class PostServiceImpl implements PostService {
         Profile postOwner = targetPost.getCreator();
 
         if (updaterProfile != postOwner)
-            throw new NotFoundException("That is not your post!");
+            throw new ForbiddenException("That is not your post!");
 
         postDAO.save(post);
         return post;
@@ -104,17 +105,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post partialUpdatePost(long id, Map<String, Object> fields, String updaterName) throws NotFoundException {
+    public Post partialUpdatePost(long id, Map<String, Object> fields, String updaterName) throws NotFoundException, ForbiddenException {
         Post targetPost = postDAO.findPostByPostId(id).orElse(null);
 
         if (targetPost == null || targetPost.isDeleted() || fields == null || fields.isEmpty())
-            throw new NotFoundException("Bad request!");
+            throw new NotFoundException(String.format("There's no post with id=%d", id));
 
         Profile updaterProfile = userDAO.findUserByEmail(updaterName).orElse(null).getProfile();
         Profile postOwner = targetPost.getCreator();
 
         if (updaterProfile != postOwner)
-            throw new NotFoundException("That is not your post!");
+            throw new ForbiddenException("That is not your post!");
 
         fields.remove("postId");
         fields.remove("addedDate");
@@ -146,7 +147,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean deletePost(long postId, String cancellerName) throws NotFoundException {
+    public boolean deletePost(long postId, String cancellerName) throws NotFoundException, ForbiddenException {
         Post targetPost = postDAO.findPostByPostId(postId).orElse(null);
 
         if (targetPost == null || targetPost.isDeleted())
@@ -156,7 +157,7 @@ public class PostServiceImpl implements PostService {
         Profile postOwner = targetPost.getCreator();
 
         if (cancellerProfile != postOwner)
-            throw new NotFoundException("That is not your post!");
+            throw new ForbiddenException("That is not your post!");
 
         targetPost.setDeleted(true);
         postDAO.save(targetPost);
