@@ -11,11 +11,18 @@ import java.util.UUID;
 
 @Service("nutritionPlanService")
 public interface NutritionPlanService {
-    boolean deleteNutritionPlanFromProfile(UUID nutritionPlanId) throws NotFoundException;
-    List<NutritionPlan> getAllProfileNutritionPlans(UUID profileId) throws NotFoundException;
+    boolean deleteCreatedNutritionPlanFromProfile(UUID nutritionPlanId) throws NotFoundException;
+    boolean deleteOwnedNutritionPlanFromProfile(UUID nutritionPlanId) throws NotFoundException;
+
+    List<NutritionPlan> getAllCreatedByUserProfileNutritionPlans(UUID profileId) throws NotFoundException;
+    List<NutritionPlan> getAllOwnedByUserProfileNutritionPlans(UUID profileId) throws NotFoundException;
+    List<NutritionPlan> getAllCreatedByDieticianProfileNutritionPlans(UUID profileId) throws NotFoundException;
+
+    NutritionPlan markNutritionPlanAsMain(UUID nutritionPlanId, UUID profileId) throws NotFoundException;
+
     NutritionPlan getNutritionPlanById(UUID nutritionPlanId) throws NotFoundException;
     NutritionPlan generateNutritionPlanForProfile(UUID profileId) throws NotFoundException, NutritionPlanGenerationException;
-    NutritionPlan addEmptyNutritionPlanToProfile(UUID profileId) throws NotFoundException;
+    NutritionPlan addEmptyNutritionPlanToProfile(UUID profileId, String name) throws NotFoundException;
     NutritionPlan addNutritionPlanToProfile(NutritionPlan nutritionPlan, UUID profileId) throws NotFoundException;
     NutritionPlan addPositionToProfileNutritionPlan(NutritionPlanPosition position, UUID nutritionPlanId) throws NotFoundException;
     NutritionPlan updatePositionInProfileNutritionPlan(NutritionPlanPosition position, UUID nutritionPlanId) throws NotFoundException;

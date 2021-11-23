@@ -97,11 +97,11 @@ public class Profile {
     private List<SportReport> sportReports = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "ownerProfile", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "creatorProfile", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<NutritionPlan> nutritionPlans = new ArrayList<>();
 
-    @OneToMany(mappedBy = "suggestedToProfile", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ownerProfile", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<NutritionPlan> suggestedNutritionPlans = new ArrayList<>();
 

@@ -12,17 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("nutritionPlanService")
 public class NutritionPlanServiceImpl implements NutritionPlanService {
 
-    private NutritionPlanDAO nutritionPlanDAO;
-    private NutritionPlanPositionDAO nutritionPlanPositionDAO;
-    private ProfileService profileService;
-    private NutritionPlanGenerationStrategy nutritionPlanGenerationStrategy;
+    private final NutritionPlanDAO nutritionPlanDAO;
+    private final NutritionPlanPositionDAO nutritionPlanPositionDAO;
+    private final ProfileService profileService;
+    private final NutritionPlanGenerationStrategy nutritionPlanGenerationStrategy;
 
     @Autowired
     public NutritionPlanServiceImpl(@Qualifier("nutritionPlanDAO") NutritionPlanDAO nutritionPlanDAO,
@@ -36,21 +35,77 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     }
 
     @Override
-    public boolean deleteNutritionPlanFromProfile(UUID nutritionPlanId) throws NotFoundException {
+    public boolean deleteCreatedNutritionPlanFromProfile(UUID nutritionPlanId) throws NotFoundException {
         NutritionPlan nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
         if(nutritionPlan != null){
-            nutritionPlan.setOwnerProfile(null);
-            nutritionPlanDAO.save(nutritionPlan);
-            nutritionPlanDAO.delete(nutritionPlan);
+            nutritionPlanDAO.deleteById(nutritionPlan.getId());
             return true;
         }
         else throw new NotFoundException("Nutrition plan with id: " + nutritionPlanId + " not found");
     }
 
     @Override
-    public List<NutritionPlan> getAllProfileNutritionPlans(UUID profileId) throws NotFoundException {
+    public boolean deleteOwnedNutritionPlanFromProfile(UUID nutritionPlanId) throws NotFoundException {
+        NutritionPlan nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
+        if(nutritionPlan != null){
+            nutritionPlan.setOwnerProfile(null);
+            nutritionPlanDAO.save(nutritionPlan);
+            return true;
+        }
+        else throw new NotFoundException("Nutrition plan with id: " + nutritionPlanId + " not found");
+    }
+
+    @Override
+    public List<NutritionPlan> getAllCreatedByUserProfileNutritionPlans(UUID profileId) throws NotFoundException {
         Profile profile =  profileService.getProfileById(profileId);
-        return profile.getNutritionPlans();
+        return nutritionPlanDAO.findAllByCreatorProfileIdAndOwnerProfileId(profile.getId(), profile.getId())
+                .stream()
+                .sorted(Comparator.comparing(NutritionPlan::getName))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<NutritionPlan> getAllOwnedByUserProfileNutritionPlans(UUID profileId) throws NotFoundException {
+        Profile profile =  profileService.getProfileById(profileId);
+        List<NutritionPlan> result = nutritionPlanDAO.findAllByOwnerProfileId(profile.getId());
+        return result.stream()
+                .filter(np -> !np.getCreatorProfile().getId().equals(profile.getId()))
+                .sorted(Comparator.comparing(NutritionPlan::getName))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<NutritionPlan> getAllCreatedByDieticianProfileNutritionPlans(UUID profileId) throws NotFoundException {
+        Profile profile =  profileService.getProfileById(profileId);
+        List<NutritionPlan> result = nutritionPlanDAO.findAllByCreatorProfileId(profile.getId());
+        return result.stream()
+                .filter(np -> !np.getOwnerProfile().getId().equals(profile.getId()))
+                .sorted(Comparator.comparing(NutritionPlan::getName))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public NutritionPlan markNutritionPlanAsMain(UUID nutritionPlanId, UUID profileId) throws NotFoundException {
+        NutritionPlan np = getNutritionPlanById(nutritionPlanId);
+        if(np.isMain())
+            return np;
+        NutritionPlan actualMain = findUserMainNutritionPlan(profileId);
+        if(actualMain != null){
+            actualMain.setMain(false);
+            nutritionPlanDAO.save(actualMain);
+        }
+        np.setMain(true);
+        return nutritionPlanDAO.save(np);
+    }
+
+    private NutritionPlan findUserMainNutritionPlan(UUID profileId) throws NotFoundException {
+        List<NutritionPlan> owned = getAllOwnedByUserProfileNutritionPlans(profileId);
+        Optional<NutritionPlan> main = owned.stream().filter(NutritionPlan::isMain).findFirst();
+        if(!main.isPresent()){
+            List<NutritionPlan> created = getAllCreatedByUserProfileNutritionPlans(profileId);
+            main = created.stream().filter(NutritionPlan::isMain).findFirst();
+        }
+        return main.orElse(null);
     }
 
     @Override
@@ -68,12 +123,18 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     }
 
     @Override
-    public NutritionPlan addEmptyNutritionPlanToProfile(UUID profileId) throws NotFoundException {
+    public NutritionPlan addEmptyNutritionPlanToProfile(UUID profileId, String name) throws NotFoundException {
         Profile profile = profileService.getProfileById(profileId);
         NutritionPlan nutritionPlan = NutritionPlan.builder()
                 .generationDate(new Date())
                 .ownerProfile(profile)
+                .creatorProfile(profile)
+                .name(name)
+                .nutritionPlanPositions(new ArrayList<>())
                 .build();
+        NutritionPlan mainNutritionPlan = findUserMainNutritionPlan(profileId);
+        if(mainNutritionPlan == null)
+            nutritionPlan.setMain(true);
         nutritionPlanDAO.save(nutritionPlan);
         return nutritionPlan;
     }
@@ -82,7 +143,10 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     public NutritionPlan addNutritionPlanToProfile(NutritionPlan nutritionPlan, UUID profileId) throws NotFoundException {
         Profile profile = profileService.getProfileById(profileId);
         nutritionPlan.setId(null);
-        nutritionPlan.setOwnerProfile(profile);
+        nutritionPlan.setCreatorProfile(profile);
+        NutritionPlan mainNutritionPlan = findUserMainNutritionPlan(profileId);
+        if(mainNutritionPlan == null)
+            nutritionPlan.setMain(true);
         nutritionPlanDAO.save(nutritionPlan);
         return nutritionPlan;
     }

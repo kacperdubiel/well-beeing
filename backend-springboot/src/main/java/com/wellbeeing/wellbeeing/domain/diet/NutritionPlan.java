@@ -2,7 +2,6 @@ package com.wellbeeing.wellbeeing.domain.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,13 +23,13 @@ public class NutritionPlan {
     @Column
     private String name;
     @Column
-    private boolean isMain;
+    private boolean main;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private Profile ownerProfile;
+    private Profile creatorProfile;
     @ManyToOne
     @JoinColumn(name = "suggested_id")
-    private Profile suggestedToProfile;
+    private Profile ownerProfile;
     @OneToMany(mappedBy = "nutritionPlan")
     private List<NutritionPlanPosition> nutritionPlanPositions = new ArrayList<>();
     @OneToOne

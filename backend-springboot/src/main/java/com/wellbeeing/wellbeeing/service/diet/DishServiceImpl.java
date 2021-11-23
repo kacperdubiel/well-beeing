@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.service.diet;
 import com.wellbeeing.wellbeeing.domain.diet.*;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.repository.account.DieticianProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.diet.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class DishServiceImpl implements DishService {
     private ProfileDAO profileDAO;
     private NutritionLabelDAO nutritionLabelDAO;
     private DishProductDetailDAO dishProductDetailDAO;
-    private DieticianDAO dieticianDAO;
+    private DieticianProfileDAO dieticianDAO;
     private DishMealTypeDAO dishMealTypeDAO;
     private ElementDetailService elementDetailService;
 
@@ -35,7 +36,7 @@ public class DishServiceImpl implements DishService {
                            @Qualifier("dishMealTypeDAO") DishMealTypeDAO dishMealTypeDAO,
                            @Qualifier("profileDAO") ProfileDAO profileDAO,
                            @Qualifier("elementDetailService") ElementDetailService elementDetailService,
-                           @Qualifier("dieticianDAO") DieticianDAO dieticianDAO) {
+                           @Qualifier("dieticianProfileDAO") DieticianProfileDAO dieticianDAO) {
         this.dishDAO = dishDAO;
         this.nutritionLabelDAO = nutritionLabelDAO;
         this.dishProductDetailDAO = dishProductDetailDAO;
