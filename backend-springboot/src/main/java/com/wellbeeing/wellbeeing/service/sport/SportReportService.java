@@ -1,8 +1,5 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
-import com.wellbeeing.wellbeeing.domain.diet.Report;
-import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.ReportExercise;
@@ -28,6 +25,7 @@ public interface SportReportService {
         List<SportReport> getSportReportsByProfileId(UUID profileId) throws NotFoundException;
         List<SportReport> getSportReportByDateAndProfileId(LocalDate date, UUID profileId) throws NotFoundException;
         List<SportReport> getSportReportsByMonthAndProfileId(int month, int year, UUID profileId) throws NotFoundException;
+        List<SportReport> getSportReportsByProfileIdAndDate(UUID profileId, LocalDate start, LocalDate end) throws NotFoundException;
 
         SportReport deleteTrainingsFromReportByReportId(UUID reportId, List<Long> trainings) throws NotFoundException;
 

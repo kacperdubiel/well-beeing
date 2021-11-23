@@ -1,16 +1,23 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.diet.Report;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.ReportExercise;
 import com.wellbeeing.wellbeeing.domain.sport.ReportTraining;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
+import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
+import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.sport.SportReportService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
+import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -27,13 +34,19 @@ import java.util.UUID;
 public class SportReportController {
     private final SportReportService sportReportService;
     private final UserService userService;
+    private final ProfileService profileService;
+    private final ProfileConnectionService profileConnectionService;
     private UserDAO userDAO;
 
 
     public SportReportController(@Qualifier("sportReportService") SportReportService sportReportService,
-                                 @Qualifier("userService") UserService userService) {
+                                 @Qualifier("userService") UserService userService,
+                                 @Qualifier("profileService") ProfileService profileService,
+                                 @Qualifier("profileConnectionService") ProfileConnectionService profileConnectionService) {
         this.sportReportService = sportReportService;
         this.userService = userService;
+        this.profileService = profileService;
+        this.profileConnectionService = profileConnectionService;
     }
 
     @GetMapping(path = "/{reportId}")
@@ -125,4 +138,32 @@ public class SportReportController {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         return new ResponseEntity<>(sportReportService.getSportReportsByMonthAndProfileId(month, year, profileId), HttpStatus.OK);
     }
+
+    @RequestMapping(path = "/profile/{profileId}/from/{date_from}/to/{date_to}", method = RequestMethod.GET)
+    public ResponseEntity<?> getProfileReportByDate(Principal principal,
+                                                    @PathVariable("profileId") UUID reportOwnerId,
+                                                    @PathVariable("date_from")
+                                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate from,
+                                                    @PathVariable("date_to")
+                                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate to)
+            throws NotFoundException, ForbiddenException
+    {
+        UUID authorizedUserId = userService.findUserIdByUsername(principal.getName());
+        Profile authorizedUser = profileService.getProfileById(authorizedUserId);
+        Profile reportOwner = profileService.getProfileById(reportOwnerId);
+
+        if(!reportOwnerId.equals(authorizedUserId)){
+            ProfileConnection pConnResult = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndType(
+                    reportOwner, authorizedUser, EConnectionType.WITH_DOCTOR);
+
+            if(pConnResult == null || !pConnResult.isAccepted()){
+                throw new ForbiddenException("You do not have access rights to do that!");
+            }
+        }
+
+        List<SportReport> sportReports = sportReportService.getSportReportsByProfileIdAndDate(reportOwnerId, from, to);
+        return new ResponseEntity<>(sportReports, HttpStatus.OK);
+    }
+
+
 }
