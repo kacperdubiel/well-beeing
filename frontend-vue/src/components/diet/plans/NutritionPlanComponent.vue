@@ -4,10 +4,19 @@
             <div class="carousel-inner">
                 <div v-for="day in this.weekdays" :key="day" class="carousel-item" v-bind:class="{'active' : day=='MONDAY'}">
                     <div class="row">
-                        <h4>{{day}} <button @click="this.fetchPlanDayPositions(day)" data-bs-toggle="modal" data-bs-target="#planDayModal" class="btn-icon-panel-diet"><font-awesome-icon :icon="['fa', 'info']"/></button></h4>
+                        <h4>{{day}}
+                            <button @click="this.fetchPlanDayPositions(day)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#planDayModal">
+                                <font-awesome-icon :icon="['fa', 'info']"/>
+                            </button>
+                            <button @click="this.changeComponentState" class="btn-icon-panel-diet">
+                                <font-awesome-icon v-if="!this.isForm" :icon="['fa', 'edit']"/>
+                                <font-awesome-icon v-else :icon="['fa', 'times']"/>
+                            </button>
+                            <span>{{this.nutritionPlan.name}}</span>
+                        </h4>
                     </div>
                     <div v-for="meal in meals" :key="meal" class="carousel-item-item-container">
-                        <nutrition-plan-position-component :id="meal + '_' + day" class="meal-item" style="width: 100%" :meal="meal" :day="day" :position="findPosition(day, meal)"/>
+                        <nutrition-plan-position-component @delete:position="deletePosition" @add:position="changeAddParams" @positions:updated="onPositionsUpdated" :planId="this.nutritionPlan.id" :componentState="this.isForm" :id="meal + '_' + day" class="meal-item" style="width: 100%" :meal="meal" :day="day" :position="findPosition(day, meal)"/>
                     </div>
                 </div>
             </div>
@@ -32,6 +41,12 @@
         <div v-else class="alert alert-danger alert-dismissible fade show" role="alert">
                 Nie posiadasz jeszcze żadnych planów treningowych!
         </div>
+        <div v-if="deletePositionError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                Błąd połączenia, nie udało się usunąć pozycji.
+                <button @click="this.deletePositionError=false" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
         <div id="planDayModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="planDayModalLabel" aria-hidden="false">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
@@ -47,34 +62,73 @@
                 </div>
             </div>
         </div>
+        <div id="addPositionModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="addPositionModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 style="color: black;" class="modal-title" id="addPositionModalLabel">Dodaj pozycję</h5>
+                        <button @click="clearStatus" type="button" id="close-add-position-modal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <dish-browser-component @position:chosen="this.addPosition" :fromNutritionPlan="true"></dish-browser-component>
+                        <div v-if="this.addPositionError" class="alert alert-danger mt-3 mx-3" role="alert">
+                                Błąd dodawania pozycji! 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import DishBrowserComponent from '@/components/diet/DishBrowserComponent.vue'
 import NutritionPlanPositionComponent from "./NutritionPlanPositionComponent.vue"
 export default {
     name: "NutritionPlanComponent",
     props: {
-        nutritionPlan: {
+        nutritionPlanId: {
             type: Object,
         }
     },
     watch: {
-        nutritionPlan: function () {
-            console.log("plan changed")
+        nutritionPlanId: function () {
+            this.getSingleNutritionPlan(this.nutritionPlanId)
         }
     },
     components: {
-        NutritionPlanPositionComponent
+        NutritionPlanPositionComponent,
+        DishBrowserComponent
     },
     data(){
         return {
             weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
             meals: ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK', 'SUPPER'],
-            actualModalPositions: []
+            actualModalPositions: [],
+            isForm: false,
+            nutritionPlan: {
+                nutritionPlanPositions: []
+            },
+
+            positionToAddDay: '',
+            positionToAddMeal: '',
+
+            addPositionError: false,
+            deletePositionError: false
         }
     },
-    methods: {
+    methods: {      
+        changeAddParams(day, meal){
+            this.positionToAddDay = day
+            this.positionToAddMeal = meal
+        },
+        clearStatus(){
+            this.addPositionError = false;
+        },
+        changeComponentState(){
+            this.isForm = !this.isForm
+        },
         findPosition(day, meal){
             let result = null
             this.nutritionPlan.nutritionPlanPositions.forEach(elem => {
@@ -93,7 +147,73 @@ export default {
             })
             this.actualModalPositions = res
             console.log(this.actualModalPositions)
-        }
+        },
+        onPositionsUpdated(nutritionPlan){
+            this.getSingleNutritionPlan(nutritionPlan.id)
+        },
+        getSingleNutritionPlan(planId){
+            this.axios.get(`${this.apiURL}nutrition-plan/${planId}`,
+                {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+            .then(response => {
+                console.log(response)
+                this.nutritionPlan = response.data
+                //return response.data
+            })
+            .catch(e => {
+                console.log(e);
+                //return plan;
+            })
+        },
+        closeAddPositionModal(){
+            document.getElementById('close-add-position-modal').click();
+        },
+        deletePosition(id){
+            console.log('usuwam')
+            console.log(id)
+            axios({
+                method: 'delete',
+                headers: {Authorization: 'Bearer ' + this.$store.getters.getToken}, 
+                url: `${this.apiURL}nutrition-plan/${this.nutritionPlan.id}/position/${id}`,
+            })
+            .then(response => {
+                    console.log(response)
+                    this.getSingleNutritionPlan(response.data.id)
+                }
+            )
+            .catch(e => {
+                console.log(e);
+            })
+        },
+        addPosition(dish){
+            console.log('dodaje')
+            console.log(dish)
+            axios({
+                method: 'post',
+                headers: {Authorization: 'Bearer ' + this.$store.getters.getToken}, 
+                url: `${this.apiURL}nutrition-plan/${this.nutritionPlan.id}/position`,
+                data: {
+                    dish: {
+                        id: dish.id
+                    },
+                    mealType: this.positionToAddMeal,
+                    weekDay: this.positionToAddDay
+                }
+            })
+            .then(response => {
+                    console.log(response)
+                    this.getSingleNutritionPlan(response.data.id)
+                    this.closeAddPositionModal()
+                }
+            )
+            .catch(e => {
+                console.log(e);
+                this.addPositionError = true;
+            })
+        },
     }
 }
 </script>
@@ -123,7 +243,9 @@ export default {
         display: flex;
     }
     h4 > button{
-        width: 35px;
-        height: 35px;
+        width: 30px;
+        height: 30px;
+        font-weight: lighter;
+        font-size: medium;
     }
 </style>

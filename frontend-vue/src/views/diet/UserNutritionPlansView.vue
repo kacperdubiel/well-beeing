@@ -1,6 +1,6 @@
 <template>
     <div class="tab-content column-view">
-        <nutrition-plan-component :nutritionPlan="this.actualPlan"/>
+        <nutrition-plan-component @positions:updated="onPositionsUpdated" :nutritionPlanId="this.actualPlanId"/>
         <user-nutrition-plans-list-component :suggested="false" @load:plan="changePlan"/>
         <user-nutrition-plans-list-component :suggested="true" @load:plan="changePlan"/>
     </div>
@@ -13,9 +13,8 @@ export default {
     name: "UserNutritionPlansView",
     data(){
         return{
-            actualPlan: {
-                nutritionPlanPositions: []
-            },
+            actualPlanId: '',
+            updatedNutritionPlan: {id: null}
         }
     },
     components: {
@@ -23,8 +22,11 @@ export default {
         UserNutritionPlansListComponent
     },
     methods: {
-        changePlan(plan){
-            this.actualPlan = plan
+        changePlan(planId){
+            this.actualPlanId = planId
+        },
+        onPositionsUpdated(nutritionPlan){
+            this.updatedNutritionPlan = nutritionPlan
         }
     },
 }

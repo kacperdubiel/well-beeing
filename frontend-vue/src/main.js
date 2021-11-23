@@ -53,6 +53,7 @@ library.add(faTrash)
 library.add(faEdit)
 library.add(faPlusCircle)
 library.add(faHome)
+library.add(faThermometerFull)
 
 
 //navbar
