@@ -47,10 +47,10 @@ public class Profile {
     private Date birthday;
     @Enumerated(EnumType.STRING)
     @Column
-    private ESportTag eSportTag;
+    private ESportTag eSportTag = ESportTag.NONE;
     @Enumerated(EnumType.STRING)
     @Column
-    private ENutritionTag eNutritionTag;
+    private ENutritionTag eNutritionTag = ENutritionTag.NONE;
     @Column
     private LocalDateTime lastRequestTime;
     @MapsId
@@ -137,21 +137,6 @@ public class Profile {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
-        this.profileUser = profileUser;
-        this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
-        profileUser.setProfile(this);
-        this.id = profileUser.getId();
-        System.out.println("Escaped constructor");
-    }
-
-
-    public Profile(String firstName, String lastName, Date birthday, ESportTag eSportTag, ENutritionTag eNutritionTag, User profileUser) {
-        System.out.println("Entered constructor");
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.eSportTag = eSportTag;
-        this.eNutritionTag = eNutritionTag;
         this.profileUser = profileUser;
         this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
         profileUser.setProfile(this);
