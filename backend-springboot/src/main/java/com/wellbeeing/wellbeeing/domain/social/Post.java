@@ -52,4 +52,20 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
+
+    @Column
+    private int sharingCounter = 0;
+
+    public Post(String postContent, Profile creator, Post originalPost) {
+        this.postImgPath = null;
+        this.postContent = postContent;
+        this.creator = creator;
+        this.isSharing = true;
+        this.originalPost = originalPost;
+    }
+
+    public void increaseSharingCounter() {
+        this.sharingCounter++;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.api.social;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Comment;
 import com.wellbeeing.wellbeeing.domain.social.Post;
@@ -74,14 +75,14 @@ public class CommentController {
     }
 
     @PatchMapping(path = "/comment/{commentId}/delete")
-    public ResponseEntity<?> deleteComment(@PathVariable long commentId, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> deleteComment(@PathVariable long commentId, Principal principal) throws NotFoundException, ForbiddenException {
         commentService.deleteComment(commentId, principal.getName());
         Comment deletedComment = commentService.getComment(commentId);
         return new ResponseEntity<>(deletedComment, HttpStatus.OK);
     }
 
     @PutMapping(path = "/comment/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable long commentId, @RequestBody @NonNull Comment comment, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> updateComment(@PathVariable long commentId, @RequestBody @NonNull Comment comment, Principal principal) throws NotFoundException, ForbiddenException {
         Comment newComment = commentService.updateComment(commentId, comment, principal.getName());
         return new ResponseEntity<>(newComment, HttpStatus.OK);
     }

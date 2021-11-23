@@ -1,47 +1,7 @@
 <template>
     <div>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
-        <p>siemka, zalogowałeś się</p>
+
+
 
     </div>
 

@@ -21,7 +21,7 @@
                     </button>
                 </div>
 
-                <div class="text-start d-flex flex-row ms-2">
+                <div class="text-start d-flex flex-row ms-2 mt-2">
                     <div class="p-2 mx-2 tag-sport fw-bolder" v-if="this.profileSource.esportTag !== 'NONE'">
                         {{ this.$func_global.mapSportTag(this.profileSource.esportTag )}}
                     </div>
