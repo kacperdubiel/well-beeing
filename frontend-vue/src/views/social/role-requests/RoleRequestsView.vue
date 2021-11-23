@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mt-3">
                 <h5 class="t-2 step">
                     2. Dołącz dowód swoich kompetencji (.pdf)
                 </h5>
@@ -56,6 +56,23 @@
                         accept="application/pdf"
                         @focus="clearStatus"
                     >
+                </div>
+            </div>
+
+            <div class="row mt-3" v-if="roleRequest.role === 'ROLE_DOCTOR'">
+                <h5 class="t-2 step">
+                    3. Wybierz specjalizację
+                </h5>
+            </div>
+            <div class="row" v-if="roleRequest.role === 'ROLE_DOCTOR'">
+                <div class="col-9 col-lg-7 offset-1">
+                    <select
+                        class="form-select"
+                        aria-label="Default select example"
+                        v-model="specialization.id"
+                    >
+                        <option v-for="spec in doctorSpecializations" :key="spec.name" :value="spec.id">{{ spec.name }}</option>
+                    </select>
                 </div>
             </div>
 
@@ -99,7 +116,11 @@ export default {
             submittingRequest: false,
             errorRequest: false,
             successRequest: false,
-            requestId: 0
+            requestId: 0,
+            doctorSpecializations: [],
+            specialization: {
+                id: ""
+            }
         }
     },
     methods: {
@@ -178,6 +199,16 @@ export default {
                 console.log(error.response);
             });
         },
+        getDoctorSpecializations() {
+            const url = `${this.apiURL}doctor-specializations`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.doctorSpecializations = response.data
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+        }
     },
     computed: {
         invalidRole() {
@@ -190,6 +221,7 @@ export default {
     mounted() {
         this.getMyRoleRequests()
         this.getUserInfo()
+        this.getDoctorSpecializations()
     }
 }
 </script>

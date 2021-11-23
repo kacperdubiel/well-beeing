@@ -8,7 +8,7 @@
                     <th>Rola</th>
                     <th>Dokument</th>
                     <th>Status</th>
-
+                    <th>Specjalizacja</th>
                     <th></th>
                 </tr>
             </thead>
@@ -23,6 +23,11 @@
                         </button>
                     </td>
                     <td>{{ this.$func_global.mapRoleRequestStatus(req.status) }}</td>
+                    <td>
+                        <span v-if="req.role === 'ROLE_DOCTOR' && req.specialization !== null">{{req.specialization.name}}</span>
+                        <span v-else>-</span>
+
+                    </td>
                     <td class="text-end" v-if="!isAdmin">
                         <button class="btn-white mx-1" @click="handleCancel(req.roleReqId)" v-if="req.status === 'PENDING'">
                             Anuluj
@@ -66,7 +71,7 @@ export default {
         return {
             roleRequest: Object,
             openingModal: 0,
-            processedRoleRequest: Object
+            processedRoleRequest: Object,
         }
     },
     props: {
@@ -95,7 +100,8 @@ export default {
             const url = `${this.apiURL}role-request/${req.roleReqId}/process`
             const token = this.$store.getters.getToken;
             this.processedRoleRequest = {
-                "status": "ACCEPTED"
+                "status": "ACCEPTED",
+                "specialization": this.specialization
             }
             this.axios.patch(url, this.processedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
@@ -117,7 +123,7 @@ export default {
             }).catch(error => {
                 console.log(error.response)
             });
-        }
+        },
     },
     computed: {
         isAdmin() {
