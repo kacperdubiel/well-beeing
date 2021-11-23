@@ -48,7 +48,7 @@ public class MeasureServiceImpl implements MeasureService {
 
     @Override
     public List<Measure> getMeasuresByProfileAndMeasureTypeAndMeasureDateBetween(Profile profile, MeasureType measureType, Date start, Date end) {
-        return measureDAO.findByOwnerAndMeasureTypeAndMeasureDateBetween(profile, measureType, start, end);
+        return measureDAO.findByOwnerAndMeasureTypeAndMeasureDateBetweenOrderByMeasureDate(profile, measureType, start, end);
     }
 
     @Override
