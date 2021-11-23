@@ -39,7 +39,7 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     public boolean deleteNutritionPlanFromProfile(UUID nutritionPlanId) throws NotFoundException {
         NutritionPlan nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
         if(nutritionPlan != null){
-            nutritionPlan.setProfile(null);
+            nutritionPlan.setOwnerProfile(null);
             nutritionPlanDAO.save(nutritionPlan);
             nutritionPlanDAO.delete(nutritionPlan);
             return true;
@@ -72,7 +72,7 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         Profile profile = profileService.getProfileById(profileId);
         NutritionPlan nutritionPlan = NutritionPlan.builder()
                 .generationDate(new Date())
-                .profile(profile)
+                .ownerProfile(profile)
                 .build();
         nutritionPlanDAO.save(nutritionPlan);
         return nutritionPlan;
@@ -82,7 +82,7 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     public NutritionPlan addNutritionPlanToProfile(NutritionPlan nutritionPlan, UUID profileId) throws NotFoundException {
         Profile profile = profileService.getProfileById(profileId);
         nutritionPlan.setId(null);
-        nutritionPlan.setProfile(profile);
+        nutritionPlan.setOwnerProfile(profile);
         nutritionPlanDAO.save(nutritionPlan);
         return nutritionPlan;
     }

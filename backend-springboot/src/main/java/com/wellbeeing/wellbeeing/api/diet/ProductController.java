@@ -42,7 +42,7 @@ public class ProductController {
 
     @RequestMapping(path = "/product/import", method = RequestMethod.POST)
     public ResponseEntity<?> importProducts() throws Exception {
-        csvProductImporter.readProductsFromCsv("E:\\ZPI\\well-beeing\\MyFoodData-Nutrition-Facts-SpreadSheet-Detailed-Release-1-0.csv");
+        csvProductImporter.readProductsFromCsv("C:\\Users\\User\\Desktop\\well-beeing\\well-beeing\\backend-springboot\\src\\main\\java\\com\\wellbeeing\\wellbeeing\\MyFoodData-Nutrition-Facts-SpreadSheet-Detailed-Release-1-0.csv");
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 

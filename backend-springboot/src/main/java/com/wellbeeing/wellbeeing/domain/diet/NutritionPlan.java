@@ -26,8 +26,11 @@ public class NutritionPlan {
     @Column
     private boolean isMain;
     @ManyToOne
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+    @JoinColumn(name = "owner_id")
+    private Profile ownerProfile;
+    @ManyToOne
+    @JoinColumn(name = "suggested_id")
+    private Profile suggestedToProfile;
     @OneToMany(mappedBy = "nutritionPlan")
     private List<NutritionPlanPosition> nutritionPlanPositions = new ArrayList<>();
     @OneToOne

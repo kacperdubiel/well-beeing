@@ -97,8 +97,13 @@ public class Profile {
     private List<SportReport> sportReports = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ownerProfile", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<NutritionPlan> nutritionPlans = new ArrayList<>();
+
+    @OneToMany(mappedBy = "suggestedToProfile", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<NutritionPlan> suggestedNutritionPlans = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
