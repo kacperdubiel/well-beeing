@@ -28,6 +28,8 @@ import DieticianDishesView from "@/views/diet/DieticianDishesView";
 import DieticianUsersView from "@/views/diet/DieticianUsersView";
 import DieticianLabelsView from "@/views/diet/DieticianLabelsView";
 import DieticianUserProfileView from "@/views/diet/DieticianUserProfileView";
+import DieticianNutritionPlansView from "@/views/diet/DieticianNutritionPlansView";
+import UserNutritionPlansView from "@/views/diet/UserNutritionPlansView";
 import FeedView from "@/views/social/feed/FeedView";
 import RoleRequestsView from "@/views/social/role-requests/RoleRequestsView";
 import LoginAdminView from "@/views/social/admin/LoginAdminView";
@@ -118,6 +120,11 @@ const routes = [
         name: 'UserDieticianAllConversationsView',
         component: UserDieticianAllConversationsView
       },
+      {
+        path: 'plans',
+        name: 'UserNutritionPlansView',
+        component: UserNutritionPlansView
+      },
     ]
   },
   {
@@ -155,6 +162,11 @@ const routes = [
         path: 'labels',
         name: 'DieticianLabelsView',
         component: DieticianLabelsView
+      },
+      {
+        path: 'plans',
+        name: 'DieticianNutritionPlansView',
+        component: DieticianNutritionPlansView
       },
     ]
   },
