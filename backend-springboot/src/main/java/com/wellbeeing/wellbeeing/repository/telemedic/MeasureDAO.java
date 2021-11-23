@@ -8,9 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Repository("measureDAO")
 public interface MeasureDAO extends JpaRepository<Measure, UUID> {
     Page<Measure> findByOwnerAndMeasureType(Profile owner, MeasureType measureType, Pageable pageable);
+    List<Measure> findByOwnerAndMeasureTypeAndMeasureDateBetween(Profile owner, MeasureType measureType, Date start, Date end);
 }

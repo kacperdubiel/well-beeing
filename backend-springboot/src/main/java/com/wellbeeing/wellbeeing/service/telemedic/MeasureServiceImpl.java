@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service("measureService")
@@ -42,6 +44,11 @@ public class MeasureServiceImpl implements MeasureService {
     public Page<Measure> getMeasuresByProfileAndMeasureType(Profile profile, MeasureType measureType, int page, int pageSize) {
         return measureDAO.findByOwnerAndMeasureType(profile, measureType, PageRequest.of(page, pageSize,
                 Sort.by(Sort.Direction.DESC, "measureDate")));
+    }
+
+    @Override
+    public List<Measure> getMeasuresByProfileAndMeasureTypeAndMeasureDateBetween(Profile profile, MeasureType measureType, Date start, Date end) {
+        return measureDAO.findByOwnerAndMeasureTypeAndMeasureDateBetween(profile, measureType, start, end);
     }
 
     @Override
