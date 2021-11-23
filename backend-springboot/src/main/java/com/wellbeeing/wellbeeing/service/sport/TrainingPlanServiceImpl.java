@@ -1,11 +1,10 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
-import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
-import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
+import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
@@ -23,9 +22,9 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
     private final TrainingPlanDAO trainingPlanDAO;
     private final TrainingPositionDAO trainingPositionDAO;
     private final UserDAO userDAO;
-    private final TrainerDAO trainerDAO;
+    private final TrainerProfileDAO trainerProfileDAO;
     private final TrainingPlanRequestDAO trainingPlanRequestDAO;
-    public TrainingPlanServiceImpl(@Qualifier("trainerDAO") TrainerDAO trainerDAO,
+    public TrainingPlanServiceImpl(@Qualifier("trainerProfileDAO") TrainerProfileDAO trainerProfileDAO,
                                    @Qualifier("trainingDAO") TrainingDAO trainingDAO,
                                    @Qualifier("trainingPlanDAO") TrainingPlanDAO trainingPlanDAO,
                                    @Qualifier("trainingPositionDAO") TrainingPositionDAO trainingPositionDAO,
@@ -35,7 +34,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
         this.trainingDAO = trainingDAO;
 //        this.exerciseInTrainingDAO = exerciseInTrainingDAO;
         this.userDAO = userDAO;
-        this.trainerDAO = trainerDAO;
+        this.trainerProfileDAO = trainerProfileDAO;
         this.trainingPlanDAO = trainingPlanDAO;
         this.trainingPositionDAO = trainingPositionDAO;
         this.trainingPlanRequestDAO = trainingPlanRequestDAO1;
@@ -215,7 +214,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
         User trainerUser = userDAO.findUserByEmail(trainerName).orElse(null);
         if (trainerUser == null)
             throw new NotFoundException(String.format("User with name=%s doesn't exist", trainerName));
-        TrainerProfile trainerProfile =  trainerDAO.findById(trainerUser.getId()).orElse(null);
+        TrainerProfile trainerProfile =  trainerProfileDAO.findById(trainerUser.getId()).orElse(null);
         if (trainerProfile == null)
             throw new NotFoundException(String.format("Trainer with name='%s' doesn't exist", trainerName));
 
@@ -247,7 +246,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService{
 
     @Override
     public TrainingPlanRequest sendRequestToTrainer(UUID trainerId, String submitterName, String message) throws NotFoundException {
-        TrainerProfile trainerProfile =  trainerDAO.findById(trainerId).orElse(null);
+        TrainerProfile trainerProfile =  trainerProfileDAO.findById(trainerId).orElse(null);
         User submitterUser = userDAO.findUserByEmail(submitterName).orElse(null);
         if (submitterUser == null)
             throw new NotFoundException(String.format("User with name=%s doesn't exist", submitterName));

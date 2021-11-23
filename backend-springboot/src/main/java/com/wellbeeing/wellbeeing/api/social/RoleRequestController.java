@@ -97,9 +97,9 @@ public class RoleRequestController {
     }
 
     @PatchMapping(path = "/{id}/process")
-    public ResponseEntity<?> processRoleRequest(@PathVariable(value = "id") Long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException {
+    public ResponseEntity<?> processRoleRequest(@PathVariable(value = "id") long roleRequestId, @RequestBody @NonNull RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException {
         roleRequest.setRoleReqId(roleRequestId);
-        roleRequestService.processRoleRequest(roleRequest);
+        roleRequestService.processRoleRequest(roleRequestId, roleRequest);
         RoleRequest processedRoleRequest = roleRequestService.getRoleRequest(roleRequestId);
         return new ResponseEntity<>(processedRoleRequest, HttpStatus.OK);
     }

@@ -1,12 +1,13 @@
 package com.wellbeeing.wellbeeing.service.social;
 
-import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.Role;
-import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.account.*;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.social.EStatus;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
+import com.wellbeeing.wellbeeing.repository.account.DieticianProfileDAO;
+import com.wellbeeing.wellbeeing.repository.account.DoctorProfileDAO;
+import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.social.RoleRequestDAO;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
@@ -24,13 +25,23 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     private final RoleRequestDAO roleRequestDAO;
     private final UserDAO userDAO;
     private final UserService userService;
+    private final TrainerProfileDAO trainerProfileDAO;
+    private final DoctorProfileDAO doctorProfileDAO;
+    private final DieticianProfileDAO dieticianProfileDAO;
+
     Set<String> possibleRoles;
 
     public RoleRequestServiceImpl(@Qualifier("roleRequestDAO") RoleRequestDAO roleRequestDAO,
-                                  @Qualifier("userDAO") UserDAO userDAO, UserService userService) {
+                                  @Qualifier("userDAO") UserDAO userDAO, UserService userService,
+                                  @Qualifier("trainerProfileDAO") TrainerProfileDAO trainerProfileDAO,
+                                  @Qualifier("doctorProfileDAO") DoctorProfileDAO doctorProfileDAO,
+                                  @Qualifier("dieticianProfileDAO") DieticianProfileDAO dieticianProfileDAO) {
         this.roleRequestDAO = roleRequestDAO;
         this.userDAO = userDAO;
         this.userService = userService;
+        this.trainerProfileDAO = trainerProfileDAO;
+        this.doctorProfileDAO = doctorProfileDAO;
+        this.dieticianProfileDAO = dieticianProfileDAO;
         this.possibleRoles = new HashSet<>();
         this.possibleRoles.add("ROLE_DOCTOR");
         this.possibleRoles.add("ROLE_DIETICIAN");
@@ -125,24 +136,47 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     }
 
     @Override
-    public boolean processRoleRequest(RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException {
-        RoleRequest targetRoleRequest = roleRequestDAO.findById(roleRequest.getRoleReqId()).orElse(null);
+    public boolean processRoleRequest(long roleReqId, RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException {
+        RoleRequest targetRoleRequest = roleRequestDAO.findById(roleReqId).orElse(null);
         if (targetRoleRequest == null)
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequest.getRoleReqId()));
 
         if (Objects.equals(roleRequest.getStatus().toString(), EStatus.ACCEPTED.toString())) {
-
-            String userMail = targetRoleRequest.getSubmitter().getProfileUser().getEmail();
+            System.out.println("jestem w ifie");
+            Profile submitter = targetRoleRequest.getSubmitter();
+            String userMail = submitter.getProfileUser().getEmail();
             userService.addRoleToUser(userMail, targetRoleRequest.getRole().toString());
+            System.out.println("dodaje role " + targetRoleRequest.getRole().toString() + " do " + userMail);
             targetRoleRequest.setStatus(EStatus.ACCEPTED);
             targetRoleRequest.setComment(roleRequest.getComment());
             roleRequestDAO.save(targetRoleRequest);
 
             List<RoleRequest> reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatus(userMail, targetRoleRequest.getRole(), EStatus.PENDING);
             reqsToCancel.forEach(r -> {
+                System.out.println("anuluje inne");
                 r.setStatus(EStatus.CANCELLED);
                 roleRequestDAO.save(r);
             });
+
+            switch(targetRoleRequest.getRole().toString()) {
+                case ERole.Name.ROLE_TRAINER:
+                    TrainerProfile newTrainer = new TrainerProfile(submitter);
+                    trainerProfileDAO.save(newTrainer);
+                    System.out.println("dodaje trenera profil");
+                    break;
+                case ERole.Name.ROLE_DOCTOR:
+                    DoctorProfile newDoctor = new DoctorProfile(submitter);
+                    doctorProfileDAO.save(newDoctor);
+                    System.out.println("dodaje doktora profil");
+                    break;
+                case ERole.Name.ROLE_DIETICIAN:
+                    DieticianProfile newDietician = new DieticianProfile(submitter);
+                    dieticianProfileDAO.save(newDietician);
+                    System.out.println("dodaje dietetyka profil");
+                    break;
+                default:
+                    break;
+            }
         }
         else if (Objects.equals(roleRequest.getStatus().toString(), EStatus.REJECTED.toString())) {
             targetRoleRequest.setStatus(EStatus.REJECTED);
