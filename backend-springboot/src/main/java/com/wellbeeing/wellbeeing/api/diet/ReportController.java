@@ -8,6 +8,8 @@ import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
+import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
+import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
@@ -15,6 +17,7 @@ import com.wellbeeing.wellbeeing.service.diet.ReportService;
 import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -160,6 +164,32 @@ public class ReportController {
         return new ResponseEntity<>(reportService.getReportsByMonthAndProfileId(month, year, profileId), HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/report/profile/{profileId}/from/{date_from}/to/{date_to}", method = RequestMethod.GET)
+    public ResponseEntity<?> getProfileReportByDate(Principal principal,
+                                                    @PathVariable("profileId") UUID reportOwnerId,
+                                                    @PathVariable("date_from")
+                                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate from,
+                                                    @PathVariable("date_to")
+                                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate to)
+            throws NotFoundException, ForbiddenException
+    {
+        UUID authorizedUserId = userService.findUserIdByUsername(principal.getName());
+        Profile authorizedUser = profileService.getProfileById(authorizedUserId);
+        Profile reportOwner = profileService.getProfileById(reportOwnerId);
+
+        if(!reportOwnerId.equals(authorizedUserId)){
+            ProfileConnection pConnResult = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndType(
+                    reportOwner, authorizedUser, EConnectionType.WITH_DOCTOR);
+
+            if(pConnResult == null || !pConnResult.isAccepted()){
+                throw new ForbiddenException("You do not have access rights to do that!");
+            }
+        }
+
+        List<Report> reports = reportService.getReportsByProfileIdAndDate(reportOwnerId, from, to);
+        return new ResponseEntity<>(reports, HttpStatus.OK);
+    }
+
     @RequestMapping(path = "/report/profile/{profileId}", method = RequestMethod.GET)
     public ResponseEntity<?> getProfileReportByMonthAndYear(Principal principal,
                                                      @PathVariable("profileId") UUID profileId,
@@ -174,4 +204,5 @@ public class ReportController {
             return new ResponseEntity<>(reportService.getReportsByMonthAndProfileId(month, year, profileId), HttpStatus.OK);
         throw new ForbiddenException("There is no connection with profile with id" + profileId);
     }
+
 }

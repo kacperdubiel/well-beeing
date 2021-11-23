@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
 import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,4 +27,5 @@ public interface ReportService {
     List<Report> getReportByDateAndProfileId(LocalDate date, UUID profileId) throws NotFoundException;
     List<Report> getReportsByProfileId(UUID profileId) throws NotFoundException;
     List<Report> getReportsByMonthAndProfileId(int month, int year, UUID profileId) throws NotFoundException;
+    List<Report> getReportsByProfileIdAndDate(UUID profileId, LocalDate start, LocalDate end) throws NotFoundException;
 }
