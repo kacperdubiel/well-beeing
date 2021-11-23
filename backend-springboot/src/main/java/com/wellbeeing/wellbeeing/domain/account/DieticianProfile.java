@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.Dish;
+import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,8 @@ public class DieticianProfile extends SpecialistProfile {
     @OneToMany(mappedBy = "dishCreator")
     @JsonIgnore
     private List<Dish> createdDishes = new ArrayList<>();
+    @Column
+    @OneToMany(mappedBy = "creator")
+    @JsonIgnore
+    private List<NutritionLabel> createdLabels = new ArrayList<>();
 }

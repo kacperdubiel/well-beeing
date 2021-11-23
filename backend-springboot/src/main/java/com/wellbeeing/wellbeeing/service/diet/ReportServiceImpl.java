@@ -102,12 +102,12 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Report addReportForProfileByProfileId(UUID profileId) throws NotFoundException, ConflictException {
+    public Report addReportForProfileByProfileId(UUID profileId, LocalDate date) throws NotFoundException, ConflictException {
         Profile profile = profileDAO.findById(profileId).orElse(null);
         if(profile == null)
             throw new NotFoundException("Profile with id:" + profileId + " not found");
         Report newReport = Report.builder()
-                .reportDate(LocalDate.now())
+                .reportDate(date)
                 .reportOwner(profile)
                 .derivedNutritionalValues(new NutritionalValueDerivedData())
                 .build();
@@ -181,6 +181,7 @@ public class ReportServiceImpl implements ReportService {
             throw new NotFoundException("Profile with id: " + profileId + " not found");
         return profile.getDietReports().stream().filter
                 (r -> r.getReportDate().getMonth().getValue() == month && r.getReportDate().getYear() == year)
+                .sorted(Comparator.comparing(Report::getReportDate))
                 .collect(Collectors.toList());
     }
 

@@ -18,7 +18,7 @@ public interface ReportService {
     Report deleteDishesFromReportByReportId(UUID reportId, List<UUID> dishes) throws NotFoundException;
     Report deleteProductsFromReportByReportId(UUID reportId, List<UUID> productsIds) throws NotFoundException;
     boolean deleteReportById(UUID reportId) throws NotFoundException;
-    Report addReportForProfileByProfileId(UUID profileId) throws NotFoundException, ConflictException;
+    Report addReportForProfileByProfileId(UUID profileId, LocalDate date) throws NotFoundException, ConflictException;
     Report addDishesToReportByReportId(List<ReportDishDetail> dishes, UUID reportId) throws NotFoundException;
     Report addProductsToReportByReportId(List<ReportProductDetail> products, UUID reportId) throws NotFoundException;
     void updateReportDerivedElementsByReportId(UUID reportId) throws NotFoundException;

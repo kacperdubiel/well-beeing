@@ -7,6 +7,7 @@ import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.message.diet.CreateReportRequest;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
@@ -113,9 +114,10 @@ public class ReportController {
     }
 
     @RequestMapping(path = "/report", method = RequestMethod.POST)
-    public ResponseEntity<?> addReport(Principal principal) throws NotFoundException, ConflictException {
+    public ResponseEntity<?> addReport(Principal principal,
+                                       @RequestBody @NonNull CreateReportRequest createReportRequest) throws NotFoundException, ConflictException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        Report newReport = reportService.addReportForProfileByProfileId(profileId);
+        Report newReport = reportService.addReportForProfileByProfileId(profileId, createReportRequest.getReportDate());
         return new ResponseEntity<>(newReport, HttpStatus.OK);
     }
 
