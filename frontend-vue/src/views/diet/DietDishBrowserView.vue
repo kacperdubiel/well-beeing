@@ -1,6 +1,6 @@
 <template>
     <div>
-        <dish-browser-component></dish-browser-component>
+        <dish-browser-component :fromNutritionPlan="false"></dish-browser-component>
     </div>
 </template>
 

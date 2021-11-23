@@ -25,7 +25,7 @@
         </div>
         <p v-if="this.allItems != 0" style="color: var(--GREY1); text-align:end;">{{this.dishesToShow.length}} / {{this.allItems}} pozycji </p>
         <div style="width: 100%;" v-for="dish in this.dishesToShow" :key="dish.id">
-            <dish-browser-element-component @change:dishModal="changeModalDish" :actualDish="dish"></dish-browser-element-component>
+            <dish-browser-element-component :fromNutritionPlan="this.fromNutritionPlan" @change:dishModal="changeModalDish" :actualDish="dish"></dish-browser-element-component>
         </div>
         <div v-if="this.showMore" style="justify-content: flex-end; flex-direction: row; display: flex;">
             <button @click="loadNextPage" class="btn-card-panel-diet">Załaduj więcej</button>
@@ -53,6 +53,11 @@ import DishBrowserElementComponent from './DishBrowserElementComponent.vue'
 import DishComponent from './DishComponent.vue'
 export default {
     name: "DishBrowserComponent",
+    props: {
+        fromNutritionPlan: {
+            type: Boolean
+        }
+    },
     components: {
         DishBrowserElementComponent,
         DishComponent
@@ -132,8 +137,11 @@ export default {
         },
         changeModalDish(dish){
             this.modalDish = dish
-            console.log(this.modalDish)
             document.get
+            if(this.fromNutritionPlan){
+                this.$emit('position:chosen', this.modalDish)
+            }
+            
         }
     }
 }
