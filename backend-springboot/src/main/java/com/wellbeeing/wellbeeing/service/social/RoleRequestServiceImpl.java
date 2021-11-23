@@ -5,12 +5,11 @@ import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.social.EStatus;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
-import com.wellbeeing.wellbeeing.repository.account.DieticianProfileDAO;
-import com.wellbeeing.wellbeeing.repository.account.DoctorProfileDAO;
-import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
-import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.repository.account.*;
 import com.wellbeeing.wellbeeing.repository.social.RoleRequestDAO;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.service.account.DoctorSpecializationService;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -28,6 +27,7 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     private final TrainerProfileDAO trainerProfileDAO;
     private final DoctorProfileDAO doctorProfileDAO;
     private final DieticianProfileDAO dieticianProfileDAO;
+    private final ProfileService profileService;
 
     Set<String> possibleRoles;
 
@@ -35,13 +35,15 @@ public class RoleRequestServiceImpl implements RoleRequestService {
                                   @Qualifier("userDAO") UserDAO userDAO, UserService userService,
                                   @Qualifier("trainerProfileDAO") TrainerProfileDAO trainerProfileDAO,
                                   @Qualifier("doctorProfileDAO") DoctorProfileDAO doctorProfileDAO,
-                                  @Qualifier("dieticianProfileDAO") DieticianProfileDAO dieticianProfileDAO) {
+                                  @Qualifier("dieticianProfileDAO") DieticianProfileDAO dieticianProfileDAO,
+                                  ProfileService profileService) {
         this.roleRequestDAO = roleRequestDAO;
         this.userDAO = userDAO;
         this.userService = userService;
         this.trainerProfileDAO = trainerProfileDAO;
         this.doctorProfileDAO = doctorProfileDAO;
         this.dieticianProfileDAO = dieticianProfileDAO;
+        this.profileService = profileService;
         this.possibleRoles = new HashSet<>();
         this.possibleRoles.add("ROLE_DOCTOR");
         this.possibleRoles.add("ROLE_DIETICIAN");
@@ -164,6 +166,9 @@ public class RoleRequestServiceImpl implements RoleRequestService {
                 case ERole.Name.ROLE_DOCTOR:
                     DoctorProfile newDoctor = new DoctorProfile(submitter);
                     doctorProfileDAO.save(newDoctor);
+                    targetRoleRequest.setSpecialization(roleRequest.getSpecialization());
+                    roleRequestDAO.save(targetRoleRequest);
+                    profileService.addDoctorSpecializationToDoctor(newDoctor.getId(), roleRequest.getSpecialization().getId());
                     System.out.println("dodaje doktora profil");
                     break;
                 case ERole.Name.ROLE_DIETICIAN:
