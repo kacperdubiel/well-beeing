@@ -231,6 +231,7 @@ input{
 
 .telemedic-section {
     padding: 25px 20px;
+    margin-bottom: 40px;
 }
 
 .pagination > li.telemedic-page > a
