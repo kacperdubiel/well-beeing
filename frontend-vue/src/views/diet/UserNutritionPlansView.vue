@@ -1,7 +1,8 @@
 <template>
     <div class="tab-content column-view">
         <nutrition-plan-component :nutritionPlan="this.actualPlan"/>
-        <user-nutrition-plans-list-component @load:plan="changePlan"/>
+        <user-nutrition-plans-list-component :suggested="false" @load:plan="changePlan"/>
+        <user-nutrition-plans-list-component :suggested="true" @load:plan="changePlan"/>
     </div>
 </template>
 
