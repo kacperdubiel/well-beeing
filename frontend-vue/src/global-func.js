@@ -12,7 +12,34 @@ export const func_global = {
         return this.uploadFile(formData, type, token, id).then((resp) => {
             console.log(resp)
         })
+    },
 
+    async importDataFunc(myfile, token, type, id) {
+        // let myfile = this.$refs.myfile;
+        let files = myfile.files;
+        let file = files[0];
+        var formData = new FormData();
+        formData.append("file", file);
+        return this.uploadFileFunc(formData, type, token, id)
+    },
+
+    async uploadFileFunc (data, type, token, id) {
+        let url;
+        if (type === 'roleRequest')
+            url = `${apiURL}role-request/import/${id}/`
+        else if (type === 'profilePicture')
+            url = `${apiURL}profile/import`
+        else if (type === 'postPicture')
+            url = `${apiURL}post/import/${id}`
+        else if(type === 'dishPicture')
+            url = `${apiURL}dish/${id}/photo`
+        else if(type === 'importProducts')
+            url = `${apiURL}import/products`
+        else if(type === 'importDiets')
+            url = `${apiURL}import/diets`
+        else if(type === 'importAilments')
+            url = `${apiURL}import/ailments`
+        return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}})
     },
 
      async uploadFile (data, type, token, id) {
@@ -25,7 +52,9 @@ export const func_global = {
             url = `${apiURL}post/import/${id}`
         else if (type === 'exerciseVideo')
             url = `${apiURL}sport/exercise/import/${id}`
-         return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
+        else if(type === 'dishPicture')
+            url = `${apiURL}dish/${id}/photo`
+        return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
             console.log(response.data)
         }).catch(error => {
             console.log(error.response)
@@ -94,6 +123,33 @@ export const func_global = {
         if (date) {
             return moment(String(date)).locale('pl').fromNow()
         }
+    },
+    getIsActive5minutes(userLastRequestTime) {
+        console.log('Something')
+        let duration = moment.duration(moment(new Date()).diff(userLastRequestTime));
+        let minutes = duration.asMinutes()
+        console.log('minutes: ', minutes)
+        return minutes < 5
+    },
+    mapCommentForm(counter) {
+        if(counter === 1)
+            return 'komentarz'
+        else if(counter === 12 || counter === 13 || counter === 14)
+            return 'komentarzy'
+        else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
+            return 'komentarze'
+        else
+            return 'komentarzy'
+    },
+    mapShareForm(counter) {
+        if(counter === 1)
+            return 'udostępnienie'
+        else if(counter === 12 || counter === 13 || counter === 14)
+            return 'udostępnień'
+        else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
+            return 'udostępnienia'
+        else
+            return 'udostępnień'
     },
     mapRole(role) {
         if(role === 'ROLE_DIETICIAN')
@@ -281,16 +337,38 @@ export const func_global = {
             return "Nieznany"
     },
     mapGlycemicIndex(index){
+        if(index == 'VERY_LOW')
+            return "Bardzo niski (0, 10)"
         if(index == 'LOW')
-            return "Niski"
+            return "Niski (11, 30)"
         else if(index == 'MEDIUM')
-            return "Średni"
+            return "Średni (31, 50)"
         else if(index == "HIGH")
-            return "Wysoki"
+            return "Wysoki (51, 70)"
+        else if(index == "VERY_HIGH")
+            return "Bardzo wysoki (71, 100)"
         else if(index == "ANY_RECOMMENDED")
-            return "Niski/średni"
+            return "Niski/średni (0, 50)"
         else if(index == "ANY")
             return "Dowolny"
+        else
+            return "Nieznany"
+    },
+    mapGlycemicIndexShort(index){
+        if(index == 'VERY_LOW')
+            return "(0, 10)"
+        if(index == 'LOW')
+            return "(11, 30)"
+        else if(index == 'MEDIUM')
+            return "(31, 50)"
+        else if(index == "HIGH")
+            return "(51, 70)"
+        else if(index == "VERY_HIGH")
+            return "(71, 100)"
+        else if(index == "ANY_RECOMMENDED")
+            return "(0, 50)"
+        else if(index == "ANY")
+            return "(0, 100)"
         else
             return "Nieznany"
     },
@@ -305,6 +383,78 @@ export const func_global = {
             return "kg"
         else
             return "Nieznana"
+    },
+    mapVitamin(vit){
+        if(vit == 'FOLIC_ACID')
+            return 'Kwas foliowy [mcg]'
+        if(vit == 'BIOTIN')
+            return 'Biotyna [mcg]'
+        if(vit == 'A')
+            return 'A [mcg]'
+        if(vit == 'B1')
+            return 'B1 [mg]'
+        if(vit == 'B2')
+            return 'B2 [mg]'
+        if(vit == 'B5')
+            return 'B5 [mg]'
+        if(vit == 'B6')
+            return 'B6 [mg]'
+        if(vit == 'B12')
+            return 'B12 [mcg]'
+        if(vit == 'C')
+            return 'C [mg]'
+        if(vit == 'D')
+            return 'D [mcg]'
+        if(vit == 'E')
+            return 'E [mg]'
+        if(vit == 'PP')
+            return 'PP [mg]'
+        if(vit == 'K')
+            return 'K [mg]'
+        else
+            return vit
+    },
+    mapMacro(macro){
+        if(macro == 'VEGETABLE_PROTEINS')
+            return 'Białka roślinne [g]'
+        if(macro == 'ANIMAL_PROTEINS')
+            return 'Białka zwierzęce [g]'
+        if(macro == 'POLYUNSATURATED_FATS')
+            return 'Tłuszcze wielonienasycone [g]'
+        if(macro == 'MONOUNSATURATED_FATS')
+            return 'Tłuszcze jednonienasycone [g]'
+        else
+            return macro
+    },
+    mapMineral(mineral){
+        if(mineral == 'ZINC')
+            return 'Cynk [mg]'
+        if(mineral == 'PHOSPHORUS')
+            return 'Fosfor [mg]'
+        if(mineral == 'IODINE')
+            return 'Jod [mcg]'
+        if(mineral == 'MAGNESIUM')
+            return 'Magnez [mg]'
+        if(mineral == 'COPPER')
+            return 'Miedź [mg]'
+        if(mineral == 'POTASSIUM')
+            return 'Potas [mg]'
+        if(mineral == 'SELENIUM')
+            return 'Selen [mcg]'
+        if(mineral == 'SODIUM')
+            return 'Sód [mg]'
+        if(mineral == 'CALCIUM')
+            return 'Wapń [mg]'
+        if(mineral == 'Iron')
+            return 'Żelazo [mg]'
+        else
+            return mineral
+    },
+    mapPublished(draft){
+        if(draft)
+            return "Szkic"
+        else
+            return "Opublikowane"
     },
     proteinCalories(){
         return 4

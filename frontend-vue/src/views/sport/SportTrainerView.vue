@@ -11,6 +11,11 @@
                     <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainerUserConversationsView' || this.$route.name === 'TrainerUserConversationView' }">Wiadomości</span>
                 </router-link>
             </li>
+            <li class="nav-item">
+                <router-link :to="{ name: 'TrainingPlanRequest' }">
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainingPlanRequest'}">Prośby o plan</span>
+                </router-link>
+            </li>
         </ul>
         <!--        <p>{{this.$route.name}}</p>-->
         <router-view></router-view>

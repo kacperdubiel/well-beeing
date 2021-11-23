@@ -1,4 +1,5 @@
 <template>
+<div class="container-fluid" >
     <div class="calculations-container">
         <div v-if="this.calculations == ''" class="alert alert-danger alert-dismissible fade show" role="alert">
                 Uzupełnij swoją kartę!
@@ -141,6 +142,7 @@
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -155,6 +157,7 @@ export default {
     data() {
         return {
             calculations: Object,
+            loaded: false,
         }
     },
     mounted() {

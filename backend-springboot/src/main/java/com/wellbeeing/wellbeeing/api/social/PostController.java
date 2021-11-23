@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.api.social;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
@@ -76,14 +77,20 @@ public class PostController {
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/post/{postId}/share")
+    public ResponseEntity<?> sharePost(@PathVariable long postId, @RequestBody @NonNull Post post, Principal principal) throws NotFoundException {
+        Post sharingPost = postService.sharePost(postId, post, principal.getName());
+        return new ResponseEntity<>(sharingPost, HttpStatus.OK);
+    }
+
     @PatchMapping(path = "/post/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updatePost(@PathVariable(value = "id") long postId, @RequestBody Map<String, Object> fields, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> updatePost(@PathVariable(value = "id") long postId, @RequestBody Map<String, Object> fields, Principal principal) throws NotFoundException, ForbiddenException {
         Post newPost = postService.partialUpdatePost(postId, fields, principal.getName());
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
     @PostMapping("/post/import/{postId}")
-    public ResponseEntity<?> importData(MultipartFile file, @PathVariable long postId, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> importData(MultipartFile file, @PathVariable long postId, Principal principal) throws NotFoundException, ForbiddenException {
 
         String fileName = fileService.save(file);
 
@@ -105,7 +112,7 @@ public class PostController {
     }
 
     @PatchMapping(path = "/post/{id}/delete")
-    public ResponseEntity<?> deletePost(@PathVariable(value = "id") long postId, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> deletePost(@PathVariable(value = "id") long postId, Principal principal) throws NotFoundException, ForbiddenException {
         postService.deletePost(postId, principal.getName());
         Post deletedPost = postService.getPost(postId);
         return new ResponseEntity<>(deletedPost, HttpStatus.OK);

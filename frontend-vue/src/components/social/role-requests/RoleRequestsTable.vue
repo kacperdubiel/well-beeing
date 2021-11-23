@@ -99,26 +99,11 @@ export default {
             }
             this.axios.patch(url, this.processedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
-                this.addRole(req.submitter.id, req.role)
                 this.$parent.getRoleRequests()
             }).catch(error => {
                 console.log(error.response)
             });
         },
-        addRole(id, role) {
-            const url = `${this.apiURL}add-role-to-user-id`
-            const token = this.$store.getters.getToken;
-            const data = {
-                "userId": id,
-                "role": role
-            }
-            this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response)
-            }).catch(error => {
-                console.log(error.response)
-            });
-        },
-
         rejectRoleRequest(id, comment) {
             const url = `${this.apiURL}role-request/${id}/process`
             const token = this.$store.getters.getToken;

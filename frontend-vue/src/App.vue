@@ -45,10 +45,16 @@ body {
 }
 
 .section-2-bg {
+     background-color: var(--GREY3);
+     border-radius: 20px;
+     color: white;
+     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+ }
+
+.shared-section-bg {
     background-color: var(--GREY3);
-    border-radius: 20px;
+    border: 1px solid var(--GREY1);
     color: white;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
 .sticky-top {
@@ -62,6 +68,15 @@ body {
     border: none;
     padding: 0.2rem 0.5rem;
     font-size: 1rem;
+}
+.no-bg-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.no-bg-btn span:hover {
+    text-decoration: underline;
 }
 
 button[class^="btn-panel-"] {
@@ -91,9 +106,20 @@ button[class^="btn-card-panel-"] {
     border: none;
     font-weight: bold;
     margin: 5px;
-    padding: 0.2rem 0.5rem;
+    padding: 0.3rem 0.6rem;
 }
 
+.tab-content {
+    padding: 5px;
+    margin-top: 15px;
+    min-height: 400px;
+    border-radius: 5px;
+    border-top-color: var(--DIET);
+    border-top-width: 5ch;
+    align-items: flex-start;
+    display: flex;
+    width: 100%;
+}
 
 .btn-panel-telemedic {
     background-color: var(--TELEMEDIC) !important;
@@ -108,7 +134,9 @@ button[class^="btn-card-panel-"] {
 .btn-panel-sport {
     background-color: var(--SPORT) !important;
 }
-
+.btn-icon-panel-sport {
+    background-color: var(--SPORT) !important;
+}
 .btn-panel-diet {
     background-color: var(--DIET) !important;
 }
@@ -199,6 +227,29 @@ input{
 .style-chooser .vs__deselect {
     fill: var(--GREY3);
 }
+
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+    border-color: rgb(133, 133, 133);
+    text-transform: lowercase;
+    font-variant: small-caps;
+    background-color: white;
+}
+
+.style-chooser-diet .vs__clear,
+.style-chooser-diet .vs__open-indicator {
+    fill: #394066;
+}
+.style-chooser-diet .vs__selected {
+    background-color: var(--DIET);
+    color: white;
+    background-blend-mode: color;
+}
+.style-chooser-diet .vs__deselect {
+    fill: var(--GREY3);
+}
+
 ::-webkit-scrollbar {
     width: 15px;
     height: 15px;
@@ -294,6 +345,37 @@ input{
     border: solid 1px var(--SPORT);
 }
 
+
+.pagination > li.diet-page > a
+{
+    background-color: white;
+    color: var(--DIET);
+}
+
+.pagination > li.diet-page > a:focus,
+.pagination > li.diet-page > a:hover,
+.pagination > li.diet-page > span:focus,
+.pagination > li.diet-page > span:hover
+{
+    color: white;
+    background-color: var(--DIET);
+    border-color: var(--DIET);
+    cursor: pointer;
+}
+
+.pagination > .diet-page.active > a
+{
+    color: white;
+    background-color: var(--DIET) !Important;
+    border: solid 1px var(--DIET) !Important;
+}
+
+.pagination > .diet-page.active > a:hover
+{
+    background-color: var(--DIET) !Important;
+    border: solid 1px var(--DIET);
+}
+
 .pagination > li.admin-page > a {
     background-color: white;
     color: var(--GREY3);
@@ -340,4 +422,11 @@ input{
 .modal-content {
     border-radius: 20px;
 }
+.circle {
+    height: 15px;
+    width: 15px;
+    background-color: lawngreen;
+    border-radius: 50%;
+    display: inline-block;
+ }
 </style>

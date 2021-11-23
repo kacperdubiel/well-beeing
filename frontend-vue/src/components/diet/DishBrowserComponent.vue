@@ -1,4 +1,5 @@
 <template>
+<div class="tab-content">
     <div class="container-fluid">
         <div  style="width: 100%;">
             <input
@@ -15,13 +16,14 @@
         </div>
         <div style="width: 100%;" class="label-picker-container">
             <v-select
-                class="px-0 py-2 label-picker"
+                class="style-chooser-diet px-0 py-2 label-picker"
                 id="labelPicker"
                 multiple v-model="chosenNutritionLabels"
                 :options="nutritionLabels"
-                :reduce="name => name.id"
+                :reduce="name => name.nutritionLabelId"
                 label="name"/>
         </div>
+        <p v-if="this.allItems != 0" style="color: var(--GREY1); text-align:end;">{{this.dishesToShow.length}} / {{this.allItems}} pozycji </p>
         <div style="width: 100%;" v-for="dish in this.dishesToShow" :key="dish.id">
             <dish-browser-element-component @change:dishModal="changeModalDish" :actualDish="dish"></dish-browser-element-component>
         </div>
@@ -41,6 +43,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </template>
 
@@ -130,6 +133,7 @@ export default {
         changeModalDish(dish){
             this.modalDish = dish
             console.log(this.modalDish)
+            document.get
         }
     }
 }

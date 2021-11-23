@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.ReportExercise;
+import com.wellbeeing.wellbeeing.domain.sport.ReportTraining;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.account.UserService;
@@ -67,6 +68,18 @@ public class SportReportController {
         return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/{reportId}/training")
+    public ResponseEntity<?> deleteTrainingsFromSportReportByReportId(Principal principal,
+                                                                      @PathVariable("reportId")UUID reportId,
+                                                                      @RequestBody @NonNull List<Long> trainings) throws NotFoundException, ForbiddenException {
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        if(!profileId.equals(sportReportService.getSportReportById(reportId).getReportOwner().getId())){
+            throw new ForbiddenException("Access to sport report with id" + reportId + " forbidden");
+        }
+        SportReport reportDelStatus  = sportReportService.deleteTrainingsFromReportByReportId(reportId, trainings);
+        return new ResponseEntity<>(reportDelStatus, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/{reportId}/exercise")
     public ResponseEntity<?> addExercisesToReportByReportId(Principal principal,
                                                          @PathVariable("reportId")UUID reportId,
@@ -76,6 +89,18 @@ public class SportReportController {
             throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
         }
         SportReport reportAddStatus  = sportReportService.addExercisesToReportByReportId(exercises, reportId);
+        return new ResponseEntity<>(reportAddStatus, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/{reportId}/training")
+    public ResponseEntity<?> addTrainingsToReportByReportId(Principal principal,
+                                                            @PathVariable("reportId")UUID reportId,
+                                                            @RequestBody @NonNull List<ReportTraining> trainings) throws NotFoundException, ForbiddenException {
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        if(!profileId.equals(sportReportService.getSportReportById(reportId).getReportOwner().getId())){
+            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
+        }
+        SportReport reportAddStatus  = sportReportService.addTrainingsToReportByReportId(trainings, reportId);
         return new ResponseEntity<>(reportAddStatus, HttpStatus.OK);
     }
 

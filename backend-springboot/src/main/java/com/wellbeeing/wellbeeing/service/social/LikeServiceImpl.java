@@ -31,8 +31,6 @@ public class LikeServiceImpl implements LikeService {
     public Like addLike(Post post, Profile liker) {
 
         Like newLike = new Like(post, liker);
-        post.addLikeToPost(newLike);
-
         likeDAO.save(newLike);
         postDAO.save(post);
 
@@ -53,7 +51,7 @@ public class LikeServiceImpl implements LikeService {
             throw new UsernameNotFoundException("User: " + likerName + " not found");
 
         Post post = postDAO.findPostByPostId(postId).orElse(null);
-        if (post == null)
+        if (post == null || post.isDeleted())
             throw new NotFoundException(String.format("There's no post with id=%d", postId));
 
         Like like = likeDAO.findByPostPostIdAndLikerProfileUserEmail(postId, likerName).orElse(null);

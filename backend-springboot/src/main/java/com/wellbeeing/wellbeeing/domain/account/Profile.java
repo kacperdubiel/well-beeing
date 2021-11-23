@@ -14,6 +14,7 @@ import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import java.util.Date;
@@ -50,6 +51,8 @@ public class Profile {
     @Enumerated(EnumType.STRING)
     @Column
     private ENutritionTag eNutritionTag;
+    @Column
+    private LocalDateTime lastRequestTime;
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
@@ -60,8 +63,8 @@ public class Profile {
     private DoctorProfile doctorProfile;
     @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
     private TrainerProfile trainerProfile;
-    // TODO: Add dietician profile link!
-
+    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    private DieticianProfile dieticianProfile;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;

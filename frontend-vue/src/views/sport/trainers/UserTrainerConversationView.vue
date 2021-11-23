@@ -1,8 +1,13 @@
 <template>
 <div>
+    <div class="telemedic-section">
+        <header>
+
+        </header>
     <section>
         <conversation-component :conversation-id="conversationId" />
     </section>
+        </div>
 </div>
 </template>
 

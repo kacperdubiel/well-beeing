@@ -32,15 +32,19 @@ public class SportReport {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "sportReport", cascade = CascadeType.ALL, orphanRemoval=true)
     List<ReportExercise> exerciseList = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "sportReport", cascade = CascadeType.ALL, orphanRemoval=true)
+    List<ReportTraining> trainingList = new ArrayList<>();
     @Transient
     private int caloriesBurned;
     @Transient
     private int totalTimeSeconds;
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
-//    List<ReportDishDetail> dishDetailsList = new ArrayList<>();
+
     public void removeReportExerciseFromReport(ReportExercise reportExercise){
         exerciseList.remove(reportExercise);
+    }
+    public void removeReportTrainingFromReport(ReportTraining reportTraining){
+        trainingList.remove(reportTraining);
     }
 
     public void preUpdate() {
@@ -50,10 +54,13 @@ public class SportReport {
 
     public void countTotalCalories(){
         this.exerciseList.forEach(ReportExercise::countCalories);
-        this.caloriesBurned = this.exerciseList.stream().map(ReportExercise::getCaloriesBurned).mapToInt(num -> num).sum();
+        this.trainingList.forEach(ReportTraining::countCalories);
+        this.caloriesBurned = this.exerciseList.stream().map(ReportExercise::getCaloriesBurned).mapToInt(num -> num).sum() +
+                this.trainingList.stream().map(ReportTraining::getCaloriesBurned).mapToInt(num -> num).sum();
     }
 
     public void countTotalSeconds(){
-        this.totalTimeSeconds = this.exerciseList.stream().map(ReportExercise::getSeconds).mapToInt(num -> num).sum();
+        this.totalTimeSeconds = this.exerciseList.stream().map(ReportExercise::getSeconds).mapToInt(num -> num).sum() +
+                this.trainingList.stream().map(ReportTraining::getSeconds).mapToInt(num -> num).sum();
     }
 }

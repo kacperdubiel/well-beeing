@@ -1,4 +1,5 @@
 <template>
+<div class="container-fluid">
     <div class="card-container">
         <div class="card-elem-container">
             <div class="col-lg-8">
@@ -101,6 +102,7 @@
         </div>
         <profile-card-form-component @save:card="saveEditedCard" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
     </div>
+</div>
 </template>
 
 <script>
@@ -190,7 +192,6 @@ export default {
 
 <style scoped>
     .card-elem-container {
-
         display: flex;
         border-top: 1pt solid gray;
     }
@@ -199,6 +200,9 @@ export default {
         display: flex;
     }
     .card-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         width: 100%;
     }
     .modal-ailment-content {

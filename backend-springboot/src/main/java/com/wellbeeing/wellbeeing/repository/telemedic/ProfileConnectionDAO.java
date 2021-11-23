@@ -27,4 +27,5 @@ public interface ProfileConnectionDAO extends JpaRepository<ProfileConnection, U
     Page<ProfileConnection> findByConnectedWithAndConnectionTypeAndIsAccepted(
             Profile connectedWith, EConnectionType connectionType, boolean isAccepted, Pageable pageable);
     ProfileConnection findByProfileAndConnectedWithAndConnectionType(Profile profile, Profile connectedWith, EConnectionType connectionType);
+    ProfileConnection findByProfileAndConnectedWithAndConnectionTypeAndIsAccepted(Profile profile, Profile connectedWith, EConnectionType connectionType, boolean isAccepted);
 }

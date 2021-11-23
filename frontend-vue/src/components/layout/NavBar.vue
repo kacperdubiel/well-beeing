@@ -59,7 +59,7 @@ export default {
     },
     mounted() {
         this.downloadProfilePicture()
-    },
+    }
 }
 </script>
 

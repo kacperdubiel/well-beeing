@@ -1,19 +1,12 @@
 <template>
     <div class="section-bg sticky-top">
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
-        <p>today</p>
+        <div class="row text-center h-100">
+            <div class="col align-self-center">
+                <p>sekcja dzisiejsza</p>
+            </div>
+        </div>
+
+
 
 
     </div>
@@ -26,5 +19,11 @@ export default {
 </script>
 
 <style scoped>
+p {
+    font-size: 30px;
+}
 
+.section-bg {
+    height: 70vh;
+}
 </style>

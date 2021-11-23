@@ -3,12 +3,13 @@ package com.wellbeeing.wellbeeing.service.social;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.social.EStatus;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.social.RoleRequestDAO;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.service.account.RoleService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -53,13 +54,9 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     }
 
     @Override
-    public RoleRequest submitRoleRequest(RoleRequest roleRequest, String submitterName) throws NotFoundException {
+    public RoleRequest submitRoleRequest(RoleRequest roleRequest, String submitterName) throws NotFoundException, ForbiddenException {
         User user = userDAO.findUserByEmail(submitterName).orElse(null);
         Set<Role> userRoles = user.getRoles();
-        System.out.println("takie ma role:");
-        for(Role role: userRoles) {
-            System.out.println(role);
-        }
 
         roleRequest.setSubmitter(user.getProfile());
 
@@ -70,7 +67,7 @@ public class RoleRequestServiceImpl implements RoleRequestService {
 
         for(Role role: userRoles) {
             if (role.getRole().name().equals(roleRequest.getRole().toString())) {
-                throw new NotFoundException("You already have that role");
+                throw new ForbiddenException("You already have that role");
             }
         }
 
@@ -90,19 +87,19 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     }
 
     @Override
-    public RoleRequest updateRoleRequest(RoleRequest roleRequest, String updaterName) throws NotFoundException {
+    public RoleRequest updateRoleRequest(RoleRequest roleRequest, String updaterName) throws NotFoundException, ForbiddenException {
         RoleRequest targetRoleRequest = roleRequestDAO.findById(roleRequest.getRoleReqId()).orElse(null);
         if (targetRoleRequest == null)
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequest.getRoleReqId()));
 
         if (targetRoleRequest.getStatus() != EStatus.PENDING)
-            throw new NotFoundException("Selected request is not pending!");
+            throw new ForbiddenException("Selected request is not pending!");
 
         Profile updaterProfile = userDAO.findUserByEmail(updaterName).orElse(null).getProfile();
         Profile submitterProfile = targetRoleRequest.getSubmitter();
 
         if (updaterProfile != submitterProfile)
-            throw new NotFoundException("You do not have access to this role request!");
+            throw new ForbiddenException("You do not have access to this role request!");
 
         roleRequest.setAddedDate(new Date());
         roleRequest.setStatus(EStatus.PENDING);
@@ -113,7 +110,7 @@ public class RoleRequestServiceImpl implements RoleRequestService {
 
         for(Role role: userRoles) {
             if (role.getRole().equals(roleRequest.getRole())) {
-                throw new NotFoundException("You already have that role");
+                throw new ForbiddenException("You already have that role");
             }
         }
 
@@ -128,7 +125,7 @@ public class RoleRequestServiceImpl implements RoleRequestService {
     }
 
     @Override
-    public boolean processRoleRequest(RoleRequest roleRequest) throws NotFoundException {
+    public boolean processRoleRequest(RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException {
         RoleRequest targetRoleRequest = roleRequestDAO.findById(roleRequest.getRoleReqId()).orElse(null);
         if (targetRoleRequest == null)
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequest.getRoleReqId()));
@@ -153,14 +150,14 @@ public class RoleRequestServiceImpl implements RoleRequestService {
             roleRequestDAO.save(targetRoleRequest);
         }
         else
-            throw new NotFoundException("Wrong status!");
+            throw new IllegalArgumentException("Wrong status!");
 
 
         return true;
     }
 
     @Override
-    public boolean cancelRoleRequest(long roleRequestId, String cancellerName) throws NotFoundException {
+    public boolean cancelRoleRequest(long roleRequestId, String cancellerName) throws NotFoundException, ForbiddenException {
         RoleRequest targetRoleRequest = roleRequestDAO.findById(roleRequestId).orElse(null);
         if (targetRoleRequest == null)
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequestId));
@@ -169,10 +166,10 @@ public class RoleRequestServiceImpl implements RoleRequestService {
         Profile submitterProfile = targetRoleRequest.getSubmitter();
 
         if (updaterProfile != submitterProfile)
-            throw new NotFoundException("You do not have access to this role request!");
+            throw new ForbiddenException("You do not have access to this role request!");
 
         if (!Objects.equals(targetRoleRequest.getStatus().toString(), EStatus.PENDING.toString()))
-            throw new NotFoundException("You can't cancel this request!");
+            throw new ForbiddenException("You can't cancel this request!");
 
         targetRoleRequest.setStatus(EStatus.CANCELLED);
         roleRequestDAO.save(targetRoleRequest);

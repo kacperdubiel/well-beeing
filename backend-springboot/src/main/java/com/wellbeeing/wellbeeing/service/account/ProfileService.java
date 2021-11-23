@@ -20,6 +20,7 @@ public interface ProfileService {
     Page<Profile> getDoctorsBySpecialization(DoctorSpecialization specialization, String like, int page, int size);
     DoctorProfile addDoctorSpecializationToDoctor(UUID doctorId, UUID doctorSpecializationId) throws NotFoundException;
     List<TrainerProfile> getTrainersProfiles();
+    Page<Profile> getDieticiansProfiles(String like, int page, int size);
     Profile partialUpdateProfile(UUID profileId, Map<String, Object> fields) throws NotFoundException;
     TrainerProfile getTrainerProfileById(UUID doctorProfileId) throws NotFoundException;
     Page<Profile> getTrainersProfiles(Specification<Profile> spec, Pageable pageable);

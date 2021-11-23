@@ -1,7 +1,8 @@
 <template>
     <div class="modal-diet-content">
         <div class="row" style="width: 100%;">
-            <div class="col-lg-4" style="border-radius: 10px; height: 200px; width: 200px; background-color: whitesmoke; margin: 4px;">
+            <div class="col-lg-4" style="border-radius: 10px; height: 200px; width: 200px; margin: 4px;">
+                <img style="border-radius: 10px;" class="w-100 p-1 m-1" :src="this.dishPhotoSrc">
             </div>
             <div style="display: flex; flex-direction:column; margin-start: 25px;" class="col-lg-8">
                 <hr class="hr-dish title-line"/>
@@ -12,7 +13,7 @@
                     <div class="label-node px-2 py-1 mx-1 my-1"
                         v-for="label in dish.allowedForNutritionLabels"
                         v-bind:style="{backgroundColor: this.colors[this.getRandomInt(0, 100) % this.colors.length]}"
-                        :key="label.id">{{label.name}}
+                        :key="label.nutritionLabelId">{{label.name}}
                     </div>
                 </div>
                 <hr class="hr-dish title-line"/>
@@ -62,12 +63,12 @@
         </table>
         <hr class="hr-dish title-line"/>
         <div class="title" style="align-items: flex-start; display: flex">
-            <h6 class="title">MAKROELEMENTY</h6>
+            <h6 class="title">MAKROELEMENTY I INNE</h6>
         </div>
         <table class="table table-borderless table-hover table-dish-info">
             <thead>
                 <tr>
-                    <th class="col-lg-9">Makro</th>
+                    <th class="col-lg-9">Element</th>
                     <th class="col-lg-3">Ilość</th>
                 </tr>
             </thead>
@@ -84,8 +85,29 @@
                     <th scope="row">Tłuszcze</th>
                     <td>{{Math.round(this.dish.derivedNutritionalValues.derivedFats)}} g</td>
                 </tr>
+                <tr>
+                    <th scope="row">Cholesterol</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedCholesterol)}} g</td>
+                </tr>
+                <tr>
+                    <th scope="row">Błonnik</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedFiber)}} g</td>
+                </tr>
+                <tr>
+                    <th scope="row">Sól</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedSalt)}} g</td>
+                </tr>
+                <tr>
+                    <th scope="row">Kofeina</th>
+                    <td>{{Math.round(this.dish.derivedNutritionalValues.derivedCaffeine)}} g</td>
+                </tr>
             </tbody>
         </table>
+        <hr class="hr-dish title-line"/>
+        <div class="title" style="align-items: flex-start; display: flex">
+            <h6 class="title">INDEKS GLIKEMICZNY</h6>
+        </div>
+        <p>{{this.$func_global.mapGlycemicIndex(this.dish.glycemicIndexLevel)}}</p>
         <hr class="hr-dish title-line"/>
         <div class="title" style="align-items: flex-start; display: flex">
             <h6 class="title">KALORIE</h6>
@@ -102,9 +124,18 @@ export default {
             type: Object
         }
     },
+    watch: {
+        dish: function () {
+            this.downloadPhoto()
+        }
+    },
+    mounted(){
+        this.downloadPhoto()
+    },
     data(){
         return{
-            colors: ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392']
+            colors: ['#C33149', '#FEA12A', '#08415C', '#0E9594', '#8FB339', '#90E39A', '#96E6B3', '#5386E4', '#585123', '#802392'],
+            dishPhotoSrc: ''
         }
     },
     methods: {
@@ -112,7 +143,14 @@ export default {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.round(Math.floor(Math.random() * (max - min)) + min);
-        } 
+        },
+        downloadPhoto(){
+            if (this.dish.imgDishPath != null && this.dish.imgDishPath != '') {
+                const url = `${this.apiURL}dish/${this.dish.id}/photo`
+                const token = localStorage.getItem('token')
+                this.$func_global.downloadPhoto(url, token).then(result => this.dishPhotoSrc = result)
+            }
+        },
     }
 }
 </script>
@@ -158,7 +196,7 @@ export default {
         color: var(--GREY2);
         width: 100%;
         border-color: var(--DIET);
-        border-style: dotted;
+        border-style: solid;
         border-width: 1px
     }
     .bdr{

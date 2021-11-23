@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="add-exercise row my-2 align-items-center">
+        <div class="add-exercise row my-2 align-items-center add">
             <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj</span>
             <span class="col-2 float-end button-icon">
                 <font-awesome-icon class="icon  mx-4" :icon="['fa', 'plus-circle']" data-bs-toggle="modal" data-bs-target="#addExerciseModal" />
@@ -213,11 +213,13 @@ export default {
                 this.navigation.pageSize = response.data['size']
                 this.filters.lastNameSearch = myParams.name
                 this.userNavigation.pagesNavbar = []
+                if (this.navigation.currentPage > 1)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage-2)
                 if (this.navigation.currentPage !== 0)
                     this.userNavigation.pagesNavbar.push(this.navigation.currentPage-1)
                 for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
                     this.userNavigation.pagesNavbar.push(i)
-                    if (i === this.navigation.currentPage + 3)
+                    if (i === this.navigation.currentPage + 2)
                         break;
                 }
                 console.log(this.exercises)
@@ -297,7 +299,10 @@ export default {
 }
 .button-icon {
     cursor: pointer;
+    color: var(--SPORT);
+    background-color: transparent;
 }
+
 .filter-control {
     font-size: small;
 }

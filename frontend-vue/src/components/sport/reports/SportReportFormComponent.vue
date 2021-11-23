@@ -55,57 +55,62 @@
                     </tbody>
                 </table>
             </div>
-<!--        <div style="width: 100%; text-align: left;">-->
-<!--            <hr class="hr-dish title-line"/>-->
-<!--            <div class="title" style="align-items: flex-start; display: flex">-->
-<!--                <h6 class="title">DANIA</h6>-->
-<!--            </div>-->
-<!--            <div class="row">-->
-<!--                <div class="col-lg-5">-->
-<!--                    <v-select @keypress="this.getDishesToSelect" v-model="this.actualSelectedDish" :options="this.dishesToSelect" :reduce="name => name.id" label="name" />-->
-<!--                </div>-->
-<!--                <div class="col-lg-1">-->
-<!--                    <input-->
-<!--                        style="width: 60px;"-->
-<!--                        id="dishReportInput"-->
-<!--                        type="number"-->
-<!--                        min=1-->
-<!--                        v-model="this.actualSelectedDishPortions"-->
-<!--                    />-->
-<!--                </div>-->
-<!--                <div class="col-lg-2">-->
-<!--                </div>-->
-<!--                <div class="col-lg-2">-->
-<!--                    <input v-model="this.actualSelectedDishConsumingTime" id="productTime2" type="time"/>-->
-<!--                </div>-->
-<!--                <div class="col-lg-2">-->
-<!--                    <button @click="this.addDishToReport" class="add-button"><font-awesome-icon :icon="['fa', 'plus-circle']"/></button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <hr/>-->
-<!--            <div>-->
-<!--                <table class="table table-borderless table-hover">-->
-<!--                    <thead>-->
-<!--                        <tr>-->
-<!--                            <th class="col-lg-6" scope="col">Danie</th>-->
-<!--                            <th class="col-lg-1" scope="col">Porcje</th>-->
-<!--                            <th class="col-lg-2" scope="col"></th>-->
-<!--                            <th class="col-lg-2" scope="col">Godzina</th>-->
-<!--                            <th class="col-lg-1" scope="col"></th>-->
-<!--                        </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                        <tr v-for="detailDish in this.actualReport.dishDetailsList" :key="detailDish.id">-->
-<!--                            <th scope="row">{{detailDish.dish.name}}</th>-->
-<!--                            <td>{{detailDish.portions}}</td>-->
-<!--                            <td></td>-->
-<!--                            <td>{{detailDish.consumingTime.substring(11, 16)}}</td>-->
-<!--                            <td><button @click="this.deleteDishFromReport(detailDish.id)" class="btn-icon-panel-diet"><font-awesome-icon :icon="['fa', 'trash']"/></button></td>-->
-<!--                        </tr>-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div style="width: 100%; text-align: left;">
+            <hr class="hr-dish title-line"/>
+            <div class="title" style="align-items: flex-start; display: flex">
+                <h6 class="title text-capitalize">Treningi</h6>
+            </div>
+            <div class="row">
+                <div class="col-lg-5">
+                    <v-select @keypress="this.getTrainingsToSelect" v-model="this.actualSelectedTraining" :options="this.trainingsToSelect" :reduce="name => name.trainingId" label="name" />
+                </div>
+                <div class="col-lg-1">
+                    <input
+                        style="width: 60px;"
+                        id="trainingReportInput"
+                        type="number"
+                        min=1
+                        v-model="this.actualSelectedTrainingTime"
+                    />
+                </div>
+                <div class="col-lg-2">
+                    <select id="measureProductInput" v-model="this.actualSelectedExerciseMeasure" class="form-select" aria-label="Product measure">
+                        <option value="SEC">s</option>
+                        <option value="MIN">min</option>
+                        <option value="H">h</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <input v-model="this.actualSelectedTrainingExercisingTime" id="productTime2" type="time"/>
+                </div>
+                <div class="col-lg-2">
+                    <button @click="this.addTrainingToReport" class="add-button"><font-awesome-icon :icon="['fa', 'plus-circle']"/></button>
+                </div>
+            </div>
+            <hr/>
+            <div>
+                <table class="table table-borderless table-hover">
+                    <thead>
+                    <tr>
+                        <th class="col-lg-6" scope="col">Trening</th>
+                        <th class="col-lg-1" scope="col">Czas trwania</th>
+                        <th class="col-lg-2" scope="col">Spalone kalorie</th>
+                        <th class="col-lg-2" scope="col">Godzina</th>
+                        <th class="col-lg-1" scope="col"> </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="training in this.actualReport.trainingList" :key="training.id">
+                        <th scope="row">{{training.training.name}}</th>
+                        <td>{{this.$func_global.getTimePrettyFromSeconds(training.seconds)}}</td>
+                        <td>{{Math.round(training.caloriesBurned)}}</td>
+                        <td>{{training.trainingTime.substring(11, 16)}}</td>
+                        <td><button @click="this.deleteTrainingFromReport(training.id)" class="btn-white"><font-awesome-icon :icon="['fa', 'trash']"/></button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     </div>
 </template>
@@ -161,8 +166,11 @@ export default {
         getExercisesToSelect(){
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
-            console.log("SPR")
+            const myParams = {
+                size: 500,
+            }
             axios.get(url, {
+                params: myParams,
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -174,7 +182,11 @@ export default {
         getTrainingsToSelect(){
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
+            const myParams = {
+                size: 500,
+            }
             axios.get(url, {
+                params: myParams,
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -207,7 +219,7 @@ export default {
                     trainingId: this.actualSelectedTraining
                 },
                 seconds: this.actualSelectedTrainingTime,
-                exercisingTime: this.makeConsumingTimestamp(this.actualSelectedTrainingExercisingTime)
+                trainingTime: this.makeConsumingTimestamp(this.actualSelectedTrainingExercisingTime)
             }]
             axios.post(url,data, {headers: {Authorization: `Bearer ${token}`}})
                 .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
@@ -286,12 +298,12 @@ export default {
     .table-report-info {
         color: var(--GREY2);
         border-style: solid;
-        border-color: var(--DIET);
+        border-color: var(--SPORT);
         margin-top: 10px;
     }
 
     .add-button{
-        color: var(--DIET);
+        color: var(--SPORT);
         background-color: transparent;
         width: 50px;
         height: 50px;

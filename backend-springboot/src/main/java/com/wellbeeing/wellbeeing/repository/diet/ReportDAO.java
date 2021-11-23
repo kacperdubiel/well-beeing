@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository("reportDAO")
 public interface ReportDAO extends JpaRepository<Report, UUID> {
-   Optional<Report> findByReportDate(LocalDate reportDate);
+   Optional<Report> findByReportDateAndReportOwnerId(LocalDate reportDate, UUID reportOwnerId);
 }

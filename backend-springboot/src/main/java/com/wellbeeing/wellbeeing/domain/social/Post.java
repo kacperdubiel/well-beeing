@@ -47,17 +47,25 @@ public class Post {
     private Set<Post> sharingPosts = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
-    public void addLikeToPost(Like like) {
-        this.likes.add(like);
+    @Column
+    private int sharingCounter = 0;
+
+    public Post(String postContent, Profile creator, Post originalPost) {
+        this.postImgPath = null;
+        this.postContent = postContent;
+        this.creator = creator;
+        this.isSharing = true;
+        this.originalPost = originalPost;
     }
 
-    public void addCommentToPost(Comment comment) {
-        this.comments.add(comment);
+    public void increaseSharingCounter() {
+        this.sharingCounter++;
     }
 
 }

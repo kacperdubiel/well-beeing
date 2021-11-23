@@ -1,9 +1,9 @@
 <template>
     <div class="modal-diet-content">
         <div style="width: 100%; text-align: left;">
-            <hr class="hr-dish title-line"/>
+            <hr class="hr-pos title-line"/>
             <div class="title" style="align-items: flex-start; display: flex">
-                <h6 class="title">PRODUKTY</h6>
+                <h6 class="title">ĆWICZENIA</h6>
             </div>
             <table class="table table-hover table-borderless">
                 <thead>
@@ -24,72 +24,47 @@
                 </tbody>
             </table>
         </div>
-<!--        <div style="width: 100%; text-align: left;">-->
-<!--            <hr class="hr-dish title-line"/>-->
-<!--            <div class="title" style="align-items: flex-start; display: flex">-->
-<!--                <h6 class="title">DANIA</h6>-->
-<!--            </div>-->
-<!--            <table class="table table-hover table-borderless">-->
-<!--                <thead>-->
-<!--                    <tr>-->
-<!--                        <th class="col-sm-5" scope="col">Danie</th>-->
-<!--                        <th class="col-sm-1" scope="col">Porcje</th>-->
-<!--                        <th class="col-sm-1" scope="col">Kcal</th>-->
-<!--                        <th class="col-sm-1" scope="col">B</th>-->
-<!--                        <th class="col-sm-1" scope="col">W</th>-->
-<!--                        <th class="col-sm-1" scope="col">T</th>-->
-<!--                        <th class="col-sm-1" scope="col">Czas</th>-->
-<!--                    </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                    <tr v-for="detailDish in this.report.dishDetailsList" :key="detailDish.id">-->
-<!--                        <th scope="row">{{detailDish.dish.name}}</th>-->
-<!--                        <td>{{detailDish.portions}}</td>-->
-<!--                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedCalories)}}</td>-->
-<!--                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedProteins)}} g</td>-->
-<!--                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedCarbohydrates)}} g</td>-->
-<!--                        <td>{{Math.round(detailDish.derivedNutritionalValues.derivedFats)}} g</td>-->
-<!--                        <td>{{detailDish.consumingTime.substring(11, 16)}}</td>-->
-<!--                    </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-        <hr class="hr-dish title-line"/>
-        <div class="title" style="align-items: flex-start; display: flex">
-                <h6 class="title">PODSUMOWANIE</h6>
-        </div>
-<!--        <div style="align-items: center; display: flex; width:100%;">-->
-<!--            <table class="table table-report-info">-->
-<!--                <tbody>-->
-<!--                    <tr>-->
-<!--                        <th class="col-lg-6">Białka</th>-->
-<!--                        <td>{{Math.round(report.derivedNutritionalValues.derivedProteins)}} g</td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <th>Węglowodany</th>-->
-<!--                        <td>{{Math.round(report.derivedNutritionalValues.derivedCarbohydrates)}} g</td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <th>Tłuszcze</th>-->
-<!--                        <td>{{Math.round(report.derivedNutritionalValues.derivedFats)}} g</td>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <th>Kalorie</th>-->
-<!--                        <td>{{Math.round(report.derivedNutritionalValues.derivedCalories)}} kcal</td>-->
-<!--                    </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-        <div v-if="!this.dataLoaded" style="justify-content: flex-end; display: flex;width: 100%; text-align: left;">
-            <button class="btn-card-panel-diet" @click="this.getReportDetails">Zobacz szczegóły</button>
-        </div>
-        <div v-if="this.dataLoaded" style="width: 100%; text-align: left;">
-            <br/>
-            <hr class="hr-dish title-line"/>
+        <div style="width: 100%; text-align: left;">
+            <hr class="hr-pos title-line"/>
             <div class="title" style="align-items: flex-start; display: flex">
-                <h6 class="title">SZCZEGÓŁY</h6>
+                <h6 class="title text-capitalize">Treningi</h6>
             </div>
-            <br/>
+            <table class="table table-hover table-borderless">
+                <thead>
+                    <tr>
+                        <th class="col-sm-5" scope="col">Trening</th>
+                        <th class="col-sm-1" scope="col">Czas trwania</th>
+                        <th class="col-sm-1" scope="col">Spalone kcal</th>
+                        <th class="col-sm-1" scope="col">Czas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="training in this.report.trainingList" :key="training.id">
+                        <th scope="row">{{training.training.name}}</th>
+                        <td>{{this.$func_global.getTimePrettyFromSeconds(training.seconds)}}</td>
+                        <td>{{Math.round(training.caloriesBurned)}}</td>
+                        <td>{{training.trainingTime.substring(11, 16)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr class="hr-pos title-line"/>
+        <div class="title" style="align-items: flex-start; display: flex">
+                <h6 class="title text-capitalize">Podsumowanie</h6>
+        </div>
+        <div style="align-items: center; display: flex; width:100%;">
+            <table class="table table-report-info">
+                <tbody>
+                    <tr>
+                        <th class="col-lg-6">Łączny czas aktywności</th>
+                        <td>{{this.$func_global.getTimePrettyFromSeconds(report.totalTimeSeconds)}}</td>
+                    </tr>
+                    <tr>
+                        <th>Łącznie spalonych kalorii</th>
+                        <td>{{Math.round(report.caloriesBurned)}} kcal</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </template>
@@ -135,7 +110,7 @@ export default {
 </script>
 
 <style scoped>
-    .hr-dish {
+    .hr-pos {
         border: 0;
         clear:both;
         display:block;
@@ -157,7 +132,7 @@ export default {
     .table-report-info {
         color: var(--GREY2);
         border-style: solid;
-        border-color: var(--DIET);
+        border-color: var(--SPORT);
         margin-top: 10px;
     }
 

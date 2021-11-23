@@ -1,4 +1,5 @@
 package com.wellbeeing.wellbeeing.domain.diet;
+import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,21 +17,35 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    @Column(unique = true)
     private String name;
     @Column
-
     private double caloriesPerHundredGrams;
     @Column
     private double fatsPerHundredGrams;
     @Column
+    private double saturatedFatsPerHundredGrams;
+    @Column
     private double carbohydratesPerHundredGrams;
     @Column
+    private double sugarsPerHundredGrams;
+    @Column
     private double proteinsPerHundredGrams;
-    @OneToMany(mappedBy = "elementsProduct", cascade = CascadeType.ALL)
+    @Column
+    private double fiberPerHundredGrams;
+    @Column
+    private double cholesterolPerHundredGrams;
+    @Column
+    private double saltPerHundredGrams;
+    @Column
+    private double caffeinePerHundredGrams;
+    @OneToMany(mappedBy = "elementsProduct", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ProductMacroDetail> macroDetails = new ArrayList<>();
-    @OneToMany(mappedBy = "elementsProduct")
+    @OneToMany(mappedBy = "elementsProduct", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ProductMineralDetail> mineralDetails =  new ArrayList<>();
-    @OneToMany(mappedBy = "elementsProduct")
+    @OneToMany(mappedBy = "elementsProduct", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ProductVitaminDetail> vitaminDetails = new ArrayList<>();
+    @Column
+    @Enumerated(EnumType.STRING)
+    private EGlycemicIndexLevel glycemicIndexLevel;
 }

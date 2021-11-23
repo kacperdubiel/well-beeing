@@ -143,4 +143,19 @@ public class ProfileController {
              @PageableDefault(sort = {"firstName"}, size = 20) Pageable pageable, Principal principal) {
         return new ResponseEntity<>(profileService.getTrainersProfiles(profileSpec, pageable), HttpStatus.OK);
     }
+
+    @GetMapping(path = "/dieticians")
+    public ResponseEntity<?> getDieticiansProfiles(@RequestParam(value = "like", defaultValue = "") String like,
+                                                   @RequestParam(value = "page", defaultValue = "0") String page,
+                                                   @RequestParam(value = "size", defaultValue = "10") String size) {
+        Page<Profile> dieticians = profileService.getDieticiansProfiles(like, Integer.parseInt(page), Integer.parseInt(size));
+        PaginatedResponse response = PaginatedResponse.builder()
+                .currentPage(dieticians.getNumber())
+                .totalItems(dieticians.getTotalElements())
+                .totalPages(dieticians.getTotalPages())
+                .objects(dieticians.getContent())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

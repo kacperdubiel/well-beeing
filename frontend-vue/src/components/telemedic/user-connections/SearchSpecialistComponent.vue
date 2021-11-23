@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="container-fluid">
         <div v-if="componentError === true" class="container">
             Błąd ładowania.
         </div>
-        <div v-if="componentError === false" class="container">
+        <div v-if="componentError === false">
             <div class="row">
                 <div class="col-1">
                     <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
@@ -51,13 +51,28 @@
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
-                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2"
+                                                    :class="{
+                                                    'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
+                                                    'btn-panel-sport':connectionType === 'WITH_TRAINER',
+                                                    'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    data-bs-dismiss="modal">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2" @click="connectWithSpecialist">
+                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2"
+                                                    :class="{
+                                                    'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
+                                                    'btn-panel-sport':connectionType === 'WITH_TRAINER',
+                                                    'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    @click="connectWithSpecialist">
                                                 <span>Zapisz</span>
                                             </button>
-                                            <button v-else class="btn-panel-telemedic p-2" data-bs-dismiss="modal">
+                                            <button v-else class="btn-panel-telemedic p-2"
+                                                    :class="{
+                                                    'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
+                                                    'btn-panel-sport':connectionType === 'WITH_TRAINER',
+                                                    'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    data-bs-dismiss="modal">
                                                 <span>Zamknij</span>
                                             </button>
                                         </div>
@@ -72,7 +87,9 @@
 
             <div class="row">
                 <div class="col-12">
-                    <table class="table specialists-table">
+                    <table class="table specialists-table" :class="{'specialists-table':connectionType === 'WITH_DOCTOR',
+                                                'trainers-table':connectionType === 'WITH_TRAINER',
+                                                'dieticians-table':connectionType === 'WITH_DIETICIAN'}">
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
@@ -115,29 +132,33 @@
             <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
                 <nav>
                     <ul class="pagination justify-content-center my-auto">
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(), 'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'fast-backward']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'chevron-left']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page}"
+                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}"
                             v-for="page in navigation.pagesNavbar" :key="page"
                         >
                             <a class="page-link" @click="goToPage(page)" >
                                 {{page+1}}
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage+1)">
                                 <font-awesome-icon :icon="['fa', 'chevron-right']" />
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast()}">
+                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.totalPages-1)">
                                 <font-awesome-icon :icon="['fa', 'fast-forward']" />
                             </a>
@@ -212,7 +233,7 @@ export default {
             if(this.connectionType === "WITH_DOCTOR"){
                 endpoint = `profile/doctors/doctor-specializations/${this.selectedDoctorSpecialization.id}`;
             } else if(this.connectionType === "WITH_DIETICIAN"){
-                endpoint = "dieticians";
+                endpoint = "profile/dieticians";
             } else if(this.connectionType === "WITH_TRAINER"){
                 endpoint = "profile/trainers";
             }
@@ -333,6 +354,14 @@ export default {
 
 .specialists-table tbody tr:hover {
     background-color: var(--TELEMEDIC);
+}
+
+.trainers-table tbody tr:hover {
+    background-color: var(--SPORT);
+}
+
+.dieticians-table tbody tr:hover {
+    background-color: var(--DIET);
 }
 
 .specialization-list {

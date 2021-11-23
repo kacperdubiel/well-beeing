@@ -1,10 +1,10 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div style="align-items: flex-start; display: flex;" class="col-lg-6">
-                <input v-model="this.actualMonth" @change="this.getReportsToShow" id="month-picker" type="month" name="start" min="2021-01">
+            <div style="align-items: flex-start; display: flex;" class="col-lg-5">
+                <input v-model="this.actualMonth" @change="this.getReportsToShow" class= "form-control" id="month-picker" type="month" name="start" min="2021-01">
             </div>
-            <div class="col-lg-6" style="justify-content: flex-end; display: flex; flex-direction: row;">
+            <div class="col-lg-7" style="justify-content: flex-end; display: flex; flex-direction: row;">
                 <div v-if="this.showConflictError" class="alert alert-danger alert-dismissible fade show" role="alert">
                     Raport na dzisiaj już istnieje!
                     <button @click="clearError" type="button" class="btn-close" aria-label="Close"></button>
