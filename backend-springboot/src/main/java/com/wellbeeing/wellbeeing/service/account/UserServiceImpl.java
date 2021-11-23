@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void changeUserEmail(UUID userId, String email) throws ConflictException {
+    public User changeUserEmail(UUID userId, String email) throws ConflictException {
         User user = userDAO.findUserById(userId).orElse(null);
 
         if(user == null)
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw new ConflictException("Email: " + email + " is already taken");
         }
         user.setEmail(email);
-        userDAO.save(user);
+        return userDAO.save(user);
     }
     @Override
     public boolean checkIfValidOldPassword(final User user, final String oldPassword) {

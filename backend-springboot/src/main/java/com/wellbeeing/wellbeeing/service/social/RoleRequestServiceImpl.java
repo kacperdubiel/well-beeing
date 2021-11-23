@@ -142,18 +142,15 @@ public class RoleRequestServiceImpl implements RoleRequestService {
             throw new NotFoundException(String.format("There's no role request with id=%d", roleRequest.getRoleReqId()));
 
         if (Objects.equals(roleRequest.getStatus().toString(), EStatus.ACCEPTED.toString())) {
-            System.out.println("jestem w ifie");
             Profile submitter = targetRoleRequest.getSubmitter();
             String userMail = submitter.getProfileUser().getEmail();
             userService.addRoleToUser(userMail, targetRoleRequest.getRole().toString());
-            System.out.println("dodaje role " + targetRoleRequest.getRole().toString() + " do " + userMail);
             targetRoleRequest.setStatus(EStatus.ACCEPTED);
             targetRoleRequest.setComment(roleRequest.getComment());
             roleRequestDAO.save(targetRoleRequest);
 
             List<RoleRequest> reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatus(userMail, targetRoleRequest.getRole(), EStatus.PENDING);
             reqsToCancel.forEach(r -> {
-                System.out.println("anuluje inne");
                 r.setStatus(EStatus.CANCELLED);
                 roleRequestDAO.save(r);
             });

@@ -94,7 +94,7 @@
 
 
 
-            <div class="row justify-content-center">
+            <div class="row justify-content-center mt-3">
                 <role-requests-table :role-requests-source="roleRequests" :key="roleRequests"/>
             </div>
         </div>

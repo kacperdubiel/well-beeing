@@ -33,11 +33,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = httpServletRequest.getHeader("Authorization");
         String username = null;
         String jwt = null;
-
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUserName(jwt);
         }
+        System.out.println(httpServletRequest);
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails user = this.userServiceImpl.loadUserByUsername(username);
