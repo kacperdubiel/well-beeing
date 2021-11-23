@@ -7,6 +7,7 @@ import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
 import vSelect from 'vue-select'
+import VueApexCharts from "vue3-apexcharts";
 import { func_global} from './global-func.js'
 
 import Default from "@/layouts/Default";
@@ -118,6 +119,7 @@ app.config.globalProperties.$func_global = func_global
 
 app.use(store)
 app.use(VueAxios, axios)
+app.use(VueApexCharts);
 app.component('v-select', vSelect)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)
