@@ -110,12 +110,22 @@ public class NutritionPlanController {
         return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/nutrition-plan/{planId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getNutritionPlanById(Principal principal, @PathVariable("planId") UUID planId) throws NotFoundException, ForbiddenException {
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        NutritionPlan nutritionPlan = nutritionPlanService.getNutritionPlanById(planId);
+        if((!profileId.equals(nutritionPlan.getOwnerProfile().getId())) && (!profileId.equals(nutritionPlan.getCreatorProfile().getId())))
+            throw new ForbiddenException("Access to nutrition plan with id: " + planId + " forbidden");
+        return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
+    }
+
     @RequestMapping(path = "/nutrition-plan/{nutritionPlanId}/position", method = RequestMethod.POST)
     public ResponseEntity<?> addNutritionPlanPosition(Principal principal,
                                               @RequestBody @NonNull NutritionPlanPosition nutritionPlanPos,
                                               @PathVariable("nutritionPlanId") UUID nutritionPlanId) throws NotFoundException, NutritionPlanGenerationException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(nutritionPlanService.getNutritionPlanById(nutritionPlanId).getId()))
+        NutritionPlan np = nutritionPlanService.getNutritionPlanById(nutritionPlanId);
+        if(!profileId.equals(np.getOwnerProfile().getId()))
             throw new ForbiddenException("Access to nutrition plan with id: " + nutritionPlanId + " forbidden");
         NutritionPlan newNutritionPlan = nutritionPlanService.addPositionToProfileNutritionPlan(nutritionPlanPos, nutritionPlanId);
         return new ResponseEntity<>(newNutritionPlan, HttpStatus.OK);
@@ -139,7 +149,8 @@ public class NutritionPlanController {
                                                          @PathVariable("nutritionPlanId") UUID nutritionPlanId,
                                                          @PathVariable("positionId") UUID positionId) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(nutritionPlanService.getNutritionPlanById(nutritionPlanId).getId()))
+        NutritionPlan nutritionPlan = nutritionPlanService.getNutritionPlanById(nutritionPlanId);
+        if((!profileId.equals(nutritionPlan.getOwnerProfile().getId())) && (!profileId.equals(nutritionPlan.getCreatorProfile().getId())))
             throw new ForbiddenException("Access to nutrition plan with id: " + nutritionPlanId + " forbidden");
         NutritionPlan newNutritionPlan = nutritionPlanService.deletePositionFromProfileNutritionPlan(positionId, nutritionPlanId);
         return new ResponseEntity<>(newNutritionPlan, HttpStatus.OK);

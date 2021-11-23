@@ -30,7 +30,7 @@ public class NutritionPlan {
     @ManyToOne
     @JoinColumn(name = "suggested_id")
     private Profile ownerProfile;
-    @OneToMany(mappedBy = "nutritionPlan")
+    @OneToMany(mappedBy = "nutritionPlan", cascade = CascadeType.REMOVE)
     private List<NutritionPlanPosition> nutritionPlanPositions = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "diet_id")

@@ -157,6 +157,7 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         if(nutritionPlan != null){
             position.setNutritionPlan(nutritionPlan);
             nutritionPlanPositionDAO.save(position);
+            nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
             return nutritionPlan;
         }
         else throw new NotFoundException("Nutrition plan with id: " +  nutritionPlanId + " not found");
@@ -185,9 +186,9 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
                 .filter(p -> p.getId().equals(positionId)).findFirst().orElse(null);
         if(nutritionPlanPosition == null)
             throw new NotFoundException("Nutrition plan position with id: " +  positionId + " not found for nutrition plan with id: " + nutritionPlanId);
-        nutritionPlanPosition.setNutritionPlan(null);
         nutritionPlanPositionDAO.save(nutritionPlanPosition);
-        nutritionPlanPositionDAO.delete(nutritionPlanPosition);
+        nutritionPlanPositionDAO.deleteById(positionId);
+        nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
         return nutritionPlan;
     }
 }
