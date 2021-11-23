@@ -2,7 +2,9 @@
     <div>
         <div class="m-3 mx-4 header">
             <span>Aktualny plan treningowy </span>
-            <span class="week">({{ this.getWeekRangeFromMonday(moment().clone().isoWeekday(1).toDate()) }})</span>
+            <span class="week">({{
+                    this.$func_global.getWeekRangeFromMonday(moment().clone().isoWeekday(1).toDate())
+                }})</span>
             <p v-if="activePlan.trainingPlanId == null" class="week text-center mt-2">Nie masz planu na ten tydzień
                 :(</p>
         </div>
@@ -20,7 +22,9 @@
                         aria-valuenow="{{this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100}}"
                         class="progress-bar progress-bar-striped progress-bar-animated"
                         role="progressbar">
-                        {{ this.activePlanProgress.trainingsCompleted / this.activePlanProgress.trainingsTotal * 100 }}%
+                        {{
+                            Math.floor(this.activePlanProgress.trainingsCompleted / this.activePlanProgress.trainingsTotal * 100)
+                        }}%
                     </div>
                 </div>
             </div>
@@ -51,7 +55,7 @@
         <!--Active plan-->
         <TrainingPlanWeek v-if="activePlan.trainingPlanId != null" :days="days"
                           :plan="activePlan" :plan-type="'active'"
-                          :week-dates="getDatesArrayFromMonday(new Date(activePlan.beginningDate))"
+                          :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(activePlan.beginningDate))"
                           @update:items="updateItems"
                           @update:active="getMyTrainingPlans" @set:training="setTraining"/>
 
@@ -59,7 +63,7 @@
             <span>Twoje pozostałe plany</span>
         </div>
         <training-plans-table v-if="myTrainingPlans != null && myTrainingPlans.length > 0"
-                              :training-plans-source="myTrainingPlans"
+                              :training-plans-source="myTrainingPlans.filter(p => p.planStatus === 'PLANNED')"
                               @update:items="updateItems"
                               @download:plan="downloadPlan" @update:plan="getMyTrainingPlans"/>
         <div class="m-3 mx-4 header">
@@ -111,7 +115,7 @@
             <!--New plan-->
             <TrainingPlanWeek v-if="newCreatedPlan.trainingPlanId != null" :days="days" :plan="newCreatedPlan"
                               :plan-type="'create'"
-                              :week-dates="getDatesArrayFromMonday(new Date(newCreatedPlan.beginningDate))"
+                              :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(newCreatedPlan.beginningDate))"
                               @update:items="updateItems" @set:training="setTraining"/>
 
             <div class="row mt-3 mx-4">
@@ -354,7 +358,7 @@ export default {
             const url = `${this.apiURL}sport/training-plan/my`
             const token = this.$store.getters.getToken;
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.myTrainingPlans = response.data.filter(p => p.planStatus === 'PLANNED')
+                this.myTrainingPlans = response.data
                 this.setActivePlan()
             }).catch(error => {
                 console.log(error.response);
@@ -373,6 +377,7 @@ export default {
                 // this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
                 this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate();
+                console.log('Nowa data z momenta', this.newCreatedPlan.beginningDate)
                 this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.getMyTrainingPlans()
             }).catch(error => {
@@ -385,8 +390,9 @@ export default {
             if (scratchPlan == null) {
                 await this.createNewPlan()
             } else {
-                console.log('Data scratch', new Date(this.newCreatedPlan.beginningDate))
                 this.newCreatedPlan = scratchPlan
+                this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate();
+                console.log('Data scratch', this.newCreatedPlan.beginningDate)
                 this.newPlan.week = moment(new Date(this.newCreatedPlan.beginningDate)).toDate().getWeek()
                 this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.newPlan.trainingPlanId = this.newCreatedPlan.trainingPlanId

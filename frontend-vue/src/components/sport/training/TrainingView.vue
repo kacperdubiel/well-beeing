@@ -8,7 +8,7 @@
             </span>
         </div>
         <div class="row justify-content-evenly">
-            <div class="col-xl-5 col-lg-10 col-sm-10 col-10 align-self-center">
+            <div class="col-xl-4 col-lg-10 col-sm-10 col-10 align-self-center">
                 <input
                     id="search-input"
                     v-model="filters.nameSearch"
@@ -23,7 +23,8 @@
                     <font-awesome-icon :icon="['fa', 'search']" class="icon"/>
                 </span>
             </div>
-            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 pt-2 align-self-center filter-control">
+            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+                <p class="m-0 px-1 text-start">Sortowanie</p>
                 <select
                     v-model="filters.sortBy"
                     class=" p-2 w-100"
@@ -37,7 +38,8 @@
                     </option>
                 </select>
             </div>
-            <div class="col-xl-1 col-lg-4 col-md-4 col-sm-12 pt-2 filter-control align-self-center">
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 filter-control align-self-center">
+                <p class="m-0 px-1 text-start">Rozmiar strony</p>
                 <select
                     v-model="userNavigation.pageSize"
                     class=" p-2 w-100"
@@ -48,14 +50,15 @@
                     <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
                 </select>
             </div>
-            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center pt-2 filter-control">
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+                <p class="m-0 px-1 text-start">Poziom trudności</p>
                 <select
                     v-model="filters.difficultyFilter"
                     class=" p-2 w-100"
                     style="border-radius: 5px"
                     @change="getTrainingsWithFilters(true)"
                 >
-                    <option disabled value="">Wybierz poziom trudności</option>
+                    <option disabled value="">Poziom</option>
                     <option v-for="diff in filters.allDifficultyFilters" :key="diff.label" :value="diff.value">
                         {{ diff.label }}
                     </option>
@@ -130,11 +133,11 @@
                 <font-awesome-icon :icon="['fa', 'list-ul']" class="icon"/>
             </span>
         </div>
-        <TrainingsListComponent v-if="isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
-        <TrainingsGridComponent v-if="!isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
+        <trainings-list-component v-if="isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
+        <trainings-grid-component v-if="!isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
         <!--Modal-->
-        <TrainingForm :exercises-source="exercises" :labels-source="labels" @get:exercises="getExercises"
-                      @get:trainings="getTrainings"/>
+        <training-form :exercises-source="exercises" :labels-source="labels" @get:exercises="getExercises"
+                       @get:trainings="getTrainings"/>
     </div>
 </template>
 

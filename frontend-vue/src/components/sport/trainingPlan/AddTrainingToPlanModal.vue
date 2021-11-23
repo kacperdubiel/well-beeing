@@ -82,6 +82,7 @@
 <script>
 import TrainingsGridComponent from "@/components/sport/training/TrainingsGridComponent";
 import TrainingsListComponent from "@/components/sport/training/TrainingsListComponent";
+import moment from "moment";
 
 export default {
     name: "AddTrainingToPlanModal",
@@ -102,6 +103,9 @@ export default {
         trainingPlanId: Number
     },
     methods: {
+        moment: function () {
+            return moment();
+        },
         setDate(newDate) {
             this.date = newDate
         },

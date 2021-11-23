@@ -16,7 +16,7 @@
             </span>
         </div>
         <div class="row justify-content-evenly">
-            <div class="col-xl-5 col-lg-10 col-sm-10 col-10 align-self-center">
+            <div class="col-xl-4 col-lg-10 col-sm-10 col-10 align-self-center">
                 <input
                     id="search-input"
                     v-model="filters.nameSearch"
@@ -31,7 +31,8 @@
                     <font-awesome-icon :icon="['fa', 'search']" class="icon"/>
                 </span>
             </div>
-            <div class="pt-2 col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+                <p class="m-0 px-1 text-start">Sortowanie</p>
                 <select
                     v-model="filters.sortBy"
                     class=" p-2 w-100"
@@ -45,7 +46,8 @@
                     </option>
                 </select>
             </div>
-            <div class="pt-2 col-xl-2 col-lg-4 col-md-4 col-sm-12  filter-control align-self-center">
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12  filter-control align-self-center">
+                <p class="m-0 px-1 text-start">Rozmiar strony</p>
                 <select
                     v-model="userNavigation.pageSize"
                     class=" p-2 w-100"
@@ -56,7 +58,8 @@
                     <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
                 </select>
             </div>
-            <div class="pt-2 col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+                <p class="m-0 px-1 text-start">Typ ćwiczenia</p>
                 <select
                     v-model="filters.typeFilter"
                     class=" p-2 w-100"
@@ -72,7 +75,7 @@
             </div>
         </div>
         <div class="row mb-3 px-3 mt-3 mw-100">
-            <div class="col-md-6 search-info">
+            <div class="col-md-12 search-info">
                 <div class="container d-inline-flex px-1 py-1 align-text-center">
                     <span id="search-results" class="align-text-bottom me-2">Nałożone filtry: </span>
                     <div v-if="filters.lastNameSearch !== ''" class="form-label label-node p-2 mx-1 my-1">

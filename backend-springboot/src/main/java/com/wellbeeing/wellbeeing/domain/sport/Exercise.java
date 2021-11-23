@@ -2,15 +2,14 @@ package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.*;
-import com.wellbeeing.wellbeeing.domain.account.Role;
-//import com.wellbeeing.wellbeeing.domain.SportLabel;
-import com.wellbeeing.wellbeeing.domain.account.User;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,9 +27,9 @@ public class Exercise {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private EExerciseType exerciseType = EExerciseType.OTHER;
-    @Column(name = "description", columnDefinition="TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-    @Column(name = "instruction", columnDefinition="TEXT")
+    @Column(name = "instruction", columnDefinition = "TEXT")
     private String instruction;
     @Column(name = "isPrivate")
     private boolean isPrivate = false;
@@ -47,7 +46,7 @@ public class Exercise {
     @JsonProperty
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name="exercise_labels",
+            name = "exercise_labels",
             joinColumns = @JoinColumn(name = "exerciseId"),
             inverseJoinColumns = @JoinColumn(name = "sportLabelId")
     )
@@ -69,7 +68,7 @@ public class Exercise {
 
     public int countCaloriesPerHour(double user_weight) {
         //METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute
-        return (int) (60*(met*3.5*user_weight/200));
+        return (int) (60 * (met * 3.5 * user_weight / 200));
     }
 
     public void addTrainingToExercise(ExerciseInTraining training) {
@@ -77,10 +76,14 @@ public class Exercise {
     }
 
     public boolean removeTrainingFromExercise(long trainingId) {
-        return exerciseInTrainings.removeIf(e->e.getTraining().getTrainingId() == trainingId);
+        exerciseInTrainings = exerciseInTrainings.stream().filter(e -> e.getTraining().getTrainingId() != trainingId).collect(Collectors.toSet());
+        return true;
     }
 
-    public void addLabelToExercise(SportLabel sportLabel) {this.labels.add(sportLabel);}
+    public void addLabelToExercise(SportLabel sportLabel) {
+        this.labels.add(sportLabel);
+    }
+
     @Override
     public String toString() {
         return "Exercise{" +

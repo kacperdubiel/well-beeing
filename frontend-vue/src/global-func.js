@@ -112,10 +112,9 @@ export const func_global = {
         }
     },
     getIsActive5minutes(userLastRequestTime) {
-        console.log('Something')
         let duration = moment.duration(moment(new Date()).diff(userLastRequestTime));
         let minutes = duration.asMinutes()
-        console.log('minutes: ', minutes)
+        // console.log('minutes: ', minutes)
         return minutes < 5
     },
     mapRole(role) {
@@ -217,6 +216,8 @@ export const func_global = {
             return 'Brak informacji'
     },
     dateDayMonth(date) {
+        date = new Date(date)
+        console.log('Data day month', date)
         return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth() + 1).toString().padStart(2, '0');
     },
     getTimePrettyFromSeconds(seconds) {
@@ -231,7 +232,6 @@ export const func_global = {
         }
     },
     getWeekRangeFromMonday(mondayDate) {
-        console.log('range date', mondayDate)
         let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth() + 1).toString().padStart(2, '0');
         mondayDate.setDate(mondayDate.getDate() + 6);
         let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth() + 1).toString().padStart(2, '0');
@@ -250,7 +250,6 @@ export const func_global = {
     generateNWeeks(n) {
         let week = new Date().getWeek()
         let currentMondayDate = moment().clone().isoWeekday(1).startOf('day').toDate()
-        console.log('Current monday', currentMondayDate)
         let weekArray = []
         for (let i = 0; i < n; i++) {
             weekArray.push({
@@ -258,7 +257,7 @@ export const func_global = {
                 beginningDate: currentMondayDate.addDays(i * 7),
                 range: this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7))
             })
-            console.log('Week from ', currentMondayDate.addDays(i * 7), ' range: ', this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7)))
+            // console.log('Week from ', currentMondayDate.addDays(i * 7), ' range: ', this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7)))
         }
         return weekArray;
     },

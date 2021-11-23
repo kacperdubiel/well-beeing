@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -69,11 +71,11 @@ public class Training {
 
     @PostLoad
     public void onTotalTrainingTimeSeconds() {
-        try{
+        try {
 
-            Stream<Object> a = this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds()*ex.getSeries());
+            Stream<Object> a = this.exerciseInTrainings.stream().map(ex -> ex.getTime_seconds() * ex.getSeries());
             IntStream b = a.mapToInt(num -> (int) num);
-            this.totalTrainingTimeSeconds =  b.sum();
+            this.totalTrainingTimeSeconds = b.sum();
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
         }
@@ -94,7 +96,8 @@ public class Training {
     }
 
     public boolean removeExerciseFromTraining(long exerciseId) {
-        return exerciseInTrainings.removeIf(e->e.getExercise().getExerciseId() == exerciseId);
+        exerciseInTrainings = exerciseInTrainings.stream().filter(e -> e.getExercise().getExerciseId() != exerciseId).collect(Collectors.toSet());
+        return true;
     }
 
     public Set<SportLabel> getLabels() {
