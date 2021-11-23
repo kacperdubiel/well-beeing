@@ -1,5 +1,6 @@
 <template>
-    <div id="addTrainingToPlanModal" aria-hidden="true" aria-labelledby="addTrainingToPlanModalLabel" class="modal fade "
+    <div id="addTrainingToPlanModal" aria-hidden="true" aria-labelledby="addTrainingToPlanModalLabel"
+         class="modal fade "
          tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -14,7 +15,9 @@
 
                             <div class="col-8 align-content-start text-start">
                                 <p class="form-label">Data treningu :
-                                    {{ this.$store.getters.getTrainingPositionDate != null ? this.$func_global.dateDayMonth(this.$store.getters.getTrainingPositionDate) : '' }}</p>
+                                    {{
+                                        this.$store.getters.getTrainingPositionDate != null ? this.$func_global.dateDayMonth(this.$store.getters.getTrainingPositionDate) : ''
+                                    }}</p>
 
                             </div>
                         </div>
@@ -33,7 +36,7 @@
                                 >
                                     <option disabled value="">Wybierz porę dnia</option>
                                     <option v-for="op in ['MORNING', 'NOON', 'AFTERNOON', 'EVENING', 'NIGHT']"
-                                            :key="op">{{ op }}
+                                            :key="op" :value="op">{{ this.$func_global.mapTimeOfDay(op) }}
                                     </option>
                                 </select>
                                 <div v-if="invalidTimeOfDay && submittingAddTrainingToPlan" class="row text-end">

@@ -186,6 +186,36 @@ export const func_global = {
         else
             return 'Brak informacji'
     },
+    mapTimeOfDay(timeOfDay) {
+        if (timeOfDay === 'MORNING')
+            return 'Poranek'
+        else if (timeOfDay === 'NOON')
+            return 'Południe'
+        else if (timeOfDay === 'AFTERNOON')
+            return 'Popołudnie'
+        else if (timeOfDay === 'EVENING')
+            return 'Wieczór'
+        else if (timeOfDay === 'NIGHT')
+            return 'Noc'
+        else
+            return 'Brak informacji'
+    },
+    mapTrainingPlanStatus(status) {
+        if (status === 'STARTED')
+            return 'Rozpoczęty'
+        else if (status === 'PLANNED')
+            return 'Zaplanowany'
+        else if (status === 'COMPLETED')
+            return 'Wykonany'
+        else if (status === 'TEMPLATE')
+            return 'Wzorzec'
+        else if (status === 'OWN_MEASURES')
+            return 'Własne pomiary'
+        else if (status === 'SCRATCH')
+            return 'Roboczy'
+        else
+            return 'Brak informacji'
+    },
     dateDayMonth(date) {
         return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth() + 1).toString().padStart(2, '0');
     },
