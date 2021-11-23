@@ -1,9 +1,9 @@
 <template>
-    <apexchart type="line" :options="chartOptions" :series="chartSeries"></apexchart>
+    <apexchart ref="realtimeChart" type="line" :options="chartOptions" :series="chartSeries"></apexchart>
 </template>
 
 <script>
-import pl from "apexcharts/dist/locales/pl.json";
+import pl from "apexcharts/dist/locales/pl.json";    // ref="realtimeChart"
 
 export default {
     name: "AnalysisChartComponent",
@@ -13,15 +13,26 @@ export default {
     },
     watch: {
         data: function() {
-            console.log("Data changed!");
+            this.chartSeries = this.data;
+            this.updateYAxis();
         },
         hideYAxis: function() {
-            let yaxis = this.chartOptions.yaxis;
-            yaxis.forEach(yax => {
-                yax.show = !this.hideYAxis;
+            if(!this.hideYAxis){
+                let yaxis = this.chartOptions.yaxis;
+                yaxis.forEach(yax => {
+                    yax.show = false;
 
-            })
-            this.chartOptions = {yaxis: yaxis};
+                })
+                this.chartOptions = {
+                    ...this.chartOptions,
+                    ...{
+                        yaxis: yaxis,
+                    },
+                };
+            } else {
+                this.updateYAxis();
+            }
+
         },
     },
     data() {
@@ -93,7 +104,7 @@ export default {
                     },
                 },
                 xaxis: {
-                    categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+                    type: "datetime",
                     labels: {
                         style: {
                             colors: "#fff",
@@ -204,26 +215,45 @@ export default {
                     theme: "dark",
                     x: {
                         show: true
-                    }
+                    },
+                    y: {
+                        title: {
+                            formatter: function(seriesName, opts) {
+                                let description = opts.w.config.series[opts.seriesIndex].data[opts.dataPointIndex]
+                                    .description;
+
+                                if(description){
+                                    return description + '<br/>' + seriesName + ': ';
+                                }
+                                return seriesName;
+                            },
+                        }
+                    },
                 },
             },
-            chartSeries: [{
-                name: 'series-1',
-                data: [30, 40, 45, 50, 49, 60, 70, 91]
-            },{
-                name: 'series-2',
-                data: [135, 133, 121, 150, 155, 168, 179, 199]
-            },{
-                name: 'series-3',
-                data: [325, 331, 211, 530, 535, 638, 739, 939]
-            },{
-                name: 'series-4',
-                data: [5, 9, 12, 7, 5, 4, 2, 2]
-            }]
+            chartSeries: []
         }
     },
     methods: {
+        updateYAxis() {
+            let yaxis = this.chartOptions.yaxis;
+            for(let i = 0; i < 4; i++){
+                if(i < this.chartSeries.length){
+                    yaxis[i].show = true;
+                    yaxis[i].title.text = this.chartSeries[i].name;
+                } else {
+                    yaxis[i].show = false;
+                    yaxis[i].title.text = "";
+                }
+            }
 
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    yaxis: yaxis,
+                },
+            };
+        }
     },
     created() {
 

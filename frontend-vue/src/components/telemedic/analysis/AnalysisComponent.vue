@@ -68,7 +68,7 @@
         </div>
 
         <div class="pt-2">
-            <analysis-chart-component :data="options" :hide-y-axis="hideYAxis"/>
+            <analysis-chart-component :data="series" :hide-y-axis="hideYAxis"/>
         </div>
         <div class="row">
             <div class="form-check form-switch d-flex justify-content-center">
@@ -91,16 +91,6 @@ export default {
         AnalysisChartComponent,
         DatePicker,
     },
-    // TODO
-    // watch: {
-    //     dateRange: function() {
-    //         if(this.dateRange){
-    //
-    //             console.log(this.dateRange.start.toJSON());
-    //             console.log(this.dateRange.end.toJSON());
-    //         }
-    //     },
-    // },
     props: {
         userId: String
     },
@@ -118,23 +108,7 @@ export default {
                     timeAdjust: '23:59:59',
                 },
             },
-
-            options: {
-
-            },
-            series: [{
-                name: 'series-1',
-                data: [30, 40, 45, 50, 49, 60, 70, 91]
-            },{
-                name: 'series-2',
-                data: [135, 133, 121, 150, 155, 168, 179, 199]
-            },{
-                name: 'series-3',
-                data: [325, 331, 211, 530, 535, 638, 739, 939]
-            },{
-                name: 'series-4',
-                data: [5, 9, 12, 7, 5, 4, 2, 2]
-            }],
+            series: [],
             hideYAxis: false,
         }
     },
@@ -142,7 +116,63 @@ export default {
 
     },
     created() {
-
+        this.series = [
+            {
+                name: "Tętno",
+                data: [
+                    {
+                        x: "02-10-2017 GMT",
+                        y: 70,
+                        description: "Marchewka",
+                    },
+                    {
+                        x: "02-11-2017 GMT",
+                        y: 74,
+                        description: "Danie 1",
+                    },
+                    {
+                        x: "02-12-2017 GMT",
+                        y: 92,
+                    },
+                    {
+                        x: "02-13-2017 GMT",
+                        y: 86,
+                    },
+                    {
+                        x: "02-14-2017 GMT",
+                        y: 80,
+                    },
+                    {
+                        x: "02-15-2017 GMT",
+                        y: 89
+                    }
+                ]
+            },{
+                name: "Poziom cukru",
+                data: [
+                    {
+                        x: "02-10-2017 GMT",
+                        y: 93
+                    },
+                    {
+                        x: "02-11-2017 GMT",
+                        y: 101
+                    },
+                    {
+                        x: "02-12-2017 GMT",
+                        y: 112
+                    },
+                    {
+                        x: "02-13-2017 GMT",
+                        y: 105
+                    },
+                    {
+                        x: "02-15-2017 GMT",
+                        y: 89
+                    }
+                ]
+            }
+        ];
     }
 }
 </script>
