@@ -154,8 +154,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <button class="btn-panel-sport" @click="getScratchPlan">Utwórz plan</button>
+            <div class="row mt-3">
+                <button class="btn-panel-sport w-auto mx-auto" @click="getScratchPlan">Utwórz plan</button>
             </div>
         </section>
         <!-- Ailment modal -->
@@ -169,7 +169,7 @@
             </div>
         </div>
         <!-- TRAINING PLAN -->
-        <div v-if="newCreatedPlan">
+        <div v-if="newCreatedPlan.trainingPlanId != null">
             <div class="row my-3 mx-3">
                 <div v-if="beginningDate == null" class="col-6 ">
                     <div class="row">
@@ -425,12 +425,10 @@ export default {
 
             let scratchPlan = this.user.trainingPlans.find(plan => plan.planStatus === 'SCRATCH' &&
                 plan.requestId === parseInt(this.requestId))
-            console.log('SCRATCH ', scratchPlan)
             if (scratchPlan == null) {
                 await this.createNewPlan()
             } else {
                 this.newCreatedPlan = scratchPlan
-                console.log('Date scratch', new Date(this.newCreatedPlan.beginningDate))
                 this.newPlan.week = moment(new Date(this.newCreatedPlan.beginningDate)).toDate().getWeek()
                 this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.newPlan.trainingPlanId = this.newCreatedPlan.trainingPlanId

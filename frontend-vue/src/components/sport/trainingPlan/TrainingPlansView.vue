@@ -55,10 +55,12 @@
                           @update:items="updateItems"
                           @update:active="getMyTrainingPlans" @set:training="setTraining"/>
 
-        <div class="m-3 mx-4 header">
+        <div v-if="myTrainingPlans != null && myTrainingPlans.length > 0" class="m-3 mx-4 header">
             <span>Twoje pozostałe plany</span>
         </div>
-        <training-plans-table :training-plans-source="myTrainingPlans" @update:items="updateItems"
+        <training-plans-table v-if="myTrainingPlans != null && myTrainingPlans.length > 0"
+                              :training-plans-source="myTrainingPlans"
+                              @update:items="updateItems"
                               @download:plan="downloadPlan" @update:plan="getMyTrainingPlans"/>
         <div class="m-3 mx-4 header">
             <span>Tworzenie nowego planu </span>
@@ -95,7 +97,7 @@
                                 @change="updateBeginningDate()"
                             >
                                 <option disabled value="">Wybierz tydzień</option>
-                                <option v-for="range in generateNWeeks(7)" :key="range.weekNo"
+                                <option v-for="range in this.$func_global.generateNWeeks(7)" :key="range.weekNo"
                                         :value="range.beginningDate">{{ range.range }}
                                 </option>
                             </select>
@@ -352,7 +354,7 @@ export default {
             const url = `${this.apiURL}sport/training-plan/my`
             const token = this.$store.getters.getToken;
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.myTrainingPlans = response.data
+                this.myTrainingPlans = response.data.filter(p => p.planStatus === 'PLANNED')
                 this.setActivePlan()
             }).catch(error => {
                 console.log(error.response);
@@ -370,7 +372,8 @@ export default {
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 // this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
-
+                this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate();
+                this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.getMyTrainingPlans()
             }).catch(error => {
                 console.log(error.response);

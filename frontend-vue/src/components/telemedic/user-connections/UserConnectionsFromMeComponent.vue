@@ -101,15 +101,15 @@
                                                 trainer.lastName
                                             }}</p>
                                     </div>
-                                    <div class="row my-3 mx-3">
-                                        <div class="col-6 ">
+                                    <div class="row my-3 text-start ps-0">
+                                        <div class="col-6 text-start ps-0">
                                             <div class="row">
                                                 <div class="col-6 ">
                                                     <p class="form-label text-start">Tydzień</p>
                                                 </div>
                                             </div>
                                             <div class="row ">
-                                                <div class="col-7 justify-content-start">
+                                                <div class="col-7 text-start">
                                                     <select
                                                         v-model="request.beginningDate"
                                                         class=" p-2 float-start"
@@ -215,10 +215,11 @@
                                 </ul>
                             </td>
                             <td class="align-right">
-                                <button v-if="connectionType === 'WITH_TRAINER'" class="btn-white m-r-5 btn-hover"
+                                <button v-if="selectedAcceptState && connectionType === 'WITH_TRAINER'"
+                                        class="btn-white m-r-5 btn-hover"
                                         data-bs-target="#createTrainingPlanRequestModal" data-bs-toggle="modal"
                                         @click="selectTrainer(connection.connectedWith)">
-                                    <font-awesome-icon :icon="['fa', 'comments']"/>
+                                    <font-awesome-icon :icon="['fa', 'paper-plane']"/>
                                 </button>
                                 <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
                                         @click="getConversation(getOtherUserId(connection))">
