@@ -1,24 +1,16 @@
 <template>
-    <div class="section-bg telemedic-section">
-        <header>
-            <telemedic-navbar/>
-
-        </header>
-        <section>
-            <analysis-component :user-id="this.userId" />
-        </section>
+    <div>
+        <analysis-component :user-id="this.userId" />
     </div>
 </template>
 
 <script>
-import TelemedicNavbar from "@/components/telemedic/navbars/TelemedicNavbar";
 import AnalysisComponent from "@/components/telemedic/analysis/AnalysisComponent";
 
 export default {
     name: 'AnalysisView',
     components: {
         AnalysisComponent,
-        TelemedicNavbar
     },
     data() {
         return {

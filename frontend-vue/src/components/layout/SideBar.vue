@@ -75,7 +75,7 @@
             </router-link>
         </div>
         <div class="side-menu mb-4">
-            <router-link :to="{ name: 'UserMeasuresView' }">
+            <router-link :to="{ name: 'UserTelemedicView' }">
                 <div class="row mx-4 py-2">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'briefcase-medical']" />
@@ -107,7 +107,7 @@
             </router-link>
         </div>
         <div class="side-menu" v-if="this.$store.getters.getRoles.includes('ROLE_DOCTOR')">
-            <router-link :to="{ name: 'DoctorUsersView' }">
+            <router-link :to="{ name: 'DoctorTelemedicView' }">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col ps-2">
                         PANEL LEKARZA

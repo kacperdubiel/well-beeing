@@ -1,11 +1,13 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 //import DietView from "@/views/diet/DietView"
+import UserTelemedicView from "@/views/telemedic/user/UserTelemedicView";
 import UserMeasuresView from "@/views/telemedic/user/UserMeasuresView";
 import UserDoctorsView from "@/views/telemedic/user/UserDoctorsView";
 import UserDoctorConversationsView from "@/views/telemedic/user/UserDoctorConversationsView";
 import UserDoctorConversationView from "@/views/telemedic/user/UserDoctorConversationView";
 import AnalysisView from "@/views/telemedic/user/AnalysisView";
+import DoctorTelemedicView from "@/views/telemedic/doctor/DoctorTelemedicView";
 import DoctorUsersView from "@/views/telemedic/doctor/DoctorUsersView";
 import DoctorUserProfileView from "@/views/telemedic/doctor/DoctorUserProfileView";
 import SearchDoctorsView from "@/views/telemedic/user/SearchDoctorsView";
@@ -159,59 +161,75 @@ const routes = [
     ]
   },
   {
-    path: '/telemedic/measures',
-    name: 'UserMeasuresView',
-    component: UserMeasuresView
+    path: '/telemedic',
+    redirect: {name: 'UserMeasuresView'},
+    name: 'UserTelemedicView',
+    component: UserTelemedicView,
+    children: [
+      {
+        path: 'measures',
+        name: 'UserMeasuresView',
+        component: UserMeasuresView,
+      },
+      {
+        path: 'userdoctors',
+        name: 'UserDoctorsView',
+        component: UserDoctorsView
+      },
+      {
+        path: 'userdoctors/search',
+        name: 'SearchDoctorsView',
+        component: SearchDoctorsView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'UserDoctorConversationView',
+        component: UserDoctorConversationView
+      },
+      {
+        path: 'conversations',
+        name: 'UserDoctorConversationsView',
+        component: UserDoctorConversationsView
+      },
+      {
+        path: 'analysis',
+        name: 'AnalysisView',
+        component: AnalysisView
+      },
+    ]
   },
   {
-    path: '/telemedic/userdoctors',
-    name: 'UserDoctorsView',
-    component: UserDoctorsView
-  },
-  {
-    path: '/telemedic/userdoctors/search',
-    name: 'SearchDoctorsView',
-    component: SearchDoctorsView
-  },
-  {
-    path: '/telemedic/conversations',
-    name: 'UserDoctorConversationsView',
-    component: UserDoctorConversationsView
-  },
-  {
-    path: '/telemedic/conversations/:conversationId',
-    name: 'UserDoctorConversationView',
-    component: UserDoctorConversationView
-  },
-  {
-    path: '/telemedic/analysis',
-    name: 'AnalysisView',
-    component: AnalysisView
-  },
-  {
-    path: '/doctor/users',
-    name: 'DoctorUsersView',
-    component: DoctorUsersView
-  },
-  {
-    path: '/doctor/users/:userId',
-    name: 'DoctorUserProfileView',
-    component: DoctorUserProfileView
-  },
-  {
-    path: '/doctor/conversations',
-    name: 'DoctorUserConversationsView',
-    component: DoctorUserConversationsView
-  },
-  {
-    path: '/doctor/conversations/:conversationId',
-    name: 'DoctorUserConversationView',
-    component: DoctorUserConversationView
-  },
-  {
-    path: '/doctor/measure-types',
-    name: 'DoctorMeasureTypesView',
-    component: DoctorMeasureTypesView
+    path: '/doctor',
+    redirect: {name: 'DoctorUsersView'},
+    name: 'DoctorTelemedicView',
+    component: DoctorTelemedicView,
+    children: [
+      {
+        path: 'users',
+        name: 'DoctorUsersView',
+        component: DoctorUsersView
+      },
+      {
+        path: 'users/:userId',
+        name: 'DoctorUserProfileView',
+        component: DoctorUserProfileView
+      },
+      {
+        path: 'conversations',
+        name: 'DoctorUserConversationsView',
+        component: DoctorUserConversationsView
+      },
+      {
+        path: 'conversations/:conversationId',
+        name: 'DoctorUserConversationView',
+        component: DoctorUserConversationView
+      },
+      {
+        path: 'measure-types',
+        name: 'DoctorMeasureTypesView',
+        component: DoctorMeasureTypesView
+      },
+    ]
   },
   {
     path: '/sport',

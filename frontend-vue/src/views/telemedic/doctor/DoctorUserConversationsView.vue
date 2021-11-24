@@ -1,23 +1,16 @@
 <template>
-    <div class="section-bg telemedic-section">
-        <header>
-            <doctor-navbar/>
-        </header>
-        <section>
-            <conversations-component connection-type="WITH_DOCTOR" :as-specialist="true"
-                                     v-on:open-conversation="openConversation"/>
-        </section>
+    <div>
+        <conversations-component connection-type="WITH_DOCTOR" :as-specialist="true"
+                                 v-on:open-conversation="openConversation"/>
     </div>
 </template>
 
 <script>
-import DoctorNavbar from "@/components/telemedic/navbars/DoctorNavbar";
 import ConversationsComponent from "@/components/telemedic/communicator/ConversationsComponent";
 
 export default {
     name: 'DoctorUserConversationsView',
     components: {
-        DoctorNavbar,
         ConversationsComponent
     },
     data() {
