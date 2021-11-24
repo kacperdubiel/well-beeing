@@ -194,6 +194,7 @@ export default {
                 console.log('role', this.$store.getters.getRoles)
 
                 let specializations = []
+                this.$store.commit('setSpecialization', specializations);
                 if (response.data['doctorProfile'] !== null) {
                     response.data['doctorProfile']['specializations'].forEach((e) => {
                         specializations.push(e['name'])
