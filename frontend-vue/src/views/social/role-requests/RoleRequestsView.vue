@@ -30,7 +30,7 @@
                         TRENER
                     </button>
                 </div>
-                <div class="col-lg-3 col-md-12 my-1 mt-lg-0" v-if="!this.$store.getters.getRoles.includes('ROLE_DOCTOR')" >
+                <div class="col-lg-3 col-md-12 my-1 mt-lg-0" v-if="this.possibleSpecializations.length !== 0" >
                     <button
                         class="btn-panel-"
                         :class="{ 'doctor' : this.roleRequest.role === 'ROLE_DOCTOR'}"
@@ -64,14 +64,15 @@
                     3. Wybierz specjalizację
                 </h5>
             </div>
-            <div class="row" v-if="roleRequest.role === 'ROLE_DOCTOR'">
+            <div class="row" v-if="roleRequest.role === 'ROLE_DOCTOR' && this.possibleSpecializations !== []">
                 <div class="col-9 col-lg-7 offset-1">
                     <select
                         class="form-select"
                         aria-label="Default select example"
                         v-model="roleRequest.specialization.id"
+                        @focus="clearStatus"
                     >
-                        <option v-for="spec in doctorSpecializations" :key="spec.name" :value="spec.id">{{ spec.name }}</option>
+                        <option v-for="spec in possibleSpecializations" :key="spec.name" :value="spec.id">{{ spec.name }}</option>
                     </select>
                 </div>
             </div>
@@ -120,7 +121,7 @@ export default {
             errorRequest: false,
             successRequest: false,
             requestId: 0,
-            doctorSpecializations: [],
+            possibleSpecializations: []
 
         }
     },
@@ -153,9 +154,6 @@ export default {
 
             this.submittingRequest = false
         },
-
-
-
         clearStatus() {
             this.submittingRequest = false
             this.errorRequest = false
@@ -176,7 +174,6 @@ export default {
         cancelRoleRequest(id) {
             const url = `${this.apiURL}role-request/${id}/cancel`
             const token = this.$store.getters.getToken;
-            console.log('tu jestem')
             this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
                 this.getMyRoleRequests()
@@ -195,6 +192,16 @@ export default {
                 })
                 this.$store.commit('setRoles', roles);
                 console.log('role', this.$store.getters.getRoles)
+
+                let specializations = []
+                if (response.data['doctorProfile'] !== null) {
+                    response.data['doctorProfile']['specializations'].forEach((e) => {
+                        specializations.push(e['name'])
+                    })
+                    this.$store.commit('setSpecialization', specializations);
+                    console.log('specializations', this.$store.getters.getSpecializations)
+                }
+
             }).catch(error => {
                 console.log(error.response);
             });
@@ -204,7 +211,15 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
-                this.doctorSpecializations = response.data
+
+                const doctorSpec = response.data
+                this.$store.getters.getSpecializations.forEach((elem) => {
+                    if (doctorSpec.map(spec => spec.name).includes(elem)) {
+                        const indexToDelete = doctorSpec.map(spec => spec.name).indexOf(elem)
+                        doctorSpec.splice(indexToDelete, 1)
+                    }
+                })
+                this.possibleSpecializations = doctorSpec
             }).catch(error => {
                 console.log(error.response.status)
             });

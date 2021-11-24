@@ -12,6 +12,7 @@ export default createStore({
             firstName: "",
             lastName: "",
             roles: [],
+            specializations: [],
             // PHYSICAL ACTIVITY
             exerciseId: 0,
             trainingId: 0,
@@ -57,6 +58,12 @@ export default createStore({
         },
         setRoles (state, value) {
             state.roles = value;
+        },
+        addSpecialization (state, value) {
+            state.specializations.push(value);
+        },
+        setSpecialization (state, value) {
+            state.specializations = value;
         },
         // PHYSICAL ACTIVITY
         setExerciseId (state, value) {
@@ -114,6 +121,9 @@ export default createStore({
         },
         getRoles (state) {
             return state.roles;
+        },
+        getSpecializations (state) {
+            return state.specializations;
         },
         // PHYSICAL ACTIVITY
         getExerciseId (state) {

@@ -246,6 +246,14 @@ export default {
                 })
                 this.$store.commit('setRoles', roles);
                 console.log('role', this.$store.getters.getRoles)
+                let specializations = []
+                if (response.data['doctorProfile'] !== null) {
+                    response.data['doctorProfile']['specializations'].forEach((e) => {
+                        specializations.push(e['name'])
+                    })
+                    this.$store.commit('setSpecialization', specializations);
+                    console.log('specializations', this.$store.getters.getSpecializations)
+                }
                 this.$router.push({name: 'FeedView'})
             }).catch(error => {
                 console.log(error.response);
