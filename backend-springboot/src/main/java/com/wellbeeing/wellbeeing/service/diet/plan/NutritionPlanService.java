@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.service.diet.plan;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionPlanPosition;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
@@ -18,13 +19,15 @@ public interface NutritionPlanService {
     List<NutritionPlan> getAllOwnedByUserProfileNutritionPlans(UUID profileId) throws NotFoundException;
     List<NutritionPlan> getAllCreatedByDieticianProfileNutritionPlans(UUID profileId) throws NotFoundException;
 
-    NutritionPlan markNutritionPlanAsMain(UUID nutritionPlanId, UUID profileId) throws NotFoundException;
+    NutritionPlan changeNutritionPlanMain(UUID nutritionPlanId, UUID profileId) throws NotFoundException;
 
     NutritionPlan getNutritionPlanById(UUID nutritionPlanId) throws NotFoundException;
     NutritionPlan generateNutritionPlanForProfile(UUID profileId) throws NotFoundException, NutritionPlanGenerationException;
     NutritionPlan addEmptyNutritionPlanToProfile(UUID profileId, String name) throws NotFoundException;
-    NutritionPlan addNutritionPlanToProfile(NutritionPlan nutritionPlan, UUID profileId) throws NotFoundException;
+    NutritionPlan addEmptyNutritionPlanToDieticianProfile(UUID profileId, String name) throws NotFoundException;
     NutritionPlan addPositionToProfileNutritionPlan(NutritionPlanPosition position, UUID nutritionPlanId) throws NotFoundException;
-    NutritionPlan updatePositionInProfileNutritionPlan(NutritionPlanPosition position, UUID nutritionPlanId) throws NotFoundException;
     NutritionPlan deletePositionFromProfileNutritionPlan(UUID positionId, UUID nutritionPlanId) throws NotFoundException;
+
+    NutritionPlan deleteOwnerFromNutritionPlan(UUID nutritionPlanId) throws NotFoundException;
+    NutritionPlan addOwnerToNutritionPlan(UUID nutritionPlanId, Profile profile) throws NotFoundException;
 }

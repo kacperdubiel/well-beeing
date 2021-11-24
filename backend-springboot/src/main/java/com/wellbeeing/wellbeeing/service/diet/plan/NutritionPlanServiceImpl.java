@@ -60,7 +60,7 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         Profile profile =  profileService.getProfileById(profileId);
         return nutritionPlanDAO.findAllByCreatorProfileIdAndOwnerProfileId(profile.getId(), profile.getId())
                 .stream()
-                .sorted(Comparator.comparing(NutritionPlan::getName))
+                .sorted(Comparator.comparing(NutritionPlan::getGenerationDate))
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +70,7 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         List<NutritionPlan> result = nutritionPlanDAO.findAllByOwnerProfileId(profile.getId());
         return result.stream()
                 .filter(np -> !np.getCreatorProfile().getId().equals(profile.getId()))
-                .sorted(Comparator.comparing(NutritionPlan::getName))
+                .sorted(Comparator.comparing(NutritionPlan::getGenerationDate))
                 .collect(Collectors.toList());
     }
 
@@ -79,16 +79,18 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         Profile profile =  profileService.getProfileById(profileId);
         List<NutritionPlan> result = nutritionPlanDAO.findAllByCreatorProfileId(profile.getId());
         return result.stream()
-                .filter(np -> !np.getOwnerProfile().getId().equals(profile.getId()))
-                .sorted(Comparator.comparing(NutritionPlan::getName))
+                .filter(np -> (np.getOwnerProfile() == null) || (!np.getOwnerProfile().getId().equals(profile.getId())))
+                .sorted(Comparator.comparing(NutritionPlan::getGenerationDate))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public NutritionPlan markNutritionPlanAsMain(UUID nutritionPlanId, UUID profileId) throws NotFoundException {
+    public NutritionPlan changeNutritionPlanMain(UUID nutritionPlanId, UUID profileId) throws NotFoundException {
         NutritionPlan np = getNutritionPlanById(nutritionPlanId);
-        if(np.isMain())
-            return np;
+        if(np.isMain()) {
+            np.setMain(false);
+            return nutritionPlanDAO.save(np);
+        }
         NutritionPlan actualMain = findUserMainNutritionPlan(profileId);
         if(actualMain != null){
             actualMain.setMain(false);
@@ -135,20 +137,21 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         NutritionPlan mainNutritionPlan = findUserMainNutritionPlan(profileId);
         if(mainNutritionPlan == null)
             nutritionPlan.setMain(true);
-        nutritionPlanDAO.save(nutritionPlan);
-        return nutritionPlan;
+        return nutritionPlanDAO.save(nutritionPlan);
     }
 
     @Override
-    public NutritionPlan addNutritionPlanToProfile(NutritionPlan nutritionPlan, UUID profileId) throws NotFoundException {
+    public NutritionPlan addEmptyNutritionPlanToDieticianProfile(UUID profileId, String name) throws NotFoundException {
         Profile profile = profileService.getProfileById(profileId);
-        nutritionPlan.setId(null);
-        nutritionPlan.setCreatorProfile(profile);
-        NutritionPlan mainNutritionPlan = findUserMainNutritionPlan(profileId);
-        if(mainNutritionPlan == null)
-            nutritionPlan.setMain(true);
-        nutritionPlanDAO.save(nutritionPlan);
-        return nutritionPlan;
+        NutritionPlan nutritionPlan = NutritionPlan.builder()
+                .generationDate(new Date())
+                .ownerProfile(null)
+                .creatorProfile(profile)
+                .name(name)
+                .main(false)
+                .nutritionPlanPositions(new ArrayList<>())
+                .build();
+        return nutritionPlanDAO.save(nutritionPlan);
     }
 
     @Override
@@ -164,20 +167,6 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     }
 
     @Override
-    public NutritionPlan updatePositionInProfileNutritionPlan(NutritionPlanPosition position, UUID nutritionPlanId) throws NotFoundException {
-        NutritionPlan nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
-        if(nutritionPlan == null)
-            throw new NotFoundException("Nutrition plan with id: " +  nutritionPlanId + " not found");
-        NutritionPlanPosition nutritionPlanPosition = nutritionPlan.getNutritionPlanPositions().stream()
-                .filter(p -> p.getId().equals(position.getId())).findFirst().orElse(null);
-        if(nutritionPlanPosition == null)
-            throw new NotFoundException("Nutrition plan position with id: " +  position.getId() + " not found for nutrition plan with id: " + nutritionPlanId);
-        nutritionPlanPosition.setNutritionPlan(nutritionPlan);
-        nutritionPlanPositionDAO.save(nutritionPlanPosition);
-        return nutritionPlan;
-    }
-
-    @Override
     public NutritionPlan deletePositionFromProfileNutritionPlan(UUID positionId, UUID nutritionPlanId) throws NotFoundException {
         NutritionPlan nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
         if(nutritionPlan == null)
@@ -190,5 +179,19 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
         nutritionPlanPositionDAO.deleteById(positionId);
         nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
         return nutritionPlan;
+    }
+
+    @Override
+    public NutritionPlan addOwnerToNutritionPlan(UUID nutritionPlanId, Profile owner) throws NotFoundException {
+        NutritionPlan nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
+        if(nutritionPlan == null)
+            throw new NotFoundException("Nutrition plan with id: " +  nutritionPlanId + " not found");
+        nutritionPlan.setOwnerProfile(owner);
+        return nutritionPlanDAO.save(nutritionPlan);
+    }
+
+    @Override
+    public NutritionPlan deleteOwnerFromNutritionPlan(UUID nutritionPlanId) throws NotFoundException {
+        return addOwnerToNutritionPlan(nutritionPlanId, null);
     }
 }

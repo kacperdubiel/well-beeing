@@ -1,8 +1,8 @@
 <template>
     <div class="tab-content column-view">
         <nutrition-plan-component @positions:updated="onPositionsUpdated" :nutritionPlanId="this.actualPlanId"/>
-        <user-nutrition-plans-list-component :suggested="false" @load:plan="changePlan"/>
-        <user-nutrition-plans-list-component :suggested="true" @load:plan="changePlan"/>
+        <user-nutrition-plans-list-component :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="false" @plan:marked="onPlanMarked" @main:found="onMainFound" :dieticianView="false" :suggested="false" @load:plan="changePlan"/>
+        <user-nutrition-plans-list-component :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="this.mainFound" @plan:marked="onPlanMarked" :dieticianView="false" :suggested="true" @load:plan="changePlan"/>
     </div>
 </template>
 
@@ -14,7 +14,9 @@ export default {
     data(){
         return{
             actualPlanId: '',
-            updatedNutritionPlan: {id: null}
+            updatedNutritionPlan: {id: null},
+            mainFound: false,
+            updateAfterMark: 0
         }
     },
     components: {
@@ -22,6 +24,12 @@ export default {
         UserNutritionPlansListComponent
     },
     methods: {
+        onPlanMarked(){
+            this.updateAfterMark = this.updateAfterMark+1
+        },
+        onMainFound(value){
+            this.mainFound = value
+        },
         changePlan(planId){
             this.actualPlanId = planId
         },

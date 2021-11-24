@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <div v-if="this.nutritionPlan != null" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
+        <div v-if="this.nutritionPlanId != null" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
             <div class="carousel-inner">
                 <div v-for="day in this.weekdays" :key="day" class="carousel-item" v-bind:class="{'active' : day=='MONDAY'}">
                     <div class="row">
@@ -39,7 +39,7 @@
             </button>
         </div>
         <div v-else class="alert alert-danger alert-dismissible fade show" role="alert">
-                Nie posiadasz jeszcze żadnych planów treningowych!
+                Stwórz swój własny główny plan dietetyczny lub wybierz jeden z aktualnych! 
         </div>
         <div v-if="deletePositionError" class="alert alert-danger alert-dismissible fade show" role="alert">
                 Błąd połączenia, nie udało się usunąć pozycji.
@@ -94,7 +94,9 @@ export default {
     },
     watch: {
         nutritionPlanId: function () {
-            this.getSingleNutritionPlan(this.nutritionPlanId)
+            if(this.nutritionPlanId != null)
+                this.getSingleNutritionPlan(this.nutritionPlanId)
+            this.isForm = false;
         }
     },
     components: {
