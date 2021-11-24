@@ -21,42 +21,42 @@
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox"
                                v-model="selectedCheckboxes"
-                               :value="DIET_MEASURE_NAMES.CALORIES"
+                               :value="DIET_MEASURE_NAMES.CALORIES.EN"
                                :disabled="selectedCheckboxes.length >= maxSelected
-                                            && isSelected(DIET_MEASURE_NAMES.CALORIES)">
-                        <label class="form-check-label">Kalorie</label>
+                                            && isSelected(DIET_MEASURE_NAMES.CALORIES.EN)">
+                        <label class="form-check-label">{{ DIET_MEASURE_NAMES.CALORIES.PL }}</label>
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox"
                                v-model="selectedCheckboxes"
-                               :value="DIET_MEASURE_NAMES.CARBOHYDRATES"
+                               :value="DIET_MEASURE_NAMES.CARBOHYDRATES.EN"
                                :disabled="selectedCheckboxes.length >= maxSelected
-                                            && isSelected(DIET_MEASURE_NAMES.CARBOHYDRATES)">
-                        <label class="form-check-label">Węglowodany</label>
+                                            && isSelected(DIET_MEASURE_NAMES.CARBOHYDRATES.EN)">
+                        <label class="form-check-label">{{ DIET_MEASURE_NAMES.CARBOHYDRATES.PL }}</label>
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox"
                                v-model="selectedCheckboxes"
-                               :value="DIET_MEASURE_NAMES.PROTEINS"
+                               :value="DIET_MEASURE_NAMES.PROTEINS.EN"
                                :disabled="selectedCheckboxes.length >= maxSelected
-                                            && isSelected(DIET_MEASURE_NAMES.PROTEINS)">
-                        <label class="form-check-label">Białka</label>
+                                            && isSelected(DIET_MEASURE_NAMES.PROTEINS.EN)">
+                        <label class="form-check-label">{{ DIET_MEASURE_NAMES.PROTEINS.PL }}</label>
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox"
                                v-model="selectedCheckboxes"
-                               :value="DIET_MEASURE_NAMES.FATS"
+                               :value="DIET_MEASURE_NAMES.FATS.EN"
                                :disabled="selectedCheckboxes.length >= maxSelected
-                                            && isSelected(DIET_MEASURE_NAMES.FATS)">
-                        <label class="form-check-label">Tłuszcze</label>
+                                            && isSelected(DIET_MEASURE_NAMES.FATS.EN)">
+                        <label class="form-check-label">{{ DIET_MEASURE_NAMES.FATS.PL }}</label>
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox"
                                v-model="selectedCheckboxes"
-                               :value="DIET_MEASURE_NAMES.GLYCEMIC_INDEX"
+                               :value="DIET_MEASURE_NAMES.GLYCEMIC_INDEX.EN"
                                :disabled="selectedCheckboxes.length >= maxSelected
-                                            && isSelected(DIET_MEASURE_NAMES.GLYCEMIC_INDEX)">
-                        <label class="form-check-label">Indeks glikemiczny</label>
+                                            && isSelected(DIET_MEASURE_NAMES.GLYCEMIC_INDEX.EN)">
+                        <label class="form-check-label">{{ DIET_MEASURE_NAMES.GLYCEMIC_INDEX.PL }}</label>
                     </div>
                 </div>
 
@@ -65,18 +65,18 @@
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox"
                                v-model="selectedCheckboxes"
-                               :value="TRAINING_MEASURE_NAMES.BURNED_CALORIES"
+                               :value="TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN"
                                :disabled="selectedCheckboxes.length >= maxSelected
-                                            && isSelected(TRAINING_MEASURE_NAMES.BURNED_CALORIES)">
-                        <label class="form-check-label mx-2">Spalone kalorie</label>
+                                            && isSelected(TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN)">
+                        <label class="form-check-label mx-2">{{ TRAINING_MEASURE_NAMES.BURNED_CALORIES.PL }}</label>
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox"
                                v-model="selectedCheckboxes"
-                               :value="TRAINING_MEASURE_NAMES.TRAINING_LENGTH"
+                               :value="TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN"
                                :disabled="selectedCheckboxes.length >= maxSelected
-                                            && isSelected(TRAINING_MEASURE_NAMES.TRAINING_LENGTH)">
-                        <label class="form-check-label mx-2">Długość treningu</label>
+                                            && isSelected(TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN)">
+                        <label class="form-check-label mx-2">{{ TRAINING_MEASURE_NAMES.TRAINING_LENGTH.PL }}</label>
                     </div>
                 </div>
             </div>
@@ -101,16 +101,16 @@ import { DatePicker } from 'v-calendar';
 import AnalysisChartComponent from "@/components/telemedic/analysis/AnalysisChartComponent";
 
 const DIET_MEASURE_NAMES = {
-    CALORIES: 'calories',
-    CARBOHYDRATES: 'carbohydrates',
-    PROTEINS: 'proteins',
-    FATS: 'fats',
-    GLYCEMIC_INDEX: 'glycemic-index'
+    CALORIES: { EN: 'calories', PL: 'Kalorie'},
+    CARBOHYDRATES: { EN: 'carbohydrates', PL: 'Węglowodany'},
+    PROTEINS: { EN: 'proteins', PL: 'Białka'},
+    FATS: { EN: 'fats', PL: 'Tłuszcze'},
+    GLYCEMIC_INDEX: { EN: 'glycemic_index', PL: 'Indeks glikemiczny'},
 };
 
 const TRAINING_MEASURE_NAMES = {
-    BURNED_CALORIES: 'burned-calories',
-    TRAINING_LENGTH: 'training-length',
+    BURNED_CALORIES: { EN: 'burned_calories', PL: 'Spalone kalorie'},
+    TRAINING_LENGTH: { EN: 'training_length', PL: 'Długość treningu'},
 };
 
 export default {
@@ -121,6 +121,11 @@ export default {
     },
     props: {
         userId: String
+    },
+    watch: {
+        dateRange: function() {
+            this.getAnalysisData();
+        },
     },
     data() {
         return {
@@ -165,13 +170,156 @@ export default {
                     console.log(e);
                 })
         },
+        getAnalysisData(){
+            this.analysisData = {};
+            this.getTelemedicMeasures();
+            this.getDieteticMeasures();
+            this.getTrainingMeasures();
+        },
+        getTelemedicMeasures(){
+            this.axios.get(`${this.apiURL}measures/user/${this.userId}`
+                + `/from/${this.dateRange.start.toJSON()}/to/${this.dateRange.end.toJSON()}`, {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    let measures = response.data;
 
+                    measures.forEach(measure => {
+                        let measureTypeId = measure.measureType.id;
+                        let chartElement = {
+                            x: measure.measureDate,
+                            y: measure.value,
+                        }
+                        this.createArrayPropertyInAnalysisData(measureTypeId);
+                        this.analysisData[measureTypeId].push(chartElement)
+                    });
+
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
+        createArrayPropertyInAnalysisData(propertyName){
+            if(!this.analysisData[propertyName]){
+                this.analysisData[propertyName] = [];
+            }
+        },
+        getDieteticMeasures(){
+            this.axios.get(`${this.apiURL}report/profile/${this.userId}`
+                + `/from/${this.dateRange.start.toJSON()}/to/${this.dateRange.end.toJSON()}`, {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    let reports = response.data;
+
+                    reports.forEach(report => {
+                        report.productDetailsList.forEach(product => {
+                            let x = product.consumingTime;
+                            let y;
+                            let desc = product.product.name;
+
+                            this.pushNutritionalValues(x, y, desc, product);
+
+                            y = product.product.glycemicIndexLevel;
+                            this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.GLYCEMIC_INDEX.EN);
+                            this.analysisData[DIET_MEASURE_NAMES.GLYCEMIC_INDEX.EN].push({x: x, y: y, description: desc});
+
+                        })
+
+                        report.dishDetailsList.forEach(dish => {
+                            let x = dish.consumingTime;
+                            let y = "";
+                            let desc = dish.dish.name;
+
+                            this.pushNutritionalValues(x, y, desc, dish);
+
+                            y = dish.dish.glycemicIndexLevel;
+                            this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.GLYCEMIC_INDEX.EN);
+                            this.analysisData[DIET_MEASURE_NAMES.GLYCEMIC_INDEX.EN].push({x: x, y: y, description: desc});
+                        })
+                    });
+
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
+        pushNutritionalValues(x, y, desc, fromFood){
+            y = fromFood.derivedNutritionalValues.derivedCalories;
+            this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.CALORIES.EN);
+            this.analysisData[DIET_MEASURE_NAMES.CALORIES.EN].push({x: x, y: y, description: desc});
+
+            y = fromFood.derivedNutritionalValues.derivedCarbohydrates;
+            this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.CARBOHYDRATES.EN);
+            this.analysisData[DIET_MEASURE_NAMES.CARBOHYDRATES.EN].push({x: x, y: y, description: desc});
+
+            y = fromFood.derivedNutritionalValues.derivedProteins;
+            this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.PROTEINS.EN);
+            this.analysisData[DIET_MEASURE_NAMES.PROTEINS.EN].push({x: x, y: y, description: desc});
+
+            y = fromFood.derivedNutritionalValues.derivedFats;
+            this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.FATS.EN);
+            this.analysisData[DIET_MEASURE_NAMES.FATS.EN].push({x: x, y: y, description: desc});
+        },
+        getTrainingMeasures(){
+            this.axios.get(`${this.apiURL}sport/report/profile/${this.userId}`
+                + `/from/${this.dateRange.start.toJSON()}/to/${this.dateRange.end.toJSON()}`, {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+                .then(response => {
+                    let reports = response.data;
+
+                    reports.forEach(report => {
+                        report.exerciseList.forEach(exercise => {
+                            let x = exercise.exercisingTime;
+                            let y = "";
+                            let desc = exercise.exercise.name;
+
+                            y = exercise.minutes;
+                            this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN);
+                            this.analysisData[TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN].push({x: x, y: y, description: desc});
+
+                            y = exercise.caloriesBurned;
+                            this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN);
+                            this.analysisData[TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN].push({x: x, y: y, description: desc});
+                        })
+
+                        report.trainingList.forEach(training => {
+                            let x = training.trainingTime;
+                            let y = "";
+                            let desc = training.training.name;
+
+                            y = training.minutes;
+                            this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN);
+                            this.analysisData[TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN].push({x: x, y: y, description: desc});
+
+                            y = training.caloriesBurned;
+                            this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN);
+                            this.analysisData[TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN].push({x: x, y: y, description: desc});
+                        })
+                    });
+
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+                .then(()=>{
+                        console.log(this.analysisData)
+                })
+        },
         isSelected(element){
             return this.selectedCheckboxes.indexOf(element) === -1
         }
     },
     created() {
         this.getMeasureTypes();
+        this.getAnalysisData();
 
         this.series = [
             {
