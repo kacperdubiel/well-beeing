@@ -15,5 +15,5 @@ import java.util.UUID;
 @Repository("measureDAO")
 public interface MeasureDAO extends JpaRepository<Measure, UUID> {
     Page<Measure> findByOwnerAndMeasureType(Profile owner, MeasureType measureType, Pageable pageable);
-    List<Measure> findByOwnerAndMeasureTypeAndMeasureDateBetweenOrderByMeasureDate(Profile owner, MeasureType measureType, Date start, Date end);
+    List<Measure> findByOwnerAndMeasureDateBetweenOrderByMeasureDate(Profile owner, Date start, Date end);
 }

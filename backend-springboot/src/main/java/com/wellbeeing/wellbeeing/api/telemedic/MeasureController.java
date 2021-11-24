@@ -48,16 +48,14 @@ public class MeasureController {
         this.profileConnService = profileConnService;
     }
 
-    @RequestMapping(path = "measures/user/{user_id}/type/{type_id}/from/{date_from}/to/{date_to}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserMeasuresByTypeAndDate(@PathVariable("type_id") UUID measureTypeId,
-                                                          @PathVariable("user_id") UUID measuresOwnerId,
+    @RequestMapping(path = "measures/user/{user_id}/from/{date_from}/to/{date_to}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserMeasuresByDate(@PathVariable("user_id") UUID measuresOwnerId,
                                                           @PathVariable("date_from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
                                                           @PathVariable("date_to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date to, Principal principal)
             throws NotFoundException, ForbiddenException
     {
         UUID authorizedUserId = userService.findUserIdByUsername(principal.getName());
         Profile authorizedUser = profileService.getProfileById(authorizedUserId);
-        MeasureType measuresType = measureTypeService.getMeasureTypeById(measureTypeId);
         Profile measuresOwner = profileService.getProfileById(measuresOwnerId);
 
         if(!measuresOwnerId.equals(authorizedUserId)){
@@ -69,9 +67,7 @@ public class MeasureController {
             }
         }
 
-        List<Measure> measures = measureService.getMeasuresByProfileAndMeasureTypeAndMeasureDateBetween(measuresOwner,
-                measuresType, from, to);
-
+        List<Measure> measures = measureService.getMeasuresByProfileAndMeasureDateBetween(measuresOwner, from, to);
         return new ResponseEntity<>(measures, HttpStatus.OK);
     }
 
