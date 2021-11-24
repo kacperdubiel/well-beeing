@@ -91,7 +91,7 @@ export default {
 .dish-browser-element:hover {
     border-style: solid;
     border-width: 1px;
-    border-color: var(--GREY3);
+    border-color: var(--GREY1);
 }
 
 .dish-browser-element-plan:hover {
