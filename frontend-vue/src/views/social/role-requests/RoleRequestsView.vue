@@ -143,6 +143,8 @@ export default {
             //clearinputs
             const url = `${this.apiURL}role-request`
             const token = this.$store.getters.getToken;
+            if(this.roleRequest.specialization.id === "")
+                this.roleRequest.specialization = null
             this.axios.post(url, this.roleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.requestId = response.data['roleReqId']
                 this.$func_global.importData(this.$refs.myfile, this.$store.getters.getToken, 'roleRequest', this.requestId)
@@ -162,6 +164,9 @@ export default {
         clearInputs () {
             this.roleRequest.role = ""
             document.getElementById("formFile").value = ""
+            this.roleRequest.specialization = {
+                id: ""
+            }
         },
         getMyRoleRequests() {
             const url = `${this.apiURL}role-request/my`

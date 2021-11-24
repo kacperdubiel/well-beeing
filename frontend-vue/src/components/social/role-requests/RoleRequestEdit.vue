@@ -201,11 +201,13 @@ export default {
                 }
             }
 
-            if (this.invalidRole) {
+            if (this.invalidRole || this.invalidSpecialization) {
                 this.errorRequest = true
                 return
             }
             //clearinputs
+            if(this.editedRoleRequest.role !== 'ROLE_DOCTOR')
+                this.editedRoleRequest.specialization = null
             const url = `${this.apiURL}role-request/${this.roleRequestSource.roleReqId}`
             const token = this.$store.getters.getToken;
             this.axios.put(url, this.editedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
@@ -245,6 +247,9 @@ export default {
         },
         invalidFile() {
             return this.editedRoleRequest.documentImgPath === ""
+        },
+        invalidSpecialization() {
+            return this.editedRoleRequest.role === 'ROLE_DOCTOR' && this.editedRoleRequest.specialization.id === ""
         }
     },
     created() {
