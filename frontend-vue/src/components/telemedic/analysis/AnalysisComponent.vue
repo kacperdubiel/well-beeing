@@ -90,8 +90,6 @@
                 <input v-model="hideYAxis" class="form-check-input" type="checkbox">
                 <label class="form-check-label mx-2">Ukryj osie Y</label>
             </div>
-            <input type="text" v-model="dateRange.start">
-            <input type="text" v-model="dateRange.end">
         </div>
     </div>
 </template>
@@ -123,8 +121,14 @@ export default {
         userId: String
     },
     watch: {
-        dateRange: function() {
+        dateRange: function () {
             this.getAnalysisData();
+        },
+        selectedCheckboxes: function() {
+            this.updateSeries();
+        },
+        isUpdated: function() {
+            this.updateSeries();
         },
     },
     data() {
@@ -151,6 +155,12 @@ export default {
             maxSelected: 4,
 
             analysisData: {},
+            isDataUpdated: {
+                telemedic: false,
+                diet: false,
+                training: false,
+            },
+            isUpdated: false,
 
             series: [],
             hideYAxis: false,
@@ -190,7 +200,8 @@ export default {
                         let measureTypeId = measure.measureType.id;
                         let chartElement = {
                             x: measure.measureDate,
-                            y: measure.value,
+                            y: this.roundNumber(measure.value),
+                            min: measure.measureType.minValue,
                         }
                         this.createArrayPropertyInAnalysisData(measureTypeId);
                         this.analysisData[measureTypeId].push(chartElement)
@@ -200,10 +211,21 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
+            .then(() => {
+                this.isDataUpdated.telemedic = true;
+                this.checkAllUpdated();
+            });
         },
         createArrayPropertyInAnalysisData(propertyName){
             if(!this.analysisData[propertyName]){
                 this.analysisData[propertyName] = [];
+            }
+        },
+        checkAllUpdated(){
+            if(this.isDataUpdated.telemedic === true && this.isDataUpdated.diet === true
+                && this.isDataUpdated.training === true)
+            {
+                this.isUpdated = true;
             }
         },
         getDieteticMeasures(){
@@ -247,21 +269,25 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
+                .then(() => {
+                    this.isDataUpdated.diet = true;
+                    this.checkAllUpdated();
+                });
         },
         pushNutritionalValues(x, y, desc, fromFood){
-            y = fromFood.derivedNutritionalValues.derivedCalories;
+            y = this.roundNumber(fromFood.derivedNutritionalValues.derivedCalories);
             this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.CALORIES.EN);
             this.analysisData[DIET_MEASURE_NAMES.CALORIES.EN].push({x: x, y: y, description: desc});
 
-            y = fromFood.derivedNutritionalValues.derivedCarbohydrates;
+            y = this.roundNumber(fromFood.derivedNutritionalValues.derivedCarbohydrates);
             this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.CARBOHYDRATES.EN);
             this.analysisData[DIET_MEASURE_NAMES.CARBOHYDRATES.EN].push({x: x, y: y, description: desc});
 
-            y = fromFood.derivedNutritionalValues.derivedProteins;
+            y = this.roundNumber(fromFood.derivedNutritionalValues.derivedProteins);
             this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.PROTEINS.EN);
             this.analysisData[DIET_MEASURE_NAMES.PROTEINS.EN].push({x: x, y: y, description: desc});
 
-            y = fromFood.derivedNutritionalValues.derivedFats;
+            y = this.roundNumber(fromFood.derivedNutritionalValues.derivedFats);
             this.createArrayPropertyInAnalysisData(DIET_MEASURE_NAMES.FATS.EN);
             this.analysisData[DIET_MEASURE_NAMES.FATS.EN].push({x: x, y: y, description: desc});
         },
@@ -281,11 +307,11 @@ export default {
                             let y = "";
                             let desc = exercise.exercise.name;
 
-                            y = exercise.minutes;
+                            y = this.roundNumber(exercise.minutes);
                             this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN);
                             this.analysisData[TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN].push({x: x, y: y, description: desc});
 
-                            y = exercise.caloriesBurned;
+                            y = this.roundNumber(exercise.caloriesBurned);
                             this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN);
                             this.analysisData[TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN].push({x: x, y: y, description: desc});
                         })
@@ -295,11 +321,11 @@ export default {
                             let y = "";
                             let desc = training.training.name;
 
-                            y = training.minutes;
+                            y = this.roundNumber(training.minutes);
                             this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN);
                             this.analysisData[TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN].push({x: x, y: y, description: desc});
 
-                            y = training.caloriesBurned;
+                            y = this.roundNumber(training.caloriesBurned);
                             this.createArrayPropertyInAnalysisData(TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN);
                             this.analysisData[TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN].push({x: x, y: y, description: desc});
                         })
@@ -309,75 +335,54 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
-                .then(()=>{
-                        console.log(this.analysisData)
-                })
+                .then(() => {
+                    this.isDataUpdated.training = true;
+                    this.checkAllUpdated();
+                });
+        },
+        updateSeries(){
+            this.series = [];
+            this.selectedCheckboxes.forEach(selected => {
+                let seriesName = this.getSeriesName(selected);
+
+                if(this.analysisData[selected]){
+                    let sortedData = this.analysisData[selected].sort(function(a,b){
+                        return new Date(b.x) - new Date(a.x);
+                    });
+
+                    this.series.push({name: seriesName, data: sortedData});
+                }
+            });
+            this.isUpdated = false;
+            this.isDataUpdated.telemedic = false;
+            this.isDataUpdated.diet = false;
+            this.isDataUpdated.training = false;
+        },
+        getSeriesName(selected){
+            let seriesName = "";
+
+            let measureType = this.measureTypes.find(m => m.id === selected);
+            if(measureType) seriesName = measureType.name + " [" + measureType.unit + "]";
+            else if(selected === DIET_MEASURE_NAMES.CALORIES.EN) seriesName = DIET_MEASURE_NAMES.CALORIES.PL + " [kcal]";
+            else if(selected === DIET_MEASURE_NAMES.CARBOHYDRATES.EN) seriesName = DIET_MEASURE_NAMES.CARBOHYDRATES.PL + " [g]";
+            else if(selected === DIET_MEASURE_NAMES.PROTEINS.EN) seriesName = DIET_MEASURE_NAMES.PROTEINS.PL + " [g]";
+            else if(selected === DIET_MEASURE_NAMES.FATS.EN) seriesName = DIET_MEASURE_NAMES.FATS.PL + " [g]";
+            else if(selected === DIET_MEASURE_NAMES.GLYCEMIC_INDEX.EN) seriesName = DIET_MEASURE_NAMES.GLYCEMIC_INDEX.PL;
+            else if(selected === TRAINING_MEASURE_NAMES.BURNED_CALORIES.EN) seriesName = TRAINING_MEASURE_NAMES.BURNED_CALORIES.PL + " [kcal]";
+            else if(selected === TRAINING_MEASURE_NAMES.TRAINING_LENGTH.EN) seriesName = TRAINING_MEASURE_NAMES.TRAINING_LENGTH.PL + " [min]";
+
+            return seriesName;
         },
         isSelected(element){
             return this.selectedCheckboxes.indexOf(element) === -1
-        }
+        },
+        roundNumber(num){
+            return Math.round((num + Number.EPSILON) * 100) / 100;
+        },
     },
     created() {
         this.getMeasureTypes();
         this.getAnalysisData();
-
-        this.series = [
-            {
-                name: "Tętno",
-                data: [
-                    {
-                        x: "02-10-2017 GMT",
-                        y: 70,
-                        description: "Marchewka",
-                    },
-                    {
-                        x: "02-11-2017 GMT",
-                        y: 74,
-                        description: "Danie 1",
-                    },
-                    {
-                        x: "02-12-2017 GMT",
-                        y: 92,
-                    },
-                    {
-                        x: "02-13-2017 GMT",
-                        y: 86,
-                    },
-                    {
-                        x: "02-14-2017 GMT",
-                        y: 80,
-                    },
-                    {
-                        x: "02-15-2017 GMT",
-                        y: 89
-                    }
-                ]
-            },{
-                name: "Poziom cukru",
-                data: [
-                    {
-                        x: "02-10-2017 GMT",
-                        y: 93
-                    },
-                    {
-                        x: "02-11-2017 GMT",
-                        y: 101
-                    },
-                    {
-                        x: "02-12-2017 GMT",
-                        y: 112
-                    },
-                    {
-                        x: "02-13-2017 GMT",
-                        y: 105
-                    },
-                    {
-                        x: "02-15-2017 GMT",
-                        y: 89
-                    }
-                ]
-            }
-        ];
     }
 }
 </script>

@@ -17,22 +17,7 @@ export default {
             this.updateYAxis();
         },
         hideYAxis: function() {
-            if(!this.hideYAxis){
-                let yaxis = this.chartOptions.yaxis;
-                yaxis.forEach(yax => {
-                    yax.show = false;
-
-                })
-                this.chartOptions = {
-                    ...this.chartOptions,
-                    ...{
-                        yaxis: yaxis,
-                    },
-                };
-            } else {
-                this.updateYAxis();
-            }
-
+            this.updateYAxis();
         },
     },
     data() {
@@ -48,7 +33,7 @@ export default {
                         opacity: 0.25
                     },
                     animations: {
-                        enabled: true,
+                        enabled: false,
                         easing: 'easein',
                         speed: 600,
                         animateGradually: {
@@ -63,6 +48,16 @@ export default {
                     toolbar: {
                         offsetX: 0,
                         offsetY: -10,
+                        export: {
+                            csv: {
+                                columnDelimiter: ';',
+                                headerCategory: 'typ pomiaru',
+                                headerValue: 'wartość',
+                                dateFormatter(timestamp) {
+                                    return new Date(timestamp).toLocaleString()
+                                }
+                            },
+                        },
                     },
                     locales: [pl],
                     defaultLocale: "pl",
@@ -114,6 +109,7 @@ export default {
                 yaxis: [
                     {
                         show: false,
+                        forceNiceScale: true,
                         opposite: false,
                         axisTicks: {
                             show: true
@@ -138,6 +134,7 @@ export default {
                     },
                     {
                         show: false,
+                        forceNiceScale: true,
                         opposite: true,
                         axisTicks: {
                             show: true
@@ -162,6 +159,7 @@ export default {
                     },
                     {
                         show: false,
+                        forceNiceScale: true,
                         opposite: false,
                         axisTicks: {
                             show: true
@@ -186,6 +184,7 @@ export default {
                     },
                     {
                         show: false,
+                        forceNiceScale: true,
                         opposite: true,
                         axisTicks: {
                             show: true
@@ -214,7 +213,8 @@ export default {
                     intersect: true,
                     theme: "dark",
                     x: {
-                        show: true
+                        show: true,
+                        format: 'dd MMM - HH:mm'
                     },
                     y: {
                         title: {
@@ -236,11 +236,34 @@ export default {
     },
     methods: {
         updateYAxis() {
+            if(this.hideYAxis){
+                this.hideAxis();
+            } else {
+                this.showAxis();
+            }
+        },
+        hideAxis(){
+            let yaxis = this.chartOptions.yaxis;
+            yaxis.forEach(yax => {
+                yax.show = false;
+
+            })
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    yaxis: yaxis,
+                },
+            };
+        },
+        showAxis(){
             let yaxis = this.chartOptions.yaxis;
             for(let i = 0; i < 4; i++){
                 if(i < this.chartSeries.length){
                     yaxis[i].show = true;
                     yaxis[i].title.text = this.chartSeries[i].name;
+                    if(this.chartSeries[i].data[0] && this.chartSeries[i].data[0].min){
+                        yaxis[i].min = this.chartSeries[i].data[0].min;
+                    }
                 } else {
                     yaxis[i].show = false;
                     yaxis[i].title.text = "";
@@ -261,5 +284,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
+div.apexcharts-menu-item{
+    color: black !important;
+}
+
 </style>
