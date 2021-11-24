@@ -88,7 +88,7 @@
                 <p class="card-elem-container-row">{{this.$func_global.mapDietGoal(dietGoal)}} </p>
             </div>
         </div>
-        <div style="justify-content: flex-end; flex-direction: row; display: flex;">
+        <div v-if="!this.dieticianView" style="justify-content: flex-end; flex-direction: row; display: flex;">
             <button class="btn-card-panel-diet" data-bs-toggle="modal" data-bs-target="#profileCardFormModal">Edytuj dane</button>
         </div>
         <div id="ailmentModal" class="modal fade" tabindex="-1" aria-labelledby="ailmentModalLabel" aria-hidden="false">
@@ -100,7 +100,7 @@
                 </div>
             </div>
         </div>
-        <profile-card-form-component @save:card="saveEditedCard" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
+        <profile-card-form-component v-if="!this.dieticianView" @save:card="saveEditedCard" :chosenAilmentsSource="this.ailments" :ailmentsSource="this.allAilments" :formCardData="dataToObject()"></profile-card-form-component>
     </div>
 </div>
 </template>
@@ -114,6 +114,14 @@ export default {
     components:{
         AilmentRowComponent,
         ProfileCardFormComponent
+    },
+    props: {
+        dieticianView: {
+            type: Boolean
+        },
+        userId: {
+            type: String
+        }
     },
     data(){
         return {
@@ -132,12 +140,34 @@ export default {
         }
     },
     mounted(){
-        this.getProfileCardData()
+        if(!this.dieticianView)
+            this.getProfileCardData()
+        else
+            this.getProfileCardDataDietician()
         this.getAilmentsData()
     },
     methods: {
         getProfileCardData(){
             axios.get('http://localhost:8090/profile-card', {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(data => {
+                    this.weight = data.data.weight
+                    this.height = data.data.height * 100
+                    this.age = data.data.age
+                    this.sex = data.data.esex
+                    this.isVegan = data.data.vegan
+                    this.isVegetarian = data.data.vegetarian
+                    this.activityLevel = data.data.activityLevel
+                    this.trainingActivity = data.data.trainingActivityTimePerWeek
+                    this.dietGoal = data.data.dietGoal
+                    this.ailments = data.data.ailments
+                }).catch(e => alert(e))
+        },
+        getProfileCardDataDietician(){
+            axios.get('http://localhost:8090/profile-card/' + this.userId, {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 }

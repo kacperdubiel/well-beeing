@@ -10,16 +10,20 @@
                 </h3>
             </div>
         </div>
+        <profile-card-component :dieticianView="true" :userId="this.userId"/>
+        <h4 style="text-align: start;" class="container mt-4"> Raporty </h4>
         <dietician-profile-reports-component class="mt-3" :userId="this.userId" />
     </div>
 </template>
 
 <script>
 import DieticianProfileReportsComponent from "@/components/diet/reports/DieticianProfileReportsComponent";
+import ProfileCardComponent from '../../components/diet/ProfileCardComponent.vue';
 export default {
     name: "DieticianUserProfileView",
     components: {
-        DieticianProfileReportsComponent
+        DieticianProfileReportsComponent,
+        ProfileCardComponent
     },
     data() {
         return {
