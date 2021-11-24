@@ -19,9 +19,10 @@
                 </h2>
                 <div id="collapse-mail" class="accordion-collapse collapse" aria-labelledby="heading-mail" data-bs-parent="#accordion-profile-edit">
                     <div class="accordion-body">
+
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
-                                <label for="input-mail" class="form-label">Adres e-mail</label>
+                                <label for="input-mail" class="form-label">Adres e-mail:</label>
                                 <input
                                     type="email"
                                     class="form-control"
@@ -30,6 +31,7 @@
                                     :class="{ 'has-error': (submittingChangeEmail && (invalidEmail || errorEmailTaken))}"
                                     @focus="clearStatusEmail"
                                     @keypress="clearStatusEmail"
+                                    @keyup.enter="changeEmail"
                                 >
                             </div>
                         </div>
@@ -66,6 +68,8 @@
                                 Zapisz zmiany
                             </button>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -79,7 +83,7 @@
                     <div class="accordion-body">
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
-                                <label for="input-curr-pass" class="form-label">Aktualne hasło</label>
+                                <label for="input-curr-pass" class="form-label">Aktualne hasło:</label>
                                 <input
                                     type="password"
                                     autocomplete="new-password"
@@ -89,12 +93,13 @@
                                     :class="{ 'has-error': (submittingChangePassword && (invalidCurrentPassword || errorCurrentPassword))}"
                                     @focus="clearStatusPassword"
                                     @keypress="clearStatusPassword"
+                                    @keydown.enter="changePassword"
                                 >
                             </div>
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
-                                <label for="input-new-pass" class="form-label">Nowe hasło</label>
+                                <label for="input-new-pass" class="form-label">Nowe hasło:</label>
                                 <input
                                     type="password"
                                     autocomplete="new-password"
@@ -104,12 +109,13 @@
                                     :class="{ 'has-error': (submittingChangePassword && (invalidNewPasswordFirst || invalidEqualNewPassword))}"
                                     @focus="clearStatusPassword"
                                     @keypress="clearStatusPassword"
+                                    @keydown.enter="changePassword"
                                 >
                             </div>
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
-                                <label for="input-new-pass-again" class="form-label">Powtórz nowe hasło</label>
+                                <label for="input-new-pass-again" class="form-label">Powtórz nowe hasło:</label>
                                 <input
                                     type="password"
                                     autocomplete="new-password"
@@ -119,6 +125,7 @@
                                     :class="{ 'has-error': (submittingChangePassword && (invalidNewPasswordSecond || invalidEqualNewPassword))}"
                                     @focus="clearStatusPassword"
                                     @keypress="clearStatusPassword"
+                                    @keydown.enter="changePassword"
                                 >
                             </div>
                         </div>
@@ -168,7 +175,7 @@
                     <div class="accordion-body">
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
-                                <label for="input-picture" class="form-label">Wybierz zdjęcie</label>
+                                <label for="input-picture" class="form-label">Wybierz zdjęcie:</label>
                                 <input
                                     class="form-control"
                                     type="file"
@@ -212,7 +219,7 @@
                     <div class="accordion-body">
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
-                                <label for="input-first-name" class="form-label">Imię</label>
+                                <label for="input-first-name" class="form-label">Imię:</label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -226,7 +233,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-8 ">
-                                <label for="input-last-name" class="form-label">Nazwisko</label>
+                                <label for="input-last-name" class="form-label">Nazwisko:</label>
                                 <input
                                     type="text"
                                     class="form-control"
@@ -240,7 +247,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12">
-                                <label for="input-description" class="form-label">Opis</label>
+                                <label for="input-description" class="form-label">Opis:</label>
                                 <textarea
                                     class="form-control"
                                     id="input-description"
@@ -254,7 +261,7 @@
                         </div>
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-6">
-                                <label for="input-birthday" class="form-label">Data urodzenia</label>
+                                <label for="input-birthday" class="form-label">Data urodzenia:</label>
                                 <DatePicker
                                     v-if="birthday"
                                     class="d-block"
@@ -262,10 +269,11 @@
                                     v-model="birthday"
                                     @focus="clearStatusPersonalInfo"
                                     @keypress="clearStatusPersonalInfo"
+                                    @keydown.enter="changePersonalInfo"
                                 />
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="input-sex" class="form-label">Płeć</label>
+                                <label for="input-sex" class="form-label">Płeć:</label>
                                 <div class="form-check" id="input-sex">
                                     <input
                                         class="form-check-input"
@@ -290,7 +298,6 @@
                                         v-model="sex"
                                         value="MAN"
                                         @focus="clearStatusPersonalInfo"
-                                        @keypress="clearStatusPersonalInfo"
                                     >
                                     <label class="form-check-label" for="input-sex-man">
                                         Mężczyzna
@@ -330,7 +337,7 @@
                     <div class="accordion-body">
                         <div class="row text-start mb-3 px-2">
                             <div class="col-12 col-md-6">
-                                <label for="input-tag-sport" class="form-label">Tag sportowy</label>
+                                <label for="input-tag-sport" class="form-label">Tag sportowy:</label>
                                 <select
                                     class="form-select"
                                     aria-label="Default select example"
@@ -343,7 +350,7 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="input-tag-nutrition" class="form-label">Tag żywieniowy</label>
+                                <label for="input-tag-nutrition" class="form-label">Tag żywieniowy:</label>
                                 <select
                                     class="form-select"
                                     aria-label="Default select example"

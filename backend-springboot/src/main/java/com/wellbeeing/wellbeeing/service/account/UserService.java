@@ -14,6 +14,6 @@ public interface UserService {
     public UUID findUserIdByUsername(String username);
     User loadUserByEmail(String email) throws UsernameNotFoundException;
     void changeUserPassword(final User user, final String password);
-    void changeUserEmail(UUID userId, String email) throws ConflictException;
+    User changeUserEmail(UUID userId, String email) throws ConflictException;
     boolean checkIfValidOldPassword(final User user, final String oldPassword);
 }

@@ -19,6 +19,6 @@ public interface RoleRequestService {
     RoleRequest submitRoleRequest(RoleRequest roleRequest, String submitterName) throws NotFoundException, ForbiddenException;
 
     RoleRequest updateRoleRequest(RoleRequest roleRequest, String updaterName) throws NotFoundException, ForbiddenException;
-    boolean processRoleRequest(RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException;
+    boolean processRoleRequest(long roleReqId, RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException;
     boolean cancelRoleRequest(long roleRequestId, String cancellerName) throws NotFoundException, ForbiddenException;
 }

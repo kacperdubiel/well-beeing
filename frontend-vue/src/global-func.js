@@ -131,6 +131,12 @@ export const func_global = {
         console.log('minutes: ', minutes)
         return minutes < 5
     },
+    convertNewLines(text) {
+        if(text)
+            return text.replaceAll('\n', '<br />')
+        else
+            return null
+    },
     mapCommentForm(counter) {
         if(counter === 1)
             return 'komentarz'

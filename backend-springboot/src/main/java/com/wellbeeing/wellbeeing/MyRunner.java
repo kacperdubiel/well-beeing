@@ -1,31 +1,17 @@
 package com.wellbeeing.wellbeeing;
 
-import com.wellbeeing.wellbeeing.domain.SportLabel;
-import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.ProfileCard;
-import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
-import com.wellbeeing.wellbeeing.domain.social.ENutritionTag;
-import com.wellbeeing.wellbeeing.domain.social.ESportTag;
-import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
+import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
-import com.wellbeeing.wellbeeing.util.DataFromApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class MyRunner implements CommandLineRunner {
@@ -54,8 +40,8 @@ public class MyRunner implements CommandLineRunner {
     @Qualifier("profileDAO")
     private ProfileDAO profileDAO;
     @Autowired
-    @Qualifier("trainerDAO")
-    private TrainerDAO trainerDAO;
+    @Qualifier("trainerProfileDAO")
+    private TrainerProfileDAO trainerProfileDAO;
     @Autowired
     @Qualifier("exerciseInTrainingDAO")
     private ExerciseInTrainingDAO exerciseInTrainingDAO;
@@ -127,11 +113,11 @@ public class MyRunner implements CommandLineRunner {
 
 //        Potrzebne utworzone profile!!
 //        System.out.println("--------------------------------------");
-//        User klaudia = userDAO.findUserByEmail("admin@").orElse(null);
+        User klaudia = userDAO.findUserByEmail("klaudia@").orElse(null);
 //        System.out.println("Klaudia" + klaudia);
 //        assert klaudia != null;
 //        klaudia.getRoles().forEach(r -> System.out.println(r.getRole()));
-//        System.out.println(klaudia.getAuthorities());
+        System.out.println(klaudia.getAuthorities());
 //        System.out.println(klaudia.getRoles());
 //        System.out.println(klaudia.getProfile().getFirstName());
 //        System.out.println(klaudia.getProfile().getLastName());

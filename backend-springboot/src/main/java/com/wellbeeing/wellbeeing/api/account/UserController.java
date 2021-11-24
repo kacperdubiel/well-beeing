@@ -67,8 +67,8 @@ public class UserController {
     @RolesAllowed(ERole.Name.ROLE_BASIC_USER)
     public ResponseEntity<?> changeUserEmail(Principal principal, @RequestParam("email") String email) throws ConflictException {
         UUID userId = userService.findUserIdByUsername(principal.getName());
-        User user = userService.loadUserByEmail(principal.getName());
-        userService.changeUserEmail(userId, email);
+//        User user = userService.loadUserByEmail(principal.getName());
+        User user = userService.changeUserEmail(userId, email);
         final String jwt = jwtUtil.generateToken(user);
         ArrayList<String> roles = new ArrayList<>();
         user.getAuthorities().forEach(authority -> {

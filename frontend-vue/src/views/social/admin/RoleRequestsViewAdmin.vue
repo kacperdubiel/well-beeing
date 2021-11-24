@@ -1,5 +1,5 @@
 <template>
-    <div class="row justify-content-center">
+    <div class="row justify-content-center w-100">
         <div class="col-10">
 
             <div class="row mb-4">
@@ -94,7 +94,7 @@
 
 
 
-            <div class="row justify-content-center">
+            <div class="row justify-content-center mt-3">
                 <role-requests-table :role-requests-source="roleRequests" :key="roleRequests"/>
             </div>
         </div>
