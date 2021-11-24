@@ -10,6 +10,8 @@ import AnalysisView from "@/views/telemedic/user/AnalysisView";
 import DoctorTelemedicView from "@/views/telemedic/doctor/DoctorTelemedicView";
 import DoctorUsersView from "@/views/telemedic/doctor/DoctorUsersView";
 import DoctorUserProfileView from "@/views/telemedic/doctor/DoctorUserProfileView";
+import DoctorUserProfileMeasuresView from "@/views/telemedic/doctor/DoctorUserProfileMeasuresView";
+import DoctorUserProfileAnalysisView from "@/views/telemedic/doctor/DoctorUserProfileAnalysisView";
 import SearchDoctorsView from "@/views/telemedic/user/SearchDoctorsView";
 import DoctorUserConversationsView from "@/views/telemedic/doctor/DoctorUserConversationsView";
 import DoctorUserConversationView from "@/views/telemedic/doctor/DoctorUserConversationView";
@@ -211,8 +213,21 @@ const routes = [
       },
       {
         path: 'users/:userId',
+        redirect: {name: 'DoctorUserProfileMeasuresView'},
         name: 'DoctorUserProfileView',
-        component: DoctorUserProfileView
+        component: DoctorUserProfileView,
+        children: [
+          {
+            path: 'measures',
+            name: 'DoctorUserProfileMeasuresView',
+            component: DoctorUserProfileMeasuresView
+          },
+          {
+            path: 'analysis',
+            name: 'DoctorUserProfileAnalysisView',
+            component: DoctorUserProfileAnalysisView
+          },
+        ]
       },
       {
         path: 'conversations',
