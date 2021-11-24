@@ -69,7 +69,7 @@
                     <select
                         class="form-select"
                         aria-label="Default select example"
-                        v-model="specialization.id"
+                        v-model="roleRequest.specialization.id"
                     >
                         <option v-for="spec in doctorSpecializations" :key="spec.name" :value="spec.id">{{ spec.name }}</option>
                     </select>
@@ -110,7 +110,10 @@ export default {
         return {
             roleRequest: {
                 role: "",
-                documentImgPath: ""
+                documentImgPath: "",
+                specialization: {
+                    id: ""
+                }
             },
             roleRequests: [],
             submittingRequest: false,
@@ -118,9 +121,7 @@ export default {
             successRequest: false,
             requestId: 0,
             doctorSpecializations: [],
-            specialization: {
-                id: ""
-            }
+
         }
     },
     methods: {
@@ -134,9 +135,8 @@ export default {
             if (this.$refs.myfile.files.length > 0) {
                 this.roleRequest.documentImgPath = this.$refs.myfile.files[0].name
             }
-            if (this.invalidRole || this.invalidFile) {
+            if (this.invalidRole || this.invalidFile || this.invalidSpecialization) {
                 this.errorRequest = true
-                // console.log("wielbłąd")
                 return
             }
             //clearinputs
@@ -216,6 +216,9 @@ export default {
         },
         invalidFile() {
             return this.roleRequest.documentImgPath === ""
+        },
+        invalidSpecialization() {
+            return this.roleRequest.role === 'ROLE_DOCTOR' && this.roleRequest.specialization.id === ""
         }
     },
     mounted() {

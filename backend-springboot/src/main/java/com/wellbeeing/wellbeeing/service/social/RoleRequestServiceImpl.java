@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("roleRequestService")
 public class RoleRequestServiceImpl implements RoleRequestService {
@@ -80,7 +81,14 @@ public class RoleRequestServiceImpl implements RoleRequestService {
 
         for(Role role: userRoles) {
             if (role.getRole().name().equals(roleRequest.getRole().toString())) {
-                throw new ForbiddenException("You already have that role");
+                if(role.getRole().toString().equals(ERole.Name.ROLE_DOCTOR)) {
+                    DoctorProfile doctorProfile = doctorProfileDAO.findById(user.getId()).orElse(null);
+                    if( doctorProfile != null && doctorProfile.getSpecializations().contains(roleRequest.getSpecialization())) {
+                        throw new ForbiddenException("You already have that role");
+                    }
+                } else {
+                    throw new ForbiddenException("You already have that role");
+                }
             }
         }
 
@@ -122,8 +130,15 @@ public class RoleRequestServiceImpl implements RoleRequestService {
         Set<Role> userRoles = submitterProfile.getRoles();
 
         for(Role role: userRoles) {
-            if (role.getRole().equals(roleRequest.getRole())) {
-                throw new ForbiddenException("You already have that role");
+            if (role.getRole().name().equals(roleRequest.getRole().toString())) {
+                if(role.getRole().toString().equals(ERole.Name.ROLE_DOCTOR)) {
+                    DoctorProfile doctorProfile = doctorProfileDAO.findById(updaterProfile.getId()).orElse(null);
+                    if( doctorProfile != null && doctorProfile.getSpecializations().contains(roleRequest.getSpecialization())) {
+                        throw new ForbiddenException("You already have that role");
+                    }
+                } else {
+                    throw new ForbiddenException("You already have that role");
+                }
             }
         }
 
@@ -146,35 +161,44 @@ public class RoleRequestServiceImpl implements RoleRequestService {
         if (Objects.equals(roleRequest.getStatus().toString(), EStatus.ACCEPTED.toString())) {
             Profile submitter = targetRoleRequest.getSubmitter();
             String userMail = submitter.getProfileUser().getEmail();
-            userService.addRoleToUser(userMail, targetRoleRequest.getRole().toString());
+
+            Set<Role> userRoles = submitter.getRoles();
+//            role.getRole().name().equals(roleRequest.getRole().toString())
+            if(userRoles.stream().noneMatch(r -> r.getRole().equals(roleRequest.getRole())))//tu cos pewnie
+                userService.addRoleToUser(userMail, targetRoleRequest.getRole().toString());
+
             targetRoleRequest.setStatus(EStatus.ACCEPTED);
-            targetRoleRequest.setComment(roleRequest.getComment());
             roleRequestDAO.save(targetRoleRequest);
 
-            List<RoleRequest> reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatus(userMail, targetRoleRequest.getRole(), EStatus.PENDING);
+            List<RoleRequest> reqsToCancel;
+            if(targetRoleRequest.getRole().toString().equals(ERole.Name.ROLE_DOCTOR))
+                reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatusAndSpecialization(userMail, targetRoleRequest.getRole(), EStatus.PENDING, targetRoleRequest.getSpecialization());
+            else
+                reqsToCancel = roleRequestDAO.findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatus(userMail, targetRoleRequest.getRole(), EStatus.PENDING);
+
             reqsToCancel.forEach(r -> {
                 r.setStatus(EStatus.CANCELLED);
                 roleRequestDAO.save(r);
             });
 
+
+
             switch(targetRoleRequest.getRole().toString()) {
                 case ERole.Name.ROLE_TRAINER:
                     TrainerProfile newTrainer = new TrainerProfile(submitter);
                     trainerProfileDAO.save(newTrainer);
-                    System.out.println("dodaje trenera profil");
                     break;
                 case ERole.Name.ROLE_DOCTOR:
-                    DoctorProfile newDoctor = new DoctorProfile(submitter);
-                    doctorProfileDAO.save(newDoctor);
-                    targetRoleRequest.setSpecialization(roleRequest.getSpecialization());
-                    roleRequestDAO.save(targetRoleRequest);
-                    profileService.addDoctorSpecializationToDoctor(newDoctor.getId(), roleRequest.getSpecialization().getId());
-                    System.out.println("dodaje doktora profil");
+                    DoctorProfile doctor = doctorProfileDAO.findById(submitter.getId()).orElse(null);
+                    if (doctor == null) {
+                        doctor = new DoctorProfile(submitter);
+                        doctorProfileDAO.save(doctor);
+                    }
+                    profileService.addDoctorSpecializationToDoctor(doctor.getId(), targetRoleRequest.getSpecialization().getId());
                     break;
                 case ERole.Name.ROLE_DIETICIAN:
                     DieticianProfile newDietician = new DieticianProfile(submitter);
                     dieticianProfileDAO.save(newDietician);
-                    System.out.println("dodaje dietetyka profil");
                     break;
                 default:
                     break;
