@@ -2,7 +2,9 @@
     <div class="doctor-navbar">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <router-link :to="{ name: 'DoctorUsersView' }" class="nav-link" active-class="active">
+                <router-link :to="{ name: 'DoctorUsersView' }" class="nav-link" active-class="active"
+                             v-bind:class="{ active: this.$route.name === 'DoctorUsersView' || this.$route.name === 'DoctorUserProfileView' }"
+                >
                     Pacjenci
                 </router-link>
             </li>
