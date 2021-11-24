@@ -4,7 +4,7 @@
             Błąd ładowania.
         </div>
         <div v-if="componentError === false">
-            <div class="row justify-content-between">
+            <div v-if="!this.fromNutritionPlans" class="row justify-content-between">
                 <div v-if="connectionType !== 'WITH_USER'"  class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
                         <option :value="true">
@@ -21,7 +21,7 @@
             </div>
 
             <!-- Modal - DeleteUserConnection -->
-            <div class="modal fade" id="deleteUserConnectionModal" tabindex="-1" aria-labelledby="deleteUserConnectionModalLabel" aria-hidden="true">
+            <div v-if="!this.fromNutritionPlans" class="modal fade" id="deleteUserConnectionModal" tabindex="-1" aria-labelledby="deleteUserConnectionModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -44,10 +44,10 @@
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                            <button class="btn-panel-telemedic p-2" v-bind:class="{'btn-panel-diet' : connectionType === 'WITH_DIETICIAN'}" data-bs-dismiss="modal">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="deleteUserConnection">
+                                            <button class="btn-panel-telemedic p-2" v-bind:class="{'btn-panel-diet' : connectionType === 'WITH_DIETICIAN'}" data-bs-dismiss="modal" @click="deleteUserConnection">
                                                 <span>Usuń</span>
                                             </button>
                                         </div>
@@ -60,7 +60,7 @@
             </div>
 
             <!-- Modal - AcceptUserConnection -->
-            <div class="modal fade" id="acceptUserConnectionModal" tabindex="-1" aria-labelledby="acceptUserConnectionModalLabel" aria-hidden="true">
+            <div v-if="!this.fromNutritionPlans" class="modal fade" id="acceptUserConnectionModal" tabindex="-1" aria-labelledby="acceptUserConnectionModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -83,10 +83,10 @@
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                            <button class="btn-panel-telemedic p-2" v-bind:class="{'btn-panel-diet' : connectionType === 'WITH_DIETICIAN'}" data-bs-dismiss="modal">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="acceptUserConnection">
+                                            <button class="btn-panel-telemedic p-2" v-bind:class="{'btn-panel-diet' : connectionType === 'WITH_DIETICIAN'}" data-bs-dismiss="modal" @click="acceptUserConnection">
                                                 <span>Akceptuj</span>
                                             </button>
                                         </div>
@@ -104,11 +104,12 @@
                     <table class="table connections-table" :class="{
                         'connections-table-telemedic': connectionType === 'WITH_DOCTOR',
                         'connections-table-sport': connectionType === 'WITH_TRAINER',
-                        'connections-table-diet': connectionType === 'WITH_DIETICIAN'}">
+                        'connections-table-diet': connectionType === 'WITH_DIETICIAN',
+                        'connections-table-from-nutrition-plans' : fromNutritionPlans}">
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
-                                <th scope="col"></th>
+                                <th v-if="!this.fromNutritionPlans" scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,7 +124,7 @@
                                     </span>
                                 </td>
 
-                                <td class="align-right">
+                                <td v-if="!this.fromNutritionPlans" class="align-right">
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
                                             @click="getConversation(connection.profile.id)">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
@@ -209,7 +210,8 @@ export default {
         UserAvatarComponent
     },
     props: {
-        connectionType: String
+        connectionType: String,
+        fromNutritionPlans: Boolean
     },
     data() {
         return {
@@ -402,6 +404,10 @@ export default {
 
 .connections-table-diet tbody tr:hover {
     background-color: var(--DIET);
+}
+
+.connections-table-from-nutrition-plans {
+    color: black;
 }
 
 </style>
