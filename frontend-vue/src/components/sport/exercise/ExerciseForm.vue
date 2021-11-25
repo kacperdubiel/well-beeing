@@ -94,6 +94,28 @@
                                     @keypress="clearStatus"
                                 />
                             </div>
+                            <div class="row mt-3 ">
+                                <div class="text-start px-0">
+                                    <label class="text-start form-label" for="exercise-video">Załącz instrukcję wideo
+                                        [mp4]</label>
+                                    <input
+                                        id="exercise-video"
+                                        ref="exerciseVideo"
+                                        accept="video/mp4"
+                                        class=" register-input form-control"
+                                        type="file"
+                                        @change="handleFileUpload( $event )"
+                                    >
+                                </div>
+                            </div>
+                            <div v-if="videoFile !== '' && videoFile != null" class="row mt-3">
+                                <button class="btn-white" @click="deleteFile">
+                                    Usuń plik
+                                </button>
+                            </div>
+                            <div class="row mt-3">
+                                <video v-show="videoFile !== ''" id="video-preview" class="px-0" controls/>
+                            </div>
                             <div v-if="errorCreateExercise" class="row text-end">
                                 <p class="has-error m-0">
                                     Proszę uzupełnić wszystkie dane poprawnie!
@@ -142,7 +164,8 @@ export default {
             errorCreateExercise: false,
             successCreateExercise: false,
             nameTaken: false,
-            submittingCreateExercise: false
+            submittingCreateExercise: false,
+            videoFile: ''
         }
     },
     props: {
@@ -191,6 +214,8 @@ export default {
             const token = this.$store.getters.getToken;
             this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
+                let exerciseId = response.data['exerciseId']
+                this.$func_global.importData(this.$refs.exerciseVideo, this.$store.getters.getToken, 'exerciseVideo', exerciseId)
                 this.successCreateExercise = true
                 this.clearInputs()
                 this.$emit('get:exercises')
@@ -201,6 +226,33 @@ export default {
             });
             this.submittingCreateExercise = false
             document.getElementsByClassName('')
+        },
+        handleFileUpload(event) {
+            try {
+                this.videoFile = event.target.files[0];
+            } catch (e) {
+                console.log(e)
+            }
+
+            this.previewVideo();
+        },
+        previewVideo() {
+            let video = document.getElementById('video-preview');
+            let reader = new FileReader();
+            if (this.videoFile == null) {
+                this.videoFile = ''
+                video.src = ''
+                return
+            }
+
+            reader.readAsDataURL(this.videoFile);
+            reader.addEventListener('load', function () {
+                video.src = reader.result;
+            });
+        },
+        deleteFile() {
+            this.$refs.exerciseVideo.value = null
+            this.videoFile = ''
         }
     },
     computed: {
