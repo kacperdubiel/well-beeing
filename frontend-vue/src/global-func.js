@@ -367,29 +367,29 @@ export const func_global = {
     mapVitamin(vit){
         if(vit == 'FOLIC_ACID')
             return 'Kwas foliowy [mcg]'
-        if(vit == 'BIOTIN')
+        else if(vit == 'BIOTIN')
             return 'Biotyna [mcg]'
-        if(vit == 'A')
+        else if(vit == 'A')
             return 'A [mcg]'
-        if(vit == 'B1')
+        else if(vit == 'B1')
             return 'B1 [mg]'
-        if(vit == 'B2')
+        else if(vit == 'B2')
             return 'B2 [mg]'
-        if(vit == 'B5')
+        else if(vit == 'B5')
             return 'B5 [mg]'
-        if(vit == 'B6')
+        else if(vit == 'B6')
             return 'B6 [mg]'
-        if(vit == 'B12')
+        else if(vit == 'B12')
             return 'B12 [mcg]'
-        if(vit == 'C')
+        else if(vit == 'C')
             return 'C [mg]'
-        if(vit == 'D')
+        else if(vit == 'D')
             return 'D [mcg]'
-        if(vit == 'E')
+        else if(vit == 'E')
             return 'E [mg]'
-        if(vit == 'PP')
+        else if(vit == 'PP')
             return 'PP [mg]'
-        if(vit == 'K')
+        else if(vit == 'K')
             return 'K [mg]'
         else
             return vit
@@ -397,11 +397,11 @@ export const func_global = {
     mapMacro(macro){
         if(macro == 'VEGETABLE_PROTEINS')
             return 'Białka roślinne [g]'
-        if(macro == 'ANIMAL_PROTEINS')
+        else if(macro == 'ANIMAL_PROTEINS')
             return 'Białka zwierzęce [g]'
-        if(macro == 'POLYUNSATURATED_FATS')
+        else if(macro == 'POLYUNSATURATED_FATS')
             return 'Tłuszcze wielonienasycone [g]'
-        if(macro == 'MONOUNSATURATED_FATS')
+        else if(macro == 'MONOUNSATURATED_FATS')
             return 'Tłuszcze jednonienasycone [g]'
         else
             return macro
@@ -409,23 +409,23 @@ export const func_global = {
     mapMineral(mineral){
         if(mineral == 'ZINC')
             return 'Cynk [mg]'
-        if(mineral == 'PHOSPHORUS')
+        else if(mineral == 'PHOSPHORUS')
             return 'Fosfor [mg]'
-        if(mineral == 'IODINE')
+        else if(mineral == 'IODINE')
             return 'Jod [mcg]'
-        if(mineral == 'MAGNESIUM')
+        else if(mineral == 'MAGNESIUM')
             return 'Magnez [mg]'
-        if(mineral == 'COPPER')
+        else if(mineral == 'COPPER')
             return 'Miedź [mg]'
-        if(mineral == 'POTASSIUM')
+        else if(mineral == 'POTASSIUM')
             return 'Potas [mg]'
-        if(mineral == 'SELENIUM')
+        else if(mineral == 'SELENIUM')
             return 'Selen [mcg]'
-        if(mineral == 'SODIUM')
+        else if(mineral == 'SODIUM')
             return 'Sód [mg]'
-        if(mineral == 'CALCIUM')
+        else if(mineral == 'CALCIUM')
             return 'Wapń [mg]'
-        if(mineral == 'Iron')
+        else if(mineral == 'Iron')
             return 'Żelazo [mg]'
         else
             return mineral
@@ -435,6 +435,22 @@ export const func_global = {
             return "Szkic"
         else
             return "Opublikowane"
+    },
+    mapDay(day){
+        if(day == 'MONDAY')
+            return 'Poniedziałek'
+        else if (day == 'TUESDAY')
+            return 'Wtorek'
+        else if (day == 'WEDNESDAY')
+            return 'Środa'
+        else if (day == 'THURSDAY')
+            return 'Czwartek'
+        else if (day == 'FRIDAY')
+            return 'Piątek'
+        else if (day == 'SATURDAY')
+            return 'Sobota'
+        else if (day == 'SUNDAY')
+            return 'Niedziela'
     },
     proteinCalories(){
         return 4
