@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
@@ -7,10 +8,8 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
-import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
-import com.wellbeeing.wellbeeing.repository.sport.TrainingPlanDAO;
-import com.wellbeeing.wellbeeing.repository.sport.TrainingPlanRequestDAO;
-import com.wellbeeing.wellbeeing.repository.sport.TrainingPositionDAO;
+import com.wellbeeing.wellbeeing.repository.sport.*;
+import com.wellbeeing.wellbeeing.service.sport.alg.TrainingPlanGeneratorStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +17,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("trainingPlanService")
 public class TrainingPlanServiceImpl implements TrainingPlanService {
@@ -31,13 +28,17 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     private final UserDAO userDAO;
     private final TrainerDAO trainerDAO;
     private final TrainingPlanRequestDAO trainingPlanRequestDAO;
+    private final ActivityGoalDAO activityGoalDAO;
+    private final TrainingPlanGeneratorStrategy planGeneratorStrategy;
 
     public TrainingPlanServiceImpl(@Qualifier("trainerDAO") TrainerDAO trainerDAO,
                                    @Qualifier("trainingDAO") TrainingDAO trainingDAO,
                                    @Qualifier("trainingPlanDAO") TrainingPlanDAO trainingPlanDAO,
                                    @Qualifier("trainingPositionDAO") TrainingPositionDAO trainingPositionDAO,
                                    @Qualifier("trainingPlanRequestDAO") TrainingPlanRequestDAO trainingPlanRequestDAO,
-                                   @Qualifier("userDAO") UserDAO userDAO, TrainingPlanRequestDAO trainingPlanRequestDAO1) {
+                                   @Qualifier("userDAO") UserDAO userDAO,
+                                   @Qualifier("activityGoalDAO") ActivityGoalDAO activityGoalDAO,
+                                   TrainingPlanGeneratorStrategy planGeneratorStrategy) {
 //        this.exerciseDAO = exerciseDAO;
         this.trainingDAO = trainingDAO;
 //        this.exerciseInTrainingDAO = exerciseInTrainingDAO;
@@ -45,7 +46,9 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         this.trainerDAO = trainerDAO;
         this.trainingPlanDAO = trainingPlanDAO;
         this.trainingPositionDAO = trainingPositionDAO;
-        this.trainingPlanRequestDAO = trainingPlanRequestDAO1;
+        this.trainingPlanRequestDAO = trainingPlanRequestDAO;
+        this.activityGoalDAO = activityGoalDAO;
+        this.planGeneratorStrategy = planGeneratorStrategy;
     }
 
 
@@ -134,7 +137,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
                 .trainingPlan(updatingPlan)
                 .trainingDate(trainingDate)
                 .timeOfDay(eTimeOfDay).build();
-        trainingPositionDAO.save(newPosition);
+        trainingPositionDAO.saveAndFlush(newPosition);
         return newPosition;
     }
 
@@ -203,7 +206,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
             );
             plan.setCaloriesBurned(plan.getTrainingPositions().stream().map(pos -> pos.getTraining().getCaloriesBurned()).mapToInt(num -> num).sum());
         });
-        return trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName);
+        return trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName).stream().sorted(Comparator.comparing(TrainingPlan::getBeginningDate)).collect(Collectors.toList());
     }
 
     @Override
@@ -297,6 +300,14 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     public TrainingPlan partialUpdateTrainingPlan(TrainingPlan trainingPlan) {
         trainingPlanDAO.save(trainingPlan);
         return trainingPlan;
+    }
+
+    @Override
+    public long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate) throws NotFoundException, IllegalArgumentException {
+        ActivityGoal goal = activityGoalDAO.findById(activityGoalId).orElse(null);
+        if (goal == null)
+            return -1;
+        return planGeneratorStrategy.generateTrainingPlan(trainingsPerDay, goal, profile, strategy, beginningDate);
     }
 
 }

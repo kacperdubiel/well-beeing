@@ -1,11 +1,9 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
+import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.sport.Training;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlanRequest;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
+import com.wellbeeing.wellbeeing.domain.sport.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -52,4 +50,6 @@ public interface TrainingPlanService {
     TrainingPosition updateTrainingPositionStatus(Long positionId, String newStatus, String userName) throws IllegalArgumentException, NotFoundException;
 
     TrainingPlan partialUpdateTrainingPlan(TrainingPlan trainingPlan);
+
+    long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate) throws NotFoundException, IllegalArgumentException;
 }

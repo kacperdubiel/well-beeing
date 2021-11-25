@@ -132,8 +132,18 @@ public class TrainingPlanController {
     }
 
 
-    @RequestMapping("/generate-plan-for/{id}")
-    public ResponseEntity<?> generateTrainingPlanForId(@PathVariable(value = "id") UUID userId, @RequestBody @NonNull PlanGeneratorRequest request) {
+    @PostMapping("/generate-plan")
+    public ResponseEntity<?> generateTrainingPlanForMe(@RequestBody @NonNull PlanGeneratorRequest request, Principal principal) throws NotFoundException, IllegalArgumentException {
+        User requestingUser = userDAO.findUserByEmail(principal.getName()).orElse(null);
+        if (requestingUser == null)
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        long id = trainingPlanService.generateTrainingPlanForMe(request.getTrainingsPerDay(),
+                request.getActivityGoalId(),
+                requestingUser.getProfile(),
+                request.getStrategy(),
+                request.getBeginningDate()
+        );
+
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

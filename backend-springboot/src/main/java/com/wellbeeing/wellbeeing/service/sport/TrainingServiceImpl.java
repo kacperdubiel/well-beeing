@@ -143,6 +143,21 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
+    public List<Training> getAllTrainings(String userName) {
+        User clientUser = userDAO.findUserByEmail(userName).orElse(null);
+        double weight = 0;
+        try {
+            weight = clientUser.getProfile().getProfileCard().getWeight();
+        } catch (NullPointerException e) {
+            System.out.println("User has no profile or profile card!");
+        }
+        double finalWeight = weight;
+        List<Training> trainings = trainingDAO.findAll();
+        trainings.forEach(training -> training.setCaloriesBurned(training.caloriesBurned(finalWeight)));
+        return trainings;
+    }
+
+    @Override
     public Page<Training> getAllTrainings(Pageable pageable, String userName) {
         User clientUser = userDAO.findUserByEmail(userName).orElse(null);
         double weight = 0;

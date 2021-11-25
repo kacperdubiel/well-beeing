@@ -2,10 +2,7 @@ package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,6 +14,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
+@Builder
 public class TrainingPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +43,7 @@ public class TrainingPlan {
     @Transient
     private int caloriesBurned;
 
-    @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<TrainingPosition> trainingPositions = new HashSet<>();
 
     @OneToOne(targetEntity = TrainingPlanRequest.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
