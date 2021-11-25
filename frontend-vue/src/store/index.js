@@ -1,8 +1,8 @@
-import { createStore} from "vuex";
+import {createStore} from "vuex";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
-    state () {
+    state() {
         return {
             // SOCIAL
             profileId: "",
@@ -26,37 +26,38 @@ export default createStore({
                 exerciseId: -1,
                 currentExercise: null,
                 reps: null,
-                time_seconds:null,
-                series:null
-            }
+                time_seconds: null,
+                series: null
+            },
+            selectedRequest: null
             // NUTRITION
 
             // TELEMEDICINE
         }
     },
     mutations: {
-        setProfileId (state, value) {
+        setProfileId(state, value) {
             state.profileId = value;
         },
-        setEmail (state, value) {
+        setEmail(state, value) {
             state.email = value;
         },
-        setProfileImageSrc (state, value) {
+        setProfileImageSrc(state, value) {
             state.profileImageSrc = value;
         },
-        setToken (state, value) {
+        setToken(state, value) {
             state.token = value;
         },
-        setFirstName (state, value) {
+        setFirstName(state, value) {
             state.firstName = value;
         },
-        setLastName (state, value) {
+        setLastName(state, value) {
             state.lastName = value;
         },
-        addRole (state, value) {
+        addRole(state, value) {
             state.roles.push(value);
         },
-        setRoles (state, value) {
+        setRoles(state, value) {
             state.roles = value;
         },
         addSpecialization (state, value) {
@@ -66,98 +67,104 @@ export default createStore({
             state.specializations = value;
         },
         // PHYSICAL ACTIVITY
-        setExerciseId (state, value) {
+        setExerciseId(state, value) {
             state.exerciseId = value;
         },
-        setTrainingId (state, value) {
+        setTrainingId(state, value) {
             state.trainingId = value;
         },
-        setTrainingPlanId (state, value) {
+        setTrainingPlanId(state, value) {
             state.trainingToPlan.trainingPlanId = value;
         },
-        setPlanTrainingId (state, value) {
+        setPlanTrainingId(state, value) {
             state.trainingToPlan.trainingId = value;
         },
-        setTrainingPositionDate (state, value) {
+        setTrainingPositionDate(state, value) {
             state.trainingToPlan.date = value;
         },
-        setExerciseSeries (state, value) {
+        setExerciseSeries(state, value) {
             state.exerciseToTraining.series = value;
         },
-        setExerciseToTrainingId (state, value) {
+        setExerciseToTrainingId(state, value) {
             state.exerciseToTraining.exerciseId = value;
         },
-        setExerciseTrainingId (state, value) {
+        setExerciseTrainingId(state, value) {
             state.exerciseToTraining.trainingId = value;
         },
-        setExerciseReps (state, value) {
+        setExerciseReps(state, value) {
             state.exerciseToTraining.reps = value;
         },
-        setExerciseTimeSeconds (state, value) {
+        setExerciseTimeSeconds(state, value) {
             state.exerciseToTraining.time_seconds = value;
         },
-        setCurrentExercise (state, value) {
+        setCurrentExercise(state, value) {
             state.exerciseToTraining.currentExercise = value;
+        },
+        setSelectedRequest(state, value) {
+            state.selectedRequest = value;
         }
     },
     getters: {
-        getProfileId (state) {
+        getProfileId(state) {
             return state.profileId;
         },
-        getEmail (state) {
+        getEmail(state) {
             return state.email;
         },
-        getProfileImageSrc (state) {
+        getProfileImageSrc(state) {
             return state.profileImageSrc;
         },
-        getToken (state) {
+        getToken(state) {
             return state.token;
         },
-        getFirstName (state) {
+        getFirstName(state) {
             return state.firstName;
         },
-        getLastName (state) {
+        getLastName(state) {
             return state.lastName;
         },
-        getRoles (state) {
+        getRoles(state) {
             return state.roles;
         },
         getSpecializations (state) {
             return state.specializations;
         },
         // PHYSICAL ACTIVITY
-        getExerciseId (state) {
+        getExerciseId(state) {
             return state.exerciseId;
         },
-        getTrainingId (state) {
+        getTrainingId(state) {
             return state.trainingId;
         },
-        getTrainingPlanId (state) {
+        getTrainingPlanId(state) {
             return state.trainingToPlan.trainingPlanId;
         },
-        getPlanTrainingId (state) {
+        getPlanTrainingId(state) {
             return state.trainingToPlan.trainingId;
         },
-        getTrainingPositionDate (state) {
+        getTrainingPositionDate(state) {
             return state.trainingToPlan.date;
         },
-        getExerciseSeries (state) {
+        getExerciseSeries(state) {
             return state.exerciseToTraining.series;
         },
-        getExerciseToTrainingId (state) {
+        getExerciseToTrainingId(state) {
             return state.exerciseToTraining.exerciseId;
         },
-        getExerciseTrainingId (state) {
+        getExerciseTrainingId(state) {
             return state.exerciseToTraining.trainingId;
         },
-        getExerciseReps (state) {
+        getExerciseReps(state) {
             return state.exerciseToTraining.reps;
         },
-        getExerciseTimeSeconds (state) {
+        getExerciseTimeSeconds(state) {
             return state.exerciseToTraining.time_seconds;
         },
-        getCurrentExercise (state) {
+        getCurrentExercise(state) {
             return state.exerciseToTraining.currentExercise;
+        },
+        getSelectedRequest(state) {
+            return state.selectedRequest;
         }
     },
     plugins: [createPersistedState()],

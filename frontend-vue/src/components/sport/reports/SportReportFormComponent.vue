@@ -1,90 +1,43 @@
 <template>
-    <div >
-        <div style="width: 100%; text-align: left;">
+    <div>
+        <div style="text-align: left;">
             <hr class="hr-dish title-line"/>
             <div class="title" style="align-items: flex-start; display: flex">
                 <h6 class="title">CWICZENIA</h6>
             </div>
             <div class="row">
-                <div class="col-lg-5">
-                    <v-select style="margin: 0px; padding: 0px;" @keypress="this.getExercisesToSelect" v-model="this.actualSelectedExercise" :options="this.exercisesToSelect" :reduce="name => name.exerciseId" label="name" />
+                <div class="col-4">
+                    <v-select v-model="this.actualSelectedExercise" :options="this.exercisesToSelect"
+                              :reduce="name => name.exerciseId" class="sport"
+                              label="name"
+                              @keypress="this.getExercisesToSelect"/>
                 </div>
-                <div class="col-lg-1">
+                <div class="col-2">
                     <input
-                        style="width: 60px;"
                         id="productReportInput"
-                        type="number"
-                        min=0
                         v-model="this.actualSelectedExerciseTime"
-                    />
-                </div>
-                <div class="col-lg-2">
-                    <select id="measureProductInput" v-model="this.actualSelectedExerciseMeasure" class="form-select" aria-label="Product measure">
-                        <option value="SEC">s</option>
-                        <option value="MIN">min</option>
-                        <option value="H">h</option>
-                    </select>
-                </div>
-                <div class="col-lg-2">
-                    <input v-model="this.actualSelectedExerciseExercisingTime" id="productTime" type="time"/>
-                </div>
-                <div class="col-lg-2">
-                    <button @click="this.addExerciseToReport" class="add-button"><font-awesome-icon :icon="['fa', 'plus-circle']"/></button>
-                </div>
-            </div>
-            <hr/>
-            <div>
-                <table class="table table-borderless table-hover">
-                    <thead>
-                        <tr>
-                            <th class="col-lg-6" scope="col">Cwiczenie</th>
-                            <th class="col-lg-1" scope="col">Czas trwania</th>
-                            <th class="col-lg-2" scope="col">Spalone kalorie</th>
-                            <th class="col-lg-2" scope="col">Godzina</th>
-                            <th class="col-lg-1" scope="col"> </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="exercise in this.actualReport.exerciseList" :key="exercise.id">
-                            <th scope="row">{{exercise.exercise.name}}</th>
-                            <td>{{this.$func_global.getTimePrettyFromSeconds(exercise.seconds)}}</td>
-                            <td>{{Math.round(exercise.caloriesBurned)}}</td>
-                            <td>{{exercise.exercisingTime.substring(11, 16)}}</td>
-                            <td><button @click="this.deleteExerciseFromReport(exercise.id)" class="btn-white"><font-awesome-icon :icon="['fa', 'trash']"/></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        <div style="width: 100%; text-align: left;">
-            <hr class="hr-dish title-line"/>
-            <div class="title" style="align-items: flex-start; display: flex">
-                <h6 class="title text-capitalize">Treningi</h6>
-            </div>
-            <div class="row">
-                <div class="col-lg-5">
-                    <v-select @keypress="this.getTrainingsToSelect" v-model="this.actualSelectedTraining" :options="this.trainingsToSelect" :reduce="name => name.trainingId" label="name" />
-                </div>
-                <div class="col-lg-1">
-                    <input
-                        style="width: 60px;"
-                        id="trainingReportInput"
+                        class="w-100"
+                        min=0
                         type="number"
-                        min=1
-                        v-model="this.actualSelectedTrainingTime"
                     />
                 </div>
-                <div class="col-lg-2">
-                    <select id="measureProductInput" v-model="this.actualSelectedExerciseMeasure" class="form-select" aria-label="Product measure">
+                <div class="col-2">
+                    <select id="measureProductInput" v-model="this.actualSelectedExerciseMeasure"
+                            aria-label="Product measure"
+                            class="form-select w-100">
                         <option value="SEC">s</option>
                         <option value="MIN">min</option>
                         <option value="H">h</option>
                     </select>
                 </div>
-                <div class="col-lg-2">
-                    <input v-model="this.actualSelectedTrainingExercisingTime" id="productTime2" type="time"/>
+                <div class="col-2">
+                    <input id="productTime" v-model="this.actualSelectedExerciseExercisingTime" class="w-100"
+                           type="time"/>
                 </div>
-                <div class="col-lg-2">
-                    <button @click="this.addTrainingToReport" class="add-button"><font-awesome-icon :icon="['fa', 'plus-circle']"/></button>
+                <div class="col-2">
+                    <button class="add-button" @click="this.addExerciseToReport">
+                        <font-awesome-icon :icon="['fa', 'plus-circle']"/>
+                    </button>
                 </div>
             </div>
             <hr/>
@@ -92,31 +45,100 @@
                 <table class="table table-borderless table-hover">
                     <thead>
                     <tr>
-                        <th class="col-lg-6" scope="col">Trening</th>
+                        <th class="col-lg-6" scope="col">Cwiczenie</th>
                         <th class="col-lg-1" scope="col">Czas trwania</th>
                         <th class="col-lg-2" scope="col">Spalone kalorie</th>
                         <th class="col-lg-2" scope="col">Godzina</th>
-                        <th class="col-lg-1" scope="col"> </th>
+                        <th class="col-lg-1" scope="col"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="training in this.actualReport.trainingList" :key="training.id">
-                        <th scope="row">{{training.training.name}}</th>
-                        <td>{{this.$func_global.getTimePrettyFromSeconds(training.seconds)}}</td>
-                        <td>{{Math.round(training.caloriesBurned)}}</td>
-                        <td>{{training.trainingTime.substring(11, 16)}}</td>
-                        <td><button @click="this.deleteTrainingFromReport(training.id)" class="btn-white"><font-awesome-icon :icon="['fa', 'trash']"/></button></td>
+                    <tr v-for="exercise in this.actualReport.exerciseList" :key="exercise.id">
+                        <th scope="row">{{ exercise.exercise.name }}</th>
+                        <td>{{ this.$func_global.getTimePrettyFromSeconds(exercise.seconds) }}</td>
+                        <td>{{ Math.round(exercise.caloriesBurned) }}</td>
+                        <td>{{ exercise.exercisingTime.substring(11, 16) }}</td>
+                        <td>
+                            <button class="btn-white" @click="this.deleteExerciseFromReport(exercise.id)">
+                                <font-awesome-icon :icon="['fa', 'trash']"/>
+                            </button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+            <div style="width: 100%; text-align: left;">
+                <hr class="hr-dish title-line"/>
+                <div class="title" style="align-items: flex-start; display: flex">
+                    <h6 class="title text-capitalize">Treningi</h6>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <v-select v-model="this.actualSelectedTraining" :options="this.trainingsToSelect"
+                                  :reduce="name => name.trainingId" label="name" @keypress="this.getTrainingsToSelect"/>
+                    </div>
+                    <div class="col-lg-2">
+                        <input
+                            id="trainingReportInput"
+                            v-model="this.actualSelectedTrainingTime"
+                            class="w-100"
+                            min=1
+                            type="number"
+                        />
+                    </div>
+                    <div class="col-lg-2">
+                        <select id="measureProductInput" v-model="this.actualSelectedExerciseMeasure"
+                                aria-label="Product measure" class="form-select w-100">
+                            <option value="SEC">s</option>
+                            <option value="MIN">min</option>
+                            <option value="H">h</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <input id="productTime2" v-model="this.actualSelectedTrainingExercisingTime" class="w-100"
+                               type="time"/>
+                    </div>
+                    <div class="col-lg-2">
+                        <button class="add-button" @click="this.addTrainingToReport">
+                            <font-awesome-icon :icon="['fa', 'plus-circle']"/>
+                        </button>
+                    </div>
+                </div>
+                <hr/>
+                <div>
+                    <table class="table table-borderless table-hover">
+                        <thead>
+                        <tr>
+                            <th class="col-lg-6" scope="col">Trening</th>
+                            <th class="col-lg-1" scope="col">Czas trwania</th>
+                            <th class="col-lg-2" scope="col">Spalone kalorie</th>
+                            <th class="col-lg-2" scope="col">Godzina</th>
+                            <th class="col-lg-1" scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="training in this.actualReport.trainingList" :key="training.id">
+                            <th scope="row">{{ training.training.name }}</th>
+                            <td>{{ this.$func_global.getTimePrettyFromSeconds(training.seconds) }}</td>
+                            <td>{{ Math.round(training.caloriesBurned) }}</td>
+                            <td>{{ training.trainingTime.substring(11, 16) }}</td>
+                            <td>
+                                <button class="btn-white" @click="this.deleteTrainingFromReport(training.id)">
+                                    <font-awesome-icon :icon="['fa', 'trash']"/>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+
 export default {
     name: "SportReportFormComponent",
     props: {
@@ -124,8 +146,8 @@ export default {
             type: Object
         }
     },
-    data(){
-        return{
+    data() {
+        return {
             actualReport: Object,
 
             exercisesToSelect: [],
@@ -163,7 +185,7 @@ export default {
         this.getTrainingsToSelect()
     },
     methods: {
-        getExercisesToSelect(){
+        getExercisesToSelect() {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
             const myParams = {
@@ -175,11 +197,11 @@ export default {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then(response => {
+                .then(response => {
                     this.exercisesToSelect = response.data['content']
-            }).catch(e => alert(e))
+                }).catch(e => alert(e))
         },
-        getTrainingsToSelect(){
+        getTrainingsToSelect() {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
             const myParams = {
@@ -191,42 +213,54 @@ export default {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then(response => {
+                .then(response => {
                     console.log("POBIERAM TRENINGI DO SELECTA")
                     console.log(response.data)
                     this.trainingsToSelect = response.data['content']
-            }).catch(e => alert(e))
+                }).catch(e => alert(e))
         },
-        addExerciseToReport(){
+        addExerciseToReport() {
             const url = `${this.apiURL}sport/report/${this.report.id}/exercise`
             const token = this.$store.getters.getToken;
-            let data= [{
+            let data = [{
                 exercise: {
                     exerciseId: this.actualSelectedExercise
                 },
                 seconds: this.actualSelectedExerciseTime,
                 exercisingTime: this.makeConsumingTimestamp(this.actualSelectedExerciseExercisingTime)
             }]
-            axios.post(url,data, {headers: {Authorization: `Bearer ${token}`}})
-                .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
-                .catch(e => {console.log(e);})
+            axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}})
+                .then((response) => {
+                    this.getCurrentReport();
+                    console.log(response);
+                    this.$emit('updated:report', response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         }, // TRAINING
-        addTrainingToReport(){
+        addTrainingToReport() {
             const url = `${this.apiURL}sport/report/${this.report.id}/training`
             const token = this.$store.getters.getToken;
-            let data= [{
+            let data = [{
                 training: {
                     trainingId: this.actualSelectedTraining
                 },
                 seconds: this.actualSelectedTrainingTime,
                 trainingTime: this.makeConsumingTimestamp(this.actualSelectedTrainingExercisingTime)
             }]
-            axios.post(url,data, {headers: {Authorization: `Bearer ${token}`}})
-                .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
-                .catch(e => {console.log(e);})
+            axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}})
+                .then((response) => {
+                    this.getCurrentReport();
+                    console.log(response);
+                    this.$emit('updated:report', response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
-        addDishToReport(){
-           axios({
+        addDishToReport() {
+            axios({
                 method: 'post',
                 headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
                 url: "http://localhost:8090/report/" + this.report.id + "/dish",
@@ -238,24 +272,42 @@ export default {
                     consumingTime: this.makeConsumingTimestamp(this.actualSelectedDishConsumingTime)
                 }]
             })
-            .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
-            .catch(e => {console.log(e);})
+                .then((response) => {
+                    this.getCurrentReport();
+                    console.log(response);
+                    this.$emit('updated:report', response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
-        deleteExerciseFromReport(id){
+        deleteExerciseFromReport(id) {
             const url = `${this.apiURL}sport/report/${this.report.id}/exercise`
             const token = this.$store.getters.getToken;
             axios.delete(url, {headers: {Authorization: `Bearer ${token}`}, data: [id]})
-                .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
-                .catch(e => {console.log(e);})
+                .then((response) => {
+                    this.getCurrentReport();
+                    console.log(response);
+                    this.$emit('updated:report', response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
-        deleteTrainingFromReport(id){
+        deleteTrainingFromReport(id) {
             const url = `${this.apiURL}sport/report/${this.report.id}/training`
             const token = this.$store.getters.getToken;
             axios.delete(url, {headers: {Authorization: `Bearer ${token}`}, data: [id]})
-                .then((response) => {this.getCurrentReport(); console.log(response); this.$emit('updated:report', response.data);})
-                .catch(e => {console.log(e);})
+                .then((response) => {
+                    this.getCurrentReport();
+                    console.log(response);
+                    this.$emit('updated:report', response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
-        getCurrentReport(){
+        getCurrentReport() {
             const url = `${this.apiURL}sport/report/${this.report.id}`
             const token = this.$store.getters.getToken;
             axios.get(url, {
@@ -263,10 +315,15 @@ export default {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then((response) => {console.log(response); this.actualReport = response.data})
-            .catch(e => {console.log(e);})
+                .then((response) => {
+                    console.log(response);
+                    this.actualReport = response.data
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
-        makeConsumingTimestamp(consumingTime){
+        makeConsumingTimestamp(consumingTime) {
             let ts = this.report.reportDate + 'T' + consumingTime + ':00'
             return ts;
         }
@@ -275,43 +332,50 @@ export default {
 </script>
 
 <style scoped>
-    .hr-dish {
-        border: 0;
-        clear:both;
-        display:block;
-        width: 95%;
-        margin-top: 10px;
-        background-color:var(--GREY1);
-        height: 1px;
-    }
-    .title-line {
-        margin-bottom: 0px
-    }
+.hr-dish {
+    border: 0;
+    clear: both;
+    display: block;
+    width: 95%;
+    margin-top: 10px;
+    background-color: var(--GREY1);
+    height: 1px;
+}
 
-    .title {
-        color: var(--GREY1);
-        margin-top: 2px;
-        margin-bottom: 5px;
-        font-size: 10pt;
-    }
+.title-line {
+    margin-bottom: 0px
+}
 
-    .table-report-info {
-        color: var(--GREY2);
-        border-style: solid;
-        border-color: var(--SPORT);
-        margin-top: 10px;
-    }
+.title {
+    color: var(--GREY1);
+    margin-top: 2px;
+    margin-bottom: 5px;
+    font-size: 10pt;
+}
 
-    .add-button{
-        color: var(--SPORT);
-        background-color: transparent;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        padding: 0px;
-        margin: 0;
-        border: none;
-        font-size: 2rem;
-        font-weight: bold;
-    }
+.table-report-info {
+    color: var(--GREY2);
+    border-style: solid;
+    border-color: var(--SPORT);
+    margin-top: 10px;
+}
+
+.add-button {
+    color: var(--SPORT);
+    background-color: transparent;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 0px;
+    margin: 0;
+    border: none;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--SPORT);
+    -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
+}
 </style>

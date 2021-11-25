@@ -1,6 +1,5 @@
 package com.wellbeeing.wellbeeing;
 
-import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
@@ -113,11 +112,11 @@ public class MyRunner implements CommandLineRunner {
 
 //        Potrzebne utworzone profile!!
 //        System.out.println("--------------------------------------");
-        User klaudia = userDAO.findUserByEmail("klaudia@").orElse(null);
+//        User klaudia = userDAO.findUserByEmail("klaudia@").orElse(null);
 //        System.out.println("Klaudia" + klaudia);
 //        assert klaudia != null;
 //        klaudia.getRoles().forEach(r -> System.out.println(r.getRole()));
-        System.out.println(klaudia.getAuthorities());
+//        System.out.println(klaudia.getAuthorities());
 //        System.out.println(klaudia.getRoles());
 //        System.out.println(klaudia.getProfile().getFirstName());
 //        System.out.println(klaudia.getProfile().getLastName());
