@@ -42,6 +42,7 @@ body {
     border-radius: 20px;
     color: white;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    min-height: 85vh;
 }
 
 .section-2-bg {

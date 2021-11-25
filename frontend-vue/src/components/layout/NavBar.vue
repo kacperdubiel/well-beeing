@@ -52,11 +52,11 @@
 <script>
 export default {
     name: "NavBar",
-    data() {
-        return {
-            searchPhrase: ""
-        }
-    },
+    // data() {
+    //     return {
+    //         searchPhrase: ""
+    //     }
+    // },
     methods: {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
@@ -65,28 +65,32 @@ export default {
         },
         getProfiles () {
             if (this.searchPhrase !== '') {
-                this.$store.commit('setSearchPhrase', this.searchPhrase);
-                console.log(this.$store.getters.getSearchPhrase)
+                const url = `${this.apiURL}profile`
+                const token = this.$store.getters.getToken;
+                const myParams = {
+                    fullName: this.searchPhrase
+                }
+                this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                    this.$store.commit('setSearchProfileResult', response.data);
+                    this.$router.push({ name: 'SearchProfilesView' });
+                }).catch(error => {
+                    console.log(error.response.status)
+                });
             }
-
-            const url = `${this.apiURL}profile`
-            const token = this.$store.getters.getToken;
-            const myParams = {
-                fullName: this.searchPhrase
-            }
-            this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.$store.commit('setSearchProfileResult', response.data);
-                // console.log(this.$store.getters.getSearchProfileResult)
-                this.$router.push({ name: 'SearchProfilesView' });
-
-            }).catch(error => {
-                console.log(error.response.status)
-            });
-
         }
     },
     mounted() {
         this.downloadProfilePicture()
+    },
+    computed: {
+        searchPhrase: {
+            get () {
+                return this.$store.getters.getSearchPhrase
+            },
+            set (value) {
+                this.$store.commit('setSearchPhrase', value)
+            }
+        }
     }
 }
 </script>
