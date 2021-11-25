@@ -69,11 +69,14 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public boolean deleteTraining(long trainingId) throws NotFoundException {
-        if (trainingDAO.findById(trainingId).orElse(null) != null) {
-            trainingDAO.deleteById(trainingId);
-            return true;
+
+        Training foundTraining = trainingDAO.findById(trainingId).orElse(null);
+        if (foundTraining == null || foundTraining.isDeleted()) {
+            throw new NotFoundException(String.format("There's no training with id=%d", trainingId));
         }
-        throw new NotFoundException(String.format("Training with id=%d doesn't exist", trainingId));
+        foundTraining.setDeleted(true);
+        trainingDAO.save(foundTraining);
+        return true;
     }
 
     @Override

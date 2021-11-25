@@ -59,7 +59,8 @@ public class TrainingController {
                     @Spec(path = "name", spec = LikeIgnoreCase.class),
                     @Spec(path = "totalTrainingTimeSeconds", params = {"secondsMoreThan", "secondsLessThan"}, spec = Between.class),
                     @Spec(path = "ex.name", params = "exerciseName", spec = LikeIgnoreCase.class),
-                    @Spec(path = "ls.name", params = "label", spec = LikeIgnoreCase.class)
+                    @Spec(path = "ls.name", params = "label", spec = LikeIgnoreCase.class),
+                    @Spec(path = "isDeleted", spec = Equal.class, constVal = "false")
             }) Specification<Training> trainingSpec,
             @PageableDefault(sort = {"name"}, size = 20) Pageable pageable, Principal principal) {
 //        return new ResponseEntity<>(trainingService.getAllTrainings(), HttpStatus.OK);
@@ -88,12 +89,9 @@ public class TrainingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTraining(@PathVariable(value = "id") Long trainingId) {
-        try {
-            trainingService.deleteTraining(trainingId);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), "Error"), HttpStatus.CONFLICT);
-        }
+    @RolesAllowed(ERole.Name.ROLE_TRAINER)
+    public ResponseEntity<?> deleteTraining(@PathVariable(value = "id") Long trainingId) throws NotFoundException {
+        trainingService.deleteTraining(trainingId);
         return new ResponseEntity<>("Successfully deleted training with id=" + trainingId, HttpStatus.OK);
     }
 

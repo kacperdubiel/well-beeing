@@ -138,8 +138,10 @@
                 <font-awesome-icon :icon="['fa', 'list-ul']" class="icon"/>
             </span>
         </div>
-        <trainings-list-component v-if="isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
-        <trainings-grid-component v-if="!isListView" :trainings-source="trainings" @get:trainings="getTrainings"/>
+        <trainings-list-component v-if="isListView" :trainings-source="trainings" @get:trainings="getTrainings"
+                                  @delete:training="deleteTraining"/>
+        <trainings-grid-component v-if="!isListView" :trainings-source="trainings" @get:trainings="getTrainings"
+                                  @delete:training="deleteTraining"/>
         <!--Modal-->
         <training-form :exercises-source="exercises" :labels-source="labels" @get:exercises="getExercises"
                        @get:trainings="getTrainings"/>
@@ -303,6 +305,16 @@ export default {
                 console.log(this.labels)
             }).catch(error => {
                 console.log(error.response);
+            });
+        },
+        deleteTraining(trainingId) {
+            const url = `${this.apiURL}sport/training/${trainingId}`
+            const token = this.$store.getters.getToken;
+            this.axios.delete(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.getTrainingsWithFilters(true)
+            }).catch(error => {
+                console.log(error.response.status)
             });
         },
         setListView(value) {

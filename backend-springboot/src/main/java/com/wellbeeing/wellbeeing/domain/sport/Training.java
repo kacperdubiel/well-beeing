@@ -47,7 +47,8 @@ public class Training {
 
     @Column(name = "isPrivate")
     private boolean isPrivate = false;
-
+    @Column
+    private boolean isDeleted = false;
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<ExerciseInTraining> exerciseInTrainings = new HashSet<>();
 
