@@ -13,6 +13,8 @@ export default createStore({
             lastName: "",
             roles: [],
             specializations: [],
+            searchPhrase: "",
+            searchProfileResult: null,
             // PHYSICAL ACTIVITY
             exerciseId: 0,
             trainingId: 0,
@@ -64,6 +66,12 @@ export default createStore({
         },
         setSpecialization (state, value) {
             state.specializations = value;
+        },
+        setSearchPhrase (state, value) {
+            state.searchPhrase = value;
+        },
+        setSearchProfileResult (state, value) {
+            state.searchProfileResult = value;
         },
         // PHYSICAL ACTIVITY
         setExerciseId (state, value) {
@@ -124,6 +132,12 @@ export default createStore({
         },
         getSpecializations (state) {
             return state.specializations;
+        },
+        getSearchPhrase (state) {
+            return state.searchPhrase;
+        },
+        getSearchProfileResult (state) {
+            return state.searchProfileResult;
         },
         // PHYSICAL ACTIVITY
         getExerciseId (state) {

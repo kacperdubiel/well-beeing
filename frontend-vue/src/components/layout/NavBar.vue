@@ -17,6 +17,8 @@
                         placeholder="Wyszukaj..."
                         id="search-input"
                         class="w-100 shadow"
+                        v-model="searchPhrase"
+                        @keydown.enter="getProfiles"
                     />
                 </div>
                 <div class="col-1 align-self-center">
@@ -50,11 +52,37 @@
 <script>
 export default {
     name: "NavBar",
+    data() {
+        return {
+            searchPhrase: ""
+        }
+    },
     methods: {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
             const token = this.$store.getters.getToken;
             this.$func_global.downloadPhoto(url, token).then(result => this.$store.commit('setProfileImageSrc', result))
+        },
+        getProfiles () {
+            if (this.searchPhrase !== '') {
+                this.$store.commit('setSearchPhrase', this.searchPhrase);
+                console.log(this.$store.getters.getSearchPhrase)
+            }
+
+            const url = `${this.apiURL}profile`
+            const token = this.$store.getters.getToken;
+            const myParams = {
+                fullName: this.searchPhrase
+            }
+            this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.$store.commit('setSearchProfileResult', response.data);
+                // console.log(this.$store.getters.getSearchProfileResult)
+                this.$router.push({ name: 'SearchProfilesView' });
+
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+
         }
     },
     mounted() {
