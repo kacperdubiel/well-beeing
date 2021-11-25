@@ -4,19 +4,22 @@
             <div class="carousel-inner">
                 <div v-for="day in this.weekdays" :key="day" class="carousel-item" v-bind:class="{'active' : day=='MONDAY'}">
                     <div class="row">
-                        <h4>{{day}}
-                            <button @click="this.fetchPlanDayPositions(day)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#planDayModal">
+                        <h4><span>{{this.$func_global.mapDay(day)}} - </span>
+                            <span>{{this.nutritionPlan.name}}</span>
+                            <button @click="this.fetchPlanDayPositions(day)" class="btn-icon-panel-diet ms-4" data-bs-toggle="modal" data-bs-target="#planDayModal">
                                 <font-awesome-icon :icon="['fa', 'info']"/>
                             </button>
-                            <button @click="this.changeComponentState" class="btn-icon-panel-diet">
+                            <button v-if="!this.editOff" @click="this.changeComponentState" class="btn-icon-panel-diet">
                                 <font-awesome-icon v-if="!this.isForm" :icon="['fa', 'edit']"/>
                                 <font-awesome-icon v-else :icon="['fa', 'times']"/>
                             </button>
-                            <span>{{this.nutritionPlan.name}}</span>
+                            <button style="font-weight: bold; width: 100px;" v-if="!this.editOff && this.isForm" class="btn-card-panel-diet" data-bs-toggle="modal" data-bs-target="#generatePlanModal">
+                                Wygeneruj
+                            </button>
                         </h4>
                     </div>
                     <div v-for="meal in meals" :key="meal" class="carousel-item-item-container">
-                        <nutrition-plan-position-component @delete:position="deletePosition" @add:position="changeAddParams" @positions:updated="onPositionsUpdated" :planId="this.nutritionPlan.id" :componentState="this.isForm" :id="meal + '_' + day" class="meal-item" style="width: 100%" :meal="meal" :day="day" :position="findPosition(day, meal)"/>
+                        <nutrition-plan-position-component @open:position="openDishModal" @delete:position="deletePosition" @add:position="changeAddParams" @positions:updated="onPositionsUpdated" :planId="this.nutritionPlan.id" :componentState="this.isForm" :id="meal + '_' + day" class="meal-item" style="width: 100%" :meal="meal" :day="day" :position="findPosition(day, meal)"/>
                     </div>
                 </div>
             </div>
@@ -38,8 +41,11 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        <div v-else class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div v-if="this.nutritionPlanId == null && !this.fromProfile" class="alert alert-danger alert-dismissible fade show" role="alert">
                 Stwórz swój własny główny plan dietetyczny lub wybierz jeden z aktualnych! 
+        </div>
+        <div v-if="this.nutritionPlanId == null && this.fromProfile" class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+                Brak głównego planu dietetycznego 
         </div>
         <div v-if="deletePositionError" class="alert alert-danger alert-dismissible fade show" role="alert">
                 Błąd połączenia, nie udało się usunąć pozycji.
@@ -56,7 +62,7 @@
                     </div>
                     <div class="modal-body">
                         <div>
-                            <p style="color: black;">{{actualModalPositions}}</p>
+                            <nutrition-plan-day-details-component :positions="actualModalPositions"/>
                         </div>
                     </div>
                 </div>
@@ -78,18 +84,78 @@
                 </div>
             </div>
         </div>
+        <button id="openDishModal" hidden="true" data-bs-toggle="modal" data-bs-target="#dishPlanModal"/>
+        <div v-if="this.modalPosition != null" id="dishPlanModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="dishPlanModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 style="color: black;" class="modal-title" id="dishPlanModalLabel">{{this.modalPosition.name}}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <dish-component :dish="this.modalPosition"></dish-component>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="generatePlanModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="generatePlanModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 style="color: black;" class="modal-title" id="dishPlanModalLabel">Generator planu</h4>
+                        <button type="button" @click="clearGeneratorStatus" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="flex-direction: column; display: flex; justify-content: center; text-align: start;">
+                            <div class="form-check m-1">
+                                <input @click="this.dietGenerationChecked=false" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                                <label style="color: black;" class="form-check-label" for="flexRadioDefault1">
+                                    Wykorzystaj tylko moje kalkulacje
+                                </label>
+                            </div>
+                            <div class="form-check m-1">
+                                <input v-model="this.dietGenerationChecked" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" :checked="true ? this.dietGenerationChecked : false">
+                                <label style="color: black;" class="form-check-label" for="flexRadioDefault2">
+                                    Wykorzystaj gotowy typ diety
+                                </label>
+                            </div>
+                            <div v-if="this.dietGenerationChecked" class="mt-4">
+                                <p style="color: black;">
+                                    Gotowy typ diety: 
+                                </p>
+                                <v-select
+                                    id="dietPicker"
+                                    v-model="this.chosenDiet"
+                                    :options="this.diets"
+                                    :reduce="name => name.id"
+                                    label="name"/>
+                            </div>
+                            <button style="align-self: flex-end;" class="btn-card-panel-diet mt-4">Wygeneruj</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import DishBrowserComponent from '@/components/diet/DishBrowserComponent.vue'
+import DishComponent from '@/components/diet/DishComponent.vue'
 import NutritionPlanPositionComponent from "./NutritionPlanPositionComponent.vue"
+import NutritionPlanDayDetailsComponent from "./NutritionPlanDayDetailsComponent.vue"
 export default {
     name: "NutritionPlanComponent",
     props: {
         nutritionPlanId: {
             type: Object,
+        },
+        editOff: {
+            type: Boolean
+        },
+        fromProfile: {
+            type: Boolean
         }
     },
     watch: {
@@ -101,7 +167,15 @@ export default {
     },
     components: {
         NutritionPlanPositionComponent,
-        DishBrowserComponent
+        DishBrowserComponent,
+        DishComponent,
+        NutritionPlanDayDetailsComponent
+    },
+    mounted(){
+        if(this.fromProfile)
+            this.getSingleNutritionPlan(this.nutritionPlanId)
+        this.isForm = false;
+        this.getDiets()
     },
     data(){
         return {
@@ -117,10 +191,29 @@ export default {
             positionToAddMeal: '',
 
             addPositionError: false,
-            deletePositionError: false
+            deletePositionError: false,
+
+            modalPosition: null,
+
+            diets: [],
+            chosenDiet: '',
+            
+            dietGenerationChecked: false
         }
     },
-    methods: {      
+    methods: {  
+        clearGeneratorStatus(){
+            setTimeout(() => {
+                this.dietGenerationChecked= false
+                this.chosenDiet = ''
+            }, 500)
+        },
+        openDishModal(dish){
+            if(dish != null && !this.isForm){
+                this.modalPosition = dish
+                document.getElementById("openDishModal").click()
+            }
+        },   
         changeAddParams(day, meal){
             this.positionToAddDay = day
             this.positionToAddMeal = meal
@@ -163,11 +256,10 @@ export default {
             .then(response => {
                 console.log(response)
                 this.nutritionPlan = response.data
-                //return response.data
+
             })
             .catch(e => {
                 console.log(e);
-                //return plan;
             })
         },
         closeAddPositionModal(){
@@ -216,6 +308,21 @@ export default {
                 this.addPositionError = true;
             })
         },
+        getDiets(){
+            this.axios.get(`${this.apiURL}diet`,
+                {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+            })
+            .then(response => {
+                this.diets = response.data
+
+            })
+            .catch(e => {
+                console.log(e);
+            })
+        }
     }
 }
 </script>
@@ -223,7 +330,7 @@ export default {
 <style scoped>
     .carousel-item{
         width: 100%;
-        height: 620px;
+        height: 770px;
         padding: 20px;
         align-items: center;
         justify-content: center;

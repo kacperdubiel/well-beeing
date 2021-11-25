@@ -8,9 +8,9 @@
             <thead>
                 <tr>
                     <th class="col-sm-4" scope="col">Nazwa</th>
-                    <th class="col-sm-4" scope="col">Data utworzenia</th>
-                    <th v-if="this.dieticianView" class="col-sm-2" scope="col">Udostępnione dla</th>
-                    <th v-else class="col-sm-2" scope="col">
+                    <th class="col-sm-3" scope="col">Data utworzenia</th>
+                    <th v-if="this.dieticianView" class="col-sm-3" scope="col">Udostępnione dla</th>
+                    <th v-else class="col-sm-3" scope="col">
                         <p style="margin:0px;" v-if="this.suggested">Autor</p>
                     </th>
                     <th class="col-sm-2" scope="col"></th>
@@ -21,17 +21,17 @@
                     <td @click="this.setActualNutritionPlan(plan)" style="cursor: pointer;" class="col-sm-4" v-bind:class="{'main' : plan.id === this.actualPlan.id}">{{plan.name}}
                         <font-awesome-icon class="mx-3" v-if="plan.main && !dieticianView" :icon="['fa', 'home']"/>
                     </td>
-                    <td class="col-sm-4" v-bind:class="{'main' : plan.id === this.actualPlan.id}">{{this.$func_global.formatDateTime(plan.generationDate)}}</td>
-                    <td v-if="this.dieticianView" class="col-sm-2">
-                        <p v-if="plan.ownerProfile !== null">
+                    <td class="col-sm-3" v-bind:class="{'main' : plan.id === this.actualPlan.id}">{{this.$func_global.formatDateTime(plan.generationDate)}}</td>
+                    <td v-if="this.dieticianView" class="col-sm-3">
+                        <p v-bind:class="{'main' : plan.id === this.actualPlan.id}" v-if="plan.ownerProfile !== null">
                             {{plan.ownerProfile.firstName}} {{plan.ownerProfile.lastName}}
-                            <button @click="this.setPlanToChangeOwner(plan)"  data-bs-toggle="modal" :data-bs-target="'#planDeleteOwnerModal_' + this.suggested"><font-awesome-icon  :icon="['fa', 'times']"/></button>
+                            <button @click="this.setPlanToChangeOwner(plan)" class="btn-icon-panel-diet"  data-bs-toggle="modal" :data-bs-target="'#planDeleteOwnerModal_' + this.suggested"><font-awesome-icon  :icon="['fa', 'times']"/></button>
                         </p>
                         <p v-else>
-                            <button @click="this.setPlanToChangeOwner(plan)"  data-bs-toggle="modal" :data-bs-target="'#planAddOwnerModal_' + this.suggested"><font-awesome-icon  :icon="['fa', 'plus-circle']"/></button>
+                            <button @click="this.setPlanToChangeOwner(plan)" class="btn-icon-panel-diet"  data-bs-toggle="modal" :data-bs-target="'#planAddOwnerModal_' + this.suggested"><font-awesome-icon  :icon="['fa', 'plus-circle']"/></button>
                         </p>
                     </td>
-                    <td v-else class="col-sm-2">
+                    <td v-else class="col-sm-3">
                         <p style="margin:0px;" v-if="this.suggested">{{plan.creatorProfile.firstName}} {{plan.creatorProfile.lastName}}</p>
                     </td>
                     <td class="col-sm-2" style="text-align: end;">
@@ -51,7 +51,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div v-if="this.planToDelete.main" class="alert alert-danger" role="alert">
+                        <div v-if="this.planToDelete.main && !this.dieticianView" class="alert alert-danger" role="alert">
                                 Nie usuwaj swojego głównego planu! :)
                         </div>
                         <div v-else>
