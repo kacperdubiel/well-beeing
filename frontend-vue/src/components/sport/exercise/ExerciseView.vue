@@ -8,14 +8,20 @@
                                    data-bs-toggle="modal"/>
             </span>
         </div>
-        <div class="add-exercise row my-2 align-items-center add">
+        <div v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')"
+             class="add-exercise row my-2 align-items-center add">
             <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj ćwiczenie</span>
             <span class="col-2 float-end button-icon">
                 <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-target="#addExerciseModal"
                                    data-bs-toggle="modal"/>
             </span>
         </div>
-        <div class="row justify-content-evenly">
+        <div class="row mt-3">
+            <div class="col header">
+                Baza ćwiczeń
+            </div>
+        </div>
+        <div class="row justify-content-evenly mt-3">
             <div class="col-xl-4 col-lg-10 col-sm-10 col-10 align-self-center">
                 <input
                     id="search-input"
@@ -388,5 +394,11 @@ export default {
 span {
     display: inline-flex;
     align-items: center;
+}
+
+.header {
+    text-align: left;
+    font-size: 36px;
+    font-weight: bold;
 }
 </style>

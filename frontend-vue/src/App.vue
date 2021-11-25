@@ -7,15 +7,16 @@
 </template>
 
 <script>
-    const defaultLayout = "default";
-    import 'vue-select/dist/vue-select.css';
-    export default {
-        computed: {
-            layout() {
-                return (this.$route.meta.layout || defaultLayout) + '-layout';
-            }
+const defaultLayout = "default";
+import 'vue-select/dist/vue-select.css';
+
+export default {
+    computed: {
+        layout() {
+            return (this.$route.meta.layout || defaultLayout) + '-layout';
         }
     }
+}
 </script>
 
 <style>
@@ -108,9 +109,11 @@ button[class^="btn-card-panel-"] {
 .btn-panel-sport {
     background-color: var(--SPORT) !important;
 }
+
 .btn-icon-panel-sport {
     background-color: var(--SPORT) !important;
 }
+
 .btn-panel-diet {
     background-color: var(--DIET) !important;
 }
@@ -174,12 +177,15 @@ input.has-error {
     height: 50px;
     border: none;
 }
+
 .test {
     background-color: #D83D68;
 }
-input{
+
+input {
     text-indent: 10px;
 }
+
 .style-chooser .vs__search::placeholder,
 .style-chooser .vs__dropdown-toggle,
 .style-chooser .vs__dropdown-menu {
@@ -193,32 +199,44 @@ input{
 .style-chooser .vs__open-indicator {
     fill: #394066;
 }
+
 .style-chooser .vs__selected {
     background-color: var(--SPORT);
     color: white;
     background-blend-mode: color;
 }
+
 .style-chooser .vs__deselect {
     fill: var(--GREY3);
 }
+
 ::-webkit-scrollbar {
     width: 15px;
     height: 15px;
     background-color: var(--DARK-YELLOW);
 }
+
 .section-bg ::-webkit-scrollbar {
     background-color: var(--GREY2);
 }
+
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(200,200,200,1);
+    -webkit-box-shadow: inset 0 0 6px rgba(200, 200, 200, 1);
     border-radius: 5px;
+}
+
+.sport ::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--SPORT);
+    -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background-color: var(--LIGHT-YELLOW);
-    -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
+    -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
+
 .align-left {
     text-align: left;
 }
@@ -235,8 +253,7 @@ input{
     padding: 25px 20px;
 }
 
-.pagination > li.telemedic-page > a
-{
+.pagination > li.telemedic-page > a {
     background-color: white;
     color: var(--TELEMEDIC);
 }
@@ -244,29 +261,25 @@ input{
 .pagination > li.telemedic-page > a:focus,
 .pagination > li.telemedic-page > a:hover,
 .pagination > li.telemedic-page > span:focus,
-.pagination > li.telemedic-page > span:hover
-{
+.pagination > li.telemedic-page > span:hover {
     color: white;
     background-color: var(--TELEMEDIC);
     border-color: var(--TELEMEDIC);
     cursor: pointer;
 }
 
-.pagination > .telemedic-page.active > a
-{
+.pagination > .telemedic-page.active > a {
     color: white;
     background-color: var(--TELEMEDIC) !Important;
     border: solid 1px var(--TELEMEDIC) !Important;
 }
 
-.pagination > .telemedic-page.active > a:hover
-{
+.pagination > .telemedic-page.active > a:hover {
     background-color: var(--TELEMEDIC) !Important;
     border: solid 1px var(--TELEMEDIC);
 }
 
-.pagination > li.sport-page > a
-{
+.pagination > li.sport-page > a {
     background-color: white;
     color: var(--SPORT);
 }
@@ -274,23 +287,20 @@ input{
 .pagination > li.sport-page > a:focus,
 .pagination > li.sport-page > a:hover,
 .pagination > li.sport-page > span:focus,
-.pagination > li.sport-page > span:hover
-{
+.pagination > li.sport-page > span:hover {
     color: white;
     background-color: var(--SPORT);
     border-color: var(--SPORT);
     cursor: pointer;
 }
 
-.pagination > .sport-page.active > a
-{
+.pagination > .sport-page.active > a {
     color: white;
     background-color: var(--SPORT) !Important;
     border: solid 1px var(--SPORT) !Important;
 }
 
-.pagination > .sport-page.active > a:hover
-{
+.pagination > .sport-page.active > a:hover {
     background-color: var(--SPORT) !Important;
     border: solid 1px var(--SPORT);
 }
@@ -321,31 +331,33 @@ input{
     background-color: white;
 }
 
- p.has-error {
+p.has-error {
     color: var(--INTENSE-PINK);
- }
-
- .modal-diet-content {
-        background-color: white;
-        color: black;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-content: flex-start;
-        align-items: flex-start;
-        justify-content: start;
-        padding: 20px;
-        border-radius: 20px;
 }
+
+.modal-diet-content {
+    background-color: white;
+    color: black;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: flex-start;
+    justify-content: start;
+    padding: 20px;
+    border-radius: 20px;
+}
+
 .modal-content {
     border-radius: 20px;
 }
+
 .circle {
     height: 15px;
     width: 15px;
     background-color: lawngreen;
     border-radius: 50%;
     display: inline-block;
- }
+}
 </style>

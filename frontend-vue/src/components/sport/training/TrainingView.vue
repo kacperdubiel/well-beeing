@@ -7,7 +7,12 @@
                                    href="#addTrainingModal"/>
             </span>
         </div>
-        <div class="row justify-content-evenly">
+        <div class="row mt-3">
+            <div class="col header">
+                Baza treningów
+            </div>
+        </div>
+        <div class="row justify-content-evenly mt-3">
             <div class="col-xl-4 col-lg-10 col-sm-10 col-10 align-self-center">
                 <input
                     id="search-input"
@@ -366,5 +371,11 @@ span {
 
 .page-item:disabled {
     background-color: #D83D68;
+}
+
+.header {
+    text-align: left;
+    font-size: 36px;
+    font-weight: bold;
 }
 </style>

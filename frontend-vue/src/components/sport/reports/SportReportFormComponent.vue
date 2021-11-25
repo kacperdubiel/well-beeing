@@ -8,7 +8,8 @@
             <div class="row">
                 <div class="col-4">
                     <v-select v-model="this.actualSelectedExercise" :options="this.exercisesToSelect"
-                              :reduce="name => name.exerciseId" label="name"
+                              :reduce="name => name.exerciseId" class="sport"
+                              label="name"
                               @keypress="this.getExercisesToSelect"/>
                 </div>
                 <div class="col-2">
@@ -370,5 +371,11 @@ export default {
     border: none;
     font-size: 2rem;
     font-weight: bold;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--SPORT);
+    -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
 </style>
