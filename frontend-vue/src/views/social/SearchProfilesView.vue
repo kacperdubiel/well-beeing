@@ -9,7 +9,7 @@
                             v-model="filters.sportTagFilter"
                             class="p-2 w-100"
                             id="sport-tag-select"
-                            @change="getRoleRequests()"
+                            @change="getProfilesFiltered()"
                         >
                             <option v-for="sportTag in filters.allSportTagFilters" :key="sportTag.label" :value="sportTag.value">{{ sportTag.label }}</option>
                         </select>
@@ -20,7 +20,7 @@
                             v-model="filters.nutritionTagFilter"
                             class="p-2 w-100"
                             id="nutrition-tag-select"
-                            @change="getRoleRequests()"
+                            @change="getProfilesFiltered()"
                         >
                             <option v-for="nutTag in filters.allNutritionTagFilters" :key="nutTag.label" :value="nutTag.value">{{ nutTag.label }}</option>
                         </select>
@@ -31,18 +31,21 @@
                             v-model="filters.sortBy"
                             class="p-2 w-100"
                             id="sort-select"
-                            @change="getRoleRequests()"
+                            @change="getProfilesFiltered()"
                         >
                             <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{ sort.label }}</option>
                         </select>
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <h5 class="text-start">Osoby:</h5>
-                    <div v-for="profile in this.$store.getters.getSearchProfileResult.content" :key="profile.id">
+                <div class="row mt-5" v-if="this.$store.getters.getSearchProfileResult.content.length !== 0">
+                    <h5 class="text-start">Wyniki wyszukiwania:</h5>
+                    <div v-for="profile in this.$store.getters.getSearchProfileResult.content" :key="profile.id" >
                         <profile-on-list-item :profile-source="profile" class="my-2 ms-1" />
 <!--                        @redirect:profile="redirectToProfile"-->
                     </div>
+                </div>
+                <div class="row mt-5" v-else>
+                    <p>Brak wyników wyszukiwania</p>
                 </div>
 
             </div>
@@ -91,12 +94,13 @@ export default {
             const url = `${this.apiURL}profile`
             const token = this.$store.getters.getToken;
             const myParams = {
-                fullName: this.$store.getters.getSearchPhrase
+                fullName: this.$store.getters.getSearchPhrase,
+                sort: this.filters.sortBy,
+                eSportTag: this.filters.sportTagFilter,
+                eNutritionTag: this.filters.nutritionTagFilter
             }
             this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.$store.commit('setSearchProfileResult', response.data);
-                // console.log(this.$store.getters.getSearchProfileResult)
-                this.$router.push({ name: 'SearchProfilesView' });
 
             }).catch(error => {
                 console.log(error.response.status)

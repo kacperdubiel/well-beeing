@@ -6,7 +6,7 @@
         </div>
 
         <div class="d-flex flex-column align-self-center">
-            <h5 class="ms-2" @click="handleRedirect(this.profileSource.id)">
+            <h5 class="ms-2" @click="redirectToProfile(this.profileSource.id)">
                 {{this.profileSource.firstName}} {{this.profileSource.lastName}}
             </h5>
         </div>
@@ -31,8 +31,14 @@ export default {
             const token = this.$store.getters.getToken;
             this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
-        handleRedirect(profileId) {
-            this.$emit('redirect:profile', profileId)
+        redirectToProfile(id) {
+            let modalToClose = document.getElementById('likes-modal-close')
+            if(modalToClose)
+                modalToClose.click();
+            if(id === this.$store.getters.getProfileId)
+                this.$router.push({ name: 'MyProfileView'})
+            else
+                this.$router.push({ name: 'ProfileView', params: {profileId: id} })
         }
     },
     mounted() {
