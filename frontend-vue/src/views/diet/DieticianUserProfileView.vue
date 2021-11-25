@@ -13,29 +13,37 @@
         <profile-card-component :dieticianView="true" :userId="this.userId"/>
         <h4 style="text-align: start;" class="container mt-4"> Raporty </h4>
         <dietician-profile-reports-component class="mt-3" :userId="this.userId" />
+        <h4 style="text-align: start;" class="container mt-4">Główny plan dietetyczny</h4>
+        <nutrition-plan-component :fromProfile="true" :editOff="true" v-if="userNutritionPlan != null" :nutritionPlanId="userNutritionPlan.id"/>
+        <div style="align-self: center;" v-else class="alert alert-danger mt-3 mx-3" role="alert">
+                Użytkownik nie ma ustawionego głównego planu. 
+        </div>
     </div>
 </template>
 
-<script>
+<script> 
 import DieticianProfileReportsComponent from "@/components/diet/reports/DieticianProfileReportsComponent";
+import NutritionPlanComponent from '@/components/diet/plans/NutritionPlanComponent'
 import ProfileCardComponent from '../../components/diet/ProfileCardComponent.vue';
 export default {
     name: "DieticianUserProfileView",
     components: {
         DieticianProfileReportsComponent,
-        ProfileCardComponent
+        ProfileCardComponent,
+        NutritionPlanComponent,
     },
     data() {
         return {
             userId: this.$route.params.userId,
             user: null,
+            userNutritionPlan: null
         }
     },
     methods: {
         getUserProfile(){
             this.axios.get(`${this.apiURL}profile/${this.userId}`, {
                 headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token')//this.$store.getters.getToken
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
             })
                 .then(response => {
@@ -45,9 +53,25 @@ export default {
                     console.log(e);
                 })
         },
+        getUserMainNutritionPlan(){
+            this.axios.get(`${this.apiURL}nutrition-plan/profile/${this.userId}/main`, {
+                headers: {
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
+                }
+                })
+                .then(response => {
+                    this.userNutritionPlan = response.data;
+                    console.log("main")
+                    console.log(this.userNutritionPlan)
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        }
     },
     created(){
         this.getUserProfile();
+        this.getUserMainNutritionPlan();
     },
 }
 </script>

@@ -5,7 +5,7 @@
                 <input v-model="this.actualMonth" @change="this.getReportsToShow" class= "form-control" id="month-picker" type="month" name="start" min="2021-01">
             </div>
         </div>
-        <table style="color: white; text-align: start;" class="table">
+        <table v-if="this.reportsToShow.length != 0" style="color: white; text-align: start;" class="table">
             <thead>
                 <tr>
                     <th class="col-sm-3" scope="col">Data</th>
@@ -29,6 +29,7 @@
                 </tr>
             </tbody>
         </table>
+        <p class="mt-4" v-else>Brak raportów</p>
         <div id="reportModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
