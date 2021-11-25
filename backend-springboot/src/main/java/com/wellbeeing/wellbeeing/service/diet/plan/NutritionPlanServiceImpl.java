@@ -119,6 +119,11 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     }
 
     @Override
+    public NutritionPlan getProfileMainNutritionPlan(UUID profileId) throws NotFoundException {
+        return  findUserMainNutritionPlan(profileId);
+    }
+
+    @Override
     public NutritionPlan generateNutritionPlanForProfile(UUID profileId) throws NotFoundException, NutritionPlanGenerationException {
         Profile profile = profileService.getProfileById(profileId);
         return nutritionPlanGenerationStrategy.generateNutritionPlan(profile);
@@ -182,7 +187,13 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     }
 
     @Override
-    public NutritionPlan addOwnerToNutritionPlan(UUID nutritionPlanId, Profile owner) throws NotFoundException {
+    public NutritionPlan addOwnerToNutritionPlan(UUID nutritionPlanId, UUID ownerId) throws NotFoundException {
+        Profile owner;
+        if(ownerId == null)
+            owner = null;
+        else
+            owner = profileService.getProfileById(ownerId);
+
         NutritionPlan nutritionPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
         if(nutritionPlan == null)
             throw new NotFoundException("Nutrition plan with id: " +  nutritionPlanId + " not found");

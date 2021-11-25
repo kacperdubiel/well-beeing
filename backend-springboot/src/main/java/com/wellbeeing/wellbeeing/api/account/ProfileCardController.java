@@ -26,7 +26,7 @@ public class ProfileCardController {
     private final ProfileCardService profileCardService;
     private final ProfileService profileService;
     private final UserService userService;
-    private ProfileConnectionService profileConnectionService;
+    private final ProfileConnectionService profileConnectionService;
 
     @Autowired
     public ProfileCardController(@Qualifier("profileCardService") ProfileCardService profileCardService,

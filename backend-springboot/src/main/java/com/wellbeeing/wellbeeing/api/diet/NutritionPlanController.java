@@ -1,7 +1,6 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionPlanPosition;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
@@ -10,7 +9,6 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.exception.NutritionPlanGenerationException;
 import com.wellbeeing.wellbeeing.domain.message.diet.AddNutritionPlanOwnerRequest;
 import com.wellbeeing.wellbeeing.domain.message.diet.CreateNutritionPlanRequest;
-import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.diet.plan.NutritionPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +28,13 @@ import java.util.UUID;
 public class NutritionPlanController {
 
     private final NutritionPlanService nutritionPlanService;
-    private final ProfileService profileService;
     private final UserService userService;
 
     @Autowired
     public NutritionPlanController(@Qualifier("nutritionPlanService") NutritionPlanService nutritionPlanService,
-                                   @Qualifier("userService") UserService userService,
-                                   @Qualifier("profileService") ProfileService profileService){
+                                   @Qualifier("userService") UserService userService){
         this.nutritionPlanService = nutritionPlanService;
         this.userService = userService;
-        this.profileService = profileService;
     }
 
     @RequestMapping(path = "/nutrition-plan/created", method = RequestMethod.GET)
@@ -85,9 +80,6 @@ public class NutritionPlanController {
         NutritionPlan np = nutritionPlanService.getNutritionPlanById(nutritionPlanId);
         if(!profileId.equals(nutritionPlanService.getNutritionPlanById(nutritionPlanId).getCreatorProfile().getId()))
             throw new ForbiddenException("Access to delete nutrition plan with id: " + nutritionPlanId + " forbidden");
-        if(np.isMain()){
-            throw new ConflictException("Access to delete forbidden, plan with id " + nutritionPlanId + "is marked as main");
-        }
         boolean isDeleted = nutritionPlanService.deleteCreatedNutritionPlanFromProfile(nutritionPlanId);
         return new ResponseEntity<>(isDeleted, HttpStatus.OK);
     }
@@ -107,10 +99,9 @@ public class NutritionPlanController {
                                                    @PathVariable("nutritionPlanId") UUID nutritionPlanId,
                                                    @RequestBody @NonNull AddNutritionPlanOwnerRequest addNutritionPlanOwnerRequest) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        Profile owner = profileService.getProfileById(addNutritionPlanOwnerRequest.getNutritionPlanOwnerId());
         if(!profileId.equals(nutritionPlanService.getNutritionPlanById(nutritionPlanId).getCreatorProfile().getId()))
             throw new ForbiddenException("Access to add owner to nutrition plan with id: " + nutritionPlanId + " forbidden");
-        NutritionPlan np = nutritionPlanService.addOwnerToNutritionPlan(nutritionPlanId, owner);
+        NutritionPlan np = nutritionPlanService.addOwnerToNutritionPlan(nutritionPlanId, addNutritionPlanOwnerRequest.getNutritionPlanOwnerId());
         return new ResponseEntity<>(np, HttpStatus.OK);
     }
 
@@ -135,6 +126,19 @@ public class NutritionPlanController {
     public ResponseEntity<?> addEmptyNutritionPlan(Principal principal, @RequestBody @NonNull CreateNutritionPlanRequest request) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         NutritionPlan nutritionPlan = nutritionPlanService.addEmptyNutritionPlanToProfile(profileId, request.getName());
+        return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/nutrition-plan/profile/{profileId}/main", method = RequestMethod.GET)
+    public ResponseEntity<?> getProfileMainNutritionPlan(@PathVariable("profileId") UUID profileId) throws NotFoundException {
+        NutritionPlan nutritionPlan = nutritionPlanService.getProfileMainNutritionPlan(profileId);
+        return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/nutrition-plan/main", method = RequestMethod.GET)
+    public ResponseEntity<?> getProfileMainNutritionPlan(Principal principal) throws NotFoundException {
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        NutritionPlan nutritionPlan = nutritionPlanService.getProfileMainNutritionPlan(profileId);
         return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
     }
 
