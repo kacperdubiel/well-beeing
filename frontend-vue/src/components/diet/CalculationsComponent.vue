@@ -197,7 +197,7 @@ export default {
         getProfileCalculations(){
             axios.get('http://localhost:8090/diet-calc', {
                 headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                    Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
             })
             .then(data => {
