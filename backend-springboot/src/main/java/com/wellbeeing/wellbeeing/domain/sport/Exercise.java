@@ -35,7 +35,8 @@ public class Exercise {
     private boolean isPrivate = false;
     @Column(name = "metabolic_eqv_of_task")
     private double met;
-
+    @Column
+    private boolean isDeleted = false;
     @Transient
     private int caloriesBurned;
 

@@ -145,8 +145,8 @@
             </span>
         </div>
         <exercises-list-component v-if="isListView" :exercises-source="exercises"
-                                  @submit:editExercise="updateExercise"/>
-        <exercises-grid-component v-if="!isListView" :exercises-source="exercises"/>
+                                  @submit:editExercise="updateExercise" @delete:exercise="deleteExercise"/>
+        <exercises-grid-component v-if="!isListView" :exercises-source="exercises" @delete:exercise="deleteExercise"/>
         <!--Modal-->
         <exercise-form :labels-source="labels" @get:exercises="getExercises"/>
         <label-form v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')" :ailments-source="ailments"
@@ -334,6 +334,16 @@ export default {
                 // console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
+            });
+        },
+        deleteExercise(exerciseId) {
+            const url = `${this.apiURL}sport/exercise/${exerciseId}`
+            const token = this.$store.getters.getToken;
+            this.axios.delete(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.getExercisesWithFilters()
+            }).catch(error => {
+                console.log(error.response.status)
             });
         }
     },

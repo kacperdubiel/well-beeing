@@ -150,11 +150,14 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
 
     @Override
     public boolean deleteExercise(long id) throws NotFoundException {
-        if (exerciseDAO.findById(id).orElse(null) != null) {
-            exerciseDAO.deleteById(id);
-            return true;
+
+        Exercise foundExercise = exerciseDAO.findById(id).orElse(null);
+        if (foundExercise == null || foundExercise.isDeleted()) {
+            throw new NotFoundException(String.format("There's no exercise with id=%d", id));
         }
-        throw new NotFoundException(String.format("There's no exercise with id=%s", id));
+        foundExercise.setDeleted(true);
+        exerciseDAO.save(foundExercise);
+        return true;
     }
 
     @Override
