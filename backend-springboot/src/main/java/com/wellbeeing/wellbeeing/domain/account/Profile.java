@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,6 +39,8 @@ public class Profile {
     private String firstName;
     @Column
     private String lastName;
+    @Formula(value = " concat(first_name, ' ', last_name) ")
+    private String fullName;
     @Enumerated(EnumType.STRING)
     @Column
     private ESex ESex;
