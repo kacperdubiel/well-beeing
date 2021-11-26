@@ -9,12 +9,18 @@ import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import org.hibernate.annotations.Formula;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.List;
 @Getter
 @Setter
 @Builder
@@ -31,6 +37,8 @@ public class Profile {
     private String firstName;
     @Column
     private String lastName;
+    @Formula(value = " concat(first_name, ' ', last_name) ")
+    private String fullName;
     @Enumerated(EnumType.STRING)
     @Column
     private ESex ESex;
@@ -102,7 +110,7 @@ public class Profile {
     private Set<Role> roles = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL)
     private Set<Like> profileLikes = new HashSet<>();
 
     @JsonIgnore

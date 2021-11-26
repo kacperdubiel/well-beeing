@@ -51,6 +51,7 @@ import TrainerUserConversationView from "@/views/sport/trainers/TrainerUserConve
 import SportTrainerView from "@/views/sport/SportTrainerView";
 import TrainingPlanRequest from "@/views/sport/TrainingPlanRequest";
 import TrainingPlanRequestForm from "@/components/sport/request/TrainingPlanRequestForm";
+import SearchProfilesView from "@/views/social/SearchProfilesView";
 
 const routes = [
   {
@@ -71,6 +72,11 @@ const routes = [
     path: '/feed',
     name: 'FeedView',
     component: FeedView
+  },
+  {
+    path: '/search',
+    name: 'SearchProfilesView',
+    component: SearchProfilesView
   },
   {
     path: '/diet',

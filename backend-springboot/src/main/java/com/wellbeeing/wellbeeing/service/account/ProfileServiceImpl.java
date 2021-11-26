@@ -53,6 +53,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Page<Profile> getProfilesFiltered(Specification<Profile> profileSpec, Pageable pageable) {
+        return profileDAO.findAll(profileSpec, pageable);
+    }
+
+    @Override
     public DoctorProfile getDoctorProfileById(UUID doctorProfileId) throws NotFoundException {
         DoctorProfile doctorProfile = doctorProfileDAO.findById(doctorProfileId).orElse(null);
         if(doctorProfile == null) {
