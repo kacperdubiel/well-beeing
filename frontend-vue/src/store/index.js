@@ -73,6 +73,9 @@ export default createStore({
         setSearchProfileResult (state, value) {
             state.searchProfileResult = value;
         },
+        addSearchProfileResult (state, value) {
+            state.searchProfileResult.content = state.searchProfileResult.content.concat(value);
+        },
         // PHYSICAL ACTIVITY
         setExerciseId (state, value) {
             state.exerciseId = value;

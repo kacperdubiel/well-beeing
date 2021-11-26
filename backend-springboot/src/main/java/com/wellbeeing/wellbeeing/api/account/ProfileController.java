@@ -69,7 +69,7 @@ public class ProfileController {
                     @Spec(path = "eSportTag", spec = Equal.class),
                     @Spec(path = "eNutritionTag", spec = Equal.class),
             }) Specification<Profile> profileSpec,
-            @PageableDefault(sort = {"fullName"}, size = 20, direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(sort = {"fullName"}, size = 8, direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<Profile> pageProfiles = profileService.getProfilesFiltered(profileSpec, pageable);
         return new ResponseEntity<>(pageProfiles, HttpStatus.OK);

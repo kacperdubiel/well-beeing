@@ -52,11 +52,6 @@
 <script>
 export default {
     name: "NavBar",
-    // data() {
-    //     return {
-    //         searchPhrase: ""
-    //     }
-    // },
     methods: {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
@@ -77,6 +72,9 @@ export default {
                     console.log(error.response.status)
                 });
             }
+        },
+        handleLogout() {
+            this.$store.commit('setSearchPhrase', "")
         }
     },
     mounted() {
