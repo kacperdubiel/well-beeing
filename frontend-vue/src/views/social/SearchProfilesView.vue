@@ -122,7 +122,8 @@ export default {
             if(this.navigation.isLast && isScroll)
                 return 'sth'
 
-
+            if(page === 0)
+                this.scrolledToBottom = true
 
             this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 if(!this.navigation.isLast && isScroll)
@@ -139,21 +140,14 @@ export default {
                 this.navigation.currentPage = response.data['number']
 
                 return 'sth'
-
             })
         },
         scroll () {
             window.onscroll = () => {
                 let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) +
-                    window.innerHeight + 10 >= document.documentElement.offsetHeight
-                console.log(Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop), ' + ')
-                console.log(window.innerHeight, ' = ')
-                console.log(document.documentElement.offsetHeight)
+                    window.innerHeight + 5 >= document.documentElement.offsetHeight
                 if (bottomOfWindow) {
-                    console.log('isLoaded?  ', this.loaded)
-                    console.log('scrolledToBottom?  ', this.scrolledToBottom)
                     if (!this.navigation.isLast && this.scrolledToBottom && this.loaded) {
-                        console.log('rob')
                         this.scrolledToBottom = false
                         this.getProfilesFiltered(this.navigation.currentPage+1, true).then((response) => {
                             setTimeout(() => {
@@ -165,7 +159,6 @@ export default {
                         })
                     }
                 }
-                console.log(bottomOfWindow, ' ', this.scrolledToBottom)
             }
         }
     },
