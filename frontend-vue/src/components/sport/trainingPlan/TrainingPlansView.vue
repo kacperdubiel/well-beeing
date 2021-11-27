@@ -82,7 +82,17 @@
             </span>
         </div>
         <div v-if="createAuto">
-            AUTO
+            <training-plan-generator @set:generated="setGeneratedPlan"/>
+            <div v-if="generatedPlan">
+                <div class="m-3 mx-4 header">
+                    <span>Wygenerowany plan </span>
+                </div>
+                <TrainingPlanWeek v-if="generatedPlan.trainingPlanId != null" :days="days" :plan="generatedPlan"
+                                  :plan-type="'details'"
+                                  :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(generatedPlan.beginningDate))"
+                                  @update:items="updateItems" @set:training="setTraining"/>
+
+            </div>
         </div>
         <div v-if="createManual">
             <div class="row my-3 mx-3">
@@ -145,10 +155,11 @@ import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
 import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
 import TrainingPlansTable from "@/components/sport/trainingPlan/TrainingPlansTable";
+import TrainingPlanGenerator from "@/components/sport/trainingPlan/TrainingPlanGenerator";
 
 export default {
     name: "TrainingPlansView",
-    components: {TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails, TrainingPlanWeek,},
+    components: {TrainingPlanGenerator, TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails, TrainingPlanWeek,},
     data() {
         return {
             beginningDate: new Date(),
@@ -226,7 +237,8 @@ export default {
                 trainingPositions: []
             },
             trainings: [],
-            infoTraining: {}
+            infoTraining: {},
+            generatedPlan: null
         }
     },
     methods: {
@@ -364,6 +376,15 @@ export default {
                 console.log(error.response);
             });
         },
+        async getTrainingPlan(planId) {
+            const url = `${this.apiURL}sport/training-plan/${planId}`
+            const token = this.$store.getters.getToken;
+            return await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                return response.data
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
         getNextMonday() {
             let d = new Date();
             d.setDate(d.getDate() + (((1 + 7 - d.getDay()) % 7) || 7));
@@ -420,6 +441,7 @@ export default {
             this.createAuto = isAuto;
             this.createManual = !isAuto;
             this.savedNewPlan = false
+            this.updateItems()
         },
         setActivePlan() {
             let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
@@ -463,6 +485,13 @@ export default {
                 console.log(error.response);
             });
         },
+        setGeneratedPlan(planId) {
+            this.getTrainingPlan(planId).then((result) => {
+                this.generatedPlan = result
+            })
+            this.updateItems()
+            this.getMyTrainingPlans()
+        }
     },
     mounted() {
         this.week = new Date().getWeek()

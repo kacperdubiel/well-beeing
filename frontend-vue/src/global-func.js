@@ -25,7 +25,7 @@ export const func_global = {
         return this.uploadFileFunc(formData, type, token, id)
     },
 
-    async uploadFileFunc (data, type, token, id) {
+    async uploadFileFunc(data, type, token, id) {
         let url;
         if (type === 'roleRequest')
             url = `${apiURL}role-request/import/${id}/`
@@ -33,15 +33,20 @@ export const func_global = {
             url = `${apiURL}profile/import`
         else if (type === 'postPicture')
             url = `${apiURL}post/import/${id}`
-        else if(type === 'dishPicture')
+        else if (type === 'dishPicture')
             url = `${apiURL}dish/${id}/photo`
-        else if(type === 'importProducts')
+        else if (type === 'importProducts')
             url = `${apiURL}import/products`
-        else if(type === 'importDiets')
+        else if (type === 'importDiets')
             url = `${apiURL}import/diets`
-        else if(type === 'importAilments')
+        else if (type === 'importAilments')
             url = `${apiURL}import/ailments`
-        return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}})
+        return axios.post(url, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     },
 
     async uploadFile(data, type, token, id) {
@@ -54,9 +59,14 @@ export const func_global = {
             url = `${apiURL}post/import/${id}`
         else if (type === 'exerciseVideo')
             url = `${apiURL}sport/exercise/import/${id}`
-        else if(type === 'dishPicture')
+        else if (type === 'dishPicture')
             url = `${apiURL}dish/${id}/photo`
-        return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}}).then((response) => {
+        return axios.post(url, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then((response) => {
             console.log(response.data)
         }).catch(error => {
             console.log(error.response)
@@ -142,27 +152,27 @@ export const func_global = {
         return minutes < 5
     },
     convertNewLines(text) {
-        if(text)
+        if (text)
             return text.replaceAll('\n', '<br />')
         else
             return null
     },
     mapCommentForm(counter) {
-        if(counter === 1)
+        if (counter === 1)
             return 'komentarz'
-        else if(counter === 12 || counter === 13 || counter === 14)
+        else if (counter === 12 || counter === 13 || counter === 14)
             return 'komentarzy'
-        else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
+        else if (counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
             return 'komentarze'
         else
             return 'komentarzy'
     },
     mapShareForm(counter) {
-        if(counter === 1)
+        if (counter === 1)
             return 'udostępnienie'
-        else if(counter === 12 || counter === 13 || counter === 14)
+        else if (counter === 12 || counter === 13 || counter === 14)
             return 'udostępnień'
-        else if(counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
+        else if (counter % 10 === 2 || counter % 10 === 3 || counter % 10 === 4)
             return 'udostępnienia'
         else
             return 'udostępnień'
@@ -395,43 +405,43 @@ export const func_global = {
         else
             return "Nieznany"
     },
-    mapGlycemicIndex(index){
-        if(index == 'VERY_LOW')
+    mapGlycemicIndex(index) {
+        if (index == 'VERY_LOW')
             return "Bardzo niski (0, 10)"
-        if(index == 'LOW')
+        if (index == 'LOW')
             return "Niski (11, 30)"
-        else if(index == 'MEDIUM')
+        else if (index == 'MEDIUM')
             return "Średni (31, 50)"
-        else if(index == "HIGH")
+        else if (index == "HIGH")
             return "Wysoki (51, 70)"
-        else if(index == "VERY_HIGH")
+        else if (index == "VERY_HIGH")
             return "Bardzo wysoki (71, 100)"
-        else if(index == "ANY_RECOMMENDED")
+        else if (index == "ANY_RECOMMENDED")
             return "Niski/średni (0, 50)"
-        else if(index == "ANY")
+        else if (index == "ANY")
             return "Dowolny"
         else
             return "Nieznany"
     },
-    mapGlycemicIndexShort(index){
-        if(index == 'VERY_LOW')
+    mapGlycemicIndexShort(index) {
+        if (index == 'VERY_LOW')
             return "(0, 10)"
-        if(index == 'LOW')
+        if (index == 'LOW')
             return "(11, 30)"
-        else if(index == 'MEDIUM')
+        else if (index == 'MEDIUM')
             return "(31, 50)"
-        else if(index == "HIGH")
+        else if (index == "HIGH")
             return "(51, 70)"
-        else if(index == "VERY_HIGH")
+        else if (index == "VERY_HIGH")
             return "(71, 100)"
-        else if(index == "ANY_RECOMMENDED")
+        else if (index == "ANY_RECOMMENDED")
             return "(0, 50)"
-        else if(index == "ANY")
+        else if (index == "ANY")
             return "(0, 100)"
         else
             return "Nieznany"
     },
-    mapMeasure(measure){
+    mapMeasure(measure) {
         if (measure == 'GRAM')
             return "g"
         else if (measure == 'MILLI_GRAM')
@@ -459,79 +469,79 @@ export const func_global = {
         else
             return 'Brak informacji'
     },
-    mapVitamin(vit){
-        if(vit == 'FOLIC_ACID')
+    mapVitamin(vit) {
+        if (vit == 'FOLIC_ACID')
             return 'Kwas foliowy [mcg]'
-        if(vit == 'BIOTIN')
+        if (vit == 'BIOTIN')
             return 'Biotyna [mcg]'
-        if(vit == 'A')
+        if (vit == 'A')
             return 'A [mcg]'
-        if(vit == 'B1')
+        if (vit == 'B1')
             return 'B1 [mg]'
-        if(vit == 'B2')
+        if (vit == 'B2')
             return 'B2 [mg]'
-        if(vit == 'B5')
+        if (vit == 'B5')
             return 'B5 [mg]'
-        if(vit == 'B6')
+        if (vit == 'B6')
             return 'B6 [mg]'
-        if(vit == 'B12')
+        if (vit == 'B12')
             return 'B12 [mcg]'
-        if(vit == 'C')
+        if (vit == 'C')
             return 'C [mg]'
-        if(vit == 'D')
+        if (vit == 'D')
             return 'D [mcg]'
-        if(vit == 'E')
+        if (vit == 'E')
             return 'E [mg]'
-        if(vit == 'PP')
+        if (vit == 'PP')
             return 'PP [mg]'
-        if(vit == 'K')
+        if (vit == 'K')
             return 'K [mg]'
         else
             return vit
     },
-    mapMacro(macro){
-        if(macro == 'VEGETABLE_PROTEINS')
+    mapMacro(macro) {
+        if (macro == 'VEGETABLE_PROTEINS')
             return 'Białka roślinne [g]'
-        if(macro == 'ANIMAL_PROTEINS')
+        if (macro == 'ANIMAL_PROTEINS')
             return 'Białka zwierzęce [g]'
-        if(macro == 'POLYUNSATURATED_FATS')
+        if (macro == 'POLYUNSATURATED_FATS')
             return 'Tłuszcze wielonienasycone [g]'
-        if(macro == 'MONOUNSATURATED_FATS')
+        if (macro == 'MONOUNSATURATED_FATS')
             return 'Tłuszcze jednonienasycone [g]'
         else
             return macro
     },
-    mapMineral(mineral){
-        if(mineral == 'ZINC')
+    mapMineral(mineral) {
+        if (mineral == 'ZINC')
             return 'Cynk [mg]'
-        if(mineral == 'PHOSPHORUS')
+        if (mineral == 'PHOSPHORUS')
             return 'Fosfor [mg]'
-        if(mineral == 'IODINE')
+        if (mineral == 'IODINE')
             return 'Jod [mcg]'
-        if(mineral == 'MAGNESIUM')
+        if (mineral == 'MAGNESIUM')
             return 'Magnez [mg]'
-        if(mineral == 'COPPER')
+        if (mineral == 'COPPER')
             return 'Miedź [mg]'
-        if(mineral == 'POTASSIUM')
+        if (mineral == 'POTASSIUM')
             return 'Potas [mg]'
-        if(mineral == 'SELENIUM')
+        if (mineral == 'SELENIUM')
             return 'Selen [mcg]'
-        if(mineral == 'SODIUM')
+        if (mineral == 'SODIUM')
             return 'Sód [mg]'
-        if(mineral == 'CALCIUM')
+        if (mineral == 'CALCIUM')
             return 'Wapń [mg]'
-        if(mineral == 'Iron')
+        if (mineral == 'Iron')
             return 'Żelazo [mg]'
         else
             return mineral
     },
-    mapPublished(draft){
-        if(draft)
+    mapPublished(draft) {
+        if (draft)
             return "Szkic"
         else
             return "Opublikowane"
     },
-    proteinCalories(){
+    proteinCalories() {
         return 4
     },
     fatCalories() {
@@ -540,34 +550,69 @@ export const func_global = {
     carbCalories() {
         return 4
     },
+    mapActivityGoal(goal) {
+        if (goal === 'LOSE_WEIGHT')
+            return 'Chudnięcie'
+        if (goal === 'GAIN_WEIGHT')
+            return 'Przybranie na wadze'
+        if (goal === 'MAINTAIN_WEIGHT')
+            return 'Utrzymanie wagi'
+        if (goal === 'EXTEND_LUNGS_CAPACITY')
+            return 'Zwiększenie kondycji'
+        if (goal === 'BUILD_MUSCLE')
+            return 'Budowanie mięśni'
+        else
+            return goal
+    },
+    mapWorkoutStrategy(strategy) {
+        if (strategy === 'ONLY_WORKOUT')
+            return 'Tylko trening - 90:10'
+        if (strategy === 'MOSTLY_WORKOUT')
+            return 'Głównie trening - 75:25'
+        if (strategy === 'EVEN')
+            return 'Po równo - 50:50'
+        if (strategy === 'MOSTLY_DIET')
+            return 'Głównie dieta - 25:75'
+        if (strategy === 'ONLY_DIET')
+            return 'Tylko dieta - 10:90'
+        else
+            return strategy
+    },
     days: [
         {
             num: 1,
-            name: 'Poniedziałek'
+            name: 'Poniedziałek',
+            short: 'PON'
         },
         {
             num: 2,
-            name: 'Wtorek'
+            name: 'Wtorek',
+            short: 'WT'
         },
         {
             num: 3,
-            name: 'Środa'
+            name: 'Środa',
+            short: 'ŚR'
         },
         {
             num: 4,
-            name: 'Czwartek'
+            name: 'Czwartek',
+            short: 'CZW'
         },
         {
             num: 5,
-            name: 'Piątek'
+            name: 'Piątek',
+            short: 'PT'
         },
         {
             num: 6,
-            name: 'Sobota'
+            name: 'Sobota',
+            short: 'SOB'
         },
         {
             num: 0,
-            'name': 'Niedziela'
+            name: 'Niedziela',
+            short: 'ND'
         }
     ]
 }
