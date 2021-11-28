@@ -15,12 +15,15 @@ import com.wellbeeing.wellbeeing.service.telemedic.MeasureTypeService;
 import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -43,6 +46,33 @@ public class MeasureController {
         this.userService = userService;
         this.profileService = profileService;
         this.profileConnService = profileConnService;
+    }
+
+    @RequestMapping(path = "measures/user/{user_id}/type/{type_id}/from/{date_from}/to/{date_to}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserMeasuresByTypeAndDate(@PathVariable("type_id") UUID measureTypeId,
+                                                          @PathVariable("user_id") UUID measuresOwnerId,
+                                                          @PathVariable("date_from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
+                                                          @PathVariable("date_to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date to, Principal principal)
+            throws NotFoundException, ForbiddenException
+    {
+        UUID authorizedUserId = userService.findUserIdByUsername(principal.getName());
+        Profile authorizedUser = profileService.getProfileById(authorizedUserId);
+        MeasureType measuresType = measureTypeService.getMeasureTypeById(measureTypeId);
+        Profile measuresOwner = profileService.getProfileById(measuresOwnerId);
+
+        if(!measuresOwnerId.equals(authorizedUserId)){
+            ProfileConnection pConnResult = profileConnService.getProfileConnectionByProfileAndConnectedWithAndType(
+                    measuresOwner, authorizedUser, EConnectionType.WITH_DOCTOR);
+
+            if(pConnResult == null || !pConnResult.isAccepted()){
+                throw new ForbiddenException("You do not have access rights to do that!");
+            }
+        }
+
+        List<Measure> measures = measureService.getMeasuresByProfileAndMeasureTypeAndMeasureDateBetween(measuresOwner,
+                measuresType, from, to);
+
+        return new ResponseEntity<>(measures, HttpStatus.OK);
     }
 
     @RequestMapping(path = "measures/user/{user_id}/type/{type_id}", method = RequestMethod.GET)

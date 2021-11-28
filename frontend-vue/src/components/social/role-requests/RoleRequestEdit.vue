@@ -70,11 +70,27 @@
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-12 fw-bolder">
+                            <div class="col fw-bolder">
                                 Komentarz:
                             </div>
-                            <div class="col-12">
+                            <div class="col fw-bolder" v-if="editedRoleRequest.role === 'ROLE_DOCTOR'">
+                                Specjalizacja:
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
                                 {{ this.roleRequestSource.comment === "" ? "-" : this.roleRequestSource.comment }}
+                            </div>
+                            <div class="col" v-if="editedRoleRequest.role === 'ROLE_DOCTOR'">
+                                <select
+                                    class="form-select"
+                                    aria-label="Default select example"
+                                    v-model="editedRoleRequest.specialization.id"
+                                    @focus="clearStatus"
+                                >
+                                    <option v-for="spec in possibleSpecializations" :key="spec.name" :value="spec.id">{{ spec.name }}</option>
+                                </select>
+
                             </div>
 
                         </div>
@@ -83,7 +99,7 @@
                                 Proszę uzupełnić wszystkie dane!
                             </p>
                         </div>
-                        <div class="row">
+                        <div class="row mt-3">
                             <div class="col text-end">
                                 <button class="btn-panel-social" @click="updateRoleRequest">Uaktualnij prośbę</button>
                             </div>
@@ -103,9 +119,13 @@ export default {
     data () {
         return {
             possibleRoles: [],
+            possibleSpecializations: [],
             editedRoleRequest: {
                 role: "",
-                documentImgPath: ""
+                documentImgPath: "",
+                specialization: {
+                    id: ""
+                }
             },
             editFile: false,
 
@@ -134,8 +154,32 @@ export default {
 
             this.editedRoleRequest.role = this.roleRequestSource.role
             this.editedRoleRequest.documentImgPath = this.roleRequestSource.documentImgPath
+            if(this.roleRequestSource.specialization != null)
+                this.editedRoleRequest.specialization.id = this.roleRequestSource.specialization.id
             this.clearStatus()
             this.editFile = false
+        },
+        checkPossibleDoctorSpecializations() {
+            const url = `${this.apiURL}doctor-specializations`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+
+                const doctorSpec = response.data
+                console.log('doc', doctorSpec)
+                this.$store.getters.getSpecializations.forEach((elem) => {
+                    if (doctorSpec.map(spec => spec.name).includes(elem)) {
+                        const indexToDelete = doctorSpec.map(spec => spec.name).indexOf(elem)
+                        doctorSpec.splice(indexToDelete, 1)
+                    }
+                })
+                this.possibleSpecializations = doctorSpec
+                if (this.possibleSpecializations !== [] && !this.possibleRoles.includes('ROLE_DOCTOR'))
+                    this.possibleRoles.push('ROLE_DOCTOR')
+                console.log('poss', this.possibleSpecializations)
+            }).catch(error => {
+                console.log(error.response.status)
+            });
         },
         deleteFile() {
             this.editFile = true
@@ -157,12 +201,13 @@ export default {
                 }
             }
 
-            if (this.invalidRole) {
+            if (this.invalidRole || this.invalidSpecialization) {
                 this.errorRequest = true
-                // console.log("wielbłąd")
                 return
             }
             //clearinputs
+            if(this.editedRoleRequest.role !== 'ROLE_DOCTOR')
+                this.editedRoleRequest.specialization = null
             const url = `${this.apiURL}role-request/${this.roleRequestSource.roleReqId}`
             const token = this.$store.getters.getToken;
             this.axios.put(url, this.editedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
@@ -189,9 +234,11 @@ export default {
     watch: {
         roleRequestSource: function() {
             this.checkPossibleRoles()
+            this.checkPossibleDoctorSpecializations()
         },
         refresh: function () {
             this.checkPossibleRoles()
+            this.checkPossibleDoctorSpecializations()
         }
     },
     computed: {
@@ -200,10 +247,14 @@ export default {
         },
         invalidFile() {
             return this.editedRoleRequest.documentImgPath === ""
+        },
+        invalidSpecialization() {
+            return this.editedRoleRequest.role === 'ROLE_DOCTOR' && this.editedRoleRequest.specialization.id === ""
         }
     },
     created() {
         this.checkPossibleRoles()
+        this.checkPossibleDoctorSpecializations()
     },
     mounted() {
         this.editFile = false

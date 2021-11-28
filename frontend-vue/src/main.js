@@ -7,6 +7,7 @@ import router from './router'
 import axios from "axios";
 import VueAxios from "vue-axios";
 import vSelect from 'vue-select'
+import VueApexCharts from "vue3-apexcharts";
 import { func_global} from './global-func.js'
 
 import Default from "@/layouts/Default";
@@ -21,7 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
     faDownload,
     faInfo,
-    faListUl,
+    faListUl, faPaperPlane,
     faPencilAlt,
     faPlusCircle, faSearch,
     faTh,
@@ -84,6 +85,7 @@ library.add(faChevronLeft)
 library.add(faChevronRight)
 library.add(faFastBackward)
 library.add(faFastForward)
+library.add(faPaperPlane)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
@@ -122,6 +124,7 @@ app.config.globalProperties.$func_global = func_global
 
 app.use(store)
 app.use(VueAxios, axios)
+app.use(VueApexCharts);
 app.component('v-select', vSelect)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', Default)

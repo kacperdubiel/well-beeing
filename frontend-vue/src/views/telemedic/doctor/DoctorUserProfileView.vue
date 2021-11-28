@@ -25,7 +25,7 @@
 
 <script>
 import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
-import MeasuresComponent from "@/components/telemedic/MeasuresComponent";
+import MeasuresComponent from "@/components/telemedic/measures/MeasuresComponent";
 
 export default {
     name: 'DoctorUserProfileView',

@@ -4,7 +4,7 @@ import com.wellbeeing.wellbeeing.domain.account.*;
 import com.wellbeeing.wellbeeing.domain.social.ENutritionTag;
 import com.wellbeeing.wellbeeing.domain.social.ESportTag;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.repository.account.TrainerDAO;
+import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.account.DoctorProfileDAO;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
@@ -27,19 +27,19 @@ import java.util.*;
 public class ProfileServiceImpl implements ProfileService {
     private ProfileDAO profileDAO;
     private UserDAO userDAO;
-    private TrainerDAO trainerDAO;
+    private TrainerProfileDAO trainerProfileDAO;
     private DoctorProfileDAO doctorProfileDAO;
     private DoctorSpecializationService doctorSpecService;
 
     @Autowired
     public ProfileServiceImpl(@Qualifier("profileDAO") ProfileDAO profileDAO,
                               @Qualifier("userDAO") UserDAO userDAO,
-                              @Qualifier("trainerDAO") TrainerDAO trainerDAO,
+                              @Qualifier("trainerProfileDAO") TrainerProfileDAO trainerProfileDAO,
                               @Qualifier("doctorProfileDAO") DoctorProfileDAO doctorProfileDAO,
                               @Qualifier("doctorSpecializationService") DoctorSpecializationService doctorSpecService) {
         this.profileDAO = profileDAO;
         this.userDAO = userDAO;
-        this.trainerDAO = trainerDAO;
+        this.trainerProfileDAO = trainerProfileDAO;
         this.doctorProfileDAO = doctorProfileDAO;
         this.doctorSpecService = doctorSpecService;
     }
@@ -50,6 +50,11 @@ public class ProfileServiceImpl implements ProfileService {
         if (actProfile != null)
             return actProfile;
         else throw new NotFoundException("Profile not found");
+    }
+
+    @Override
+    public Page<Profile> getProfilesFiltered(Specification<Profile> profileSpec, Pageable pageable) {
+        return profileDAO.findAll(profileSpec, pageable);
     }
 
     @Override
@@ -80,7 +85,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<TrainerProfile> getTrainersProfiles() {
-        return trainerDAO.findAll();
+        return trainerProfileDAO.findAll();
     }
 
     @Override
@@ -146,7 +151,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public TrainerProfile getTrainerProfileById(UUID trainerProfileId) throws NotFoundException {
-        TrainerProfile trainerProfile = trainerDAO.findById(trainerProfileId).orElse(null);
+        TrainerProfile trainerProfile = trainerProfileDAO.findById(trainerProfileId).orElse(null);
         if(trainerProfile == null) {
             throw new NotFoundException("Trainer profile with id: " + trainerProfileId + " not found");
         }

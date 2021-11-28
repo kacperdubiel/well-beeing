@@ -26,8 +26,7 @@
         </div>
         <div class="row text-start px-4 pt-2 pb-1">
             <div class="col">
-                <p id="post-content">
-                    {{this.postSource.postContent}}
+                <p id="post-content" v-html="this.$func_global.convertNewLines(this.postSource.postContent)">
                 </p>
             </div>
         </div>
@@ -36,13 +35,18 @@
                 <img :src="postPictureSrc" alt="Post picture"  id="post-picture" class="w-100">
             </div>
         </div>
+        <div class="row text-start pb-3" v-if="this.postSource.originalPost">
+            <div class="col">
+                <shared-post :post-source="this.postSource.originalPost" class="my-2 mx-4"/>
+            </div>
+        </div>
         <div class="d-flex flex-row px-4 py-2 align-items-center">
 
             <div class="d-flex flex-column text-start" v-if="this.postSource.likes.length > 0">
-                <button data-bs-toggle="modal" data-bs-target="#likesListModal" class="no-bg-open-modal" @click="handleGetLikes(this.postSource.likes)">
+                <button data-bs-toggle="modal" data-bs-target="#likesListModal" class="no-bg-btn" @click="handleGetLikes(this.postSource.likes)">
                     <div class="text-start d-flex align-items-center ms-3 interact" >
                         <font-awesome-icon id="heart-icon" :icon="['fa', 'heart']" class="me-2"/>
-                        <span>
+                        <span class="text-center">
                             {{this.postSource.likes.length}}
                         </span>
 
@@ -52,19 +56,18 @@
             <div class="d-flex flex-column text-start ms-auto pe-3" v-if="this.commentsNavigation.totalElements > 0">
                 <button class="no-bg-btn" @click="showComments" >
                     <span>
-                        {{this.commentsNavigation.totalElements}} komentarzy
+                        {{this.commentsNavigation.totalElements}} {{this.$func_global.mapCommentForm(this.commentsNavigation.totalElements)}}
                     </span>
 
                 </button>
             </div>
-            <div class="d-flex flex-column text-start">
-                <button class="no-bg-btn">
-                    <span>
-<!--                        {{this.postSource.comments.length}} -->
-                        0 udostępnień
-                    </span>
-                </button>
-            </div>
+<!--            <div class="d-flex flex-column text-start">-->
+<!--                <button class="no-bg-btn">-->
+<!--                    <span>-->
+<!--                        {{this.postSource.sharingCounter}} {{this.$func_global.mapShareForm(this.postSource.sharingCounter)}}-->
+<!--                    </span>-->
+<!--                </button>-->
+<!--            </div>-->
         </div>
 
         <div class="row mx-4 py-2 align-items-center" id="interactions">
@@ -82,7 +85,7 @@
                 </button>
             </div>
             <div class="col px-1 interact">
-                <button class="no-bg interact w-100">
+                <button class="no-bg interact w-100" @click="handleShare(this.postSource.postId)" data-bs-toggle="modal" data-bs-target="#postShareModal">
                     <font-awesome-icon :icon="['far', 'share-square']" class="me-2"/>
                     Udostępnij
                 </button>
@@ -108,6 +111,7 @@
 <script>
 import NewComment from "@/components/social/comments/NewComment";
 import CommentsList from "@/components/social/comments/CommentsList";
+import SharedPost from "@/components/social/posts/SharedPost";
 export default {
     name: "Post",
     props: {
@@ -115,7 +119,8 @@ export default {
     },
     components: {
         NewComment,
-        CommentsList
+        CommentsList,
+        SharedPost
     },
     data() {
         return {
@@ -172,6 +177,9 @@ export default {
         },
         handleEdit(post) {
             this.$emit('edit:post', post)
+        },
+        handleShare(postId) {
+            this.$emit('share:post', postId)
         },
         handleGetLikes(likes) {
             this.$emit('get:likes', likes)
@@ -283,6 +291,7 @@ h6 {
 .no-bg:hover {
     background-color: var(--GREY2);
 }
+
 .no-bg {
     color: white;
     border-radius: 5px;

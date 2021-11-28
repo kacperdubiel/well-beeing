@@ -1,18 +1,20 @@
 <template>
-    <div class="exercise" :id="exerciseSource.exerciseId">
+    <div :id="exerciseSource.exerciseId" class="exercise">
         <div class="row mt-2">
             <div class="col-8">
-                <p>{{exerciseSource.name}}</p>
+                <p>{{ exerciseSource.name }}</p>
             </div>
             <div class="col-4">
-                <button class="btn-white mx-2" @click="openInfoModal(exerciseSource)" data-bs-toggle="modal" data-bs-target="#infoExerciseModal">
-                    <font-awesome-icon :icon="['fa', 'info']" />
+                <button class="btn-white mx-2" data-bs-target="#infoExerciseModal" data-bs-toggle="modal"
+                        @click="openInfoModal(exerciseSource)">
+                    <font-awesome-icon :icon="['fa', 'info']"/>
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col-12 additional">
-                {{this.$func_global.mapExerciseType(exerciseSource.exerciseType)}} | {{exerciseSource.caloriesBurned}} kcal
+                {{ this.$func_global.mapExerciseType(exerciseSource.exerciseType) }} |
+                {{ exerciseSource.caloriesBurned }} kcal
             </div>
 
         </div>
@@ -37,8 +39,9 @@ export default {
 
 <style scoped>
 .row.mt-2 {
-    height: 50px;
+    height: 70px;
 }
+
 .additional {
     font-size: 12px;
 }

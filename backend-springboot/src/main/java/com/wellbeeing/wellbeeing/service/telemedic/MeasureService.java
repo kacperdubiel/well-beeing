@@ -8,11 +8,14 @@ import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import org.springframework.data.domain.Page;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public interface MeasureService {
     Measure getMeasureById(UUID measureId) throws NotFoundException;
     Page<Measure> getMeasuresByProfileAndMeasureType(Profile profile, MeasureType measureType, int page, int pageSize);
+    List<Measure> getMeasuresByProfileAndMeasureTypeAndMeasureDateBetween(Profile profile, MeasureType measureType, Date start, Date end);
     Measure addMeasure(Measure measure) throws ConflictException, NotFoundException, IllegalArgumentException;
     Measure updateMeasure(Measure updatedMeasure) throws NotFoundException, IllegalArgumentException;
     void deleteMeasureById(UUID measureId) throws NotFoundException;

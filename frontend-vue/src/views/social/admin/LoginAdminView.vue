@@ -1,45 +1,44 @@
 <template>
     <div id="login-admin-page" class="container-fluid mw-100">
-        <form>
-            <div class="row justify-content-center">
-                <div class="col-4 mt-5 text-start">
-                    <label for="mailInput" class="form-label">Adres e-mail</label>
-                    <input
-                        type="email"
-                        class="form-control"
-                        id="mailInput"
-                        placeholder="Adres e-mail"
-                        v-model="email"
-                    >
-                </div>
+        <div class="row justify-content-center">
+            <div class="col-4 mt-5 text-start">
+                <label for="mailInput" class="form-label">Adres e-mail</label>
+                <input
+                    type="email"
+                    class="form-control"
+                    id="mailInput"
+                    placeholder="Adres e-mail"
+                    v-model="email"
+                    @keydown.enter="login"
+                >
+            </div>
 
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-4 mt-4 text-start">
+                <label for="passwordInput" class="form-label">Hasło</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="passwordInput"
+                    placeholder="Hasło"
+                    v-model="password"
+                    @keydown.enter="login"
+                >
             </div>
-            <div class="row justify-content-center">
-                <div class="col-4 mt-4 text-start">
-                    <label for="passwordInput" class="form-label">Hasło</label>
-                    <input
-                        type="password"
-                        class="form-control"
-                        id="passwordInput"
-                        placeholder="Hasło"
-                        v-model="password"
-                    >
-                </div>
+        </div>
+        <div class="row justify-content-center" v-if="errorLogin">
+            <div class="col-4 mt-1 text-start">
+                <p class="has-error">
+                    Niepoprane dane!
+                </p>
             </div>
-            <div class="row justify-content-center" v-if="errorLogin">
-                <div class="col-4 mt-1 text-start">
-                    <p class="has-error">
-                        Niepoprane dane!
-                    </p>
-                </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-4 mt-3 text-end">
+                <button type="submit" class="btn btn-primary" @click="login">Zaloguj się</button>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-4 mt-3 text-end">
-                    <button type="submit" class="btn btn-primary" @click="login">Zaloguj się</button>
-                </div>
-            </div>
-        </form>
-
+        </div>
     </div>
 </template>
 

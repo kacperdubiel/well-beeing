@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.social;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,6 +34,10 @@ public class RoleRequest {
     @Enumerated(EnumType.STRING)
     @Column
     private ERole role;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "specialization_id")
+    private DoctorSpecialization specialization = null;
 
     @Column(unique = true)
     private String documentImgPath;

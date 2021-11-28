@@ -2,6 +2,8 @@ package com.wellbeeing.wellbeeing.service.account;
 
 import com.wellbeeing.wellbeeing.domain.account.*;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.social.ENutritionTag;
+import com.wellbeeing.wellbeeing.domain.social.ESportTag;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.RoleDAO;
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                     BCrypt.hashpw(user.getPassword(), BCrypt.gensalt("$2a$")), user.getRoles());
             userDAO.save(newUser);
 
-            Profile newUserProfile = Profile.builder().profileUser(newUser).id(newUser.getId()).build();
+            Profile newUserProfile = Profile.builder().profileUser(newUser).id(newUser.getId()).eNutritionTag(ENutritionTag.NONE).eSportTag(ESportTag.NONE).build();
             profileDAO.save(newUserProfile);
             ProfileCard newUserProfileCard = ProfileCard.builder().profile(newUserProfile).build();
             newUserProfile.setProfileCard(newUserProfileCard);
@@ -124,7 +126,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void changeUserEmail(UUID userId, String email) throws ConflictException {
+    public User changeUserEmail(UUID userId, String email) throws ConflictException {
         User user = userDAO.findUserById(userId).orElse(null);
 
         if(user == null)
@@ -134,7 +136,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw new ConflictException("Email: " + email + " is already taken");
         }
         user.setEmail(email);
-        userDAO.save(user);
+        return userDAO.save(user);
     }
     @Override
     public boolean checkIfValidOldPassword(final User user, final String oldPassword) {

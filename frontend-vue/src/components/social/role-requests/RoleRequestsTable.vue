@@ -8,7 +8,7 @@
                     <th>Rola</th>
                     <th>Dokument</th>
                     <th>Status</th>
-
+                    <th>Specjalizacja</th>
                     <th></th>
                 </tr>
             </thead>
@@ -23,8 +23,13 @@
                         </button>
                     </td>
                     <td>{{ this.$func_global.mapRoleRequestStatus(req.status) }}</td>
+                    <td>
+                        <span v-if="req.role === 'ROLE_DOCTOR' && req.specialization !== null">{{req.specialization.name}}</span>
+                        <span v-else>-</span>
+
+                    </td>
                     <td class="text-end" v-if="!isAdmin">
-                        <button class="btn-white mx-1" @click="handleCancel(req.roleReqId)" v-if="req.status === 'PENDING'">
+                        <button class="btn-white mx-1" data-bs-toggle="modal" data-bs-target="#cancelRoleRequestModal" @click="handleGetCancel(req.roleReqId)" v-if="req.status === 'PENDING'">
                             Anuluj
                         </button>
                         <button class="btn-white mx-1" v-if="req.status === 'PENDING'" @click="handleGet(req)" data-bs-toggle="modal" data-bs-target="#roleRequestEditModal2">
@@ -42,12 +47,50 @@
                             <font-awesome-icon :icon="['fa', 'check']" size="1x"/>
                         </button>
                     </td>
+
                 </tr>
             </tbody>
         </table>
         <RoleRequestEdit :role-request-source="roleRequest" :refresh="openingModal" v-if="roleRequest && !isAdmin" @download:file="downloadFile"/>
         <RoleRequestDetails :role-request-source="roleRequest" v-if="roleRequest && !isAdmin"  @download:file="downloadFile"/>
         <RoleRequestReject :role-request-source="roleRequest" v-if="roleRequest && isAdmin" @reject:role-request="rejectRoleRequest"/>
+
+        <!--        Modal - cancel role request-->
+        <div class="modal fade" id="cancelRoleRequestModal" tabindex="-1" aria-labelledby="cancelRoleRequestModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title ms-2" id="cancelRoleRequestModalLabel">
+                            Anulowanie prośby o nadanie roli
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="col">
+                                <div class="row">
+                                    <span>
+                                        Czy na pewno chcesz anulowac tę prośbę?
+                                    </span>
+                                </div>
+
+                                <div class="row justify-content-end mt-3">
+                                    <div class="col-3">
+                                        <button class="btn-panel- p-2" data-bs-dismiss="modal">Powrót</button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="btn-panel-social p-2" data-bs-dismiss="modal" @click="handleCancel(idToCancel)">
+                                            Potwierdź
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -66,7 +109,8 @@ export default {
         return {
             roleRequest: Object,
             openingModal: 0,
-            processedRoleRequest: Object
+            processedRoleRequest: Object,
+            idToCancel: 0
         }
     },
     props: {
@@ -79,11 +123,10 @@ export default {
             this.$func_global.downloadPdfFile(url, token)
         },
         handleCancel (id) {
-            if (confirm('Na pewno chcesz anulować prośbę?')) {
-                this.$emit('cancel:roleRequest', id)
-            } else {
-                console.log('Anuluj')
-            }
+            this.$emit('cancel:roleRequest', id)
+        },
+        handleGetCancel (id) {
+            this.idToCancel = id
         },
         handleGet(req) {
             this.roleRequest = req
@@ -95,30 +138,16 @@ export default {
             const url = `${this.apiURL}role-request/${req.roleReqId}/process`
             const token = this.$store.getters.getToken;
             this.processedRoleRequest = {
-                "status": "ACCEPTED"
+                "status": "ACCEPTED",
+                "specialization": this.specialization
             }
             this.axios.patch(url, this.processedRoleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
-                this.addRole(req.submitter.id, req.role)
                 this.$parent.getRoleRequests()
             }).catch(error => {
                 console.log(error.response)
             });
         },
-        addRole(id, role) {
-            const url = `${this.apiURL}add-role-to-user-id`
-            const token = this.$store.getters.getToken;
-            const data = {
-                "userId": id,
-                "role": role
-            }
-            this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response)
-            }).catch(error => {
-                console.log(error.response)
-            });
-        },
-
         rejectRoleRequest(id, comment) {
             const url = `${this.apiURL}role-request/${id}/process`
             const token = this.$store.getters.getToken;
@@ -132,7 +161,7 @@ export default {
             }).catch(error => {
                 console.log(error.response)
             });
-        }
+        },
     },
     computed: {
         isAdmin() {
@@ -144,6 +173,13 @@ export default {
 </script>
 
 <style scoped>
+.modal-body {
+    color: var(--GREY3);
+    text-align: left;
+}
 
+.modal-header {
+    color: var(--GREY3);
+}
 
 </style>

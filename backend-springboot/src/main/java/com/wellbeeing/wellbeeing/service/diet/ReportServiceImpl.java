@@ -190,6 +190,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public List<Report> getReportsByProfileIdAndDate(UUID profileId, LocalDate start, LocalDate end) throws NotFoundException {
+        Profile profile = profileDAO.findById(profileId).orElse(null);
+        if(profile == null)
+            throw new NotFoundException("Profile with id: " + profileId + " not found");
+        return reportDAO.findByReportOwnerIdAndReportDateBetweenOrderByReportDate(profileId, start, end);
+    }
+
+    @Override
     public void updateReportDerivedElementsByReportId(UUID reportId) throws NotFoundException {
         Report report = getReportById(reportId);
         report.setDerived();

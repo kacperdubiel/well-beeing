@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.diet.Report;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
@@ -203,6 +204,14 @@ public class SportReportServiceImpl implements SportReportService{
             re.preUpdate();
         });
         return reports;
+    }
+
+    @Override
+    public List<SportReport> getSportReportsByProfileIdAndDate(UUID profileId, LocalDate start, LocalDate end) throws NotFoundException {
+        Profile profile = profileDAO.findById(profileId).orElse(null);
+        if(profile == null)
+            throw new NotFoundException("Profile with id: " + profileId + " not found");
+        return sportReportDAO.findByReportOwnerIdAndReportDateBetweenOrderByReportDate(profileId, start, end);
     }
 
     @Override

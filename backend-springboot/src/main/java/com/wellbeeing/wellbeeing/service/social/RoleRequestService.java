@@ -1,5 +1,7 @@
 package com.wellbeeing.wellbeeing.service.social;
 
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
+import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.data.domain.Page;
@@ -14,9 +16,9 @@ public interface RoleRequestService {
     RoleRequest getRoleRequest(long roleRequestId);
     List<RoleRequest> getMyRoleRequests(String ownerName);
 
-    RoleRequest submitRoleRequest(RoleRequest roleRequest, String submitterName) throws NotFoundException;
+    RoleRequest submitRoleRequest(RoleRequest roleRequest, String submitterName) throws NotFoundException, ForbiddenException;
 
-    RoleRequest updateRoleRequest(RoleRequest roleRequest, String updaterName) throws NotFoundException;
-    boolean processRoleRequest(RoleRequest roleRequest) throws NotFoundException;
-    boolean cancelRoleRequest(long roleRequestId, String cancellerName) throws NotFoundException;
+    RoleRequest updateRoleRequest(RoleRequest roleRequest, String updaterName) throws NotFoundException, ForbiddenException;
+    boolean processRoleRequest(long roleReqId, RoleRequest roleRequest) throws NotFoundException, IllegalArgumentException;
+    boolean cancelRoleRequest(long roleRequestId, String cancellerName) throws NotFoundException, ForbiddenException;
 }

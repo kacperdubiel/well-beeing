@@ -30,7 +30,7 @@
                         TRENER
                     </button>
                 </div>
-                <div class="col-lg-3 col-md-12 my-1 mt-lg-0" v-if="!this.$store.getters.getRoles.includes('ROLE_DOCTOR')" >
+                <div class="col-lg-3 col-md-12 my-1 mt-lg-0" v-if="this.possibleSpecializations.length !== 0" >
                     <button
                         class="btn-panel-"
                         :class="{ 'doctor' : this.roleRequest.role === 'ROLE_DOCTOR'}"
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mt-3">
                 <h5 class="t-2 step">
                     2. Dołącz dowód swoich kompetencji (.pdf)
                 </h5>
@@ -56,6 +56,24 @@
                         accept="application/pdf"
                         @focus="clearStatus"
                     >
+                </div>
+            </div>
+
+            <div class="row mt-3" v-if="roleRequest.role === 'ROLE_DOCTOR'">
+                <h5 class="t-2 step">
+                    3. Wybierz specjalizację
+                </h5>
+            </div>
+            <div class="row" v-if="roleRequest.role === 'ROLE_DOCTOR' && this.possibleSpecializations !== []">
+                <div class="col-9 col-lg-7 offset-1">
+                    <select
+                        class="form-select"
+                        aria-label="Default select example"
+                        v-model="roleRequest.specialization.id"
+                        @focus="clearStatus"
+                    >
+                        <option v-for="spec in possibleSpecializations" :key="spec.name" :value="spec.id">{{ spec.name }}</option>
+                    </select>
                 </div>
             </div>
 
@@ -93,13 +111,18 @@ export default {
         return {
             roleRequest: {
                 role: "",
-                documentImgPath: ""
+                documentImgPath: "",
+                specialization: {
+                    id: ""
+                }
             },
             roleRequests: [],
             submittingRequest: false,
             errorRequest: false,
             successRequest: false,
-            requestId: 0
+            requestId: 0,
+            possibleSpecializations: []
+
         }
     },
     methods: {
@@ -113,14 +136,15 @@ export default {
             if (this.$refs.myfile.files.length > 0) {
                 this.roleRequest.documentImgPath = this.$refs.myfile.files[0].name
             }
-            if (this.invalidRole || this.invalidFile) {
+            if (this.invalidRole || this.invalidFile || this.invalidSpecialization) {
                 this.errorRequest = true
-                // console.log("wielbłąd")
                 return
             }
             //clearinputs
             const url = `${this.apiURL}role-request`
             const token = this.$store.getters.getToken;
+            if(this.roleRequest.specialization.id === "")
+                this.roleRequest.specialization = null
             this.axios.post(url, this.roleRequest, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.requestId = response.data['roleReqId']
                 this.$func_global.importData(this.$refs.myfile, this.$store.getters.getToken, 'roleRequest', this.requestId)
@@ -132,9 +156,6 @@ export default {
 
             this.submittingRequest = false
         },
-
-
-
         clearStatus() {
             this.submittingRequest = false
             this.errorRequest = false
@@ -143,6 +164,9 @@ export default {
         clearInputs () {
             this.roleRequest.role = ""
             document.getElementById("formFile").value = ""
+            this.roleRequest.specialization = {
+                id: ""
+            }
         },
         getMyRoleRequests() {
             const url = `${this.apiURL}role-request/my`
@@ -155,7 +179,6 @@ export default {
         cancelRoleRequest(id) {
             const url = `${this.apiURL}role-request/${id}/cancel`
             const token = this.$store.getters.getToken;
-            console.log('tu jestem')
             this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
                 this.getMyRoleRequests()
@@ -174,10 +197,39 @@ export default {
                 })
                 this.$store.commit('setRoles', roles);
                 console.log('role', this.$store.getters.getRoles)
+
+                let specializations = []
+                this.$store.commit('setSpecialization', specializations);
+                if (response.data['doctorProfile'] !== null) {
+                    response.data['doctorProfile']['specializations'].forEach((e) => {
+                        specializations.push(e['name'])
+                    })
+                    this.$store.commit('setSpecialization', specializations);
+                    console.log('specializations', this.$store.getters.getSpecializations)
+                }
+
             }).catch(error => {
                 console.log(error.response);
             });
         },
+        getDoctorSpecializations() {
+            const url = `${this.apiURL}doctor-specializations`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+
+                const doctorSpec = response.data
+                this.$store.getters.getSpecializations.forEach((elem) => {
+                    if (doctorSpec.map(spec => spec.name).includes(elem)) {
+                        const indexToDelete = doctorSpec.map(spec => spec.name).indexOf(elem)
+                        doctorSpec.splice(indexToDelete, 1)
+                    }
+                })
+                this.possibleSpecializations = doctorSpec
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+        }
     },
     computed: {
         invalidRole() {
@@ -185,11 +237,15 @@ export default {
         },
         invalidFile() {
             return this.roleRequest.documentImgPath === ""
+        },
+        invalidSpecialization() {
+            return this.roleRequest.role === 'ROLE_DOCTOR' && this.roleRequest.specialization.id === ""
         }
     },
     mounted() {
         this.getMyRoleRequests()
         this.getUserInfo()
+        this.getDoctorSpecializations()
     }
 }
 </script>

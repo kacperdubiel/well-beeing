@@ -7,11 +7,14 @@ import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
+import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
 
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import org.hibernate.annotations.Formula;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,6 +41,8 @@ public class Profile {
     private String firstName;
     @Column
     private String lastName;
+    @Formula(value = " concat(first_name, ' ', last_name) ")
+    private String fullName;
     @Enumerated(EnumType.STRING)
     @Column
     private ESex ESex;
@@ -47,10 +52,10 @@ public class Profile {
     private Date birthday;
     @Enumerated(EnumType.STRING)
     @Column
-    private ESportTag eSportTag;
+    private ESportTag eSportTag = ESportTag.NONE;
     @Enumerated(EnumType.STRING)
     @Column
-    private ENutritionTag eNutritionTag;
+    private ENutritionTag eNutritionTag = ENutritionTag.NONE;
     @Column
     private LocalDateTime lastRequestTime;
     @MapsId
@@ -59,9 +64,9 @@ public class Profile {
     @JsonIgnore
     private User profileUser;
 
-    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL)
     private DoctorProfile doctorProfile;
-    @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL)
     private TrainerProfile trainerProfile;
     @OneToOne(mappedBy="userProfile", cascade = CascadeType.ALL)
     private DieticianProfile dieticianProfile;
@@ -69,7 +74,7 @@ public class Profile {
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
 
-    @OneToOne(mappedBy="profile", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
     @JsonIgnore
     private Settings settings;
 
@@ -107,7 +112,7 @@ public class Profile {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name="user_roles",
+            name = "user_roles",
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -142,21 +147,6 @@ public class Profile {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
-        this.profileUser = profileUser;
-        this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
-        profileUser.setProfile(this);
-        this.id = profileUser.getId();
-        System.out.println("Escaped constructor");
-    }
-
-
-    public Profile(String firstName, String lastName, Date birthday, ESportTag eSportTag, ENutritionTag eNutritionTag, User profileUser) {
-        System.out.println("Entered constructor");
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.eSportTag = eSportTag;
-        this.eNutritionTag = eNutritionTag;
         this.profileUser = profileUser;
         this.ESex = com.wellbeeing.wellbeeing.domain.account.ESex.MAN;
         profileUser.setProfile(this);

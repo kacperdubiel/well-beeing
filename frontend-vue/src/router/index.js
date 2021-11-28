@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import Home from '../views/Home.vue'
 //import DietView from "@/views/diet/DietView"
 import UserMeasuresView from "@/views/telemedic/user/UserMeasuresView";
@@ -42,7 +42,6 @@ import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView
 import ProfileView from "@/views/social/profile/ProfileView";
 import ProfileEdit from "@/views/social/profile/ProfileEdit";
 import SportReportsComponent from "@/components/sport/SportReportsComponent";
-//import TrainersView from "@/views/sport/trainers/TrainersView";
 import UserTrainerConversationView from "@/views/sport/trainers/UserTrainerConversationView";
 import UserTrainerConversationsView from "@/views/sport/trainers/UserTrainerConversationsView";
 import SearchTrainersView from "@/views/sport/trainers/SearchTrainersView";
@@ -53,12 +52,14 @@ import TrainerUserConversationsView from "@/views/sport/trainers/TrainerUserConv
 import TrainerUserConversationView from "@/views/sport/trainers/TrainerUserConversationView";
 import SportTrainerView from "@/views/sport/SportTrainerView";
 import TrainingPlanRequest from "@/views/sport/TrainingPlanRequest";
+import TrainingPlanRequestForm from "@/components/sport/request/TrainingPlanRequestForm";
+import SearchProfilesView from "@/views/social/SearchProfilesView";
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    meta: { layout: "clean"},
+    meta: {layout: "clean"},
     component: Home
   },
   {
@@ -73,6 +74,11 @@ const routes = [
     path: '/feed',
     name: 'FeedView',
     component: FeedView
+  },
+  {
+    path: '/search',
+    name: 'SearchProfilesView',
+    component: SearchProfilesView
   },
   {
     path: '/diet',
@@ -275,10 +281,14 @@ const routes = [
   },
   {
     path: '/sport/trainer',
-    redirect: {name: 'TrainingPlansView'},
+    redirect: {name: 'TrainerUsersView'},
     name: 'SportTrainerView',
     component: SportTrainerView,
     children: [
+      {
+        path: '',
+        redirect: 'users', // default child path
+      },
       {
         path: 'users',
         name: 'TrainerUsersView',
@@ -287,7 +297,8 @@ const routes = [
       {
         path: 'users/:userId',
         name: 'TrainerUserProfileView',
-        component: TrainerUserProfileView
+        component: TrainerUserProfileView,
+        props: true
       },
       {
         path: 'conversations',
@@ -303,7 +314,13 @@ const routes = [
         path: 'requests',
         name: 'TrainingPlanRequest',
         component: TrainingPlanRequest
-      }
+      },
+      {
+        path: '/requests/:requestId',
+        name: 'TrainingPlanRequestForm',
+        component: TrainingPlanRequestForm,
+        props: true
+      },
     ]
   },
   {
@@ -347,8 +364,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
-  routes
+    history: createWebHashHistory(),
+    routes
 })
 
 export default router

@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.service.social;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Comment;
 import com.wellbeeing.wellbeeing.domain.social.Post;
@@ -58,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(long commentId, Comment comment, String updaterName) throws NotFoundException {
+    public Comment updateComment(long commentId, Comment comment, String updaterName) throws NotFoundException, ForbiddenException {
         comment.setCommentId(commentId);
         Comment targetComment = commentDAO.findById(commentId).orElse(null);
 
@@ -69,7 +70,7 @@ public class CommentServiceImpl implements CommentService {
         Profile commentOwner = targetComment.getCommenter();
 
         if (updaterProfile != commentOwner)
-            throw new NotFoundException("That is not your comment!");
+            throw new ForbiddenException("That is not your comment!");
 
         comment.setCommenter(commentOwner);
         comment.setAddedDate(targetComment.getAddedDate());
@@ -80,17 +81,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public boolean deleteComment(long commentId, String cancellerName) throws NotFoundException {
+    public boolean deleteComment(long commentId, String cancellerName) throws NotFoundException, ForbiddenException {
         Comment targetComment = commentDAO.findById(commentId).orElse(null);
 
         if (targetComment == null)
-            throw new NotFoundException(String.format("There's no post with id=%d", commentId));
+            throw new NotFoundException(String.format("There's no comment with id=%d", commentId));
 
         Profile cancellerProfile = userDAO.findUserByEmail(cancellerName).orElse(null).getProfile();
         Profile commentOwner = targetComment.getCommenter();
 
         if (cancellerProfile != commentOwner)
-            throw new NotFoundException("That is not your comment!");
+            throw new ForbiddenException("That is not your comment!");
 
         targetComment.setDeleted(true);
         commentDAO.save(targetComment);

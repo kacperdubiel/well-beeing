@@ -1,5 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
+import lombok.NoArgsConstructor;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.dish.Dish;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
@@ -13,9 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
 @Getter
 @Setter
 public class DieticianProfile extends SpecialistProfile {
+
+    public DieticianProfile(Profile userProfile) {
+        super(userProfile);
+    }
+
     @Column
     @OneToMany(mappedBy = "dishCreator")
     @JsonIgnore

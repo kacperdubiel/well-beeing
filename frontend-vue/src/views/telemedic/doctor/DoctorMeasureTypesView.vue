@@ -11,7 +11,7 @@
 
 <script>
 import DoctorNavbar from "@/components/telemedic/navbars/DoctorNavbar";
-import MeasureTypesComponent from "@/components/telemedic/MeasureTypesComponent";
+import MeasureTypesComponent from "@/components/telemedic/measures/MeasureTypesComponent";
 
 export default {
     name: 'DoctorMeasureTypesView',

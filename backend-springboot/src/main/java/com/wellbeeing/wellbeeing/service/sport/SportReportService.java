@@ -25,6 +25,7 @@ public interface SportReportService {
         List<SportReport> getSportReportsByProfileId(UUID profileId) throws NotFoundException;
         List<SportReport> getSportReportByDateAndProfileId(LocalDate date, UUID profileId) throws NotFoundException;
         List<SportReport> getSportReportsByMonthAndProfileId(int month, int year, UUID profileId) throws NotFoundException;
+        List<SportReport> getSportReportsByProfileIdAndDate(UUID profileId, LocalDate start, LocalDate end) throws NotFoundException;
 
         SportReport deleteTrainingsFromReportByReportId(UUID reportId, List<Long> trainings) throws NotFoundException;
 

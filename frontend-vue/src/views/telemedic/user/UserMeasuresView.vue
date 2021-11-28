@@ -12,7 +12,7 @@
 
 <script>
 import TelemedicNavbar from "@/components/telemedic/navbars/TelemedicNavbar";
-import MeasuresComponent from "@/components/telemedic/MeasuresComponent";
+import MeasuresComponent from "@/components/telemedic/measures/MeasuresComponent";
 
 export default {
     name: 'UserMeasuresView',

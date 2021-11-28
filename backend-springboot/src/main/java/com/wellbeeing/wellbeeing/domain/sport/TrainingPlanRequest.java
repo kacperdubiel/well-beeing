@@ -3,16 +3,17 @@ package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class TrainingPlanRequest {
     @Id
@@ -30,17 +31,14 @@ public class TrainingPlanRequest {
     private String message;
 
     @Column
-    private Date requestDate = new Date();
+    private LocalDateTime beginningDate;
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime requestDate = LocalDateTime.now();
     @Enumerated(EnumType.STRING)
     @Column
     private ERequestStatus requestStatus = ERequestStatus.SUBMITTED;
-
-    public TrainingPlanRequest(Profile submitter, TrainerProfile trainer, String message) {
-        this.submitter = submitter;
-        this.trainer = trainer;
-        this.message = message;
-    }
-
 
     public void setStatus(String status) {
         this.requestStatus = ERequestStatus.valueOf(status.toUpperCase());
