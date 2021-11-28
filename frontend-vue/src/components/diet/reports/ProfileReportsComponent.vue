@@ -8,32 +8,37 @@
                 <button data-bs-toggle="modal" data-bs-target="#newReportFormModal" class="add-button"> <font-awesome-icon :icon="['fa', 'plus-circle']"/> </button>
             </div>
         </div>
-        <table style="color: white; text-align: start;" class="table">
-            <thead>
-                <tr>
-                    <th class="col-sm-3" scope="col">Data</th>
-                    <th class="col-sm-3" scope="col">Kalorie</th>
-                    <th class="col-sm-1" scope="col">B</th>
-                    <th class="col-sm-1" scope="col">W</th>
-                    <th class="col-sm-1" scope="col">T</th>
-                    <th class="col-sm-3" scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="report in reportsToShow" :key="report.id">
-                    <td>{{report.reportDate}}</td>
-                    <td>{{Math.round(report.derivedNutritionalValues.derivedCalories)}}kcal</td>
-                    <td>{{Math.round(report.derivedNutritionalValues.derivedProteins)}}g</td>
-                    <td>{{Math.round(report.derivedNutritionalValues.derivedCarbohydrates)}}g</td>
-                    <td>{{Math.round(report.derivedNutritionalValues.derivedFats)}}g</td>
-                    <td style="text-align: end;">
-                        <button @click="this.setActualReport(report)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#reportModal"><font-awesome-icon :icon="['fa', 'info']"/></button>
-                        <button @click="this.setActualReport(report)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#reportFormModal"><font-awesome-icon :icon="['fa', 'edit']"/></button>
-                        <button @click="this.setActualReport(report)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#reportDeleteModal"><font-awesome-icon :icon="['fa', 'trash']"/></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div v-if="this.reportsToShow.length != 0">
+            <table style="color: white; text-align: start;" class="table">
+                <thead>
+                    <tr>
+                        <th class="col-sm-3" scope="col">Data</th>
+                        <th class="col-sm-3" scope="col">Kalorie</th>
+                        <th class="col-sm-1" scope="col">B</th>
+                        <th class="col-sm-1" scope="col">W</th>
+                        <th class="col-sm-1" scope="col">T</th>
+                        <th class="col-sm-3" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="report in reportsToShow" :key="report.id">
+                        <td>{{report.reportDate}}</td>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedCalories)}}kcal</td>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedProteins)}}g</td>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedCarbohydrates)}}g</td>
+                        <td>{{Math.round(report.derivedNutritionalValues.derivedFats)}}g</td>
+                        <td style="text-align: end;">
+                            <button @click="this.setActualReport(report)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#reportModal"><font-awesome-icon :icon="['fa', 'info']"/></button>
+                            <button @click="this.setActualReport(report)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#reportFormModal"><font-awesome-icon :icon="['fa', 'edit']"/></button>
+                            <button @click="this.setActualReport(report)" class="btn-icon-panel-diet" data-bs-toggle="modal" data-bs-target="#reportDeleteModal"><font-awesome-icon :icon="['fa', 'trash']"/></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div v-if="this.reportsToShow.length == 0 && this.dataLoaded" class="alert alert-danger" role="alert">
+            Brak raportów na ten rok i miesiąc. 
+        </div>
         <div id="reportModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -43,7 +48,7 @@
                     </div>
                     <div class="modal-body">
                         <div>
-                            <report-component :close="this.closeInfoModal" :report="this.actualModalReport"></report-component>
+                            <report-component :userId="null" :close="this.closeInfoModal" :report="this.actualModalReport"></report-component>
                         </div>
                     </div>
                 </div>
@@ -138,6 +143,7 @@ export default {
             closeInfoModal: false,
             addReportSuccess: false,
             addReportError: false,
+            dataLoaded: false,
         }
     },
     mounted(){
@@ -198,6 +204,7 @@ export default {
                     console.log("TU")
                     console.log(data)
                     console.log(this.reportsToShow)
+                    this.dataLoaded = true
             }).catch(e => alert(e))
         },
         clearError(){

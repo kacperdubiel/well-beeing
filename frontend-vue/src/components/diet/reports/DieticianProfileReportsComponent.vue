@@ -39,38 +39,7 @@
                     </div>
                     <div class="modal-body">
                         <div>
-                            <report-component :close="this.closeInfoModal" :report="this.actualModalReport"></report-component>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="reportDeleteModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade"  tabindex="-1" aria-labelledby="reportDeleteModalLabel" aria-hidden="false">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p style="color: black;">Czy na pewno chcesz usunąć?</p>
-                        <div>
-                            <button @click="this.deleteReport" style="margin: 2px;" type="button" class="btn btn-success" data-bs-dismiss="modal">TAK</button>
-                            <button style="margin: 2px;" type="button" class="btn btn-danger" data-bs-dismiss="modal">NIE</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="reportFormModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="reportFormModalLabel" aria-hidden="false">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 style="color: black;" class="modal-title" id="reportFormModalLabel">Edytuj raport</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div>
-                            <report-form-component @updated:report="this.updateReportsAfterUpdate" :report="this.actualModalReport"></report-form-component>
+                            <report-component :userId="this.userId" :fromDietician="true" :close="this.closeInfoModal" :report="this.actualModalReport"></report-component>
                         </div>
                     </div>
                 </div>
