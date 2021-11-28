@@ -6,6 +6,8 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.UUID;
 
@@ -22,4 +24,6 @@ public interface ProfileConnectionService {
     ProfileConnection addProfileConnection(ProfileConnection profileConnection) throws ConflictException, NotFoundException;
     ProfileConnection markAsAccepted(ProfileConnection updatedProfileConnection) throws NotFoundException, ConflictException;
     void deleteProfileConnectionById(UUID profileConnectionId) throws NotFoundException;
+
+    Page<ProfileConnection> getProfileConnectionsFriends(Specification<ProfileConnection> conSpec, Pageable pageable);
 }

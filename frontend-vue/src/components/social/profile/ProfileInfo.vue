@@ -22,10 +22,10 @@
                 </div>
 
                 <div class="text-start d-flex flex-row ms-2 mt-2">
-                    <div class="p-2 mx-2 tag-sport fw-bolder" v-if="this.profileSource.esportTag !== 'NONE'">
+                    <div class="p-2 mx-2 tag-sport fw-bolder" v-if="this.profileSource.esportTag !== 'NONE' && this.profileSource.esportTag != null">
                         {{ this.$func_global.mapSportTag(this.profileSource.esportTag )}}
                     </div>
-                    <div class="p-2 mx-2 tag-nutrition fw-bolder" v-if="this.profileSource.enutritionTag !== 'NONE'">
+                    <div class="p-2 mx-2 tag-nutrition fw-bolder" v-if="this.profileSource.enutritionTag !== 'NONE' && this.profileSource.enutritionTag != null">
                         {{ this.$func_global.mapNutritionTag(this.profileSource.enutritionTag) }}
                     </div>
 
@@ -34,10 +34,10 @@
             </div>
         </div>
         <div class="d-flex flex-row-reverse px-4 px-2">
-            <button class="btn-white" v-if="!isProfileMine && !this.isFollowedByMe" @click="addFollow">
+            <button class="btn-white fw-bolder" v-if="!isProfileMine && !this.isFollowedByMe" @click="addFollow">
                 Zaobserwuj
             </button>
-            <button class="btn-white" v-else-if="!isProfileMine && this.isFollowedByMe" @click="deleteFollow">
+            <button class="btn-white fw-bolder" v-else-if="!isProfileMine && this.isFollowedByMe" @click="deleteFollow">
                 Przestań obserwować
             </button>
         </div>

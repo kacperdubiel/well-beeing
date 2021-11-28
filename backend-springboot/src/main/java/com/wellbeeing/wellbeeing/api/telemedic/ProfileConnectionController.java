@@ -6,16 +6,21 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
-import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
-import com.wellbeeing.wellbeeing.domain.telemedic.Message;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -39,6 +44,36 @@ public class ProfileConnectionController {
         this.profileConnectionService = profileConnectionService;
         this.userService = userService;
         this.profileService = profileService;
+    }
+
+    @GetMapping("friends")
+    public ResponseEntity<?> getProfileConnectionsMyFriends(
+            @Join(path="connectedWith", alias="with")
+            @Join(path="profile", alias="prof")
+            @Join(path = "prof.profileUser", alias = "profUser")
+            @Join(path = "with.profileUser", alias = "withUser")
+            @Disjunction({
+                    @And({
+                            @Spec(path = "profUser.id", params = "userId", spec = Equal.class),
+                            @Spec(path = "with.fullName", params = "name", spec = LikeIgnoreCase.class),
+                            @Spec(path = "with.eSportTag", params = "eSportTag", spec = Equal.class),
+                            @Spec(path = "with.eNutritionTag", params = "eNutritionTag", spec = Equal.class),
+                            @Spec(path = "connectionType", constVal = "WITH_USER", spec = Equal.class),
+                            @Spec(path = "isAccepted", constVal = "true", spec = Equal.class),
+                    }),
+                    @And({
+                            @Spec(path = "withUser.id", params = "userId", spec = Equal.class),
+                            @Spec(path = "prof.fullName", params = "name", spec = LikeIgnoreCase.class),
+                            @Spec(path = "prof.eSportTag", params = "eSportTag", spec = Equal.class),
+                            @Spec(path = "prof.eNutritionTag", params = "eNutritionTag", spec = Equal.class),
+                            @Spec(path = "connectionType", constVal = "WITH_USER", spec = Equal.class),
+                            @Spec(path = "isAccepted", constVal = "true", spec = Equal.class),
+                    })
+            }) Specification<ProfileConnection> conSpec,
+            @PageableDefault(sort = {"acceptDate"}, size = 20, direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<ProfileConnection> pageProfileConnection = profileConnectionService.getProfileConnectionsFriends(conSpec, pageable);
+        return new ResponseEntity<>(pageProfileConnection, HttpStatus.OK);
     }
 
     @RequestMapping(path = "profile-connections/{id}", method = RequestMethod.GET)
