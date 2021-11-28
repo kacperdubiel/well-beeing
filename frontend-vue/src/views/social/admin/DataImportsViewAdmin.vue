@@ -5,7 +5,7 @@
                 <p class="p-2">Wybierz typ importowanych danych</p>
             </div>
             <div class="col-lg-8">
-                <select @change="clearStatus" class="form-select" id="importType" v-model="this.selectedImportType" aria-label="Default select example">
+                <select @change="clearStatusAndFile" class="form-select" id="importType" v-model="this.selectedImportType" aria-label="Default select example">
                         <option value="PRODUCTS">Produkty</option>
                         <option value="AILMENTS">Dolegliwości/stan fizyczne</option>
                         <option value="DIETS">Diety</option>
@@ -36,10 +36,13 @@
                 Import nie mógł zostać przeprowadzony, wystąpił błąd: {{this.errorMessage}}
             </div>
             <div v-if="this.importSuccess" class="alert alert-success m-3 alert-dismissible fade show" role="alert">
-                Przeprowadzono import: zaimportowano poprawnie wszystkie produkty.
+                Przeprowadzono import: zaimportowano poprawnie wszystkie dane.
+            </div>
+            <div v-if="this.emptyFileError" class="alert alert-danger m-3 alert-dismissible fade show" role="alert">
+                Wybierz plik. 
             </div>
             <div v-if="this.importPartlySuccess" class="alert alert-warning m-3 alert-dismissible fade show" role="alert">
-                Przeprowadzono import: nie udało się zaimportować części produktów: 
+                Przeprowadzono import: nie udało się zaimportować części danych: 
                 <p v-for="error in this.importErrorMessages" :key="error">
                     {{error}}
                 </p>
@@ -77,6 +80,7 @@ export default {
             importPartlySuccess: false,
             importErrorMessages: [],
             errorMessage: '',
+            emptyFileError: false,
             selectedImportType: 'PRODUCTS'
         }
     },
@@ -88,6 +92,11 @@ export default {
             this.importSuccess= false
             this.importErrorMessages= []
             this.errorMessage= ''
+            this.emptyFileError= false
+        },
+        clearStatusAndFile(){
+            this.clearStatus()
+            document.getElementById('dataFormFile').value= null;
         },
         mapSelectedType(){
             if(this.selectedImportType === 'PRODUCTS')
@@ -108,7 +117,12 @@ export default {
                 type = 'importAilments'
             if(this.selectedImportType === 'DIETS')
                 type = 'importDiets'
-
+            
+            if(this.$refs.dataFile.files.length == 0){
+                this.emptyFileError = true;
+                this.loading= false
+                return
+            }
             this.$func_global.importDataFunc(this.$refs.dataFile, this.$store.getters.getToken, type, null)
             .then(
                 (response) => {

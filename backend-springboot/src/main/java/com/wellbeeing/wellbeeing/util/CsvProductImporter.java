@@ -2,7 +2,7 @@ package com.wellbeeing.wellbeeing.util;
 
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
-import com.wellbeeing.wellbeeing.domain.diet.Product;
+import com.wellbeeing.wellbeeing.domain.diet.product.Product;
 import com.wellbeeing.wellbeeing.domain.diet.type.EAilmentType;
 import com.wellbeeing.wellbeeing.repository.diet.AilmentDAO;
 import com.wellbeeing.wellbeeing.repository.diet.NutritionLabelDAO;
