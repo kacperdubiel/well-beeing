@@ -332,7 +332,7 @@ export const func_global = {
         else if(index == "ANY")
             return "Dowolny"
         else
-            return "Nieznany"
+            return " "
     },
     mapGlycemicIndexShort(index){
         if(index == 'VERY_LOW')
@@ -350,7 +350,7 @@ export const func_global = {
         else if(index == "ANY")
             return "(0, 100)"
         else
-            return "Nieznany"
+            return " "
     },
     mapMeasure(measure){
         if(measure == 'GRAM')
@@ -451,6 +451,9 @@ export const func_global = {
             return 'Sobota'
         else if (day == 'SUNDAY')
             return 'Niedziela'
+    },
+    mealsList(){
+        return ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK', 'SUPPER']
     },
     proteinCalories(){
         return 4
