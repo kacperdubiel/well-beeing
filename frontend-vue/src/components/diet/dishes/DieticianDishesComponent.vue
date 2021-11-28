@@ -105,8 +105,8 @@
 
 <script>
 import axios from 'axios'
-import DishComponent from '../DishComponent.vue'
-import DishFormComponent from './DishFormComponent.vue'
+import DishComponent from '@/components/diet/dishes-browser/DishComponent.vue'
+import DishFormComponent from '@/components/diet/dishes/DishFormComponent.vue'
 export default {
     name: "DieticianDishesComponent",
     components: {
