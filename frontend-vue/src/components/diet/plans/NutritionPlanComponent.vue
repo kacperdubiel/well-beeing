@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <div v-if="this.nutritionPlanId != null" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
+        <div v-if="this.nutritionPlanId != null && this.dataLoaded" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
             <div class="carousel-inner">
                 <div v-for="day in this.weekdays" :key="day" class="carousel-item" v-bind:class="{'active' : day=='MONDAY'}">
                     <div class="row">
@@ -41,10 +41,10 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        <div v-if="this.nutritionPlanId == null && !this.fromProfile" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div v-if="(this.nutritionPlanId == null || this.nutritionPlan.id == null) && !this.fromProfile && this.dataLoaded" class="alert alert-danger alert-dismissible fade show" role="alert">
                 Stwórz swój własny główny plan dietetyczny lub wybierz jeden z aktualnych! 
         </div>
-        <div v-if="this.nutritionPlanId == null && this.fromProfile" class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+        <div v-if="this.nutritionPlanId == null && this.fromProfile && this.dataLoaded" class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
                 Brak głównego planu dietetycznego 
         </div>
         <div v-if="deletePositionError" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -62,7 +62,7 @@
                     </div>
                     <div class="modal-body">
                         <div>
-                            <nutrition-plan-day-details-component :positions="actualModalPositions"/>
+                            <nutrition-plan-day-details-component :fromDietician="this.fromProfile" :userId="this.userId" :positions="actualModalPositions"/>
                         </div>
                     </div>
                 </div>
@@ -85,15 +85,15 @@
             </div>
         </div>
         <button id="openDishModal" hidden="true" data-bs-toggle="modal" data-bs-target="#dishPlanModal"/>
-        <div v-if="this.modalPosition != null" id="dishPlanModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="dishPlanModalLabel" aria-hidden="false">
+        <div id="dishPlanModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="dishPlanModalLabel" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 style="color: black;" class="modal-title" id="dishPlanModalLabel">{{this.modalPosition.name}}</h4>
+                        <h4 v-if="this.modalPosition != null" style="color: black;" class="modal-title" id="dishPlanModalLabel">{{this.modalPosition.name}}</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <dish-component :dish="this.modalPosition"></dish-component>
+                        <dish-component v-if="this.modalPosition != null" :dish="this.modalPosition"></dish-component>
                     </div>
                 </div>
             </div>
@@ -103,34 +103,47 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 style="color: black;" class="modal-title" id="dishPlanModalLabel">Generator planu</h4>
-                        <button type="button" @click="clearGeneratorStatus" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button id="generating-form-close" type="button" @click="clearGenerationStatusOnClose" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div style="flex-direction: column; display: flex; justify-content: center; text-align: start;">
-                            <div class="form-check m-1">
-                                <input @click="this.dietGenerationChecked=false" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                                <label style="color: black;" class="form-check-label" for="flexRadioDefault1">
-                                    Wykorzystaj tylko moje kalkulacje
-                                </label>
+                        <div v-if="!this.generationStarted">
+                            <div style="flex-direction: column; display: flex; justify-content: center; text-align: start;">
+                                <div class="form-check m-1">
+                                    <input @click="this.dietGenerationChecked=false" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                                    <label style="color: black;" class="form-check-label" for="flexRadioDefault1">
+                                        Wykorzystaj tylko moje kalkulacje
+                                    </label>
+                                </div>
+                                <div class="form-check m-1">
+                                    <input v-model="this.dietGenerationChecked" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" :checked="true ? this.dietGenerationChecked : false">
+                                    <label style="color: black;" class="form-check-label" for="flexRadioDefault2">
+                                        Wykorzystaj gotowy typ diety
+                                    </label>
+                                </div>
+                                <div v-if="this.dietGenerationChecked" class="mt-4">
+                                    <p style="color: black;">
+                                        Gotowy typ diety: 
+                                    </p>
+                                    <v-select
+                                        id="dietPicker"
+                                        v-model="this.chosenDiet"
+                                        :options="this.diets"
+                                        :reduce="name => name.id"
+                                        label="name"/>
+                                </div>
+                                <button @click="generateNutritionPlan" style="align-self: flex-end;" class="btn-card-panel-diet mt-4">Wygeneruj</button>
                             </div>
-                            <div class="form-check m-1">
-                                <input v-model="this.dietGenerationChecked" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" :checked="true ? this.dietGenerationChecked : false">
-                                <label style="color: black;" class="form-check-label" for="flexRadioDefault2">
-                                    Wykorzystaj gotowy typ diety
-                                </label>
+                        </div>
+                        <div v-else>
+                            <p style="color: black;" v-if="!this.generationFinished"> trwa generowanie </p>
+                            <div v-else>
+                                <div v-if="this.generationSuccess" class="alert alert-success m-2" role="alert">
+                                    Wygenenerowano plan!
+                                </div>
+                                <div v-if="this.generationError" class="alert alert-danger m-2" role="alert">
+                                    Niestety w naszym systemie jest za mało danych, aby wygenerować idealny plan dla Ciebie! Spróbuj później :)
+                                </div>
                             </div>
-                            <div v-if="this.dietGenerationChecked" class="mt-4">
-                                <p style="color: black;">
-                                    Gotowy typ diety: 
-                                </p>
-                                <v-select
-                                    id="dietPicker"
-                                    v-model="this.chosenDiet"
-                                    :options="this.diets"
-                                    :reduce="name => name.id"
-                                    label="name"/>
-                            </div>
-                            <button style="align-self: flex-end;" class="btn-card-panel-diet mt-4">Wygeneruj</button>
                         </div>
                     </div>
                 </div>
@@ -141,8 +154,8 @@
 
 <script>
 import axios from 'axios'
-import DishBrowserComponent from '@/components/diet/DishBrowserComponent.vue'
-import DishComponent from '@/components/diet/DishComponent.vue'
+import DishBrowserComponent from '@/components/diet/dishes-browser/DishBrowserComponent.vue'
+import DishComponent from '@/components/diet/dishes-browser/DishComponent.vue'
 import NutritionPlanPositionComponent from "./NutritionPlanPositionComponent.vue"
 import NutritionPlanDayDetailsComponent from "./NutritionPlanDayDetailsComponent.vue"
 export default {
@@ -156,6 +169,9 @@ export default {
         },
         fromProfile: {
             type: Boolean
+        },
+        userId: {
+            type:String
         }
     },
     watch: {
@@ -172,8 +188,9 @@ export default {
         NutritionPlanDayDetailsComponent
     },
     mounted(){
-        if(this.fromProfile)
+        if(this.fromProfile){
             this.getSingleNutritionPlan(this.nutritionPlanId)
+        }
         this.isForm = false;
         this.getDiets()
     },
@@ -198,7 +215,12 @@ export default {
             diets: [],
             chosenDiet: '',
             
-            dietGenerationChecked: false
+            dietGenerationChecked: false,
+            dataLoaded: false,
+            generationStarted: false,
+            generationFinished: false,
+            generationSuccess: false,
+            generationError: false
         }
     },
     methods: {  
@@ -207,6 +229,18 @@ export default {
                 this.dietGenerationChecked= false
                 this.chosenDiet = ''
             }, 500)
+        },
+        clearGeneratorStatusStatus(){
+            setTimeout(() => {
+                this.generationStarted= false,
+                this.generationFinished = false;
+                this.generationSuccess = false;
+                this.generationError = false;
+            }, 500)
+        },
+        clearGenerationStatusOnClose(){
+            this.clearGeneratorStatus()
+            this.clearGeneratorStatusStatus()
         },
         openDishModal(dish){
             if(dish != null && !this.isForm){
@@ -256,9 +290,48 @@ export default {
             .then(response => {
                 console.log(response)
                 this.nutritionPlan = response.data
+                this.dataLoaded = true
 
             })
             .catch(e => {
+                console.log(e);
+            })
+        },
+        generateNutritionPlan(){
+            this.generationStarted= false,
+            this.generationFinished = false;
+            this.generationSuccess = false;
+            this.generationError = false;
+
+            this.generationStarted = true
+            let dietId;
+            if(this.chosenDiet === ''){
+                dietId = null
+            }
+            else{
+                console.log('chosen diet' + this.chosenDiet)
+                dietId = this.chosenDiet;
+            }
+            axios({
+                method: 'post',
+                headers: {Authorization: 'Bearer ' + this.$store.getters.getToken}, 
+                url: `${this.apiURL}nutrition-plan/generate`,
+                data: {
+                    dietId: dietId,
+                    nutritionPlanId: this.nutritionPlanId
+                }
+            })
+            .then(response => {
+                    console.log(response)
+                    this.nutritionPlan = response.data
+                    this.generationFinished = true;
+                    this.generationSuccess = true;
+                    this.getSingleNutritionPlan(response.data.id)
+                }
+            )
+            .catch(e => {
+                this.generationFinished = true;
+                this.generationError = true;
                 console.log(e);
             })
         },

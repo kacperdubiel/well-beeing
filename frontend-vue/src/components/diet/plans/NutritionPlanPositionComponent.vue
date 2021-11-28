@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <div @click="openModal" style="pointer: cursor;" class="carousel-item-item">
+        <div @click="openModal" style="pointer: cursor;" class="carousel-item-item" data-bs-toggle="modal" data-bs-target="#dishPlanModal">
             <div style="width: 100%; height: 92%; justify-content: center; display: flex;" class="row">
                 <div class="photo-container col-lg-3">
                     <img v-if="this.dishPhotoSrc != ''" class="mt-1 ms-0" :src="this.dishPhotoSrc">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import DishComponent from '@/components/diet/DishComponent.vue'
+import DishComponent from '@/components/diet/dishes-browser/DishComponent.vue'
 export default {
     name: "NutritionPlanPositionComponent",
     props: {
