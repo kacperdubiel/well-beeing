@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.repository.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.Product;
+import com.wellbeeing.wellbeeing.domain.diet.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

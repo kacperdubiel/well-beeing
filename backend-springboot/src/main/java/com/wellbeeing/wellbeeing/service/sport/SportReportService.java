@@ -1,8 +1,5 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
-import com.wellbeeing.wellbeeing.domain.diet.Report;
-import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.ReportExercise;

@@ -1,9 +1,9 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.ProductAmountDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ProductMacroDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ProductMineralDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ProductVitaminDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMacroDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMineralDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductVitaminDetail;
 import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
 import org.springframework.stereotype.Service;
 

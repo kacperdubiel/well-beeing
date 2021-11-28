@@ -1,12 +1,14 @@
 package com.wellbeeing.wellbeeing.service.diet.plan;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionPlanPosition;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlanPosition;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.exception.NutritionPlanGenerationException;
-import com.wellbeeing.wellbeeing.repository.diet.NutritionPlanDAO;
-import com.wellbeeing.wellbeeing.repository.diet.NutritionPlanPositionDAO;
+import com.wellbeeing.wellbeeing.repository.diet.DietDAO;
+import com.wellbeeing.wellbeeing.repository.diet.dish.DishMealTypeDAO;
+import com.wellbeeing.wellbeeing.repository.diet.nutrition_plan.NutritionPlanDAO;
+import com.wellbeeing.wellbeeing.repository.diet.nutrition_plan.NutritionPlanPositionDAO;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,16 +24,22 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     private final NutritionPlanPositionDAO nutritionPlanPositionDAO;
     private final ProfileService profileService;
     private final NutritionPlanGenerationStrategy nutritionPlanGenerationStrategy;
+    private final DishMealTypeDAO dishMealTypeDAO;
+    private final DietDAO dietDAO;
 
     @Autowired
     public NutritionPlanServiceImpl(@Qualifier("nutritionPlanDAO") NutritionPlanDAO nutritionPlanDAO,
                                     @Qualifier("profileService") ProfileService profileService,
                                     @Qualifier("nutritionPlanPositionDAO")
-                                            NutritionPlanPositionDAO nutritionPlanPositionDAO){
+                                            NutritionPlanPositionDAO nutritionPlanPositionDAO,
+                                    @Qualifier("dietDAO") DietDAO dietDAO,
+                                    @Qualifier("dishMealTypeDAO") DishMealTypeDAO dishMealTypeDAO){
         this.nutritionPlanDAO = nutritionPlanDAO;
         this.nutritionPlanPositionDAO = nutritionPlanPositionDAO;
         this.profileService = profileService;
-        this.nutritionPlanGenerationStrategy = new SimpleNutritionPlanGenerationStrategy();
+        this.dishMealTypeDAO = dishMealTypeDAO;
+        this.dietDAO = dietDAO;
+        this.nutritionPlanGenerationStrategy = new SimpleNutritionPlanGenerationStrategy(dishMealTypeDAO, dietDAO);
     }
 
     @Override
@@ -124,9 +132,18 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
     }
 
     @Override
-    public NutritionPlan generateNutritionPlanForProfile(UUID profileId) throws NotFoundException, NutritionPlanGenerationException {
+    public NutritionPlan generateNutritionPlanForProfile(UUID profileId, UUID nutritionPlanId, UUID dietId) throws NotFoundException, NutritionPlanGenerationException {
         Profile profile = profileService.getProfileById(profileId);
-        return nutritionPlanGenerationStrategy.generateNutritionPlan(profile);
+        NutritionPlan np = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
+        NutritionPlan generatedNutritionPlan = nutritionPlanGenerationStrategy.generateNutritionPlan(profile, dietId);
+        if(np != null) {
+            np.getNutritionPlanPositions().forEach(p -> nutritionPlanPositionDAO.deleteById(p.getId()));
+            generatedNutritionPlan.getNutritionPlanPositions().forEach(p -> {
+                p.setNutritionPlan(np);
+                nutritionPlanPositionDAO.save(p);
+            });
+        }
+        return nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.RoleDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
-import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
+import com.wellbeeing.wellbeeing.repository.diet.calculation.ProfileDietCalculationDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;

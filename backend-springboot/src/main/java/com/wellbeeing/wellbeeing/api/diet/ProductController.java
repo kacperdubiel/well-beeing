@@ -1,8 +1,9 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.*;
-import com.wellbeeing.wellbeeing.domain.diet.ProductMacroDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ProductVitaminDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.Product;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMacroDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMineralDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductVitaminDetail;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.diet.ProductService;

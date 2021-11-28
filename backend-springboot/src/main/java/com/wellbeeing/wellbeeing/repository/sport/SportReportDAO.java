@@ -1,9 +1,7 @@
 package com.wellbeeing.wellbeeing.repository.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.diet.Report;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
-import com.wellbeeing.wellbeeing.domain.sport.Training;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

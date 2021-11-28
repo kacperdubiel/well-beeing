@@ -1,9 +1,9 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.diet.Report;
-import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
+import com.wellbeeing.wellbeeing.domain.diet.report.Report;
+import com.wellbeeing.wellbeeing.domain.diet.report.ReportDishDetail;
+import com.wellbeeing.wellbeeing.domain.diet.report.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
@@ -130,11 +130,17 @@ public class ReportController {
 
     @RequestMapping(path = "/report/{reportId}/details", method = RequestMethod.GET)
     public ResponseEntity<?> getReportDetailsByReportId(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
+        Report report = reportService.getReportById(reportId);
+        Profile owner = report.getReportOwner();
+
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
-            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
+        Profile userProfile = profileService.getProfileById(profileId);
+        ProfileConnection pc = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(owner, userProfile, EConnectionType.WITH_DIETICIAN);
+
+        if(pc != null || userProfile.getId().equals(owner.getId())){
+            return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
         }
-        return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
+        throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
     }
 
     @RequestMapping(path = "/report/{reportId}/actualize", method = RequestMethod.GET)

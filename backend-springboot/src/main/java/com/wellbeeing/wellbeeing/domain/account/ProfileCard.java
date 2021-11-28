@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.domain.account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.*;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
+import com.wellbeeing.wellbeeing.domain.diet.product.Product;
 import com.wellbeeing.wellbeeing.domain.diet.type.EActivityLevel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EDietGoal;
 import lombok.*;
@@ -44,10 +45,6 @@ public class ProfileCard {
             inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     )
     private List<Product> dislikedProducts;
-    @Column
-    private boolean isVegan;
-    @Column
-    private boolean isVegetarian;
     @Enumerated(EnumType.STRING)
     @Column
     private EActivityLevel activityLevel;

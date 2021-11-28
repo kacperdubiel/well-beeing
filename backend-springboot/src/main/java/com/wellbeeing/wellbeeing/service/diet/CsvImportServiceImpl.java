@@ -1,6 +1,10 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.diet.product.Product;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMacroDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMineralDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductVitaminDetail;
 import com.wellbeeing.wellbeeing.domain.diet.type.*;
 import com.wellbeeing.wellbeeing.domain.exception.InvalidImportDataException;
 import com.wellbeeing.wellbeeing.repository.diet.AilmentDAO;
@@ -160,7 +164,7 @@ public class CsvImportServiceImpl implements CsvImportService {
 
                 }
                 catch(Exception e){
-                    errorMessages.add("Unknown error in line " + lineNumber);
+                    errorMessages.add("Nieznany błąd w linii:  " + lineNumber);
                     lineNumber++;
                 }
             }
@@ -178,7 +182,7 @@ public class CsvImportServiceImpl implements CsvImportService {
         Path file = Paths.get(uploadPath)
                 .resolve(ailmentsPath);
         ArrayList<String> errorMessages = new ArrayList<>();
-        try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.US_ASCII)){
+        try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.ISO_8859_1)){
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;
@@ -189,7 +193,7 @@ public class CsvImportServiceImpl implements CsvImportService {
                     String description = checkAndReturnPosition(1, attributes, lineNumber, header, "STRING");
                     String type = checkAndReturnPosition(2, attributes, lineNumber, header, "STRING");
                     if (mapAilmentType(type) == null) {
-                        throw new InvalidImportDataException("invalid ailment type enum value: " + header[2] + "line" + lineNumber);
+                        throw new InvalidImportDataException("Nieprawidłowy typ wyliczeniowy: " + header[2] + " w linii " + lineNumber);
                     }
                     String caloriesChange = checkAndReturnPosition(3, attributes, lineNumber, header, "DOUBLE");
                     String proteinChange = checkAndReturnPosition(4, attributes, lineNumber, header, "DOUBLE");
@@ -212,7 +216,7 @@ public class CsvImportServiceImpl implements CsvImportService {
                     lineNumber++;
                 }
                 catch (Exception e){
-                    errorMessages.add("Unknown exception in line " + lineNumber);
+                    errorMessages.add("Nieznany błąd w linii " + lineNumber);
                     lineNumber++;
                 }
             }
@@ -230,7 +234,7 @@ public class CsvImportServiceImpl implements CsvImportService {
                 .resolve(dietsPath);
         ArrayList<String> errorMessages = new ArrayList<>();
 
-        try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.US_ASCII)) {
+        try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.ISO_8859_1)) {
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;
@@ -253,7 +257,7 @@ public class CsvImportServiceImpl implements CsvImportService {
                     errorMessages.add(e.getMessage());
                     lineNumber++;
                 } catch (Exception e) {
-                    errorMessages.add("Unknown exception in line " + lineNumber);
+                    errorMessages.add("Nieznany błąd w linii " + lineNumber);
                     lineNumber++;
                 }
             }
@@ -273,10 +277,10 @@ public class CsvImportServiceImpl implements CsvImportService {
             case "DOUBLE":
                 if (checkIfNotEmpty(attributes[position]) && checkIfNumber(attributes[position]))
                     return attributes[position];
-                else throw new InvalidImportDataException("invalid value: " + header[position] + "line" + lineNumber);
+                else throw new InvalidImportDataException("Nieprawidłowa wartość: " + header[position] + " w linii " + lineNumber);
             case "STRING":
                 if (checkIfNotEmpty(attributes[position])) return attributes[position];
-                else throw new InvalidImportDataException("invalid value: " + header[position] + "line" + lineNumber);
+                else throw new InvalidImportDataException("Nieprawidłowa wartość: " + header[position] + " w linii " + lineNumber);
             case "DOUBLE_NULLABLE":
                 if (checkIfNumber(attributes[position]))
                     return attributes[position];

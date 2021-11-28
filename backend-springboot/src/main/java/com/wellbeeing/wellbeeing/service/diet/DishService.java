@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.Dish;
+import com.wellbeeing.wellbeeing.domain.diet.dish.Dish;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.springframework.data.domain.Page;

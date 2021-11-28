@@ -1,16 +1,22 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionPlanPosition;
+import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlanPosition;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.exception.NutritionPlanGenerationException;
 import com.wellbeeing.wellbeeing.domain.message.diet.AddNutritionPlanOwnerRequest;
 import com.wellbeeing.wellbeeing.domain.message.diet.CreateNutritionPlanRequest;
+import com.wellbeeing.wellbeeing.domain.message.diet.GenerateNutritionPlanRequest;
+import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
+import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.diet.plan.NutritionPlanService;
+import com.wellbeeing.wellbeeing.service.telemedic.ProfileConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -29,12 +35,18 @@ public class NutritionPlanController {
 
     private final NutritionPlanService nutritionPlanService;
     private final UserService userService;
+    private ProfileService profileService;
+    private ProfileConnectionService profileConnectionService;
 
     @Autowired
     public NutritionPlanController(@Qualifier("nutritionPlanService") NutritionPlanService nutritionPlanService,
-                                   @Qualifier("userService") UserService userService){
+                                   @Qualifier("userService") UserService userService,
+                                   @Qualifier("profileService") ProfileService profileService,
+                                   @Qualifier("profileConnectionService") ProfileConnectionService profileConnectionService){
         this.nutritionPlanService = nutritionPlanService;
         this.userService = userService;
+        this.profileService = profileService;
+        this.profileConnectionService = profileConnectionService;
     }
 
     @RequestMapping(path = "/nutrition-plan/created", method = RequestMethod.GET)
@@ -115,10 +127,10 @@ public class NutritionPlanController {
         return new ResponseEntity<>(np, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/nutrition-plan/generate", method = RequestMethod.GET)
-    public ResponseEntity<?> generateNutritionPlan(Principal principal) throws NotFoundException, NutritionPlanGenerationException {
+    @RequestMapping(path = "/nutrition-plan/generate", method = RequestMethod.POST)
+    public ResponseEntity<?> generateNutritionPlan(Principal principal, @RequestBody @NonNull GenerateNutritionPlanRequest request) throws NotFoundException, NutritionPlanGenerationException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        NutritionPlan nutritionPlan = nutritionPlanService.generateNutritionPlanForProfile(profileId);
+        NutritionPlan nutritionPlan = nutritionPlanService.generateNutritionPlanForProfile(profileId, request.getNutritionPlanId(), request.getDietId());
         return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
     }
 
@@ -153,9 +165,16 @@ public class NutritionPlanController {
     public ResponseEntity<?> getNutritionPlanById(Principal principal, @PathVariable("planId") UUID planId) throws NotFoundException, ForbiddenException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         NutritionPlan nutritionPlan = nutritionPlanService.getNutritionPlanById(planId);
+
+        Profile userProfile = profileService.getProfileById(profileId);
+        Profile creatorProfile = nutritionPlan.getCreatorProfile();
+
+        ProfileConnection pc = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(creatorProfile, userProfile, EConnectionType.WITH_DIETICIAN);
         if ((!profileId.equals(nutritionPlan.getCreatorProfile().getId()))){
-            if(((nutritionPlan.getOwnerProfile() == null) || (!profileId.equals(nutritionPlan.getOwnerProfile().getId()))))
-                throw new ForbiddenException("Access to nutrition plan with id: " + planId + " forbidden");
+            if(((nutritionPlan.getOwnerProfile() == null) || (!profileId.equals(nutritionPlan.getOwnerProfile().getId())))) {
+                if (pc == null || !nutritionPlan.isMain())
+                    throw new ForbiddenException("Access to nutrition plan with id: " + planId + " forbidden");
+            }
         }
         return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
     }

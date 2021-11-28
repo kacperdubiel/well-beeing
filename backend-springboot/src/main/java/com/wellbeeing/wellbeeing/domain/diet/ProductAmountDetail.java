@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.domain.diet;
 
+import com.wellbeeing.wellbeeing.domain.diet.product.Product;
 import com.wellbeeing.wellbeeing.domain.diet.type.EWeightMeasure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -10,7 +10,7 @@ import com.wellbeeing.wellbeeing.domain.diet.type.EGlycemicIndexLevel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EMealType;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
-import com.wellbeeing.wellbeeing.repository.diet.ProfileDietCalculationDAO;
+import com.wellbeeing.wellbeeing.repository.diet.calculation.ProfileDietCalculationDAO;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

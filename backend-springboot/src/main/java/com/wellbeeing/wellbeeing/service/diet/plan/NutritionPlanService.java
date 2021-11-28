@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.service.diet.plan;
 
-import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionPlanPosition;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlanPosition;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.exception.NutritionPlanGenerationException;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public interface NutritionPlanService {
     NutritionPlan getNutritionPlanById(UUID nutritionPlanId) throws NotFoundException;
     NutritionPlan getProfileMainNutritionPlan(UUID profileId) throws NotFoundException;
 
-    NutritionPlan generateNutritionPlanForProfile(UUID profileId) throws NotFoundException, NutritionPlanGenerationException;
+    NutritionPlan generateNutritionPlanForProfile(UUID profileId, UUID nutritionPlanId,  UUID dietId) throws NotFoundException, NutritionPlanGenerationException;
     NutritionPlan addEmptyNutritionPlanToProfile(UUID profileId, String name) throws NotFoundException;
     NutritionPlan addEmptyNutritionPlanToDieticianProfile(UUID profileId, String name) throws NotFoundException;
     NutritionPlan addPositionToProfileNutritionPlan(NutritionPlanPosition position, UUID nutritionPlanId) throws NotFoundException;

@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wellbeeing.wellbeeing.domain.diet.Dish;
+import com.wellbeeing.wellbeeing.domain.diet.dish.Dish;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,11 +1,17 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
 import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.diet.dish.Dish;
+import com.wellbeeing.wellbeeing.domain.diet.dish.DishMealType;
+import com.wellbeeing.wellbeeing.domain.diet.dish.DishProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.repository.account.DieticianProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.diet.*;
+import com.wellbeeing.wellbeeing.repository.diet.dish.DishDAO;
+import com.wellbeeing.wellbeeing.repository.diet.dish.DishMealTypeDAO;
+import com.wellbeeing.wellbeeing.repository.diet.dish.DishProductDetailDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;

@@ -1,8 +1,8 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionPlan;
-import com.wellbeeing.wellbeeing.domain.diet.Report;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
+import com.wellbeeing.wellbeeing.domain.diet.report.Report;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
