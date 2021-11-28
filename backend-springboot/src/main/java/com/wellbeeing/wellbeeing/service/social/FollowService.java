@@ -13,4 +13,6 @@ public interface FollowService {
     Page<Follow> getFollowsByFollowed(Profile followed, Pageable pageable);
     Follow addFollow(Profile newFollowed, String followerName) throws ForbiddenException;
     boolean deleteFollow(Profile followed, String followerName) throws NotFoundException;
+
+    boolean findFollow(Profile followed, String followerName);
 }

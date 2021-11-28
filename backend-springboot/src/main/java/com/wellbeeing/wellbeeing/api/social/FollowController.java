@@ -68,4 +68,11 @@ public class FollowController {
         followService.deleteFollow(followedProfile, principal.getName());
         return new ResponseEntity<>("Successfully deleted following user with id=" + profileId, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/follow/{profileId}")
+    public ResponseEntity<?> findFollow(@PathVariable UUID profileId, Principal principal) throws NotFoundException {
+        Profile followedProfile = profileService.getProfileById(profileId);
+        boolean returnValue = followService.findFollow(followedProfile, principal.getName());
+        return new ResponseEntity<>(returnValue, HttpStatus.OK);
+    }
 }

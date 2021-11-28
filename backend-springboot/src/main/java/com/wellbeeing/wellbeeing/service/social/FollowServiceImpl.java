@@ -69,4 +69,16 @@ public class FollowServiceImpl implements FollowService {
         followDAO.delete(followToDelete);
         return true;
     }
+
+    @Override
+    public boolean findFollow(Profile followed, String followerName) {
+        User user = userDAO.findUserByEmail(followerName).orElse(null);
+
+        if (user == null)
+            throw new UsernameNotFoundException("User: " + followerName + " not found");
+
+        Follow follow = followDAO.findByFollowerAndFollowed(user.getProfile(), followed).orElse(null);
+
+        return follow != null;
+    }
 }
