@@ -4,7 +4,7 @@
             <h5 class="mt-5 mb-1 title">{{this.getTitleText()}}</h5>
             <button v-if="!this.suggested" data-bs-toggle="modal" data-bs-target="#planAddModal" class="mt-5 mb-1 add-button"> <font-awesome-icon :icon="['fa', 'plus-circle']"/> </button>
         </div>
-        <table v-if="this.userNutritionPlans.length !== 0" style="color: white; text-align: start;" class="table">
+        <table v-if="this.userNutritionPlans.length !== 0 && this.dataLoaded" style="color: white; text-align: start;" class="table">
             <thead>
                 <tr>
                     <th class="col-sm-4" scope="col">Nazwa</th>
@@ -42,7 +42,9 @@
                 </tr>
             </tbody>
         </table>
-        <p v-else v-bind:class="{'mt-3' : this.suggested}">Brak planów.</p>
+        <div v-if="this.userNutritionPlans.length == 0 && this.dataLoaded" v-bind:class="{'mt-3' : this.suggested}"  class="alert alert-danger alert-dismissible fade show" role="alert">
+                Brak planów. 
+        </div>
         <div :id="'planDeleteModal_' + this.suggested" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="planModalLabel" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -185,6 +187,7 @@ export default {
             addPlanSuccess: false,
             addPlanError: false,
             addPlanNameError: false,
+            dataLoaded: false
         }
     },
     mounted(){
@@ -365,6 +368,7 @@ export default {
             .then(response => {
                 console.log(response)
                 this.onNutritionPlansUpdated(response.data)
+                this.dataLoaded = true
             })
             .catch(e => {
                 console.log(e);
@@ -382,6 +386,7 @@ export default {
             .then(response => {
                 console.log(response)
                 this.onNutritionPlansUpdated(response.data)
+                this.dataLoaded = true;
             })
             .catch(e => {
                 console.log(e);

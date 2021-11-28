@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <div v-if="this.nutritionPlanId != null && this.dataLoaded" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
+        <div v-if="this.nutritionPlan.id != null && this.dataLoaded" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
             <div class="carousel-inner">
                 <div v-for="day in this.weekdays" :key="day" class="carousel-item" v-bind:class="{'active' : day=='MONDAY'}">
                     <div class="row">
@@ -41,7 +41,7 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        <div v-if="(this.nutritionPlanId == null || this.nutritionPlan.id == null) && !this.fromProfile && this.dataLoaded" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div v-if="this.nutritionPlan.id == null && !this.fromProfile && this.dataLoaded" class="alert alert-danger alert-dismissible fade show" role="alert">
                 Stwórz swój własny główny plan dietetyczny lub wybierz jeden z aktualnych! 
         </div>
         <div v-if="this.nutritionPlanId == null && this.fromProfile && this.dataLoaded" class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
@@ -162,7 +162,7 @@ export default {
     name: "NutritionPlanComponent",
     props: {
         nutritionPlanId: {
-            type: Object,
+            type: String,
         },
         editOff: {
             type: Boolean
@@ -178,6 +178,10 @@ export default {
         nutritionPlanId: function () {
             if(this.nutritionPlanId != null)
                 this.getSingleNutritionPlan(this.nutritionPlanId)
+            else{
+                this.nutritionPlan.id = null
+                this.dataLoaded = true
+            }
             this.isForm = false;
         }
     },
@@ -188,9 +192,8 @@ export default {
         NutritionPlanDayDetailsComponent
     },
     mounted(){
-        if(this.fromProfile){
+        if(this.fromProfile)
             this.getSingleNutritionPlan(this.nutritionPlanId)
-        }
         this.isForm = false;
         this.getDiets()
     },
@@ -201,6 +204,7 @@ export default {
             actualModalPositions: [],
             isForm: false,
             nutritionPlan: {
+                id: 'def',
                 nutritionPlanPositions: []
             },
 
@@ -216,7 +220,9 @@ export default {
             chosenDiet: '',
             
             dietGenerationChecked: false,
+
             dataLoaded: false,
+
             generationStarted: false,
             generationFinished: false,
             generationSuccess: false,
