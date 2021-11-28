@@ -1,22 +1,21 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.diet.Report;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.domain.sport.ReportExercise;
 import com.wellbeeing.wellbeeing.domain.sport.ReportTraining;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
 import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service("sportReportService")

@@ -1,5 +1,5 @@
 <template>
-<div class="container-fluid">
+<div style="align-self: center;" class="container-fluid">
     <div class="card-container">
         <div class="card-elem-container">
             <div class="col-lg-8">

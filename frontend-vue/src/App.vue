@@ -261,20 +261,20 @@ input {
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(200, 200, 200, 1);
+    --webkit-box-shadow: inset 0 0 6px rgba(200, 200, 200, 1);
     border-radius: 5px;
 }
 
 .sport ::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background-color: var(--SPORT);
-    -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
+    --webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background-color: var(--LIGHT-YELLOW);
-    -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
+    --webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
 
 .align-left {
