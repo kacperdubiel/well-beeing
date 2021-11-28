@@ -143,7 +143,7 @@
 <script>
 // import MeasuresComponent from "@/components/telemedic/MeasuresComponent";
 
-import AilmentRowComponent from "@/components/diet/AilmentRowComponent";
+import AilmentRowComponent from "@/components/diet/profile-card/AilmentRowComponent";
 import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import moment from "moment";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
