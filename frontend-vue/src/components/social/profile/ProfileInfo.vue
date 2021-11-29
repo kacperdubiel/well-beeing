@@ -33,12 +33,39 @@
 
             </div>
         </div>
-        <div class="d-flex flex-row-reverse px-4 px-2">
-            <button class="btn-white fw-bolder" v-if="!isProfileMine && !this.isFollowedByMe" @click="addFollow">
+        <div class="d-flex flex-row-reverse px-4 mt-2">
+            <button class="btn-white fw-bolder ms-2" v-if="!isProfileMine && !this.isFollowedByMe" @click="addFollow">
                 Zaobserwuj
             </button>
-            <button class="btn-white fw-bolder" v-else-if="!isProfileMine && this.isFollowedByMe" @click="deleteFollow">
+            <button class="btn-white fw-bolder ms-2" v-else-if="!isProfileMine && this.isFollowedByMe" @click="deleteFollow">
                 Przestań obserwować
+            </button>
+
+            <button class="btn-white fw-bolder" v-if="!isProfileMine && this.isFriends[0]">
+                Usuń ze znajomych
+            </button>
+
+            <div  class="dropdown btn-white fw-bolder" v-else-if="!isProfileMine && !this.isFriends[0] && this.isFriends[1]">
+                <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-inv-sent" data-bs-toggle="dropdown" aria-expanded="false">
+                    Wysłano zaproszenie do znajomych
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdown-inv-sent">
+                    <li><a @click="handleLogout" class="dropdown-item">Anuluj zaproszenie</a></li>
+                </ul>
+            </div>
+
+            <div  class="dropdown btn-white fw-bolder" v-else-if="!isProfileMine && !this.isFriends[0] && this.isFriends[2]">
+                <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-inv-received" data-bs-toggle="dropdown" aria-expanded="false">
+                    Odpowiedz na  zaproszenie do znajomych
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdown-inv-received">
+                    <li><a @click="handleLogout" class="dropdown-item">Potwierdź</a></li>
+                    <li><a @click="handleLogout" class="dropdown-item">Odrzuć</a></li>
+                </ul>
+            </div>
+
+            <button class="btn-white fw-bolder" v-else-if="!isProfileMine && !this.isFriends[0] && !this.isFriends[1] && !this.isFriends[2]">
+                Zaproś do znajomych
             </button>
 
 
@@ -57,7 +84,8 @@ export default {
     data() {
         return {
             profilePictureSrc: "",
-            isFollowedByMe: false
+            isFollowedByMe: false,
+            isFriends: []
         }
     },
     props: {
@@ -108,8 +136,7 @@ export default {
             const url = `${this.apiURL}profile-connections/${this.$route.params.profileId}/check`
             const token = this.$store.getters.getToken;
             this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log('firendssss ', response.data)
-                // this.isFollowedByMe = response.data
+                this.isFriends = response.data
             }).catch(error => {
                 console.log(error.response.status)
             });

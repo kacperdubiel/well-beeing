@@ -205,7 +205,7 @@
                                 @click="$emit('open-profile', connection.connectedWith.id, this.selectedAcceptState)"
                             >
                                 <user-avatar-component :height="40"
-                                                       :isActive="this.$func_global.getIsActive5minutes(connection.connectedWith.lastRequestTime)"
+                                                       :isActive="this.selectedAcceptState && this.$func_global.getIsActive5minutes(connection.connectedWith.lastRequestTime)"
                                                        :profileId="connection.connectedWith.id" :width="40"
                                 />
                                 <span class="mx-2">
