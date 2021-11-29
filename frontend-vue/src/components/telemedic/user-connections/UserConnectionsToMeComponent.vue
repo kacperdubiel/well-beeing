@@ -4,7 +4,7 @@
             Błąd ładowania.
         </div>
         <div v-if="componentError === false">
-            <div class="row justify-content-between">
+            <div v-if="connectionType !== 'WITH_USER'" class="row justify-content-between">
                 <div v-if="connectionType !== 'WITH_USER'"  class="col-10 col-md-7">
                     <select class="form-select" v-model="selectedAcceptState">
                         <option :value="true">
@@ -38,16 +38,23 @@
                                             Czy na pewno chcesz usunąć pacjenta?
                                         </span>
                                         <span v-else>
-                                            Czy na pewno chcesz usunąć znajomego?
+                                            Czy na pewno chcesz usunąć zaproszenie do znajomych?
                                         </span>
                                     </div>
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                            <button class="btn-panel- p-2" data-bs-dismiss="modal">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="deleteUserConnection">
+                                            <button :class="{
+                                                        'btn-panel-telemedic': connectionType === 'WITH_DOCTOR',
+                                                        'btn-panel-sport': connectionType === 'WITH_TRAINER',
+                                                        'btn-panel-diet': connectionType === 'WITH_DIETICIAN',
+                                                        'btn-panel-social': connectionType === 'WITH_USER'}"
+                                                    class="btn-panel-telemedic p-2"
+                                                    data-bs-dismiss="modal"
+                                                    @click="deleteUserConnection">
                                                 <span>Usuń</span>
                                             </button>
                                         </div>
@@ -77,16 +84,23 @@
                                             Czy na pewno chcesz zaakceptować pacjenta?
                                         </span>
                                         <span v-else>
-                                            Czy na pewno chcesz zaakceptować znajomego?
+                                            Czy na pewno chcesz zaakceptować zaproszenie do znajomych?
                                         </span>
                                     </div>
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal">Anuluj</button>
+                                            <button class="btn-panel- p-2" data-bs-dismiss="modal">Anuluj</button>
                                         </div>
                                         <div class="col-3">
-                                            <button class="btn-panel-telemedic p-2" data-bs-dismiss="modal" @click="acceptUserConnection">
+                                            <button :class="{
+                                                        'btn-panel-telemedic': connectionType === 'WITH_DOCTOR',
+                                                        'btn-panel-sport': connectionType === 'WITH_TRAINER',
+                                                        'btn-panel-diet': connectionType === 'WITH_DIETICIAN',
+                                                        'btn-panel-social': connectionType === 'WITH_USER'}"
+                                                    class="btn-panel-telemedic p-2"
+                                                    data-bs-dismiss="modal"
+                                                    @click="acceptUserConnection">
                                                 <span>Akceptuj</span>
                                             </button>
                                         </div>
@@ -104,7 +118,8 @@
                     <table class="table connections-table" :class="{
                         'connections-table-telemedic': connectionType === 'WITH_DOCTOR',
                         'connections-table-sport': connectionType === 'WITH_TRAINER',
-                        'connections-table-diet': connectionType === 'WITH_DIETICIAN'}">
+                        'connections-table-diet': connectionType === 'WITH_DIETICIAN',
+                        'connections-table-social': connectionType === 'WITH_USER'}">
                         <thead>
                             <tr>
                                 <th scope="col">Imię i nazwisko</th>
@@ -148,13 +163,14 @@
                 </div>
             </div>
 
-            <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
+            <div v-if="this.navigation.totalPages > 1" class="row w-100 mt-3">
                 <nav>
                     <ul class="pagination justify-content-center my-auto">
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
                         'sport-page' : connectionType === 'WITH_TRAINER',
                         'telemedic-page' : connectionType === 'WITH_DOCTOR',
-                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
+                        'diet-page' : connectionType === 'WITH_DIETICIAN',
+                        'social-page': connectionType === 'WITH_USER'}">
                             <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'fast-backward']" />
                             </a>
@@ -162,7 +178,8 @@
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
                         'sport-page' : connectionType === 'WITH_TRAINER',
                         'telemedic-page' : connectionType === 'WITH_DOCTOR',
-                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
+                        'diet-page' : connectionType === 'WITH_DIETICIAN',
+                        'social-page': connectionType === 'WITH_USER'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
                                 <font-awesome-icon :icon="['fa', 'chevron-left']" />
                             </a>
@@ -170,7 +187,8 @@
                         <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
                         'sport-page' : connectionType === 'WITH_TRAINER',
                         'telemedic-page' : connectionType === 'WITH_DOCTOR',
-                        'diet-page' : connectionType === 'WITH_DIETICIAN'}"
+                        'diet-page' : connectionType === 'WITH_DIETICIAN',
+                        'social-page': connectionType === 'WITH_USER'}"
                             v-for="page in navigation.pagesNavbar" :key="page"
                         >
                             <a class="page-link" @click="goToPage(page)" >
@@ -180,7 +198,8 @@
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
                         'sport-page' : connectionType === 'WITH_TRAINER',
                         'telemedic-page' : connectionType === 'WITH_DOCTOR',
-                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
+                        'diet-page' : connectionType === 'WITH_DIETICIAN',
+                        'social-page': connectionType === 'WITH_USER'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage+1)">
                                 <font-awesome-icon :icon="['fa', 'chevron-right']" />
                             </a>
@@ -188,7 +207,8 @@
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
                         'sport-page' : connectionType === 'WITH_TRAINER',
                         'telemedic-page' : connectionType === 'WITH_DOCTOR',
-                        'diet-page' : connectionType === 'WITH_DIETICIAN'}">
+                        'diet-page' : connectionType === 'WITH_DIETICIAN',
+                        'social-page': connectionType === 'WITH_USER'}">
                             <a class="page-link" @click="goToPage(navigation.totalPages-1)">
                                 <font-awesome-icon :icon="['fa', 'fast-forward']" />
                             </a>
@@ -357,18 +377,20 @@ export default {
     },
     created(){
         this.isConnectionTypeCorrect();
+        if (this.connectionType === 'WITH_USER')
+            this.selectedAcceptState = false
     },
 }
 </script>
 
 <style scoped>
 
-.m-r-5 {
-    margin-right: 5px
+button[class^="btn-panel-"] {
+    font-size: medium;
 }
 
-.btn-panel-telemedic{
-    font-size: medium;
+.m-r-5 {
+    margin-right: 5px
 }
 
 .btn-hover:hover {

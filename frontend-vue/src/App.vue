@@ -403,6 +403,38 @@ input {
     background-color: white;
 }
 
+.pagination > li.social-page > a {
+    background-color: white;
+    color: var(--DARK-YELLOW);
+}
+
+.pagination > li.social-page > a:focus,
+.pagination > li.social-page > a:hover,
+.pagination > li.social-page > span:focus,
+.pagination > li.social-page > span:hover {
+    color: white;
+    background-color: var(--DARK-YELLOW);
+    border-color: var(--DARK-YELLOW);
+    cursor: pointer;
+}
+
+.pagination > .social-page.active > a {
+    color: white;
+    background-color: var(--DARK-YELLOW) !Important;
+    border: solid 1px var(--DARK-YELLOW) !Important;
+}
+
+.pagination > li.social-page.disabled > a {
+    color: var(--GREY1);
+    background-color: white;
+}
+
+.pagination > .social-page.active > a:hover
+{
+    background-color: var(--DARK-YELLOW) !Important;
+    border: solid 1px var(--DARK-YELLOW);
+}
+
 p.has-error {
     color: var(--INTENSE-PINK);
 }
