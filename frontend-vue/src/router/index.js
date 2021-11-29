@@ -58,6 +58,9 @@ import FriendsInvitationsReceivedView from "@/views/social/friends/FriendsInvita
 import FriendsInvitationsSentView from "@/views/social/friends/FriendsInvitationsSentView";
 import UserUserConversationView from "@/views/social/messages/UserUserConversationView";
 import UserUserConversationsView from "@/views/social/messages/UserUserConversationsView";
+import FollowView from "@/views/social/follow/FollowView";
+import MyFollowingsView from "@/views/social/follow/MyFollowingsView";
+import MyFollowersView from "@/views/social/follow/MyFollowersView";
 
 const routes = [
   {
@@ -385,6 +388,24 @@ const routes = [
         path: 'invitations/received',
         name: 'FriendsInvitationsReceivedView',
         component: FriendsInvitationsReceivedView
+      },
+    ]
+  },
+  {
+    path: '/follows',
+    redirect: {name: 'MyFollowingsView'},
+    name: 'FollowView',
+    component: FollowView,
+    children: [
+      {
+        path: 'followings',
+        name: 'MyFollowingsView',
+        component: MyFollowingsView
+      },
+      {
+        path: 'followers',
+        name: 'MyFollowersView',
+        component: MyFollowersView
       },
     ]
   }

@@ -111,6 +111,33 @@ button[class^="btn-card-panel-"] {
     padding: 0.3rem 0.6rem;
 }
 
+.social-tabs {
+    border-bottom-color: var(--DARK-YELLOW) !important;
+    margin-bottom: 20px !important;
+}
+
+.social-tabs a {
+    text-decoration: none !important;
+}
+
+.social-tabs .nav-link.active {
+    background-color: var(--DARK-YELLOW) !important;
+    border-color: var(--DARK-YELLOW) !important;
+}
+
+.social-tabs .nav-link {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.social-tabs .nav-tabs {
+    border-bottom-color: var(--DARK-YELLOW) !important;
+}
+
+.social-tabs .nav-link:hover {
+    border-color: var(--DARK-YELLOW) !important;
+}
+
 .tab-content {
     padding: 5px;
     margin-top: 15px;

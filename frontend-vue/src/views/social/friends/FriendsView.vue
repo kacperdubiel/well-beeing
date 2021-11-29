@@ -28,32 +28,7 @@ export default {
 </script>
 
 <style scoped>
-.social-tabs {
-    border-bottom-color: var(--DARK-YELLOW);
-    margin-bottom: 20px;
-}
 
-.social-tabs a {
-    text-decoration: none;
-}
-
-.social-tabs .nav-link.active {
-    background-color: var(--DARK-YELLOW);
-    border-color: var(--DARK-YELLOW);
-}
-
-.social-tabs .nav-link {
-    color: white;
-    font-weight: bold;
-}
-
-.social-tabs .nav-tabs {
-    border-bottom-color: var(--DARK-YELLOW);
-}
-
-.social-tabs .nav-link:hover {
-    border-color: var(--DARK-YELLOW);
-}
 
 a {
     color: white;
