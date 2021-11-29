@@ -185,7 +185,7 @@ export default {
 
 <style scoped>
 #messages-box {
-    height: 45vh;
+    height: 60vh;
     overflow-y: auto;
     padding-right: 10px;
 }

@@ -177,7 +177,7 @@ export default {
 
         },
         openConversation(conversationId) {
-            this.$emit('open-conversation', conversationId);
+            this.$router.push({ name: 'UserUserConversationView', params: { conversationId: conversationId } });
         },
         getMyFriends (page, isScroll) {
             const url = `${this.apiURL}friends`

@@ -1,92 +1,100 @@
 <template>
     <div class="container-fluid">
-        <div v-if="componentError === true" class="container">
-            Błąd ładowania.
-        </div>
-        <div v-if="componentError === false" class="container mt-4">
-            <div v-if="conversations && conversations.length === 0" class="row mb-2">
-                Brak wiadomości.
+        <div class="row">
+            <div v-if="componentError === true" class="container">
+                Błąd ładowania.
             </div>
-            <div v-if="conversations && conversations.length > 0" class="row mb-2 bottom-border"></div>
-            <div v-for="conversation in conversations" v-bind:key="conversation.id" class="row pb-2 mb-2 bottom-border clickable"
-                @click="$emit('open-conversation', conversation.id)"
-            >
-                <div class="col-2 col-xl-1">
-                    <user-avatar-component v-if="conversation.firstProfile.id !== userId"
-                                                   :isActive="this.$func_global.getIsActive5minutes(conversation.firstProfile.lastRequestTime)"
-                                                   :profileId="conversation.firstProfile.id"
-                                                   :height="45" :width="45"
-                    />
-                    <user-avatar-component v-else :isActive="this.$func_global.getIsActive5minutes(conversation.secondProfile.lastRequestTime)"
-                                                   :profileId="conversation.secondProfile.id"
-                                                   :height="45" :width="45"
-                    />
+            <div v-if="componentError === false" class="container mt-4">
+                <div v-if="conversations && conversations.length === 0" class="row mb-2 justify-content-center">
+                    Brak wiadomości.
                 </div>
-                <div class="col-7 col-xl-8" v-bind:class="{ 'bold-text': isMsgRead(conversation) }">
-                    <div class="align-left">
+                <div v-if="conversations && conversations.length > 0" class="row mb-2 bottom-border"></div>
+                <div v-for="conversation in conversations" v-bind:key="conversation.id" class="row pb-2 mb-2 bottom-border clickable"
+                     @click="$emit('open-conversation', conversation.id)"
+                >
+                    <div class="col-2 col-xl-1">
+                        <user-avatar-component v-if="conversation.firstProfile.id !== userId"
+                                               :isActive="this.$func_global.getIsActive5minutes(conversation.firstProfile.lastRequestTime)"
+                                               :profileId="conversation.firstProfile.id"
+                                               :height="45" :width="45"
+                        />
+                        <user-avatar-component v-else :isActive="this.$func_global.getIsActive5minutes(conversation.secondProfile.lastRequestTime)"
+                                               :profileId="conversation.secondProfile.id"
+                                               :height="45" :width="45"
+                        />
+                    </div>
+                    <div class="col-7 col-xl-8" v-bind:class="{ 'bold-text': isMsgRead(conversation) }">
+                        <div class="align-left">
                         <span v-if="conversation.firstProfile.id !== userId">
                             {{ conversation.firstProfile.firstName }} {{ conversation.firstProfile.lastName }}
                         </span>
-                        <span v-else>
+                            <span v-else>
                             {{ conversation.secondProfile.firstName }} {{ conversation.secondProfile.lastName }}
                         </span>
-                    </div>
-                    <div class="align-left msg-text">
+                        </div>
+                        <div class="align-left msg-text">
                         <span v-if="conversation.lastMessage.sender.id === this.userId">
                             Ty:
                         </span>
-                        <span v-if="conversation.lastMessage.messageType === 'TEXT'">
+                            <span v-if="conversation.lastMessage.messageType === 'TEXT'">
                             {{ this.$func_global.truncate(conversation.lastMessage.data, 70, "...") }}
                         </span>
-                        <span v-if="conversation.lastMessage.messageType === 'IMAGE'">
+                            <span v-if="conversation.lastMessage.messageType === 'IMAGE'">
                             Wysłano zdjęcie.
                         </span>
+                        </div>
+                    </div>
+                    <div class="col-3 col-xl-3 align-right">
+                        {{ this.$func_global.formatDateDateFromNow(conversation.lastMessage.createDate ) }}
                     </div>
                 </div>
-                <div class="col-3 col-xl-3 align-right">
-                    {{ this.$func_global.formatDateDateFromNow(conversation.lastMessage.createDate ) }}
+
+                <div v-if="this.navigation.totalPages > 1" class="row w-100 mt-3">
+                    <nav>
+                        <ul class="pagination justify-content-center my-auto">
+                            <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN',
+                        'social-page' : connectionType==='WITH_USER'}">
+                                <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
+                                    <font-awesome-icon :icon="['fa', 'fast-backward']" />
+                                </a>
+                            </li>
+                            <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN',
+                        'social-page' : connectionType==='WITH_USER'}">
+                                <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
+                                    <font-awesome-icon :icon="['fa', 'chevron-left']" />
+                                </a>
+                            </li>
+                            <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN',
+                        'social-page' : connectionType==='WITH_USER'}"
+                                v-for="page in navigation.pagesNavbar" :key="page"
+                            >
+                                <a class="page-link" @click="goToPage(page)" >
+                                    {{page+1}}
+                                </a>
+                            </li>
+                            <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN',
+                        'social-page' : connectionType==='WITH_USER'}">
+                                <a class="page-link" @click="goToPage(navigation.currentPage+1)">
+                                    <font-awesome-icon :icon="['fa', 'chevron-right']" />
+                                </a>
+                            </li>
+                            <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
+                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN',
+                        'social-page' : connectionType==='WITH_USER'}">
+                                <a class="page-link" @click="goToPage(navigation.totalPages-1)">
+                                    <font-awesome-icon :icon="['fa', 'fast-forward']" />
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
-
-            <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
-                <nav>
-                    <ul class="pagination justify-content-center my-auto">
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
-                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
-                            <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
-                                <font-awesome-icon :icon="['fa', 'fast-backward']" />
-                            </a>
-                        </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
-                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
-                            <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
-                                <font-awesome-icon :icon="['fa', 'chevron-left']" />
-                            </a>
-                        </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
-                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}"
-                            v-for="page in navigation.pagesNavbar" :key="page"
-                        >
-                            <a class="page-link" @click="goToPage(page)" >
-                                {{page+1}}
-                            </a>
-                        </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
-                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
-                            <a class="page-link" @click="goToPage(navigation.currentPage+1)">
-                                <font-awesome-icon :icon="['fa', 'chevron-right']" />
-                            </a>
-                        </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
-                        'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
-                            <a class="page-link" @click="goToPage(navigation.totalPages-1)">
-                                <font-awesome-icon :icon="['fa', 'fast-forward']" />
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
         </div>
+
     </div>
 </template>
 

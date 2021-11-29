@@ -56,6 +56,8 @@ import FriendsView from "@/views/social/friends/FriendsView";
 import MyFriendsView from "@/views/social/friends/MyFriendsView";
 import FriendsInvitationsReceivedView from "@/views/social/friends/FriendsInvitationsReceivedView";
 import FriendsInvitationsSentView from "@/views/social/friends/FriendsInvitationsSentView";
+import UserUserConversationView from "@/views/social/messages/UserUserConversationView";
+import UserUserConversationsView from "@/views/social/messages/UserUserConversationsView";
 
 const routes = [
   {
@@ -352,6 +354,16 @@ const routes = [
     path: '/profile/edit',
     name: 'ProfileEdit',
     component: ProfileEdit
+  },
+  {
+    path: '/conversations/:conversationId',
+    name: 'UserUserConversationView',
+    component: UserUserConversationView
+  },
+  {
+    path: '/conversations',
+    name: 'UserUserConversationsView',
+    component: UserUserConversationsView
   },
   {
     path: '/friends',
