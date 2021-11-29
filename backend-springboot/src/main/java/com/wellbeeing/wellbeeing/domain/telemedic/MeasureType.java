@@ -29,6 +29,8 @@ public class MeasureType {
     private double minValue;
     @Column(nullable = false)
     private double maxValue;
+    @Column(nullable = false)
+    private int precision;
 
     @JsonIgnore
     @OneToMany(mappedBy = "measureType")
