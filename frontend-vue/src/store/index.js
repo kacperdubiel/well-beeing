@@ -15,6 +15,9 @@ export default createStore({
             specializations: [],
             searchPhrase: "",
             searchProfileResult: null,
+            doctorProfile: null,
+            dieticianProfile: null,
+            trainerProfile: null,
             // PHYSICAL ACTIVITY
             exerciseId: 0,
             trainingId: 0,
@@ -70,6 +73,15 @@ export default createStore({
         },
         setSearchPhrase (state, value) {
             state.searchPhrase = value;
+        },
+        setDoctorProfile (state, value) {
+            state.doctorProfile = value;
+        },
+        setDieticianProfile (state, value) {
+            state.dieticianProfile = value;
+        },
+        setTrainerProfile (state, value) {
+            state.trainerProfile = value;
         },
         setSearchProfileResult (state, value) {
             state.searchProfileResult = value;
@@ -145,6 +157,15 @@ export default createStore({
         },
         getSearchProfileResult (state) {
             return state.searchProfileResult;
+        },
+        getDoctorProfile (state) {
+            return state.doctorProfile;
+        },
+        getDieticianProfile (state) {
+            return state.dieticianProfile;
+        },
+        getTrainerProfile (state) {
+            return state.trainerProfile;
         },
         // PHYSICAL ACTIVITY
         getExerciseId(state) {

@@ -67,9 +67,6 @@
             <button class="btn-white fw-bolder" v-else-if="!isProfileMine && !this.isFriends[0] && !this.isFriends[1] && !this.isFriends[2]">
                 Zaproś do znajomych
             </button>
-
-
-
         </div>
         <div class="row text-start px-4 py-3">
             <p v-html="this.$func_global.convertNewLines(this.profileSource.description)"></p>
