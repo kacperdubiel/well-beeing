@@ -1,6 +1,6 @@
 <template>
     <div class="tab-content column-view">
-        <nutrition-plan-component @positions:updated="onPositionsUpdated" :nutritionPlanId="this.actualPlanId"/>
+        <nutrition-plan-component @positions:updated="onPositionsUpdated" :fromDietician="true" :nutritionPlanId="this.actualPlanId"/>
         <user-nutrition-plans-list-component :dieticianView="true" :suggested="false" @load:plan="changePlan"/>
     </div>
 </template>

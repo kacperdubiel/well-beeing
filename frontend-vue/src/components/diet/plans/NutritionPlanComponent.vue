@@ -13,7 +13,7 @@
                                 <font-awesome-icon v-if="!this.isForm" :icon="['fa', 'edit']"/>
                                 <font-awesome-icon v-else :icon="['fa', 'times']"/>
                             </button>
-                            <button style="font-weight: bold; width: 100px;" v-if="!this.editOff && this.isForm" class="btn-card-panel-diet" data-bs-toggle="modal" data-bs-target="#generatePlanModal">
+                            <button style="font-weight: bold; width: 100px;" v-if="!this.editOff && this.isForm && !this.fromDietician" class="btn-card-panel-diet" data-bs-toggle="modal" data-bs-target="#generatePlanModal">
                                 Wygeneruj
                             </button>
                         </h4>
@@ -62,7 +62,7 @@
                     </div>
                     <div class="modal-body">
                         <div>
-                            <nutrition-plan-day-details-component :fromDietician="this.fromProfile" :userId="this.userId" :positions="actualModalPositions"/>
+                            <nutrition-plan-day-details-component :fromDieticianPlan="this.fromDietician" :fromDietician="this.fromProfile" :userId="this.userId" :positions="actualModalPositions"/>
                         </div>
                     </div>
                 </div>
@@ -168,6 +168,9 @@ export default {
             type: Boolean
         },
         fromProfile: {
+            type: Boolean
+        },
+        fromDietician: {
             type: Boolean
         },
         userId: {

@@ -1,64 +1,66 @@
 <template>
     <div v-if="calculationsLoaded && detailsLoaded" class="container-fluid">
-        <h5 v-if="this.calculations != '' && this.positionsToShow.length != 0" class="mb-4" style="color: black; text-align: start;">Kalkulacje</h5>
-        <div class="mb-4" v-if="this.calculations != '' && this.positionsToShow.length != 0">
-            <div class="m-2">
-                <p style="color: black; text-align: start;">Kalorie {{ Math.round(this.details.calories*100)/100 }} / {{Math.round(this.calculations.suggestedCalories)}} kcal</p>
-                <progress-bar-component 
-                :measure="'kcal'" 
-                :actualValue="Math.round(this.details.calories*100)/100" 
-                :expectedValue="Math.round(this.calculations.suggestedCalories)"/>
+        <div v-if="!fromDieticianPlan">
+            <h5 v-if="this.calculations != '' && this.positionsToShow.length != 0" class="mb-4" style="color: black; text-align: start;">Kalkulacje</h5>
+            <div class="mb-4" v-if="this.calculations != '' && this.positionsToShow.length != 0">
+                <div class="m-2">
+                    <p style="color: black; text-align: start;">Kalorie {{ Math.round(this.details.calories*100)/100 }} / {{Math.round(this.calculations.suggestedCalories)}} kcal</p>
+                    <progress-bar-component 
+                    :measure="'kcal'" 
+                    :actualValue="Math.round(this.details.calories*100)/100" 
+                    :expectedValue="Math.round(this.calculations.suggestedCalories)"/>
+                </div>
+                <div class="m-2">
+                    <p style="color: black; text-align: start;">Węglowodany {{ Math.round(this.details.carbs*100)/100 }} / {{Math.round(this.calculations.suggestedCarbohydrates)}} g</p>
+                    <progress-bar-component 
+                    :measure="'g'" 
+                    :actualValue="Math.round(this.details.carbs*100)/100" 
+                    :expectedValue="Math.round(this.calculations.suggestedCarbohydrates)"/>
+                </div>
+                <div class="m-2">
+                    <p style="color: black; text-align: start;">Tłuszcze {{ Math.round(this.details.fats*100)/100 }} / {{Math.round(this.calculations.suggestedFats)}} g</p>
+                    <progress-bar-component 
+                    :measure="'g'" 
+                    :actualValue="Math.round(this.details.fats * 100)/100" 
+                    :expectedValue="Math.round(this.calculations.suggestedFats)"/>
+                </div>
+                <div class="m-2">
+                    <p style="color: black; text-align: start;">Białka {{ Math.round(this.details.proteins*100)/100 }} / {{Math.round(this.calculations.suggestedProteins)}} g</p>
+                    <progress-bar-component 
+                    :measure="'g'" 
+                    :actualValue="Math.round(this.details.proteins * 100)/100" 
+                    :expectedValue="Math.round(this.calculations.suggestedProteins)"/>
+                </div>
             </div>
-            <div class="m-2">
-                <p style="color: black; text-align: start;">Węglowodany {{ Math.round(this.details.carbs*100)/100 }} / {{Math.round(this.calculations.suggestedCarbohydrates)}} g</p>
-                <progress-bar-component 
-                :measure="'g'" 
-                :actualValue="Math.round(this.details.carbs*100)/100" 
-                :expectedValue="Math.round(this.calculations.suggestedCarbohydrates)"/>
-            </div>
-            <div class="m-2">
-                <p style="color: black; text-align: start;">Tłuszcze {{ Math.round(this.details.fats*100)/100 }} / {{Math.round(this.calculations.suggestedFats)}} g</p>
-                <progress-bar-component 
-                :measure="'g'" 
-                :actualValue="Math.round(this.details.fats * 100)/100" 
-                :expectedValue="Math.round(this.calculations.suggestedFats)"/>
-            </div>
-            <div class="m-2">
-                <p style="color: black; text-align: start;">Białka {{ Math.round(this.details.proteins*100)/100 }} / {{Math.round(this.calculations.suggestedProteins)}} g</p>
-                <progress-bar-component 
-                :measure="'g'" 
-                :actualValue="Math.round(this.details.proteins * 100)/100" 
-                :expectedValue="Math.round(this.calculations.suggestedProteins)"/>
-            </div>
+            <table v-if="this.calculations != '' && this.positionsToShow.length != 0" style="color: var(--GREY3);" class="table table-hover  mt-4">
+                <tr>
+                    <th style="text-align: start;" class="col-sm-3" scope="col">Posiłek</th>
+                    <th class="col-sm-4" scope="col">Aktualna kaloryczność [kcal]</th>
+                    <th class="col-sm-5" scope="col">Sugerowana kaloryczność [kcal]</th>
+                </tr>
+                <tbody>
+                    <tr v-for="meal in this.$func_global.mealsList()" :key="meal">
+                        <th style="text-align: start;" class="col-sm-3" scope="row">{{this.$func_global.mapMeal(meal)}}</th>
+                        <td class="col-sm-4">{{this.findActualPositionCalc(meal)}}</td>
+                        <td class="col-sm-5">{{this.findSuggestedPositionCalc(meal)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table v-if="this.calculations != '' && this.positionsToShow.length != 0" style="color: var(--GREY3);" class="table table-hover mt-4">
+                <tr>
+                    <th style="text-align: start;" class="col-sm-3" scope="col">Posiłek</th>
+                    <th class="col-sm-4" scope="col">Aktualny IG</th>
+                    <th class="col-sm-5" scope="col">Sugerowany IG</th>
+                </tr>
+                <tbody>
+                    <tr v-for="meal in this.$func_global.mealsList()" :key="meal">
+                        <th style="text-align: start;" class="col-sm-3" scope="row">{{this.$func_global.mapMeal(meal)}}</th>
+                        <td class="col-sm-4">{{this.$func_global.mapGlycemicIndex(this.findActualPositionIg(meal))}}</td>
+                        <td class="col-sm-5">{{this.$func_global.mapGlycemicIndex(this.findSuggestedPositionIg(meal))}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <table v-if="this.calculations != '' && this.positionsToShow.length != 0" style="color: var(--GREY3);" class="table table-hover  mt-4">
-            <tr>
-                <th style="text-align: start;" class="col-sm-3" scope="col">Posiłek</th>
-                <th class="col-sm-4" scope="col">Aktualna kaloryczność [kcal]</th>
-                <th class="col-sm-5" scope="col">Sugerowana kaloryczność [kcal]</th>
-            </tr>
-            <tbody>
-                <tr v-for="meal in this.$func_global.mealsList()" :key="meal">
-                    <th style="text-align: start;" class="col-sm-3" scope="row">{{this.$func_global.mapMeal(meal)}}</th>
-                    <td class="col-sm-4">{{this.findActualPositionCalc(meal)}}</td>
-                    <td class="col-sm-5">{{this.findSuggestedPositionCalc(meal)}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <table v-if="this.calculations != '' && this.positionsToShow.length != 0" style="color: var(--GREY3);" class="table table-hover mt-4">
-            <tr>
-                <th style="text-align: start;" class="col-sm-3" scope="col">Posiłek</th>
-                <th class="col-sm-4" scope="col">Aktualny IG</th>
-                <th class="col-sm-5" scope="col">Sugerowany IG</th>
-            </tr>
-            <tbody>
-                <tr v-for="meal in this.$func_global.mealsList()" :key="meal">
-                    <th style="text-align: start;" class="col-sm-3" scope="row">{{this.$func_global.mapMeal(meal)}}</th>
-                    <td class="col-sm-4">{{this.$func_global.mapGlycemicIndex(this.findActualPositionIg(meal))}}</td>
-                    <td class="col-sm-5">{{this.$func_global.mapGlycemicIndex(this.findSuggestedPositionIg(meal))}}</td>
-                </tr>
-            </tbody>
-        </table>
         <h5 class="mt-4 mb-4" style="color: black; text-align: start;">Podsumowanie</h5>
         <div style="align-items: center; display: flex; width:100%;">
             <table class="table table-hover">
@@ -121,6 +123,9 @@ export default {
         },
         userId: {
             type: String
+        },
+        fromDieticianPlan: {
+            type: Boolean
         }
     },
     watch: {
