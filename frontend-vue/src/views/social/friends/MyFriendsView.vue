@@ -98,7 +98,6 @@ export default {
             componentError: null,
             friends: {},
             userId: this.$store.getters.getProfileId,
-            selectedUserConnection: {},
 
             searchName: "",
             filters: {
