@@ -52,6 +52,14 @@
                                             class="form-control"
                                         />
                                     </div>
+                                    <div class="align-left">Precyzja pomiaru</div>
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            v-model="measureType.precision"
+                                            class="form-control"
+                                        />
+                                    </div>
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
@@ -112,6 +120,14 @@
                                             class="form-control"
                                         />
                                     </div>
+                                    <div class="align-left">Precyzja pomiaru</div>
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            v-model="measureType.precision"
+                                            class="form-control"
+                                        />
+                                    </div>
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
@@ -168,6 +184,7 @@
                                 <th scope="col">Jednostka</th>
                                 <th scope="col" class="w-15">Minimalna wartość</th>
                                 <th scope="col" class="w-15">Maksymalna wartość</th>
+                                <th scope="col" class="w-15">Precyzja</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -177,6 +194,7 @@
                                 <td>{{ mType.unit }}</td>
                                 <td>{{ mType.minValue }}</td>
                                 <td>{{ mType.maxValue }}</td>
+                                <td>{{ mType.precision }}</td>
                                 <td class="align-right">
                                     <button class="btn-white m-r-5 btn-hover"
                                             data-bs-toggle="modal" data-bs-target="#editMeasureTypeModal"
@@ -246,6 +264,7 @@ export default {
                 unit: "",
                 minValue: 0.0,
                 maxValue: 100.0,
+                precision: 0,
             }
         }
     },
@@ -269,6 +288,7 @@ export default {
             this.measureType.unit = mType.unit;
             this.measureType.minValue = mType.minValue;
             this.measureType.maxValue = mType.maxValue;
+            this.measureType.precision = mType.precision;
         },
         addMeasureType() {
             const data = {
@@ -276,6 +296,7 @@ export default {
                 "unit": this.measureType.unit,
                 "minValue": this.measureType.minValue,
                 "maxValue": this.measureType.maxValue,
+                "precision": this.measureType.precision,
             }
 
             this.axios({
@@ -299,6 +320,7 @@ export default {
                 "unit": this.measureType.unit,
                 "minValue": this.measureType.minValue,
                 "maxValue": this.measureType.maxValue,
+                "precision": this.measureType.precision,
             }
 
             this.axios({
@@ -340,6 +362,7 @@ export default {
             this.measureType.unit = "";
             this.measureType.minValue = 0.0;
             this.measureType.maxValue = 100.0;
+            this.measureType.precision = 0;
         }
     },
     created(){
