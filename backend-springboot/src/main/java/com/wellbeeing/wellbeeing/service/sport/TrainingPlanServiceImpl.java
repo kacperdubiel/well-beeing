@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.service.sport;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
@@ -17,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     private final TrainingPlanRequestDAO trainingPlanRequestDAO;
     private final ActivityGoalDAO activityGoalDAO;
     private final TrainingPlanGeneratorStrategy planGeneratorStrategy;
+    private final SportReportService sportReportService;
 
     public TrainingPlanServiceImpl(@Qualifier("trainerProfileDAO") TrainerProfileDAO trainerProfileDAO,
                                    @Qualifier("trainingDAO") TrainingDAO trainingDAO,
@@ -38,7 +41,8 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
                                    @Qualifier("trainingPlanRequestDAO") TrainingPlanRequestDAO trainingPlanRequestDAO,
                                    @Qualifier("userDAO") UserDAO userDAO,
                                    @Qualifier("activityGoalDAO") ActivityGoalDAO activityGoalDAO,
-                                   TrainingPlanGeneratorStrategy planGeneratorStrategy) {
+                                   TrainingPlanGeneratorStrategy planGeneratorStrategy,
+                                   @Qualifier("sportReportService") SportReportService sportReportService) {
 //        this.exerciseDAO = exerciseDAO;
         this.trainingDAO = trainingDAO;
 //        this.exerciseInTrainingDAO = exerciseInTrainingDAO;
@@ -49,6 +53,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         this.trainingPlanRequestDAO = trainingPlanRequestDAO;
         this.activityGoalDAO = activityGoalDAO;
         this.planGeneratorStrategy = planGeneratorStrategy;
+        this.sportReportService = sportReportService;
     }
 
 
@@ -287,6 +292,9 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         TrainingPosition foundPosition = trainingPositionDAO.findById(positionId).orElse(null);
         if (foundPosition == null)
             throw new NotFoundException(String.format("Position with id=%s doesn't exist", positionId));
+        User submitterUser = userDAO.findUserByEmail(userName).orElse(null);
+        if (submitterUser == null)
+            throw new NotFoundException(String.format("User with name=%s doesn't exist", userName));
         ETrainingStatus status;
         try {
             status = ETrainingStatus.valueOf(newStatus.toUpperCase());
@@ -295,6 +303,36 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         }
         foundPosition.setTrainingStatus(status);
         trainingPositionDAO.save(foundPosition);
+        if (status == ETrainingStatus.COMPLETED) {
+            SportReport updatedReport;
+            try {
+                updatedReport = sportReportService.addSportReportForProfileByDateAndProfileId(
+                        foundPosition.getTrainingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                        submitterUser.getId());
+            } catch (ConflictException e) {
+                updatedReport = sportReportService.getSportReportByDateAndOwner(
+                        foundPosition.getTrainingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                        submitterUser.getProfile()
+                );
+            }
+            Date positionDate = foundPosition.getTrainingDate();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(positionDate);
+            ReportTraining newReportTraining = ReportTraining
+                    .builder()
+                    .training(foundPosition.getTraining())
+                    .seconds(foundPosition.getTraining().getTotalTrainingTimeSeconds())
+                    .trainingTime(LocalDateTime.of(calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH),
+                            foundPosition.getTimeOfDay().getHour(),
+                            foundPosition.getTimeOfDay().getMinutes()))
+                    .build();
+            List<ReportTraining> reportTrainings = new ArrayList<>();
+            reportTrainings.add(newReportTraining);
+            sportReportService.addTrainingsToReportByReportId(reportTrainings, updatedReport.getId());
+        }
+
         return foundPosition;
     }
 
