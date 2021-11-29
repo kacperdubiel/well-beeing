@@ -1,6 +1,6 @@
 <template>
     <div>
-        <measures-component :user-id="this.userId"/>
+        <measures-component :user-id="this.userId" />
     </div>
 </template>
 
@@ -8,20 +8,18 @@
 import MeasuresComponent from "@/components/telemedic/measures/MeasuresComponent";
 
 export default {
-    name: 'UserMeasuresView',
+    name: 'DoctorUserProfileMeasuresView',
     components: {
         MeasuresComponent
     },
     data() {
         return {
-            userId: this.$store.getters.getProfileId,
+            userId: this.$route.params.userId,
         }
     },
     methods: {
-
     },
-    created() {
-
+    created(){
     },
 }
 </script>

@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.api.diet;
+package com.wellbeeing.wellbeeing.api.diet.api;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
@@ -8,9 +8,9 @@ import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.exception.NutritionPlanGenerationException;
-import com.wellbeeing.wellbeeing.domain.message.diet.AddNutritionPlanOwnerRequest;
-import com.wellbeeing.wellbeeing.domain.message.diet.CreateNutritionPlanRequest;
-import com.wellbeeing.wellbeeing.domain.message.diet.GenerateNutritionPlanRequest;
+import com.wellbeeing.wellbeeing.api.diet.message.AddNutritionPlanOwnerRequest;
+import com.wellbeeing.wellbeeing.api.diet.message.CreateNutritionPlanRequest;
+import com.wellbeeing.wellbeeing.api.diet.message.GenerateNutritionPlanRequest;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;

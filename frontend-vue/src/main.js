@@ -105,7 +105,9 @@ library.add(faEllipsisH)
 
 //telemedic
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
+import { faChartBar } from '@fortawesome/free-solid-svg-icons'
 library.add(faCalendarCheck)
+library.add(faChartBar)
 
 //post
 import { faHeart } from '@fortawesome/free-solid-svg-icons'

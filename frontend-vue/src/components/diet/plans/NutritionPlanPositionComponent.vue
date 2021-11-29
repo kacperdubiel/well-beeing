@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <div @click="openModal" style="pointer: cursor;" class="carousel-item-item" data-bs-toggle="modal" data-bs-target="#dishPlanModal">
+        <div @click="openModal" style="pointer: cursor;" class="carousel-item-item" v-bind:data-bs-toggle="{'modal' : !this.isForm}" v-bind:data-bs-target="{'#dishPlanModal' : !this.isForm}">
             <div style="width: 100%; height: 92%; justify-content: center; display: flex;" class="row">
                 <div class="photo-container col-lg-3">
                     <img v-if="this.dishPhotoSrc != ''" class="mt-1 ms-0" :src="this.dishPhotoSrc">
@@ -79,7 +79,7 @@ export default {
     },
     methods: {
         openModal(){
-            if(this.position != null){
+            if(this.position != null && !this.isForm){
                 this.$emit('open:position', this.position.dish)
             }
         },

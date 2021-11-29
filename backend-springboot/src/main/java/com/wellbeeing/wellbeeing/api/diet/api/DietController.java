@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.api.diet;
+package com.wellbeeing.wellbeeing.api.diet.api;
 
 import com.wellbeeing.wellbeeing.service.diet.DietService;
 import org.springframework.beans.factory.annotation.Qualifier;

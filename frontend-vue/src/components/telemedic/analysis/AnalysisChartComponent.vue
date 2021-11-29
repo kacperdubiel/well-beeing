@@ -17,22 +17,7 @@ export default {
             this.updateYAxis();
         },
         hideYAxis: function() {
-            if(!this.hideYAxis){
-                let yaxis = this.chartOptions.yaxis;
-                yaxis.forEach(yax => {
-                    yax.show = false;
-
-                })
-                this.chartOptions = {
-                    ...this.chartOptions,
-                    ...{
-                        yaxis: yaxis,
-                    },
-                };
-            } else {
-                this.updateYAxis();
-            }
-
+            this.updateYAxis();
         },
     },
     data() {
@@ -48,7 +33,7 @@ export default {
                         opacity: 0.25
                     },
                     animations: {
-                        enabled: true,
+                        enabled: false,
                         easing: 'easein',
                         speed: 600,
                         animateGradually: {
@@ -63,6 +48,16 @@ export default {
                     toolbar: {
                         offsetX: 0,
                         offsetY: -10,
+                        export: {
+                            csv: {
+                                columnDelimiter: ';',
+                                headerCategory: 'typ pomiaru',
+                                headerValue: 'wartość',
+                                dateFormatter(timestamp) {
+                                    return new Date(timestamp).toLocaleString()
+                                }
+                            },
+                        },
                     },
                     locales: [pl],
                     defaultLocale: "pl",
@@ -115,6 +110,7 @@ export default {
                     {
                         show: false,
                         opposite: false,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -125,7 +121,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#008FFB",
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series A",
@@ -139,6 +136,7 @@ export default {
                     {
                         show: false,
                         opposite: true,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -149,7 +147,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#00E396"
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series B",
@@ -163,6 +162,7 @@ export default {
                     {
                         show: false,
                         opposite: false,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -173,7 +173,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#FEB019"
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series C",
@@ -187,6 +188,7 @@ export default {
                     {
                         show: false,
                         opposite: true,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -197,7 +199,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#FF4560"
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series D",
@@ -214,7 +217,8 @@ export default {
                     intersect: true,
                     theme: "dark",
                     x: {
-                        show: true
+                        show: true,
+                        format: 'dd MMM - HH:mm'
                     },
                     y: {
                         title: {
@@ -236,11 +240,42 @@ export default {
     },
     methods: {
         updateYAxis() {
+            if(this.hideYAxis){
+                this.hideAxis();
+            } else {
+                this.showAxis();
+            }
+        },
+        hideAxis(){
+            let yaxis = this.chartOptions.yaxis;
+            yaxis.forEach(yax => {
+                yax.show = false;
+
+            })
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    yaxis: yaxis,
+                },
+            };
+        },
+        showAxis(){
             let yaxis = this.chartOptions.yaxis;
             for(let i = 0; i < 4; i++){
                 if(i < this.chartSeries.length){
                     yaxis[i].show = true;
                     yaxis[i].title.text = this.chartSeries[i].name;
+                    if(this.chartSeries[i].data[0] && this.chartSeries[i].data[0].min >= 0){
+                        yaxis[i].min = this.chartSeries[i].data[0].min;
+                    } else {
+                        yaxis[i].min = 0;
+                    }
+
+                    if(this.chartSeries[i].data[0] && this.chartSeries[i].data[0].precision >= 0){
+                        yaxis[i].labels.formatter = (val) => { return val.toFixed(this.chartSeries[i].data[0].precision)};
+                    } else {
+                        yaxis[i].labels.formatter = (val) => { return val.toFixed(1)};
+                    }
                 } else {
                     yaxis[i].show = false;
                     yaxis[i].title.text = "";
@@ -253,7 +288,7 @@ export default {
                     yaxis: yaxis,
                 },
             };
-        }
+        },
     },
     created() {
 
@@ -261,5 +296,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
+div.apexcharts-menu-item{
+    color: black !important;
+}
+
 </style>

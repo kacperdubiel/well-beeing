@@ -1,7 +1,7 @@
-package com.wellbeeing.wellbeeing.api.diet;
+package com.wellbeeing.wellbeeing.api.diet.api;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.message.diet.CsvImportResponse;
+import com.wellbeeing.wellbeeing.api.diet.message.CsvImportResponse;
 import com.wellbeeing.wellbeeing.service.diet.CsvImportService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;

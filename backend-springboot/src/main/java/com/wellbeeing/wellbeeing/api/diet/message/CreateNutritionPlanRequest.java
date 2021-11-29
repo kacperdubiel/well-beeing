@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.domain.message.diet;
+package com.wellbeeing.wellbeeing.api.diet.message;
 
 import lombok.Data;
 

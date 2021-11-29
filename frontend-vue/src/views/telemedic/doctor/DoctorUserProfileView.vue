@@ -1,9 +1,9 @@
 <template>
-    <div class="section-bg telemedic-section">
-        <header>
+    <div>
+        <div>
             <div class="d-flex flex-row mb-4 align-items-center align-left">
                 <div class="mx-3">
-                    <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
+                    <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="goBack"/>
                 </div>
                 <div v-if="user" class="d-flex flex-row align-items-center clickable" @click="openProfile(user.id)">
                     <div>
@@ -16,22 +16,25 @@
                     </div>
                 </div>
             </div>
-        </header>
-        <section>
-            <measures-component :user-id="this.userId"/>
-        </section>
+        </div>
+        <div>
+            <doctor-user-profile-navbar/>
+        </div>
+        <div>
+            <router-view></router-view>
+        </div>
     </div>
 </template>
 
 <script>
 import UserAvatarComponent from "@/components/telemedic/UserAvatarComponent";
-import MeasuresComponent from "@/components/telemedic/measures/MeasuresComponent";
+import DoctorUserProfileNavbar from "@/components/telemedic/navbars/DoctorUserProfileNavbar";
 
 export default {
     name: 'DoctorUserProfileView',
     components: {
         UserAvatarComponent,
-        MeasuresComponent
+        DoctorUserProfileNavbar
     },
     data() {
         return {
@@ -56,6 +59,9 @@ export default {
         openProfile(profileId){
             this.$router.push({ name: 'ProfileView', params: { profileId: profileId } });
         },
+        goBack(){
+            this.$router.push({ name: 'DoctorUsersView' });
+        }
     },
     created(){
         this.getUserProfile();

@@ -125,6 +125,10 @@
                                 </td>
 
                                 <td v-if="!this.fromNutritionPlans" class="align-right">
+                                    <button v-if="selectedAcceptState && connectionType === 'WITH_DOCTOR'" class="btn-white m-r-5 btn-hover"
+                                            @click="$emit('open-profile', connection.profile.id, this.selectedAcceptState)">
+                                        <font-awesome-icon :icon="['fa', 'chart-bar']" />
+                                    </button>
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
                                             @click="getConversation(connection.profile.id)">
                                         <font-awesome-icon :icon="['fa', 'comments']" />

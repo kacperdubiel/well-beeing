@@ -8,20 +8,18 @@
 import AnalysisComponent from "@/components/telemedic/analysis/AnalysisComponent";
 
 export default {
-    name: 'AnalysisView',
+    name: 'DoctorUserProfileAnalysisView',
     components: {
         AnalysisComponent,
     },
     data() {
         return {
-            userId: this.$store.getters.getProfileId,
+            userId: this.$route.params.userId,
         }
     },
     methods: {
-
     },
     created(){
-
     },
 }
 </script>

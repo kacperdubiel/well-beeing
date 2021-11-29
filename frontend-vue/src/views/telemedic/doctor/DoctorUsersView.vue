@@ -1,23 +1,16 @@
 <template>
-    <div class="section-bg telemedic-section">
-        <header>
-            <doctor-navbar/>
-        </header>
-        <section>
-            <user-connections-to-me-component connection-type="WITH_DOCTOR"
-                                              v-on:open-profile="openProfile" v-on:open-conversation="openConversation"/>
-        </section>
+    <div>
+        <user-connections-to-me-component connection-type="WITH_DOCTOR"
+                                          v-on:open-profile="openProfile" v-on:open-conversation="openConversation"/>
     </div>
 </template>
 
 <script>
-import DoctorNavbar from "@/components/telemedic/navbars/DoctorNavbar";
 import UserConnectionsToMeComponent from "@/components/telemedic/user-connections/UserConnectionsToMeComponent";
 
 export default {
     name: 'DoctorUsersView',
     components: {
-        DoctorNavbar,
         UserConnectionsToMeComponent
     },
     data() {

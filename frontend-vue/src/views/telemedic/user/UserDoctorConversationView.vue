@@ -1,11 +1,6 @@
 <template>
-    <div class="section-bg telemedic-section">
-        <header>
-
-        </header>
-        <section>
-            <conversation-component :conversation-id="conversationId" />
-        </section>
+    <div>
+        <conversation-component :conversation-id="conversationId" />
     </div>
 </template>
 

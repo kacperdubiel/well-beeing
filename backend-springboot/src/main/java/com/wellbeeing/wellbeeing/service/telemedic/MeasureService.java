@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface MeasureService {
     Measure getMeasureById(UUID measureId) throws NotFoundException;
     Page<Measure> getMeasuresByProfileAndMeasureType(Profile profile, MeasureType measureType, int page, int pageSize);
-    List<Measure> getMeasuresByProfileAndMeasureTypeAndMeasureDateBetween(Profile profile, MeasureType measureType, Date start, Date end);
+    List<Measure> getMeasuresByProfileAndMeasureDateBetween(Profile profile, Date start, Date end);
     Measure addMeasure(Measure measure) throws ConflictException, NotFoundException, IllegalArgumentException;
     Measure updateMeasure(Measure updatedMeasure) throws NotFoundException, IllegalArgumentException;
     void deleteMeasureById(UUID measureId) throws NotFoundException;
