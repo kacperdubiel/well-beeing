@@ -45,6 +45,9 @@ public class FollowServiceImpl implements FollowService {
         if (user.getProfile() == newFollowed)
             throw new ForbiddenException("You can not follow yourself!");
 
+        if (newFollowed.getDoctorProfile() == null && newFollowed.getDieticianProfile() == null && newFollowed.getTrainerProfile() == null)
+            throw new ForbiddenException("This user is not a specialist!");
+
         Follow existingFollow = followDAO.findByFollowerAndFollowed(user.getProfile(), newFollowed).orElse(null);
         if (existingFollow != null)
             throw new ForbiddenException("You already follow this user!");

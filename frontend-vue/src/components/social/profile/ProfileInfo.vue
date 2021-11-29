@@ -34,10 +34,10 @@
             </div>
         </div>
         <div class="d-flex flex-row-reverse px-4 mt-2">
-            <button class="btn-white fw-bolder ms-2" v-if="!isProfileMine && !this.isFollowedByMe" @click="addFollow">
+            <button class="btn-white fw-bolder ms-2" v-if="!isProfileMine && isSpecialist  && !this.isFollowedByMe" @click="addFollow">
                 Zaobserwuj
             </button>
-            <button class="btn-white fw-bolder ms-2" v-else-if="!isProfileMine && this.isFollowedByMe" @click="deleteFollow">
+            <button class="btn-white fw-bolder ms-2" v-else-if="!isProfileMine && isSpecialist && this.isFollowedByMe" @click="deleteFollow">
                 Przestań obserwować
             </button>
 
@@ -145,6 +145,9 @@ export default {
     computed: {
         isProfileMine() {
             return !this.$route.params.profileId || this.$route.params.profileId === this.$store.getters.getProfileId
+        },
+        isSpecialist() {
+            return this.profileSource.doctorProfile != null || this.profileSource.dieticianProfile != null || this.profileSource.trainerProfile != null
         }
     },
     mounted() {
