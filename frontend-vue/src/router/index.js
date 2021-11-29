@@ -52,6 +52,10 @@ import SportTrainerView from "@/views/sport/SportTrainerView";
 import TrainingPlanRequest from "@/views/sport/TrainingPlanRequest";
 import TrainingPlanRequestForm from "@/components/sport/request/TrainingPlanRequestForm";
 import SearchProfilesView from "@/views/social/SearchProfilesView";
+import FriendsView from "@/views/social/friends/FriendsView";
+import MyFriendsView from "@/views/social/friends/MyFriendsView";
+import FriendsInvitationsReceivedView from "@/views/social/friends/FriendsInvitationsReceivedView";
+import FriendsInvitationsSentView from "@/views/social/friends/FriendsInvitationsSentView";
 
 const routes = [
   {
@@ -349,6 +353,29 @@ const routes = [
     name: 'ProfileEdit',
     component: ProfileEdit
   },
+  {
+    path: '/friends',
+    redirect: {name: 'MyFriendsView'},
+    name: 'FriendsView',
+    component: FriendsView,
+    children: [
+      {
+        path: 'my',
+        name: 'MyFriendsView',
+        component: MyFriendsView
+      },
+      {
+        path: 'invitations/sent',
+        name: 'FriendsInvitationsSentView',
+        component: FriendsInvitationsSentView
+      },
+      {
+        path: 'invitations/received',
+        name: 'FriendsInvitationsReceivedView',
+        component: FriendsInvitationsReceivedView
+      },
+    ]
+  }
 ]
 
 const router = createRouter({
