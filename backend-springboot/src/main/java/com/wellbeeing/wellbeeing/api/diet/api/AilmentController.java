@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.api.diet;
+package com.wellbeeing.wellbeeing.api.diet.api;
 
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;

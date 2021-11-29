@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.api.diet;
+package com.wellbeeing.wellbeeing.api.diet.api;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.diet.report.Report;
@@ -7,10 +7,8 @@ import com.wellbeeing.wellbeeing.domain.diet.report.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.message.diet.CreateReportRequest;
+import com.wellbeeing.wellbeeing.api.diet.message.CreateReportRequest;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
-import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
-import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 

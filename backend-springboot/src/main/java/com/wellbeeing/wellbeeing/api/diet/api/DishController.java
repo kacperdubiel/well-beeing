@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.api.diet;
+package com.wellbeeing.wellbeeing.api.diet.api;
 
 import com.wellbeeing.wellbeeing.domain.diet.dish.Dish;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
