@@ -1,8 +1,9 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.*;
-import com.wellbeeing.wellbeeing.domain.diet.ProductMacroDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ProductVitaminDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.Product;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMacroDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductMineralDetail;
+import com.wellbeeing.wellbeeing.domain.diet.product.ProductVitaminDetail;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.PaginatedResponse;
 import com.wellbeeing.wellbeeing.service.diet.ProductService;
@@ -42,7 +43,7 @@ public class ProductController {
 
     @RequestMapping(path = "/product/import", method = RequestMethod.POST)
     public ResponseEntity<?> importProducts() throws Exception {
-        csvProductImporter.readProductsFromCsv("E:\\ZPI\\well-beeing\\MyFoodData-Nutrition-Facts-SpreadSheet-Detailed-Release-1-0.csv");
+        csvProductImporter.readProductsFromCsv("C:\\Users\\User\\Desktop\\well-beeing\\well-beeing\\backend-springboot\\src\\main\\java\\com\\wellbeeing\\wellbeeing\\MyFoodData-Nutrition-Facts-SpreadSheet-Detailed-Release-1-0.csv");
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 

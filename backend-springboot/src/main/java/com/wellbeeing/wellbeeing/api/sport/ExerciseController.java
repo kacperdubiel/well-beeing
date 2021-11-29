@@ -2,9 +2,9 @@ package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
+import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
+import com.wellbeeing.wellbeeing.domain.message.sport.AddLabelWithAilmentsRequest;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
@@ -34,20 +34,22 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.security.RolesAllowed;
 import java.lang.reflect.Field;
 import java.security.Principal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(path = "/sport/exercise")
 @RestController
 public class ExerciseController {
+    private final FileService fileService;
     @Autowired
     private AuthenticationManager authenticationManager;
     private ExerciseService exerciseService;
     private UserDAO userDAO;
-    private final FileService fileService;
 
 
-    public ExerciseController(@Qualifier("exerciseService") ExerciseService exerciseService, @Qualifier("fileService")FileService fileService) {
+    public ExerciseController(@Qualifier("exerciseService") ExerciseService exerciseService, @Qualifier("fileService") FileService fileService) {
         this.exerciseService = exerciseService;
         this.fileService = fileService;
     }
@@ -64,7 +66,8 @@ public class ExerciseController {
             @And({
                     @Spec(path = "exerciseType", spec = Equal.class),
                     @Spec(path = "name", spec = LikeIgnoreCase.class),
-                    @Spec(path = "ls.name", params="label", spec = LikeIgnoreCase.class)
+                    @Spec(path = "ls.name", params = "label", spec = LikeIgnoreCase.class),
+                    @Spec(path = "isDeleted", spec = Equal.class, constVal = "false")
             }) Specification<Exercise> exerciseSpec,
             @PageableDefault(sort = {"name"}, size = 20) Pageable pageable, Principal principal) throws NotFoundException {
         return new ResponseEntity<>(exerciseService.getAllExercisesFiltered(exerciseSpec, pageable, principal.getName()), HttpStatus.OK);
@@ -72,7 +75,7 @@ public class ExerciseController {
 
     @PostMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
-    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) throws NotFoundException{
+    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) throws NotFoundException {
         Exercise createdExercise;
         createdExercise = exerciseService.addExercise(request.getExercise(), principal.getName());
         request.getLabelsIds().forEach(labelId -> {
@@ -92,7 +95,9 @@ public class ExerciseController {
     public ResponseEntity<?> getLabels() {
         return new ResponseEntity<>(exerciseService.getAllSportLabels(), HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
+    @RolesAllowed(ERole.Name.ROLE_TRAINER)
     public ResponseEntity<?> deleteExercise(@PathVariable(value = "id") Long exerciseId) throws NotFoundException {
         exerciseService.deleteExercise(exerciseId);
         return new ResponseEntity<>("Successfully deleted exercise with id=" + exerciseId, HttpStatus.OK);
@@ -143,8 +148,7 @@ public class ExerciseController {
             Field field = ReflectionUtils.findField(Exercise.class, k); // find field in the object class
             if (field != null) {
                 field.setAccessible(true);
-                if (k.equals("labels"))
-                {
+                if (k.equals("labels")) {
                     exercise.setLabels(new HashSet<>());
                     ((List<Integer>) v).forEach(labelId ->
                     {
@@ -169,9 +173,10 @@ public class ExerciseController {
     }
 
     @PostMapping(path = "/label")
-    public ResponseEntity<?> addNewLabel(@RequestBody SportLabel sportLabel) throws Exception {
-
-        return null;
+    @RolesAllowed({ERole.Name.ROLE_TRAINER, ERole.Name.ROLE_ADMIN})
+    public ResponseEntity<?> addNewLabelWithAilments(@RequestBody AddLabelWithAilmentsRequest request) throws Exception {
+        SportLabel newLabel = exerciseService.addSportLabelWithAilments(request.getSportLabel(), request.getAilments());
+        return new ResponseEntity<>(newLabel, HttpStatus.OK);
     }
 
     @GetMapping(path = "/sport-label/{labelId}")

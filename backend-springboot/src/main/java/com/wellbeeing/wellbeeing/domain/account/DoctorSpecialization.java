@@ -1,10 +1,10 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wellbeeing.wellbeeing.domain.social.RoleRequest;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class DoctorSpecialization {
@@ -18,6 +18,10 @@ public class DoctorSpecialization {
     @JsonIgnore
     @ManyToMany(mappedBy = "specializations")
     private List<DoctorProfile> doctors;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "specialization", cascade = CascadeType.ALL)
+    private List<RoleRequest> specRoleRequests = new ArrayList<>();
 
     public DoctorSpecialization() {
 

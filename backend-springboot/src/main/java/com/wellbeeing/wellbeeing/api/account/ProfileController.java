@@ -14,10 +14,7 @@ import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import net.kaczmarzyk.spring.data.jpa.domain.Equal;
-import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
-import net.kaczmarzyk.spring.data.jpa.domain.NotNull;
-import net.kaczmarzyk.spring.data.jpa.domain.Null;
+import net.kaczmarzyk.spring.data.jpa.domain.*;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -26,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +60,19 @@ public class ProfileController {
         this.userService = userService;
         this.fileService = fileService;
         this.doctorSpecService = doctorSpecService;
+    }
+
+    @GetMapping(path = "")
+    public ResponseEntity<?> getProfilesFiltered(
+            @And({
+                    @Spec(path = "fullName", spec = LikeIgnoreCase.class),
+                    @Spec(path = "eSportTag", spec = Equal.class),
+                    @Spec(path = "eNutritionTag", spec = Equal.class),
+            }) Specification<Profile> profileSpec,
+            @PageableDefault(sort = {"fullName"}, size = 8, direction = Sort.Direction.ASC) Pageable pageable) {
+
+        Page<Profile> pageProfiles = profileService.getProfilesFiltered(profileSpec, pageable);
+        return new ResponseEntity<>(pageProfiles, HttpStatus.OK);
     }
 
     @GetMapping(path = "/my")

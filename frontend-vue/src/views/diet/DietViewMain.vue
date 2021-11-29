@@ -17,6 +17,11 @@
                 </router-link>
             </li>
             <li class="nav-item">
+                <router-link :to="{ name: 'UserNutritionPlansView' }">
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'UserNutritionPlansView'}">Plany</span>
+                </router-link>
+            </li>
+            <li class="nav-item">
                 <router-link :to="{ name: 'DietDishBrowserView' }">
                     <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DietDishBrowserView' }">Dania</span>
                 </router-link>
@@ -60,7 +65,7 @@ export default {
 }
 .diet-tabs li {
     margin-left: 0px;
-    width: 120px;
+    width: 118px;
     text-align: center;
     padding: 20px, 20px;
     margin-right: 1px;

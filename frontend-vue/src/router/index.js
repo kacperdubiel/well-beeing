@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import Home from '../views/Home.vue'
 //import DietView from "@/views/diet/DietView"
 import UserTelemedicView from "@/views/telemedic/user/UserTelemedicView";
@@ -17,21 +17,23 @@ import DoctorUserConversationsView from "@/views/telemedic/doctor/DoctorUserConv
 import DoctorUserConversationView from "@/views/telemedic/doctor/DoctorUserConversationView";
 import DoctorMeasureTypesView from "@/views/telemedic/doctor/DoctorMeasureTypesView";
 import DietViewMain from "@/views/diet/DietViewMain"
-import DietCardView from "@/views/diet/DietCardView"
-import DietReportsView from "@/views/diet/DietReportsView"
-import DietDishBrowserView from "@/views/diet/DietDishBrowserView"
-import DietCalculationsView from "@/views/diet/DietCalculationsView"
-import DietSpecialistsView from "@/views/diet/DietSpecialistsView"
-import DietSpecialistsSearchView from "@/views/diet/DietSpecialistsSearchView"
+import DietCardView from "@/views/diet/basic-user-panel/DietCardView"
+import DietReportsView from "@/views/diet/basic-user-panel/DietReportsView"
+import DietDishBrowserView from "@/views/diet/basic-user-panel/DietDishBrowserView"
+import DietCalculationsView from "@/views/diet/basic-user-panel/DietCalculationsView"
+import DietSpecialistsView from "@/views/diet/basic-user-panel/DietSpecialistsView"
+import DietSpecialistsSearchView from "@/views/diet/basic-user-panel/DietSpecialistsSearchView"
 import DieticianViewMain from "@/views/diet/DieticianViewMain"
-import UserDieticianAllConversationsView from "@/views/diet/UserDieticianAllConversationsView";
-import UserDieticianConversationView from "@/views/diet/UserDieticianConversationView";
-import DieticianUserAllConversationsView from "@/views/diet/DieticianUserAllConversationsView";
-import DieticianUserConversationView from "@/views/diet/DieticianUserConversationView";
-import DieticianDishesView from "@/views/diet/DieticianDishesView";
-import DieticianUsersView from "@/views/diet/DieticianUsersView";
-import DieticianLabelsView from "@/views/diet/DieticianLabelsView";
-import DieticianUserProfileView from "@/views/diet/DieticianUserProfileView";
+import UserDieticianAllConversationsView from "@/views/diet/basic-user-panel/UserDieticianAllConversationsView";
+import UserDieticianConversationView from "@/views/diet/basic-user-panel/UserDieticianConversationView";
+import DieticianUserAllConversationsView from "@/views/diet/dietician-panel/DieticianUserAllConversationsView";
+import DieticianUserConversationView from "@/views/diet/dietician-panel/DieticianUserConversationView";
+import DieticianDishesView from "@/views/diet/dietician-panel/DieticianDishesView";
+import DieticianUsersView from "@/views/diet/dietician-panel/DieticianUsersView";
+import DieticianLabelsView from "@/views/diet/dietician-panel/DieticianLabelsView";
+import DieticianUserProfileView from "@/views/diet/dietician-panel/DieticianUserProfileView";
+import DieticianNutritionPlansView from "@/views/diet/dietician-panel/DieticianNutritionPlansView";
+import UserNutritionPlansView from "@/views/diet/basic-user-panel/UserNutritionPlansView";
 import FeedView from "@/views/social/feed/FeedView";
 import RoleRequestsView from "@/views/social/role-requests/RoleRequestsView";
 import LoginAdminView from "@/views/social/admin/LoginAdminView";
@@ -44,7 +46,6 @@ import TrainingPlansView from "@/components/sport/trainingPlan/TrainingPlansView
 import ProfileView from "@/views/social/profile/ProfileView";
 import ProfileEdit from "@/views/social/profile/ProfileEdit";
 import SportReportsComponent from "@/components/sport/SportReportsComponent";
-//import TrainersView from "@/views/sport/trainers/TrainersView";
 import UserTrainerConversationView from "@/views/sport/trainers/UserTrainerConversationView";
 import UserTrainerConversationsView from "@/views/sport/trainers/UserTrainerConversationsView";
 import SearchTrainersView from "@/views/sport/trainers/SearchTrainersView";
@@ -55,12 +56,14 @@ import TrainerUserConversationsView from "@/views/sport/trainers/TrainerUserConv
 import TrainerUserConversationView from "@/views/sport/trainers/TrainerUserConversationView";
 import SportTrainerView from "@/views/sport/SportTrainerView";
 import TrainingPlanRequest from "@/views/sport/TrainingPlanRequest";
+import TrainingPlanRequestForm from "@/components/sport/request/TrainingPlanRequestForm";
+import SearchProfilesView from "@/views/social/SearchProfilesView";
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    meta: { layout: "clean"},
+    meta: {layout: "clean"},
     component: Home
   },
   {
@@ -75,6 +78,11 @@ const routes = [
     path: '/feed',
     name: 'FeedView',
     component: FeedView
+  },
+  {
+    path: '/search',
+    name: 'SearchProfilesView',
+    component: SearchProfilesView
   },
   {
     path: '/diet',
@@ -122,6 +130,11 @@ const routes = [
         name: 'UserDieticianAllConversationsView',
         component: UserDieticianAllConversationsView
       },
+      {
+        path: 'plans',
+        name: 'UserNutritionPlansView',
+        component: UserNutritionPlansView
+      },
     ]
   },
   {
@@ -159,6 +172,11 @@ const routes = [
         path: 'labels',
         name: 'DieticianLabelsView',
         component: DieticianLabelsView
+      },
+      {
+        path: 'plans',
+        name: 'DieticianNutritionPlansView',
+        component: DieticianNutritionPlansView
       },
     ]
   },
@@ -296,10 +314,14 @@ const routes = [
   },
   {
     path: '/sport/trainer',
-    redirect: {name: 'TrainingPlansView'},
+    redirect: {name: 'TrainerUsersView'},
     name: 'SportTrainerView',
     component: SportTrainerView,
     children: [
+      {
+        path: '',
+        redirect: 'users', // default child path
+      },
       {
         path: 'users',
         name: 'TrainerUsersView',
@@ -308,7 +330,8 @@ const routes = [
       {
         path: 'users/:userId',
         name: 'TrainerUserProfileView',
-        component: TrainerUserProfileView
+        component: TrainerUserProfileView,
+        props: true
       },
       {
         path: 'conversations',
@@ -324,7 +347,13 @@ const routes = [
         path: 'requests',
         name: 'TrainingPlanRequest',
         component: TrainingPlanRequest
-      }
+      },
+      {
+        path: '/requests/:requestId',
+        name: 'TrainingPlanRequestForm',
+        component: TrainingPlanRequestForm,
+        props: true
+      },
     ]
   },
   {
@@ -368,8 +397,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
-  routes
+    history: createWebHashHistory(),
+    routes
 })
 
 export default router

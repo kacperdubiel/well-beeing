@@ -1,61 +1,84 @@
 <template>
     <div>
         <div class="m-3 mx-4 header">
-            <span >Aktualny plan treningowy </span>
-            <span class="week">({{this.getWeekRangeFromMonday(moment().clone().isoWeekday(1).toDate())}})</span>
-            <p class="week text-center mt-2" v-if="activePlan.trainingPlanId == null">Nie masz planu na ten tydzień :(</p>
+            <span>Aktualny plan treningowy </span>
+            <span class="week">({{
+                    this.$func_global.getWeekRangeFromMonday(moment().clone().isoWeekday(1).toDate())
+                }})</span>
+            <p v-if="activePlan.trainingPlanId == null" class="week text-center mt-2">Nie masz planu na ten tydzień
+                :(</p>
         </div>
-        <div class="row justify-content-start m-3 mx-4" v-if="activePlan.trainingPlanId != null">
+        <div v-if="activePlan.trainingPlanId != null" class="row justify-content-start m-3 mx-4">
             <div class="col-3">
                 <div class="progress-text">
-                    {{this.activePlanProgress.trainingsCompleted}}/{{this.activePlanProgress.trainingsTotal}} treningi
+                    {{ this.activePlanProgress.trainingsCompleted }}/{{ this.activePlanProgress.trainingsTotal }}
+                    treningi
                 </div>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                         :style="{width: this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100 + '%'}"
-                         aria-valuenow="{{this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100}}"
-                         aria-valuemin="0"
-                         aria-valuemax="100">
-                        {{this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100}}%
+                    <div
+                        :style="{width: this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100 + '%'}"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="{{this.activePlanProgress.trainingsCompleted/this.activePlanProgress.trainingsTotal*100}}"
+                        class="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar">
+                        {{
+                            Math.floor(this.activePlanProgress.trainingsCompleted / this.activePlanProgress.trainingsTotal * 100)
+                        }}%
                     </div>
                 </div>
             </div>
             <div class="col-3">
                 <div class="progress-text">
-                    {{this.activePlanProgress.caloriesBurned}}/{{this.activePlanProgress.caloriesTotal}} kcal
+                    {{ this.activePlanProgress.caloriesBurned }}/{{ this.activePlanProgress.caloriesTotal }} kcal
                 </div>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                         :style="{width: this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100 + '%'}"
-                         aria-valuenow="{{this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100}}"
-                         aria-valuemin="0"
-                         aria-valuemax="100">
-                        {{Math.floor(this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100)}}%
+                    <div
+                        :style="{width: this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100 + '%'}"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="{{this.activePlanProgress.caloriesBurned/this.activePlanProgress.caloriesTotal*100}}"
+                        class="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar">
+                        {{
+                            Math.floor(this.activePlanProgress.caloriesBurned / this.activePlanProgress.caloriesTotal * 100)
+                        }}%
                     </div>
                 </div>
             </div>
             <div class="col-xxl-2 col-xl-3 col-md-4 d-flex ms-auto">
                 <button class="btn-panel-sport mx-2 ms-auto" @click="downloadPlan(this.activePlan.trainingPlanId)">
-                    <font-awesome-icon :icon="['fa', 'download']" />
+                    <font-awesome-icon :icon="['fa', 'download']"/>
                 </button>
             </div>
         </div>
         <!--Active plan-->
-        <TrainingPlanWeek v-if="activePlan.trainingPlanId != null" @update:items="updateItems" @update:active="getMyTrainingPlans" @set:training="setTraining" :plan="activePlan" :week-dates="getDatesArrayFromMonday(new Date(activePlan.beginningDate))" :plan-type="'active'" :days="days"/>
+        <TrainingPlanWeek v-if="activePlan.trainingPlanId != null" :days="days"
+                          :plan="activePlan" :plan-type="'active'"
+                          :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(activePlan.beginningDate))"
+                          @update:items="updateItems"
+                          @update:active="getMyTrainingPlans" @set:training="setTraining"/>
 
-        <div class="m-3 mx-4 header">
-            <span >Twoje pozostałe plany</span>
+        <div v-if="myTrainingPlans != null && myTrainingPlans.length > 0" class="m-3 mx-4 header">
+            <span>Twoje pozostałe plany</span>
         </div>
-        <training-plans-table @update:items="updateItems" :training-plans-source="myTrainingPlans" @download:plan="downloadPlan" @update:plan="getMyTrainingPlans"/>
+        <training-plans-table v-if="myTrainingPlans != null && myTrainingPlans.length > 0"
+                              :training-plans-source="myTrainingPlans.filter(p => p.planStatus === 'PLANNED')"
+                              @update:items="updateItems"
+                              @download:plan="downloadPlan" @update:plan="getMyTrainingPlans"/>
         <div class="m-3 mx-4 header">
-            <span >Tworzenie nowego planu </span>
+            <span>Tworzenie nowego planu </span>
         </div>
         <div class="m-3 mx-4 row-fluid justify-content-center">
             <span class="mx-3">
-                <button type="button" class="new-plan-option-btn dark-grey-btn" @click="setNewPlanCreationMethod(true)" v-bind:class="{'active-create': createAuto}">Automatyczne</button>
+                <button class="new-plan-option-btn dark-grey-btn" type="button"
+                        v-bind:class="{'active-create': createAuto}"
+                        @click="setNewPlanCreationMethod(true)">Automatyczne</button>
             </span>
             <span class="mx-3">
-                <button type="button" class="new-plan-option-btn dark-grey-btn" @click="setNewPlanCreationMethod(false); getScratchPlan();" v-bind:class="{'active-create': createManual}">Ręczne</button>
+                <button class="new-plan-option-btn dark-grey-btn" type="button"
+                        v-bind:class="{'active-create': createManual}"
+                        @click="setNewPlanCreationMethod(false); getScratchPlan();">Ręczne</button>
             </span>
         </div>
         <div v-if="createAuto">
@@ -78,21 +101,26 @@
                                 @change="updateBeginningDate()"
                             >
                                 <option disabled value="">Wybierz tydzień</option>
-                                <option v-for="range in generateNWeeks(7)" :key="range.weekNo" :value="range.beginningDate">{{ range.range }}</option>
+                                <option v-for="range in this.$func_global.generateNWeeks(7)" :key="range.weekNo"
+                                        :value="range.beginningDate">{{ range.range }}
+                                </option>
                             </select>
                         </div>
                     </div>
                 </div>
-<!--                <div class="col-4">-->
-<!--                    <button type="button" class="new-plan-option-btn dark-grey-btn" @click="createNewPlan">Utwórz</button>-->
-<!--                </div>-->
+                <!--                <div class="col-4">-->
+                <!--                    <button type="button" class="new-plan-option-btn dark-grey-btn" @click="createNewPlan">Utwórz</button>-->
+                <!--                </div>-->
             </div>
             <!--New plan-->
-            <TrainingPlanWeek  @update:items="updateItems" @set:training="setTraining" :plan="newCreatedPlan" :week-dates="getDatesArrayFromMonday(new Date(newCreatedPlan.beginningDate))" :plan-type="'create'" :days="days" v-if="newCreatedPlan.trainingPlanId != null"/>
+            <TrainingPlanWeek v-if="newCreatedPlan.trainingPlanId != null" :days="days" :plan="newCreatedPlan"
+                              :plan-type="'create'"
+                              :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(newCreatedPlan.beginningDate))"
+                              @update:items="updateItems" @set:training="setTraining"/>
 
             <div class="row mt-3 mx-4">
                 <div class="col-12">
-                    <button type="button" class="btn-panel-sport " @click="savePlanStatus('PLANNED')">Zapisz</button>
+                    <button class="btn-panel-sport " type="button" @click="savePlanStatus('PLANNED')">Zapisz</button>
                 </div>
             </div>
         </div>
@@ -104,7 +132,9 @@
             </div>
         </div>
         <TrainingDetails :training="infoTraining"/>
-        <AddTrainingToPlanModal :trainings-source="trainings" :training-plan-id="newCreatedPlan.trainingPlanId" @new:plan="refreshNewPlan"/>
+        <AddTrainingToPlanModal v-if="newCreatedPlan != null && newCreatedPlan.trainingPlanId != null"
+                                :training-plan-id="newCreatedPlan.trainingPlanId" :trainings-source="trainings"
+                                @new:plan="refreshNewPlan"/>
 
     </div>
 </template>
@@ -115,46 +145,47 @@ import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
 import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
 import TrainingPlansTable from "@/components/sport/trainingPlan/TrainingPlansTable";
+
 export default {
     name: "TrainingPlansView",
-    components: {TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails,  TrainingPlanWeek,},
-    data () {
+    components: {TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails, TrainingPlanWeek,},
+    data() {
         return {
             beginningDate: new Date(),
             week: 43,
             year: 2021,
             days: [
-                    {
-                        num:1,
-                        name: 'Poniedziałek'
-                    },
-                    {
-                        num:2,
-                        name: 'Wtorek'
-                    },
-                    {
-                        num:3,
-                        name: 'Środa'
-                    },
-                    {
-                        num:4,
-                        name: 'Czwartek'
-                    },
-                    {
-                        num:5,
-                        name: 'Piątek'
-                    },
-                    {
-                        num:6,
-                        name: 'Sobota'
-                    },
-                    {
-                        num:0,
-                        'name': 'Niedziela'
-                    }
-                ],
+                {
+                    num: 1,
+                    name: 'Poniedziałek'
+                },
+                {
+                    num: 2,
+                    name: 'Wtorek'
+                },
+                {
+                    num: 3,
+                    name: 'Środa'
+                },
+                {
+                    num: 4,
+                    name: 'Czwartek'
+                },
+                {
+                    num: 5,
+                    name: 'Piątek'
+                },
+                {
+                    num: 6,
+                    name: 'Sobota'
+                },
+                {
+                    num: 0,
+                    'name': 'Niedziela'
+                }
+            ],
             myTrainingPlans: [],
-            trainingPlan :{
+            trainingPlan: {
                 "trainingPlanId": 27,
                 "year": 2021,
                 "week": 33,
@@ -186,9 +217,9 @@ export default {
             newPlan: {
                 trainingPlanId: -1,
                 week: 0,
-                beginningDate: '',
-                details:"",
-                planStatus:"",
+                beginningDate: "2021-11-22T23:00:00.000+00:00",
+                details: "",
+                planStatus: "",
                 trainingPositions: []
             },
             newCreatedPlan: {
@@ -210,8 +241,7 @@ export default {
                     let startX;
                     let scrollLeft;
                     console.log(sliders)
-                    if(sliders != null)
-                    {
+                    if (sliders != null) {
                         sliders.forEach(slider => {
                             slider.addEventListener('mousedown', (e) => {
                                 isDown = true;
@@ -228,7 +258,7 @@ export default {
                                 slider.classList.remove('active');
                             });
                             slider.addEventListener('mousemove', (e) => {
-                                if(!isDown) return;
+                                if (!isDown) return;
                                 e.preventDefault();
                                 const x = e.pageX - slider.offsetLeft;
                                 const walk = (x - startX); //scroll-fast
@@ -236,26 +266,28 @@ export default {
                             });
                         })
 
-                    }
-                    else
+                    } else
                         console.log('EMPTY');
                 }, 500)
 
             }
         },
-        async downloadPlan (planId) {
+        async downloadPlan(planId) {
             const url = `${this.apiURL}sport/training-plan/export/${planId}`
             const token = this.$store.getters.getToken;
-            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'}, responseType: 'arraybuffer'}).then((response) => {
+            this.axios.get(url, {
+                headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'},
+                responseType: 'arraybuffer'
+            }).then((response) => {
                 console.log(response.data)
-                const blob = new Blob([response.data], { type: 'application/pdf' })
+                const blob = new Blob([response.data], {type: 'application/pdf'})
                 const objectUrl = window.URL.createObjectURL(blob)
                 window.open(objectUrl)
             }).catch(error => {
                 console.log(error.response.status)
             });
         },
-        async updateBeginningDate () {
+        async updateBeginningDate() {
             console.log('New week: ', this.newPlan.beginningDate)
             const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
@@ -271,7 +303,7 @@ export default {
                 console.log(error.response);
             });
         },
-        async savePlanStatus (status) {
+        async savePlanStatus(status) {
             const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
             let data = {
@@ -310,19 +342,19 @@ export default {
         generateNWeeks(n) {
             let week = new Date().getWeek()
             let currentMondayDate = moment().clone().isoWeekday(1).toDate()
-            console.log('Current monday',currentMondayDate)
+            console.log('Current monday', currentMondayDate)
             let weekArray = []
             for (let i = 0; i < n; i++) {
                 weekArray.push({
-                    weekNo: week+i,
-                    beginningDate: currentMondayDate.addDays(i*7),
-                    range: this.getWeekRangeFromMonday(currentMondayDate.addDays(i*7))
+                    weekNo: week + i,
+                    beginningDate: currentMondayDate.addDays(i * 7),
+                    range: this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7))
                 })
-                console.log('Week from ', currentMondayDate.addDays(i*7),' range: ', this.getWeekRangeFromMonday(currentMondayDate.addDays(i*7)))
+                console.log('Week from ', currentMondayDate.addDays(i * 7), ' range: ', this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7)))
             }
             return weekArray;
         },
-        async getMyTrainingPlans () {
+        async getMyTrainingPlans() {
             const url = `${this.apiURL}sport/training-plan/my`
             const token = this.$store.getters.getToken;
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
@@ -337,34 +369,36 @@ export default {
             d.setDate(d.getDate() + (((1 + 7 - d.getDay()) % 7) || 7));
             return d
         },
-        async refreshNewPlan () {
+        async refreshNewPlan() {
             const url = `${this.apiURL}sport/training-plan/${this.newPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
             console.log('here')
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 // this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
-
+                this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate();
+                console.log('Nowa data z momenta', this.newCreatedPlan.beginningDate)
+                this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.getMyTrainingPlans()
             }).catch(error => {
                 console.log(error.response);
             });
         },
-        async getScratchPlan () {
+        async getScratchPlan() {
             await this.getMyTrainingPlans()
             let scratchPlan = this.myTrainingPlans.find(plan => plan.planStatus === 'SCRATCH')
             if (scratchPlan == null) {
-               await this.createNewPlan()
-            }
-            else {
-                console.log('Data scratch', new Date(this.newCreatedPlan.beginningDate))
+                await this.createNewPlan()
+            } else {
                 this.newCreatedPlan = scratchPlan
+                this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate();
+                console.log('Data scratch', this.newCreatedPlan.beginningDate)
                 this.newPlan.week = moment(new Date(this.newCreatedPlan.beginningDate)).toDate().getWeek()
                 this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.newPlan.trainingPlanId = this.newCreatedPlan.trainingPlanId
             }
         },
-        async createNewPlan () {
+        async createNewPlan() {
             const url = `${this.apiURL}sport/training-plan`
             const token = this.$store.getters.getToken;
             console.log('here')
@@ -382,7 +416,7 @@ export default {
                 console.log(error.response);
             });
         },
-        setNewPlanCreationMethod (isAuto) {
+        setNewPlanCreationMethod(isAuto) {
             this.createAuto = isAuto;
             this.createManual = !isAuto;
             this.savedNewPlan = false
@@ -390,21 +424,21 @@ export default {
         setActivePlan() {
             let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
-            let plan = this.myTrainingPlans.find(plan => plan.planStatus !== 'SCRATCH' && new Date(new Date(plan.beginningDate ) - tzoffset).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
-          console.log('Active', plan)
-          if (plan != null) {
-              this.activePlan = plan;
-              this.calculateProgress()
-          }
+            let plan = this.myTrainingPlans.find(plan => plan.planStatus !== 'SCRATCH' && new Date(new Date(plan.beginningDate) - tzoffset).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
+            console.log('Active', plan)
+            if (plan != null) {
+                this.activePlan = plan;
+                this.calculateProgress()
+            }
         },
-        getWeekRangeFromMonday(mondayDate){
+        getWeekRangeFromMonday(mondayDate) {
             // console.log('Monday', mondayDate)
-            let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
+            let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth() + 1).toString().padStart(2, '0');
             mondayDate.setDate(mondayDate.getDate() + 6);
-            let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
-            return from + " - "+ to
+            let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth() + 1).toString().padStart(2, '0');
+            return from + " - " + to
         },
-        getDatesArrayFromMonday(d1){
+        getDatesArrayFromMonday(d1) {
             // console.log('Array monday:', d1)
             let weekDays = []
             for (let i = 0; i < 7; i++) {
@@ -418,7 +452,7 @@ export default {
         matchesDayOfTheWeek(position, day) {
             return new Date(position.trainingDate).getDay() === day;
         },
-        async getTrainings () {
+        async getTrainings() {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
             console.log('token ', token);
@@ -442,12 +476,12 @@ export default {
     }
 
 }
-Date.prototype.addDays = function(days) {
+Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
     return date;
 }
-Date.prototype.getWeek = function() {
+Date.prototype.getWeek = function () {
     var date = new Date(this.getTime());
     date.setHours(0, 0, 0, 0);
     // Thursday in current week decides the year.
@@ -467,21 +501,29 @@ Date.prototype.getWeek = function() {
     font-size: 36px;
     font-weight: bold;
 }
+
 .week {
     font-size: 20px;
 }
-.row-fluid{
+
+.row-fluid {
     white-space: nowrap;
 }
-.row-fluid .col-4{
+
+.row-fluid .col-4 {
     display: inline-block;
 }
-.col-4 { white-space: normal; }
+
+.col-4 {
+    white-space: normal;
+}
+
 .day {
     background-color: var(--GREY3);
     border-radius: 5px;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
+
 p.week {
     color: var(--SPORT);
 }
@@ -489,6 +531,7 @@ p.week {
 .dark-grey-btn {
     background: var(--GREY3);
 }
+
 .new-plan-option-btn {
     color: white;
     border-radius: 5px;
@@ -499,23 +542,28 @@ p.week {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
     width: 180px;
 }
+
 .active-create {
     border: solid;
     border-color: var(--SPORT);
     border-radius: 5px;
     border-width: 2px;
 }
+
 .btn-panel-sport {
     width: 50%;
 }
+
 .progress .progress-bar {
     background-color: var(--SPORT);
 }
+
 .progress {
     height: 30%;
     font-size: 12px;
     font-weight: bold;
 }
+
 .submit-correct {
     color: var(--TELEMEDIC);
 }

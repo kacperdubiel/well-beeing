@@ -33,9 +33,7 @@
             </div>
         </div>
         <div class="row text-start px-4 py-3">
-            <p>
-                {{this.profileSource.description}}
-            </p>
+            <p v-html="this.$func_global.convertNewLines(this.profileSource.description)"></p>
         </div>
     </div>
 

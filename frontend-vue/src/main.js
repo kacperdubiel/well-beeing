@@ -22,10 +22,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
     faDownload,
     faInfo,
-    faListUl,
+    faListUl, faPaperPlane,
     faPencilAlt,
     faPlusCircle, faSearch,
     faTh,
+    faThermometerFull,
     faTrash,
     faUserSecret
 } from '@fortawesome/free-solid-svg-icons'
@@ -37,6 +38,7 @@ import { faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons'
 import { faBriefcaseMedical } from '@fortawesome/free-solid-svg-icons'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faHome } from '@fortawesome/free-solid-svg-icons'
 import 'vue-select/dist/vue-select.css';
 
 library.add(faUserSecret)
@@ -51,6 +53,8 @@ library.add(faInfo)
 library.add(faTrash)
 library.add(faEdit)
 library.add(faPlusCircle)
+library.add(faHome)
+library.add(faThermometerFull)
 
 
 //navbar
@@ -81,6 +85,7 @@ library.add(faChevronLeft)
 library.add(faChevronRight)
 library.add(faFastBackward)
 library.add(faFastForward)
+library.add(faPaperPlane)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'

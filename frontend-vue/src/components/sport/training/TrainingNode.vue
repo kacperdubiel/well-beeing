@@ -1,26 +1,28 @@
 <template>
     <div
-         :id="trainingSource.trainingId"
+        :id="trainingSource.trainingId"
     >
         <div class="row mt-2">
             <div class="col-8">
-                <p>{{trainingSource.name}}</p>
+                <p>{{ trainingSource.name }}</p>
             </div>
             <div class="col-4">
-                <button class="btn-white" @click="openInfoModal(trainingSource)" data-bs-toggle="modal" data-bs-target="#infoTrainingModal">
-                    <font-awesome-icon :icon="['fa', 'info']" />
+                <button class="btn-white" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
+                        @click="openInfoModal(trainingSource)">
+                    <font-awesome-icon :icon="['fa', 'info']"/>
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col-12 additional">
-                {{this.$func_global.mapTrainingDifficulty(trainingSource.trainingDifficulty)}}
+                {{ this.$func_global.mapTrainingDifficulty(trainingSource.trainingDifficulty) }}
             </div>
 
         </div>
         <div class="row">
             <div class="col-12 additional">
-                {{this.$func_global.getTimePrettyFromSeconds(trainingSource.totalTrainingTimeSeconds)}} | {{trainingSource.caloriesBurned}} kcal
+                {{ this.$func_global.getTimePrettyFromSeconds(trainingSource.totalTrainingTimeSeconds) }} |
+                {{ trainingSource.caloriesBurned }} kcal
             </div>
 
         </div>
@@ -38,14 +40,12 @@ export default {
         getTimePrettyFromSeconds(seconds) {
             if (seconds < 60) {
                 return seconds + ' s'
-            }
-            else if (seconds < 3600) {
-                return Math.floor(seconds/60) + ' min'
-            }
-            else if (seconds >= 3600) {
-                let hours = Math.floor(seconds/3600)
-                let minutes = Math.floor((seconds - hours*3600)/60)
-                return hours + ' h ' + (minutes !== 0 ? minutes + ' min': '')
+            } else if (seconds < 3600) {
+                return Math.floor(seconds / 60) + ' min'
+            } else if (seconds >= 3600) {
+                let hours = Math.floor(seconds / 3600)
+                let minutes = Math.floor((seconds - hours * 3600) / 60)
+                return hours + ' h ' + (minutes !== 0 ? minutes + ' min' : '')
             }
         },
         openInfoModal(training) {
@@ -57,11 +57,13 @@ export default {
 
 <style scoped>
 .row.mt-2 {
-    height: 50px;
+    height: 70px;
 }
+
 .additional {
     font-size: 12px;
 }
+
 .btn-white {
     font-size: x-small;
 }

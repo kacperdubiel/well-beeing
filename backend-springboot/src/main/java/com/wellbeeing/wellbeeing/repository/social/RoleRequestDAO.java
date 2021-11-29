@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.repository.social;
 
+import com.wellbeeing.wellbeeing.domain.account.DoctorSpecialization;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.Role;
@@ -21,5 +22,6 @@ public interface RoleRequestDAO extends JpaRepository<RoleRequest, Long>, JpaSpe
 //    Page<RoleRequest> findAllBySubmitterId(UUID submitter_id, Pageable pageable);
     List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmailOrderByAddedDateDesc(String userName);
     List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatus(String userName, ERole role, EStatus status);
+    List<RoleRequest> findRoleRequestsBySubmitterProfileUserEmailAndRoleAndStatusAndSpecialization(String userName, ERole role, EStatus status, DoctorSpecialization specialization);
 
 }

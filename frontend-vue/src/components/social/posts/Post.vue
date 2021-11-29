@@ -26,8 +26,7 @@
         </div>
         <div class="row text-start px-4 pt-2 pb-1">
             <div class="col">
-                <p id="post-content">
-                    {{this.postSource.postContent}}
+                <p id="post-content" v-html="this.$func_global.convertNewLines(this.postSource.postContent)">
                 </p>
             </div>
         </div>

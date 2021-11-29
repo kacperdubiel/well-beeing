@@ -2,8 +2,6 @@ package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;

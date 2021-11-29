@@ -9,7 +9,7 @@
                 <div class="modal-body">
                     <div class="container-fluid p-0">
                         <div v-for="like in likesSource" :key="like.liker.id">
-                            <profile-on-list-item :profile-source="like.liker" class="my-2 ms-1" @redirect:profile="redirectToProfile"/>
+                            <profile-on-list-item :profile-source="like.liker" class="my-2 ms-1"/>
                         </div>
 
                     </div>
@@ -28,15 +28,6 @@ export default {
     },
     components: {
         ProfileOnListItem
-    },
-    methods: {
-        redirectToProfile(id) {
-            document.getElementById('likes-modal-close').click();
-            if(id === this.$store.getters.getProfileId)
-                this.$router.push({ name: 'MyProfileView'})
-            else
-                this.$router.push({ name: 'ProfileView', params: {profileId: id} })
-        }
     }
 }
 </script>

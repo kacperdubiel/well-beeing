@@ -2,29 +2,27 @@ package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
-import com.wellbeeing.wellbeeing.domain.account.User;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
+@Builder
 public class TrainingPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long trainingPlanId;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator")
     private Profile creator;
     @JsonIgnore
@@ -45,8 +43,15 @@ public class TrainingPlan {
     @Transient
     private int caloriesBurned;
 
-    @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<TrainingPosition> trainingPositions = new HashSet<>();
+
+    @OneToOne(targetEntity = TrainingPlanRequest.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "request")
+    @JsonIgnore
+    private TrainingPlanRequest request;
+    @Transient
+    private long requestId;
 
     public TrainingPlan(Profile owner, int year, int week, String details) {
         this.owner = owner;
@@ -57,6 +62,12 @@ public class TrainingPlan {
         this.owner = owner;
         this.details = details;
         this.creator = creator;
+    }
+
+    @PostLoad
+    public void PostLoad() {
+        if (request != null)
+            requestId = getRequest().getId();
     }
 
 

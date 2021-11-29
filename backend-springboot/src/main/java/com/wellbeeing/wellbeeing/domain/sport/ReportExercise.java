@@ -1,16 +1,11 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wellbeeing.wellbeeing.domain.diet.Dish;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionalValueDerivable;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionalValueDerivedData;
-import com.wellbeeing.wellbeeing.domain.diet.Report;
 import lombok.*;
 import org.mapstruct.control.DeepClone;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Getter

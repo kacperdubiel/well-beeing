@@ -1,6 +1,6 @@
 <template>
     <div class="modal fade" id="roleRequestDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="exampleModalLabel">Szczegóły prośby</h4>
@@ -46,11 +46,19 @@
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-12 fw-bolder">
+                            <div class="col fw-bolder">
                                 Komentarz:
                             </div>
-                            <div class="col-12">
+                            <div class="col fw-bolder" v-if="roleRequestSource.role === 'ROLE_DOCTOR' && roleRequestSource.specialization != null">
+                                Specjalizacja:
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
                                 {{ this.roleRequestSource.comment === "" ? "-" : this.roleRequestSource.comment }}
+                            </div>
+                            <div class="col" v-if="roleRequestSource.role === 'ROLE_DOCTOR' && roleRequestSource.specialization != null">
+                                {{ roleRequestSource.specialization.name }}
                             </div>
                         </div>
 

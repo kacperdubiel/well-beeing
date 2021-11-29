@@ -59,7 +59,10 @@
                 Wprowadź wszystkie dane!
             </div>
             <hr/>
-            <div>
+            <div v-if="showEmptyProductsAlert" class="alert alert-danger" role="alert">
+                    Brak produktów w raporcie. 
+            </div>
+            <div v-else>
                 <table style="color: var(--GREY2)" class="table table-borderless table-hover">
                     <thead>
                         <tr>
@@ -74,7 +77,7 @@
                         <tr v-for="detail in this.actualReport.productDetailsList" :key="detail.id">
                             <th scope="row">{{detail.product.name}}</th>
                             <td>{{detail.amountOfProduct}}</td>
-                            <td>{{detail.measureType}}</td>
+                            <td>{{this.$func_global.mapMeasure(detail.measureType)}}</td>
                             <td>{{detail.consumingTime.substring(11, 16)}}</td>
                             <td><button @click="this.deleteProductFromReport(detail.id)" class="btn-icon-panel-diet"><font-awesome-icon :icon="['fa', 'trash']"/></button></td>
                         </tr>
@@ -126,7 +129,10 @@
                 Wprowadź wszystkie dane!
             </div>
             <hr/>
-            <div>
+            <div v-if="showEmptyDishesAlert" class="alert alert-danger" role="alert">
+                    Brak dań w raporcie. 
+            </div>
+            <div v-else>
                 <table style="color: var(--GREY2)" class="table table-borderless table-hover">
                     <thead>
                         <tr>
@@ -178,7 +184,9 @@ export default {
             actualSelectedDishConsumingTime: '',
 
             productFormError: false,
-            dishFormError: false
+            dishFormError: false,
+            showEmptyProductsAlert: false,
+            showEmptyDishesAlert: false
         }
     },
     computed: {
@@ -224,7 +232,6 @@ export default {
             this.dishFormError = false;
         },
         getProductsToSelect(){
-            console.log("SPR")
             let params = {
                 page: 0,
                 size: 100,
@@ -325,7 +332,14 @@ export default {
                 headers: {Authorization: 'Bearer ' + localStorage.getItem('token')}, 
                 url: "http://localhost:8090/report/" + this.report.id,
             })
-            .then((response) => {console.log(response); this.actualReport = response.data})
+            .then((response) => {
+                console.log(response);
+                this.actualReport = response.data
+                this.showEmptyProductsAlert = true ? this.actualReport.productDetailsList.length == 0 : false
+                console.log(this.showEmptyProductsAlert)
+                this.showEmptyDishesAlert = true ? this.actualReport.dishDetailsList.length == 0 : false
+                console.log(this.showEmptyDishesAlert)
+                })
             .catch(e => {console.log(e);})
         },
         makeConsumingTimestamp(consumingTime){

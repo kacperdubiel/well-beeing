@@ -1,6 +1,8 @@
 import moment from "moment";
-const apiURL = 'http://localhost:8090/'
 import axios from "axios";
+
+const apiURL = 'http://localhost:8090/'
+
 export const func_global = {
 
     async importData(myfile, token, type, id) {
@@ -42,7 +44,7 @@ export const func_global = {
         return axios.post(url, data, {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}})
     },
 
-     async uploadFile (data, type, token, id) {
+    async uploadFile(data, type, token, id) {
         let url;
         if (type === 'roleRequest')
             url = `${apiURL}role-request/import/${id}/`
@@ -60,39 +62,48 @@ export const func_global = {
             console.log(error.response)
         });
     },
-    downloadPdfFile (url, token) {
-        axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'}, responseType: 'arraybuffer'}).then((response) => {
+    downloadPdfFile(url, token) {
+        axios.get(url, {
+            headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'},
+            responseType: 'arraybuffer'
+        }).then((response) => {
             console.log(response.data)
-            const blob = new Blob([response.data], { type: 'application/pdf' })
+            const blob = new Blob([response.data], {type: 'application/pdf'})
             const objectUrl = window.URL.createObjectURL(blob)
             window.open(objectUrl)
         }).catch(error => {
             console.log(error.response.status)
         });
     },
-    async downloadPhoto (url, token) {
+    async downloadPhoto(url, token) {
         let data
         const urlCreator = window.URL || window.webkitURL;
-        return axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'}, responseType: 'arraybuffer'}).then((response) => {
-            data = new Blob([response.data], { type: 'image/png' })
+        return axios.get(url, {
+            headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'},
+            responseType: 'arraybuffer'
+        }).then((response) => {
+            data = new Blob([response.data], {type: 'image/png'})
             return urlCreator.createObjectURL(data);
         }).catch(error => {
             console.log(error.response.status)
             return data
         });
     },
-    async downloadMp4Video (url, token) {
+    async downloadMp4Video(url, token) {
         let data
         const urlCreator = window.URL || window.webkitURL;
-        return axios.get(url, {headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'}, responseType: 'arraybuffer'}).then((response) => {
-            data = new Blob([response.data], { type: 'video/mp4' })
+        return axios.get(url, {
+            headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'},
+            responseType: 'arraybuffer'
+        }).then((response) => {
+            data = new Blob([response.data], {type: 'video/mp4'})
             return urlCreator.createObjectURL(data);
         }).catch(error => {
             console.log(error.response.status)
             return data
         });
     },
-    truncate(text, length, suffix){
+    truncate(text, length, suffix) {
         if (text.length > length) {
             return text.substring(0, length) + suffix;
         } else {
@@ -104,12 +115,12 @@ export const func_global = {
             return moment(String(date)).format('DD/MM/YYYY')
         }
     },
-    formatTime(date){
+    formatTime(date) {
         if (date) {
             return moment(String(date)).format('HH:mm')
         }
     },
-    formatDateTime(date){
+    formatDateTime(date) {
         if (date) {
             return moment(String(date)).format('DD/MM/YYYY HH:mm')
         }
@@ -125,11 +136,16 @@ export const func_global = {
         }
     },
     getIsActive5minutes(userLastRequestTime) {
-        console.log('Something')
         let duration = moment.duration(moment(new Date()).diff(userLastRequestTime));
         let minutes = duration.asMinutes()
-        console.log('minutes: ', minutes)
+        // console.log('minutes: ', minutes)
         return minutes < 5
+    },
+    convertNewLines(text) {
+        if(text)
+            return text.replaceAll('\n', '<br />')
+        else
+            return null
     },
     mapCommentForm(counter) {
         if(counter === 1)
@@ -152,97 +168,126 @@ export const func_global = {
             return 'udostępnień'
     },
     mapRole(role) {
-        if(role === 'ROLE_DIETICIAN')
+        if (role === 'ROLE_DIETICIAN')
             return 'Dietetyk'
-        else if(role === 'ROLE_DOCTOR')
+        else if (role === 'ROLE_DOCTOR')
             return 'Lekarz'
-        else if(role === 'ROLE_TRAINER')
+        else if (role === 'ROLE_TRAINER')
             return 'Trener'
-        else if(role === 'ROLE_ADMIN')
+        else if (role === 'ROLE_ADMIN')
             return 'Admin'
-        else if(role === 'ROLE_BASIC_USER')
+        else if (role === 'ROLE_BASIC_USER')
             return 'Podstawowy użytkownik'
         else
             return 'Brak informacji'
     },
     mapRoleRequestStatus(status) {
-        if(status === 'ACCEPTED')
+        if (status === 'ACCEPTED')
             return 'Zaakceptowano'
-        else if(status === 'REJECTED')
+        else if (status === 'REJECTED')
             return 'Odrzucono'
-        else if(status === 'PENDING')
+        else if (status === 'PENDING')
             return 'Oczekujące'
-        else if(status === 'CANCELLED')
+        else if (status === 'CANCELLED')
             return 'Anulowano'
         else
             return 'Brak informacji'
     },
     mapSportTag(tag) {
-        if(tag === 'WEIGHT_TRAINING')
+        if (tag === 'WEIGHT_TRAINING')
             return 'Trening siłowy'
-        else if(tag === 'CARDIO')
+        else if (tag === 'CARDIO')
             return 'Trening kardio'
-        else if(tag === 'PILATES')
+        else if (tag === 'PILATES')
             return 'Pilates'
-        else if(tag === 'YOGA')
+        else if (tag === 'YOGA')
             return 'Joga'
         else
             return 'Brak informacji'
     },
     mapNutritionTag(tag) {
-        if(tag === 'VEGETARIAN')
+        if (tag === 'VEGETARIAN')
             return 'Dieta wegetariańska'
-        else if(tag === 'VEGAN')
+        else if (tag === 'VEGAN')
             return 'Dieta wegańska'
-        else if(tag === 'GLUTEN_FREE')
+        else if (tag === 'GLUTEN_FREE')
             return 'Dieta bezglutenowa'
         else
             return 'Brak informacji'
     },
     mapExerciseType(type) {
-        if(type === 'STRENGTH')
+        if (type === 'STRENGTH')
             return 'Siłowe'
-        else if(type === 'CARDIO')
+        else if (type === 'CARDIO')
             return 'Kardio'
-        else if(type === 'OTHER')
+        else if (type === 'OTHER')
             return 'Inne'
         else
             return 'Brak informacji'
     },
     mapTrainingDifficulty(difficulty) {
-        if(difficulty === 'EASY')
+        if (difficulty === 'EASY')
             return 'Łatwy'
-        else if(difficulty === 'MEDIUM')
+        else if (difficulty === 'MEDIUM')
             return 'Średni'
-        else if(difficulty === 'HARD')
+        else if (difficulty === 'HARD')
             return 'Trudny'
         else
             return 'Brak informacji'
     },
+    mapTimeOfDay(timeOfDay) {
+        if (timeOfDay === 'MORNING')
+            return 'Poranek'
+        else if (timeOfDay === 'NOON')
+            return 'Południe'
+        else if (timeOfDay === 'AFTERNOON')
+            return 'Popołudnie'
+        else if (timeOfDay === 'EVENING')
+            return 'Wieczór'
+        else if (timeOfDay === 'NIGHT')
+            return 'Noc'
+        else
+            return 'Brak informacji'
+    },
+    mapTrainingPlanStatus(status) {
+        if (status === 'STARTED')
+            return 'Rozpoczęty'
+        else if (status === 'PLANNED')
+            return 'Zaplanowany'
+        else if (status === 'COMPLETED')
+            return 'Wykonany'
+        else if (status === 'TEMPLATE')
+            return 'Wzorzec'
+        else if (status === 'OWN_MEASURES')
+            return 'Własne pomiary'
+        else if (status === 'SCRATCH')
+            return 'Roboczy'
+        else
+            return 'Brak informacji'
+    },
     dateDayMonth(date) {
-        return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth()+1).toString().padStart(2, '0');
+        date = new Date(date)
+        console.log('Data day month', date)
+        return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth() + 1).toString().padStart(2, '0');
     },
     getTimePrettyFromSeconds(seconds) {
         if (seconds < 60) {
             return seconds + ' s'
-        }
-        else if (seconds < 3600) {
-            return Math.floor(seconds/60) + ' min'
-        }
-        else if (seconds >= 3600) {
-            let hours = Math.floor(seconds/3600)
-            let minutes = Math.floor((seconds - hours*3600)/60)
-            return hours + ' h ' + (minutes !== 0 ? minutes + ' min': '')
+        } else if (seconds < 3600) {
+            return Math.floor(seconds / 60) + ' min'
+        } else if (seconds >= 3600) {
+            let hours = Math.floor(seconds / 3600)
+            let minutes = Math.floor((seconds - hours * 3600) / 60)
+            return hours + ' h ' + (minutes !== 0 ? minutes + ' min' : '')
         }
     },
-    getWeekRangeFromMonday(mondayDate){
-        console.log('range date', mondayDate)
-        let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
+    getWeekRangeFromMonday(mondayDate) {
+        let from = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth() + 1).toString().padStart(2, '0');
         mondayDate.setDate(mondayDate.getDate() + 6);
-        let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth()+1).toString().padStart(2, '0');
-        return from + " - "+ to
+        let to = mondayDate.getDate().toString().padStart(2, '0') + '.' + eval(mondayDate.getMonth() + 1).toString().padStart(2, '0');
+        return from + " - " + to
     },
-    getDatesArrayFromMonday(d1){
+    getDatesArrayFromMonday(d1) {
         let weekDays = []
         for (let i = 0; i < 7; i++) {
             weekDays.push({
@@ -252,86 +297,100 @@ export const func_global = {
         }
         return weekDays;
     },
-    mapSex(sex){
-        if(sex == 'WOMAN')
+    generateNWeeks(n) {
+        let week = new Date().getWeek()
+        let currentMondayDate = moment().clone().isoWeekday(1).startOf('day').toDate()
+        let weekArray = []
+        for (let i = 0; i < n; i++) {
+            weekArray.push({
+                weekNo: week + i,
+                beginningDate: currentMondayDate.addDays(i * 7),
+                range: this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7))
+            })
+            // console.log('Week from ', currentMondayDate.addDays(i * 7), ' range: ', this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7)))
+        }
+        return weekArray;
+    },
+    mapSex(sex) {
+        if (sex == 'WOMAN')
             return "Kobieta"
-        else if(sex == 'MAN')
+        else if (sex == 'MAN')
             return "Mężczyzna"
         else
             return 'Brak informacji'
     },
-    mapBoolean(state){
-        if(state)
+    mapBoolean(state) {
+        if (state)
             return "Tak"
         else
             return "Nie"
     },
-    mapActivity(activity){
-        if(activity == 'VERY_LOW')
+    mapActivity(activity) {
+        if (activity == 'VERY_LOW')
             return "Bardzo niska"
-        else if(activity == "LOW")
+        else if (activity == "LOW")
             return "Niska"
-        else if(activity == "MEDIUM")
+        else if (activity == "MEDIUM")
             return "Średnia"
-        else if(activity == "HIGH")
+        else if (activity == "HIGH")
             return "Wysoka"
-        else if(activity == "VERY_HIGH")
+        else if (activity == "VERY_HIGH")
             return "Bardzo wysoka"
         else
             return "Brak informacji"
     },
-    mapDietGoal(goal){
-        if(goal == 'FAST_LOSE_WEIGHT')
+    mapDietGoal(goal) {
+        if (goal == 'FAST_LOSE_WEIGHT')
             return "Szybka utrata wagi"
-        else if(goal == "LOSE_WEIGHT")
+        else if (goal == "LOSE_WEIGHT")
             return "Utrata wagi"
-        else if(goal == "KEEP_WEIGHT")
+        else if (goal == "KEEP_WEIGHT")
             return "Utrzymanie wagi"
-        else if(goal == "GAIN_WEIGHT")
+        else if (goal == "GAIN_WEIGHT")
             return "Przybranie na wadze"
-        else if(goal == "FAST_GAIN_WEIGHT")
+        else if (goal == "FAST_GAIN_WEIGHT")
             return "Szybkie przybranie na wadze"
-        else if(goal == "GAIN_MUSCLES")
+        else if (goal == "GAIN_MUSCLES")
             return "Budowa masy mięśniowej"
         else
             return "Brak informacji"
     },
-    mapAilmentType(ailmentType){
-        if(ailmentType == 'ALLERGY')
+    mapAilmentType(ailmentType) {
+        if (ailmentType == 'ALLERGY')
             return "Alergia"
-        else if(ailmentType == "ILLNESS")
+        else if (ailmentType == "ILLNESS")
             return "Choroba"
-        else if(ailmentType == "INJURY")
+        else if (ailmentType == "INJURY")
             return "Kontuzja"
-        else if(ailmentType == "PHYSICAL_CONDITION")
+        else if (ailmentType == "PHYSICAL_CONDITION")
             return "Stan fizyczny"
         else
             return "Brak informacji"
     },
-    mapBMIResult(result){
-        if(result == 'SEVERELY_UNDERWEIGHT')
+    mapBMIResult(result) {
+        if (result == 'SEVERELY_UNDERWEIGHT')
             return "Wychudzenie"
-        else if(result == 'UNDERWEIGHT')
+        else if (result == 'UNDERWEIGHT')
             return "Niedowaga"
-        else if(result == "HEALTHY")
+        else if (result == "HEALTHY")
             return "Waga w normie"
-        else if(result == "OVERWEIGHT")
+        else if (result == "OVERWEIGHT")
             return "Nadwaga"
-        else if(result == "OBESE")
+        else if (result == "OBESE")
             return "Otyłość"
         else
             return "Nieznany"
     },
-    mapMeal(meal){
-        if(meal == 'BREAKFAST')
+    mapMeal(meal) {
+        if (meal == 'BREAKFAST')
             return "ŚNIADANIE"
-        else if(meal == 'LUNCH')
+        else if (meal == 'LUNCH')
             return "LUNCH"
-        else if(meal == "DINNER")
+        else if (meal == "DINNER")
             return "OBIAD"
-        else if(meal == "SNACK")
+        else if (meal == "SNACK")
             return "PRZEKĄSKA"
-        else if(meal == "SUPPER")
+        else if (meal == "SUPPER")
             return "KOLACJA"
         else
             return "Nieznany"
@@ -352,7 +411,7 @@ export const func_global = {
         else if(index == "ANY")
             return "Dowolny"
         else
-            return "Nieznany"
+            return " "
     },
     mapGlycemicIndexShort(index){
         if(index == 'VERY_LOW')
@@ -370,46 +429,62 @@ export const func_global = {
         else if(index == "ANY")
             return "(0, 100)"
         else
-            return "Nieznany"
+            return " "
     },
     mapMeasure(measure){
-        if(measure == 'GRAM')
+        if (measure == 'GRAM')
             return "g"
-        else if(measure == 'MILLI_GRAM')
+        else if (measure == 'MILLI_GRAM')
             return "mg"
-        else if(measure == "MICRO_GRAM")
+        else if (measure == "MICRO_GRAM")
             return "mcg"
-        else if(measure == "KILO_GRAM")
+        else if (measure == "KILO_GRAM")
             return "kg"
         else
             return "Nieznana"
     },
+    mapPlanRequestStatus(status) {
+        if (status === 'SUBMITTED')
+            return 'Złożone'
+        else if (status === 'SEEN')
+            return 'Wyświetlone'
+        else if (status === 'ACCEPTED')
+            return 'Zaakceptowane'
+        else if (status === 'DENIED')
+            return 'Odrzucone'
+        else if (status === 'CANCELLED')
+            return 'Anulowane'
+        else if (status === 'COMPLETED')
+            return 'Zrealizowane'
+        else
+            return 'Brak informacji'
+    },
     mapVitamin(vit){
         if(vit == 'FOLIC_ACID')
             return 'Kwas foliowy [mcg]'
-        if(vit == 'BIOTIN')
+        else if(vit == 'BIOTIN')
             return 'Biotyna [mcg]'
-        if(vit == 'A')
+        else if(vit == 'A')
             return 'A [mcg]'
-        if(vit == 'B1')
+        else if(vit == 'B1')
             return 'B1 [mg]'
-        if(vit == 'B2')
+        else if(vit == 'B2')
             return 'B2 [mg]'
-        if(vit == 'B5')
+        else if(vit == 'B5')
             return 'B5 [mg]'
-        if(vit == 'B6')
+        else if(vit == 'B6')
             return 'B6 [mg]'
-        if(vit == 'B12')
+        else if(vit == 'B12')
             return 'B12 [mcg]'
-        if(vit == 'C')
+        else if(vit == 'C')
             return 'C [mg]'
-        if(vit == 'D')
+        else if(vit == 'D')
             return 'D [mcg]'
-        if(vit == 'E')
+        else if(vit == 'E')
             return 'E [mg]'
-        if(vit == 'PP')
+        else if(vit == 'PP')
             return 'PP [mg]'
-        if(vit == 'K')
+        else if(vit == 'K')
             return 'K [mg]'
         else
             return vit
@@ -417,11 +492,11 @@ export const func_global = {
     mapMacro(macro){
         if(macro == 'VEGETABLE_PROTEINS')
             return 'Białka roślinne [g]'
-        if(macro == 'ANIMAL_PROTEINS')
+        else if(macro == 'ANIMAL_PROTEINS')
             return 'Białka zwierzęce [g]'
-        if(macro == 'POLYUNSATURATED_FATS')
+        else if(macro == 'POLYUNSATURATED_FATS')
             return 'Tłuszcze wielonienasycone [g]'
-        if(macro == 'MONOUNSATURATED_FATS')
+        else if(macro == 'MONOUNSATURATED_FATS')
             return 'Tłuszcze jednonienasycone [g]'
         else
             return macro
@@ -429,23 +504,23 @@ export const func_global = {
     mapMineral(mineral){
         if(mineral == 'ZINC')
             return 'Cynk [mg]'
-        if(mineral == 'PHOSPHORUS')
+        else if(mineral == 'PHOSPHORUS')
             return 'Fosfor [mg]'
-        if(mineral == 'IODINE')
+        else if(mineral == 'IODINE')
             return 'Jod [mcg]'
-        if(mineral == 'MAGNESIUM')
+        else if(mineral == 'MAGNESIUM')
             return 'Magnez [mg]'
-        if(mineral == 'COPPER')
+        else if(mineral == 'COPPER')
             return 'Miedź [mg]'
-        if(mineral == 'POTASSIUM')
+        else if(mineral == 'POTASSIUM')
             return 'Potas [mg]'
-        if(mineral == 'SELENIUM')
+        else if(mineral == 'SELENIUM')
             return 'Selen [mcg]'
-        if(mineral == 'SODIUM')
+        else if(mineral == 'SODIUM')
             return 'Sód [mg]'
-        if(mineral == 'CALCIUM')
+        else if(mineral == 'CALCIUM')
             return 'Wapń [mg]'
-        if(mineral == 'Iron')
+        else if(mineral == 'Iron')
             return 'Żelazo [mg]'
         else
             return mineral
@@ -456,42 +531,61 @@ export const func_global = {
         else
             return "Opublikowane"
     },
+    mapDay(day){
+        if(day == 'MONDAY')
+            return 'Poniedziałek'
+        else if (day == 'TUESDAY')
+            return 'Wtorek'
+        else if (day == 'WEDNESDAY')
+            return 'Środa'
+        else if (day == 'THURSDAY')
+            return 'Czwartek'
+        else if (day == 'FRIDAY')
+            return 'Piątek'
+        else if (day == 'SATURDAY')
+            return 'Sobota'
+        else if (day == 'SUNDAY')
+            return 'Niedziela'
+    },
+    mealsList(){
+        return ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK', 'SUPPER']
+    },
     proteinCalories(){
         return 4
     },
-    fatCalories(){
+    fatCalories() {
         return 9
     },
-    carbCalories(){
+    carbCalories() {
         return 4
     },
     days: [
         {
-            num:1,
+            num: 1,
             name: 'Poniedziałek'
         },
         {
-            num:2,
+            num: 2,
             name: 'Wtorek'
         },
         {
-            num:3,
+            num: 3,
             name: 'Środa'
         },
         {
-            num:4,
+            num: 4,
             name: 'Czwartek'
         },
         {
-            num:5,
+            num: 5,
             name: 'Piątek'
         },
         {
-            num:6,
+            num: 6,
             name: 'Sobota'
         },
         {
-            num:0,
+            num: 0,
             'name': 'Niedziela'
         }
     ]

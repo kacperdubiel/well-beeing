@@ -1,6 +1,6 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.Dish;
+import com.wellbeeing.wellbeeing.domain.diet.dish.Dish;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;

@@ -21,6 +21,11 @@
                     <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianUserAllConversationsView' || this.$route.name === 'DieticianUserConversationView'  }">Wiadomości</span>
                 </router-link>
             </li>
+            <li class="nav-item">
+                <router-link :to="{ name: 'DieticianNutritionPlansView' }">
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianNutritionPlansView'}">Plan</span>
+                </router-link>
+            </li>
         </ul>
         <router-view></router-view>
     </div>

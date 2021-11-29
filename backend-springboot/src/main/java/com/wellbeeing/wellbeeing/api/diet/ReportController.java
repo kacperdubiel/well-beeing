@@ -1,12 +1,13 @@
 package com.wellbeeing.wellbeeing.api.diet;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.diet.Report;
-import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
+import com.wellbeeing.wellbeeing.domain.diet.report.Report;
+import com.wellbeeing.wellbeeing.domain.diet.report.ReportDishDetail;
+import com.wellbeeing.wellbeeing.domain.diet.report.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.message.diet.CreateReportRequest;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
 import com.wellbeeing.wellbeeing.domain.telemedic.MeasureType;
@@ -117,9 +118,10 @@ public class ReportController {
     }
 
     @RequestMapping(path = "/report", method = RequestMethod.POST)
-    public ResponseEntity<?> addReport(Principal principal) throws NotFoundException, ConflictException {
+    public ResponseEntity<?> addReport(Principal principal,
+                                       @RequestBody @NonNull CreateReportRequest createReportRequest) throws NotFoundException, ConflictException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        Report newReport = reportService.addReportForProfileByProfileId(profileId);
+        Report newReport = reportService.addReportForProfileByProfileId(profileId, createReportRequest.getReportDate());
         return new ResponseEntity<>(newReport, HttpStatus.OK);
     }
 
@@ -132,11 +134,17 @@ public class ReportController {
 
     @RequestMapping(path = "/report/{reportId}/details", method = RequestMethod.GET)
     public ResponseEntity<?> getReportDetailsByReportId(@PathVariable("reportId") UUID reportId, Principal principal) throws NotFoundException, ForbiddenException {
+        Report report = reportService.getReportById(reportId);
+        Profile owner = report.getReportOwner();
+
         UUID profileId = userService.findUserIdByUsername(principal.getName());
-        if(!profileId.equals(reportService.getReportById(reportId).getReportOwner().getId())){
-            throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
+        Profile userProfile = profileService.getProfileById(profileId);
+        ProfileConnection pc = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(owner, userProfile, EConnectionType.WITH_DIETICIAN);
+
+        if(pc != null || userProfile.getId().equals(owner.getId())){
+            return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
         }
-        return new ResponseEntity<>(reportService.countDetailedElementsAmountsByReportId(reportId), HttpStatus.OK);
+        throw new ForbiddenException("Access to report with id" + reportId + " forbidden");
     }
 
     @RequestMapping(path = "/report/{reportId}/actualize", method = RequestMethod.GET)

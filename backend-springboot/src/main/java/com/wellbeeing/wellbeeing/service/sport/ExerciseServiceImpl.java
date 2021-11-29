@@ -1,26 +1,25 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
-import com.wellbeeing.wellbeeing.domain.PaginatedResponse;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.account.User;
-import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
+import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
-import com.wellbeeing.wellbeeing.domain.sport.Training;
+import com.wellbeeing.wellbeeing.domain.sport.SportLabelAilment;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.repository.diet.AilmentDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
+import com.wellbeeing.wellbeeing.repository.sport.SportLabelAilmentDAO;
 import com.wellbeeing.wellbeeing.repository.sport.SportLabelDAO;
 import com.wellbeeing.wellbeeing.util.DataFromApi;
-import javafx.scene.control.Pagination;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,13 +33,20 @@ import java.util.*;
 public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     private final ExerciseDAO exerciseDAO;
     private final SportLabelDAO sportLabelDAO;
+    private final SportLabelAilmentDAO sportLabelAilmentDAO;
     private final UserDAO userDAO;
+    private final AilmentDAO ailmentDAO;
+
     public ExerciseServiceImpl(@Qualifier("exerciseDAO") ExerciseDAO exerciseDAO,
                                @Qualifier("sportLabelDAO") SportLabelDAO sportLabelDAO,
-                               @Qualifier("userDAO") UserDAO userDAO){
+                               @Qualifier("sportLabelAilmentDAO") SportLabelAilmentDAO sportLabelAilmentDAO,
+                               @Qualifier("userDAO") UserDAO userDAO,
+                               @Qualifier("ailmentDAO") AilmentDAO ailmentDAO) {
         this.exerciseDAO = exerciseDAO;
         this.sportLabelDAO = sportLabelDAO;
+        this.sportLabelAilmentDAO = sportLabelAilmentDAO;
         this.userDAO = userDAO;
+        this.ailmentDAO = ailmentDAO;
     }
 
     @Override
@@ -49,13 +55,10 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
         System.out.println("Print id:" + user.getId());
         exercise.setCreator(user.getProfile());
         if (exerciseDAO.findAllByName(exercise.getName()).isEmpty()) {
-            System.out.println("Pront name: "+exercise.getName());
-            if (exercise.getName() == null || Objects.equals(exercise.getName(), ""))
-            {
+            System.out.println("Pront name: " + exercise.getName());
+            if (exercise.getName() == null || Objects.equals(exercise.getName(), "")) {
                 throw new NotFoundException("Exercise must have a name!");
-            }
-            else if (exercise.getExerciseType() == null)
-            {
+            } else if (exercise.getExerciseType() == null) {
                 throw new NotFoundException("Exercise must have a type!");
             }
             exerciseDAO.save(exercise);
@@ -70,8 +73,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
         SportLabel label = sportLabelDAO.findById(label_id).orElse(null);
         if (ex == null) {
             throw new NotFoundException(String.format("There's no exercise with id=%d", exercise_id));
-        }
-        else if (label == null) {
+        } else if (label == null) {
             throw new NotFoundException(String.format("There's no label with id=%d", label_id));
         }
         ex.addLabelToExercise(label);
@@ -87,7 +89,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
         if (user == null)
             throw new NotFoundException("There's no user with email=" + creatorName);
         boolean hasPermission = user.getRoles().stream().map(Role::getRole).anyMatch(r -> r.equals(ERole.ROLE_ADMIN) || r.equals(ERole.ROLE_TRAINER));
-        if(!hasPermission)
+        if (!hasPermission)
             throw new ForbiddenException("You have no permission to add Sport Labels!");
         try {
             sportLabelDAO.save(sportLabel);
@@ -99,6 +101,25 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     }
 
     @Override
+    public SportLabel addSportLabelWithAilments(SportLabel sportLabel, ArrayList<Map<String, Object>> ailments) throws NotFoundException {
+        SportLabel savedLabel = sportLabelDAO.save(sportLabel);
+        ailments.forEach(a -> {
+            Ailment ailment = ailmentDAO.findById(UUID.fromString((String) a.get("ailmentId"))).orElse(null);
+            if (ailment != null) {
+                SportLabelAilment sportLabelAilment = SportLabelAilment.builder()
+                        .sportLabel(savedLabel)
+                        .ailment(ailment)
+                        .impactWeight((Double) a.get("weight"))
+                        .build();
+                sportLabelAilmentDAO.save(sportLabelAilment);
+            }
+        });
+
+//        sportLabelDAO.save(sportLabel);
+        return savedLabel;
+    }
+
+    @Override
     public boolean deleteSportLabel(long sportLabelId, String userName) throws NotFoundException {
         return false;
     }
@@ -106,7 +127,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     @Override
     public SportLabel getSportLabelById(Long labelId) throws NotFoundException {
         SportLabel sportLabel = sportLabelDAO.findById(labelId).orElse(null);
-        if(sportLabel != null)
+        if (sportLabel != null)
             return sportLabel;
         throw new NotFoundException("Sport label with id: " + labelId + " not found");
     }
@@ -117,8 +138,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
         SportLabel label = sportLabelDAO.findSportLabelByName(label_name).orElse(null);
         if (ex == null) {
             throw new NotFoundException(String.format("There's no exercise with id=%d", exercise_id));
-        }
-        else if (label == null) {
+        } else if (label == null) {
             throw new NotFoundException(String.format("There's no label with name=%s", label_name));
         }
         ex.addLabelToExercise(label);
@@ -130,11 +150,14 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
 
     @Override
     public boolean deleteExercise(long id) throws NotFoundException {
-        if (exerciseDAO.findById(id).orElse(null) != null) {
-            exerciseDAO.deleteById(id);
-            return true;
+
+        Exercise foundExercise = exerciseDAO.findById(id).orElse(null);
+        if (foundExercise == null || foundExercise.isDeleted()) {
+            throw new NotFoundException(String.format("There's no exercise with id=%d", id));
         }
-        throw new NotFoundException(String.format("There's no exercise with id=%s", id));
+        foundExercise.setDeleted(true);
+        exerciseDAO.save(foundExercise);
+        return true;
     }
 
     @Override
@@ -185,7 +208,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
         exercises = pageExercises.getContent();
         Map<Long, Integer> calories = this.getCaloriesBurnedFromUser(exercises, userName);
 
-        for (Exercise exercise:
+        for (Exercise exercise :
                 pageExercises.getContent()) {
             exercise.setCaloriesBurned(calories.get(exercise.getExerciseId()));
         }
@@ -208,7 +231,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     public Exercise updateExercise(Exercise exercise) throws NotFoundException {
         // Not creating a new object
         Exercise targetExercise = exerciseDAO.findById(exercise.getExerciseId()).orElse(null);
-        if(targetExercise == null)
+        if (targetExercise == null)
             throw new NotFoundException(String.format("There's no exercise with id=%d", exercise.getExerciseId()));
 
         exerciseDAO.save(exercise);
@@ -233,8 +256,8 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
             });
 
             exercises.forEach(ex -> {
-                if(exerciseDAO.findAllByName(ex.getName()).isEmpty())
-                exerciseDAO.save(Exercise.builder().name(ex.getName()).instruction(ex.getInstruction()).exerciseType(EExerciseType.OTHER).build());
+                if (exerciseDAO.findAllByName(ex.getName()).isEmpty())
+                    exerciseDAO.save(Exercise.builder().name(ex.getName()).instruction(ex.getInstruction()).exerciseType(EExerciseType.OTHER).build());
             });
 
             for (Map<String, Object> exercisesLabel : exercisesLabels) {
@@ -259,9 +282,9 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
         if (user == null)
             throw new NotFoundException("There's no user with email=" + userName);
 
-        double weight  = user.getProfile().getProfileCard().getWeight();
-        for (Exercise ex: exercises
-             ) {
+        double weight = user.getProfile().getProfileCard().getWeight();
+        for (Exercise ex : exercises
+        ) {
             caloriesMap.put(ex.getExerciseId(), ex.countCaloriesPerHour((int) weight));
         }
         System.out.println("User weight: " + weight);
@@ -279,7 +302,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     @Override
     public boolean deleteSportLabel(long id) {
         sportLabelDAO.deleteById(id);
-        return  true;
+        return true;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.wellbeeing.wellbeeing.service.diet;
 
-import com.wellbeeing.wellbeeing.domain.diet.Report;
-import com.wellbeeing.wellbeeing.domain.diet.ReportDishDetail;
-import com.wellbeeing.wellbeeing.domain.diet.ReportProductDetail;
+import com.wellbeeing.wellbeeing.domain.diet.report.Report;
+import com.wellbeeing.wellbeeing.domain.diet.report.ReportDishDetail;
+import com.wellbeeing.wellbeeing.domain.diet.report.ReportProductDetail;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import org.apache.tomcat.jni.Local;
@@ -19,7 +19,7 @@ public interface ReportService {
     Report deleteDishesFromReportByReportId(UUID reportId, List<UUID> dishes) throws NotFoundException;
     Report deleteProductsFromReportByReportId(UUID reportId, List<UUID> productsIds) throws NotFoundException;
     boolean deleteReportById(UUID reportId) throws NotFoundException;
-    Report addReportForProfileByProfileId(UUID profileId) throws NotFoundException, ConflictException;
+    Report addReportForProfileByProfileId(UUID profileId, LocalDate date) throws NotFoundException, ConflictException;
     Report addDishesToReportByReportId(List<ReportDishDetail> dishes, UUID reportId) throws NotFoundException;
     Report addProductsToReportByReportId(List<ReportProductDetail> products, UUID reportId) throws NotFoundException;
     void updateReportDerivedElementsByReportId(UUID reportId) throws NotFoundException;
