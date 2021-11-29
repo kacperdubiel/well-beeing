@@ -109,8 +109,8 @@ export default {
                 yaxis: [
                     {
                         show: false,
-                        forceNiceScale: true,
                         opposite: false,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -121,7 +121,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#008FFB",
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series A",
@@ -134,8 +135,8 @@ export default {
                     },
                     {
                         show: false,
-                        forceNiceScale: true,
                         opposite: true,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -146,7 +147,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#00E396"
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series B",
@@ -159,8 +161,8 @@ export default {
                     },
                     {
                         show: false,
-                        forceNiceScale: true,
                         opposite: false,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -171,7 +173,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#FEB019"
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series C",
@@ -184,8 +187,8 @@ export default {
                     },
                     {
                         show: false,
-                        forceNiceScale: true,
                         opposite: true,
+                        tickAmount: 6,
                         axisTicks: {
                             show: true
                         },
@@ -196,7 +199,8 @@ export default {
                         labels: {
                             style: {
                                 colors: "#FF4560"
-                            }
+                            },
+                            formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series D",
@@ -261,8 +265,16 @@ export default {
                 if(i < this.chartSeries.length){
                     yaxis[i].show = true;
                     yaxis[i].title.text = this.chartSeries[i].name;
-                    if(this.chartSeries[i].data[0] && this.chartSeries[i].data[0].min){
+                    if(this.chartSeries[i].data[0] && this.chartSeries[i].data[0].min >= 0){
                         yaxis[i].min = this.chartSeries[i].data[0].min;
+                    } else {
+                        yaxis[i].min = 0;
+                    }
+
+                    if(this.chartSeries[i].data[0] && this.chartSeries[i].data[0].precision >= 0){
+                        yaxis[i].labels.formatter = (val) => { return val.toFixed(this.chartSeries[i].data[0].precision)};
+                    } else {
+                        yaxis[i].labels.formatter = (val) => { return val.toFixed(1)};
                     }
                 } else {
                     yaxis[i].show = false;
@@ -276,7 +288,7 @@ export default {
                     yaxis: yaxis,
                 },
             };
-        }
+        },
     },
     created() {
 
