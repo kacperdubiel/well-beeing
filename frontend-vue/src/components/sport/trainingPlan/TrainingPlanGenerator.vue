@@ -52,26 +52,48 @@
                         @click="setActionGoalModeCreate(true)">Tworzę nowy</button>
             </span>
         </div>
-        <div v-if="createNewActivityGoal">
-            <div class="col-6 ">
-                <div class="row">
-                    <div class="col-6 ">
-                        <p class="form-label text-start">Cel aktywności</p>
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col-7 justify-content-start">
-                        <select
-                            v-model="activityGoal.goalType"
-                            class=" p-2 float-start"
-                            style="border-radius: 5px"
-                        >
-                            <option disabled value="">Wybierz typ celu aktywności</option>
-                            <option v-for="goal in activityGoalTypes" :key="goal"
-                                    :value="goal">{{ this.$func_global.mapActivityGoal(goal) }}
-                            </option>
-                        </select>
-                    </div>
+        <div v-if="createNewActivityGoal" class="row">
+            <div class="col-auto ">
+                <p class="form-label text-start">Cel aktywności</p>
+                <select
+                    v-model="activityGoal.goalType"
+                    class=" p-2 float-start"
+                    style="border-radius: 5px"
+                >
+                    <option disabled value="">Wybierz typ celu aktywności</option>
+                    <option v-for="goal in activityGoalTypes" :key="goal"
+                            :value="goal">{{ this.$func_global.mapActivityGoal(goal) }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-auto ">
+                <p class="form-label text-start">Wartość numeryczna</p>
+                <input
+                    v-model="activityGoal.numericValue"
+                    class=" p-2 float-start"
+                    style="border-radius: 5px"
+                    type="number"
+                >
+            </div>
+            <div class="col-auto ">
+                <p class="form-label text-start">Wartość tekstowa</p>
+                <input
+                    v-model="activityGoal.textValue"
+                    class=" p-2 float-start"
+                    style="border-radius: 5px"
+                >
+            </div>
+            <div class="col-auto ">
+                <label class="form-label" for="input-target">Do kiedy</label>
+                <DatePicker
+                    id="input-target"
+                    v-model="activityGoal.goalTargetDate"
+                    class="d-block"
+                />
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn-panel-sport " type="button" @click="createActivityGoal">Dodaj cel</button>
                 </div>
             </div>
         </div>
@@ -84,7 +106,7 @@
                 <activity-goal-node v-if="activeActivityGoal" :activity-goal-source="activeActivityGoal"/>
             </div>
         </div>
-        <div class="row mt-3 mx-4">
+        <div v-if="activeActivityGoal" class="row mt-3 mx-4">
             <div class="col-12">
                 <button class="btn-panel-sport " type="button" @click="generatePlan">Wygeneruj</button>
             </div>
@@ -96,10 +118,11 @@
 <script>
 import ActivityGoalsTable from "@/components/sport/activityGoal/ActivityGoalsTable";
 import ActivityGoalNode from "@/components/sport/activityGoal/ActivityGoalNode";
+import {DatePicker} from "v-calendar";
 
 export default {
     name: "TrainingPlanGenerator",
-    components: {ActivityGoalNode, ActivityGoalsTable},
+    components: {ActivityGoalNode, ActivityGoalsTable, DatePicker},
     data() {
         return {
             generatorData: {
@@ -145,6 +168,8 @@ export default {
             }
             await this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.activeActivityGoal = response.data
+                this.createNewActivityGoal = false
+                this.getActivityGoals()
             }).catch(error => {
                 console.log(error.response);
             });

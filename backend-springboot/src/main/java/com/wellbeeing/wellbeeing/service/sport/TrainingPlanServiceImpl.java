@@ -137,7 +137,9 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
                 .trainingPlan(updatingPlan)
                 .trainingDate(trainingDate)
                 .timeOfDay(eTimeOfDay).build();
-        trainingPositionDAO.saveAndFlush(newPosition);
+        newPosition = trainingPositionDAO.saveAndFlush(newPosition);
+//        updatingPlan.addTrainingPosition(newPosition);
+//        trainingPlanDAO.saveAndFlush(updatingPlan);
         return newPosition;
     }
 

@@ -31,6 +31,8 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
     TrainingPlanDAO trainingPlanDAO;
     TrainingPlanService trainingPlanService;
     TrainingService trainingService;
+    int MIN_TRAINING_CALORIES = 200;
+    int MAX_TRAINING_CALORIES = 2000;
     @Autowired
     private EntityManager entityManager;
 
@@ -89,7 +91,11 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
                                                         .stream()
                                                         .map(SportLabelAilment::getAilment)
                                                         .collect(Collectors.toList())
-                                                , userAilments))
+                                                , userAilments)
+                                )
+                                && t.getCaloriesBurned() >= Math.max(MIN_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 - deviation))
+                                && t.getCaloriesBurned() <= Math.min(MAX_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 + deviation))
+
 
                 )
                 .collect(Collectors.toList());
@@ -99,6 +105,11 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
             System.out.println("No trainings matching criteria");
             return -1;
         }
+
+        System.out.printf("Choosing from %d Trainings in range: (%f ,%f)%n", trainings.size(),
+                Math.max(MIN_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 - deviation)),
+                Math.min(MAX_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 + deviation)));
+
         LocalDate start = beginningDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().with(DayOfWeek.MONDAY);
 
         TrainingPlan newTrainingPlan = TrainingPlan.builder()

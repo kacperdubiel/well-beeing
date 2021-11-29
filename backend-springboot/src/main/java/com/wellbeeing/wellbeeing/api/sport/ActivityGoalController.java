@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.service.sport.ActivityGoalService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class ActivityGoalController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<?> addActivityGoal(ActivityGoal activityGoal, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> addActivityGoal(@RequestBody @NotNull ActivityGoal activityGoal, Principal principal) throws NotFoundException {
         ActivityGoal newActivityGoal = activityGoalService.addActivityGoal(activityGoal, principal.getName());
         return new ResponseEntity<>(newActivityGoal, HttpStatus.OK);
     }
