@@ -115,7 +115,9 @@
 
             <div class="row">
                 <div class="col-12">
-                    <table class="table connections-table" :class="{
+                    <table
+                        v-if="userConnections && userConnections.length > 0"
+                        class="table connections-table" :class="{
                         'connections-table-telemedic': connectionType === 'WITH_DOCTOR',
                         'connections-table-sport': connectionType === 'WITH_TRAINER',
                         'connections-table-diet': connectionType === 'WITH_DIETICIAN',
@@ -130,7 +132,7 @@
                             <tr v-for="connection in userConnections" v-bind:key="connection.id">
                                 <td class="clickable" @click="$emit('open-profile', connection.profile.id, this.selectedAcceptState)">
                                     <user-avatar-component :profileId="connection.profile.id"
-                                                           :isActive="this.$func_global.getIsActive5minutes(connection.profile.lastRequestTime)"
+                                                           :isActive="this.selectedAcceptState && this.$func_global.getIsActive5minutes(connection.profile.lastRequestTime)"
                                                            :height="40" :width="40"
                                     />
                                     <span class="mx-2">
@@ -138,7 +140,7 @@
                                     </span>
                                 </td>
 
-                                <td class="align-right">
+                                <td class="align-right align-middle">
                                     <button v-if="selectedAcceptState" class="btn-white m-r-5 btn-hover"
                                             @click="getConversation(connection.profile.id)">
                                         <font-awesome-icon :icon="['fa', 'comments']" />
@@ -157,8 +159,9 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div v-if="userConnections && userConnections.length === 0" class="container mb-3">
-                        Brak wpisów.
+                    <div v-else-if="userConnections && userConnections.length === 0" class="container mt-5">
+                        <span v-if="this.connectionType === 'WITH_USER'">Nie posiadasz żadnych zaproszeń oczekujących na potwierdzenie.</span>
+                        <span v-else>Brak wpisów.</span>
                     </div>
                 </div>
             </div>
@@ -424,6 +427,10 @@ button[class^="btn-panel-"] {
 
 .connections-table-diet tbody tr:hover {
     background-color: var(--DIET);
+}
+
+.connections-table-social tbody tr:hover {
+    background-color: var(--DARK-YELLOW);
 }
 
 </style>

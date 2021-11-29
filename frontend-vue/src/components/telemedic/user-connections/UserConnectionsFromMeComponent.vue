@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid m-3">
+    <div class="container-fluid">
         <div v-if="componentError === true">
             Błąd ładowania.
         </div>
@@ -172,11 +172,13 @@
 
             <div class="row">
                 <div class="col-12">
-                    <table :class="{
+                    <table
+                        v-if="userConnections && userConnections.length > 0"
+                        class="table connections-table" :class="{
                         'connections-table-telemedic': connectionType === 'WITH_DOCTOR',
                         'connections-table-sport': connectionType === 'WITH_TRAINER',
                         'connections-table-diet': connectionType === 'WITH_DIETICIAN',
-                        'connections-table-social': connectionType === 'WITH_USER'}" class="table connections-table">
+                        'connections-table-social': connectionType === 'WITH_USER'}" >
                         <thead>
                         <tr>
                             <th scope="col">Imię i nazwisko</th>
@@ -191,7 +193,7 @@
                                 @click="$emit('open-profile', connection.profile.id, this.selectedAcceptState)"
                             >
                                 <user-avatar-component :height="40"
-                                                       :isActive="this.$func_global.getIsActive5minutes(connection.profile.lastRequestTime)"
+                                                       :isActive="this.selectedAcceptState && this.$func_global.getIsActive5minutes(connection.profile.lastRequestTime)"
                                                        :profileId="connection.profile.id" :width="40"
                                 />
                                 <span class="mx-2">
@@ -219,7 +221,7 @@
                                     <li>{{ spec.name }}</li>
                                 </ul>
                             </td>
-                            <td class="align-right">
+                            <td class="align-right align-middle">
                                 <button v-if="selectedAcceptState && connectionType === 'WITH_TRAINER'"
                                         class="btn-white m-r-5 btn-hover"
                                         data-bs-target="#createTrainingPlanRequestModal" data-bs-toggle="modal"
@@ -239,8 +241,10 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div v-if="userConnections && userConnections.length === 0" class="container mt-2">
-                        Brak wpisów.
+                    <div v-else-if="userConnections && userConnections.length === 0" class="container mt-5">
+                        <span v-if="this.connectionType === 'WITH_USER'">Brak wysłanych zaproszeń.</span>
+                        <span v-else>Brak wpisów.</span>
+
                     </div>
                 </div>
             </div>

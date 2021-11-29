@@ -4,23 +4,23 @@
         <div class="row justify-content-center w-100">
             <div class="col-11">
                 <div class="row my-3">
-                    <div class="col-md-5 col-sm-6 text-start align-self-end">
+                    <div class="col-md-5 col-sm-12 text-start align-self-end">
                         <input
                             type="text"
                             placeholder="Wyszukaj..."
                             id="search-input"
-                            class="w-100"
+                            class="w-100 input-height"
                             v-model="searchName"
                             @keydown.enter="getMyFriends(0, false)"
                         />
                     </div>
 
 
-                    <div class="col-md-3 col-sm-6 text-start">
-                        <label for="sport-tag-select" class="form-label">Tag sportowy:</label>
+                    <div class="col-md-3 col-sm-6 text-start ms-auto">
+                        <label for="sport-tag-select" class="form-label ms-3">Tag sportowy:</label>
                         <select
                             v-model="filters.sportTagFilter"
-                            class="p-2 w-100"
+                            class="p-2 w-100 input-height"
                             id="sport-tag-select"
                             @change="getMyFriends(0, false)"
                         >
@@ -28,10 +28,10 @@
                         </select>
                     </div>
                     <div class="col-md-3 col-sm-6 text-start">
-                        <label for="nutrition-tag-select" class="form-label">Tag żywieniowy:</label>
+                        <label for="nutrition-tag-select" class="form-label ms-3">Tag żywieniowy:</label>
                         <select
                             v-model="filters.nutritionTagFilter"
-                            class="p-2 w-100"
+                            class="p-2 w-100 input-height"
                             id="nutrition-tag-select"
                             @change="getMyFriends(0, false)"
                         >
@@ -40,11 +40,12 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col">
-                        <div class="row text-start" v-for="friendCon in friends" v-bind:key="friendCon.id">
+                <div class="row mt-4">
+
+                    <div class="col-6 text-start my-2" v-for="friendCon in friends" v-bind:key="friendCon.id">
+                        <div class="row">
                             <div v-if="friendCon.profile.id !== userId"
-                                 class="clickable col"
+                                 class="clickable col-10"
                                  @click="redirectToProfile(friendCon.profile.id)"
                             >
                                 <user-avatar-component :height="60"
@@ -52,11 +53,11 @@
                                                        :profileId="friendCon.profile.id" :width="60"
                                 />
                                 <span class="mx-2">
-                                        {{ friendCon.profile.firstName }} {{ friendCon.profile.lastName }}
-                                    </span>
+                                    {{ friendCon.profile.firstName }} {{ friendCon.profile.lastName }}
+                                </span>
                             </div>
                             <div v-else
-                                 class="clickable col"
+                                 class="clickable col-10"
 
                                  @click="redirectToProfile(friendCon.connectedWith.id)"
                             >
@@ -65,20 +66,22 @@
                                                        :profileId="friendCon.connectedWith.id" :width="60"
                                 />
                                 <span class="mx-2">
-                                    {{ friendCon.connectedWith.firstName }} {{ friendCon.connectedWith.lastName }}
-                                </span>
+                                {{ friendCon.connectedWith.firstName }} {{ friendCon.connectedWith.lastName }}
+                            </span>
                             </div>
-                            <div class="align-right col">
+                            <div class="align-right col-2 align-self-center">
                                 <button class="btn-white m-r-5 btn-hover"
                                         @click="getConversation(getOtherUserId(friendCon))">
                                     <font-awesome-icon :icon="['fa', 'comments']"/>
                                 </button>
                             </div>
                         </div>
-                        <div v-if="friends && friends.length === 0" class="container mt-2">
-                            Brak wpisów.
-                        </div>
+
                     </div>
+                    <div v-if="friends && friends.length === 0" class="container mt-5">
+                        Nie masz jeszcze znajomych :(
+                    </div>
+
                 </div>
 
 
@@ -243,6 +246,11 @@ export default {
 <style scoped>
 .m-r-5 {
     margin-right: 5px
+}
+
+.input-height {
+    height: 50px;
+    border-radius: 30px;
 }
 
 .btn-hover:hover {

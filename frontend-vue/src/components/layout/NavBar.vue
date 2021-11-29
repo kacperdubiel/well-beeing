@@ -37,7 +37,7 @@
                                     Ustawienia
                                 </router-link>
                             </li>
-                            <li><a @click="handleLogout" class="dropdown-item" href="#">Wyloguj się</a></li>
+                            <li><a @click="handleLogout" class="dropdown-item">Wyloguj się</a></li>
                         </ul>
                     </div>
                 </div>
@@ -74,7 +74,9 @@ export default {
             }
         },
         handleLogout() {
+            this.$store.replaceState({})
             this.$store.commit('setSearchPhrase', "")
+            this.$router.push({ name: 'Home' });
         }
     },
     mounted() {
