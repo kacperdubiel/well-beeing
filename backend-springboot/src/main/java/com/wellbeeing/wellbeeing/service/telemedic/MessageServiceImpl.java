@@ -4,10 +4,7 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.telemedic.Conversation;
-import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
-import com.wellbeeing.wellbeeing.domain.telemedic.Message;
-import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import com.wellbeeing.wellbeeing.domain.telemedic.*;
 import com.wellbeeing.wellbeeing.repository.telemedic.MessageDAO;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +99,22 @@ public class MessageServiceImpl implements MessageService {
 
         conversationService.updateLastMessageDate(conversation, createDate);
         return msgResult;
+    }
+
+    @Override
+    public Message updateMessage(Message updatedMessage) throws NotFoundException {
+        UUID messageId = updatedMessage.getId();
+
+        if(messageId == null) {
+            throw new NotFoundException("Specify message id!");
+        }
+
+        Message messageResult = messageDAO.findById(messageId).orElse(null);
+        if(messageResult == null) {
+            throw new NotFoundException("Message with id: " + messageId + " not found!");
+        }
+
+        return messageDAO.save(updatedMessage);
     }
 
 }
