@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ProfileConnectionService {
@@ -26,4 +27,6 @@ public interface ProfileConnectionService {
     void deleteProfileConnectionById(UUID profileConnectionId) throws NotFoundException;
 
     Page<ProfileConnection> getProfileConnectionsFriends(Specification<ProfileConnection> conSpec, Pageable pageable);
+
+    List<Boolean> checkProfileConnection(String myUserName, Profile otherProfile);
 }

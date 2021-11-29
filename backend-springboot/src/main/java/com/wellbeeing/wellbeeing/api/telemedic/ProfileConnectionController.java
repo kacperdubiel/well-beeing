@@ -27,6 +27,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -74,6 +75,13 @@ public class ProfileConnectionController {
 
         Page<ProfileConnection> pageProfileConnection = profileConnectionService.getProfileConnectionsFriends(conSpec, pageable);
         return new ResponseEntity<>(pageProfileConnection, HttpStatus.OK);
+    }
+
+    @GetMapping("profile-connections/{userId}/check")
+    public ResponseEntity<?> checkUserConnection(@PathVariable UUID userId, Principal principal) throws NotFoundException {
+        Profile profile = profileService.getProfileById(userId);
+        List<Boolean> response = profileConnectionService.checkProfileConnection(principal.getName(), profile);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(path = "profile-connections/{id}", method = RequestMethod.GET)

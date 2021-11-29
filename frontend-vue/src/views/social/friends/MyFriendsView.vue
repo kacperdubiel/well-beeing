@@ -79,7 +79,7 @@
 
                     </div>
                     <div v-if="friends && friends.length === 0" class="container mt-5">
-                        Nie masz jeszcze znajomych :(
+                        Nie masz jeszcze znajomych lub żaden z nich nie spełnia nałożonych filtrów.
                     </div>
 
                 </div>

@@ -40,6 +40,9 @@
             <button class="btn-white fw-bolder" v-else-if="!isProfileMine && this.isFollowedByMe" @click="deleteFollow">
                 Przestań obserwować
             </button>
+
+
+
         </div>
         <div class="row text-start px-4 py-3">
             <p v-html="this.$func_global.convertNewLines(this.profileSource.description)"></p>
@@ -100,6 +103,16 @@ export default {
             }).catch(error => {
                 console.log(error.response.status)
             });
+        },
+        checkFriends() {
+            const url = `${this.apiURL}profile-connections/${this.$route.params.profileId}/check`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log('firendssss ', response.data)
+                // this.isFollowedByMe = response.data
+            }).catch(error => {
+                console.log(error.response.status)
+            });
         }
     },
     computed: {
@@ -111,6 +124,7 @@ export default {
         if(this.$route.params.profileId) {
             this.downloadProfilePictureByProfileId(this.$route.params.profileId)
             this.checkFollow()
+            this.checkFriends()
         }
         else
             this.downloadMyProfilePicture()

@@ -6,9 +6,6 @@
              :height="height" :width="width">
         <a v-if="isActive" class="circle position-absolute end-0 bottom-100"></a>
     </span>
-    <span >
-
-    </span>
 </template>
 
 <script>

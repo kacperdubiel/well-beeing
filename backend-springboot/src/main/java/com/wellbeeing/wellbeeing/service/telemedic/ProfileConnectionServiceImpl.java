@@ -1,10 +1,12 @@
 package com.wellbeeing.wellbeeing.service.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.telemedic.ProfileConnectionDAO;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +18,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service("profileConnectionService")
 public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     private ProfileConnectionDAO profileConnectionDAO;
+    private UserDAO userDAO;
     private ProfileService profileService;
 
     @Autowired
     public ProfileConnectionServiceImpl(@Qualifier("profileConnectionDAO") ProfileConnectionDAO profileConnectionDAO,
+                                        @Qualifier("userDAO") UserDAO userDAO,
                                         @Qualifier("profileService") ProfileService profileService)
     {
         this.profileConnectionDAO = profileConnectionDAO;
+        this.userDAO = userDAO;
         this.profileService = profileService;
     }
 
@@ -45,6 +49,31 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     @Override
     public Page<ProfileConnection> getProfileConnectionsFriends(Specification<ProfileConnection> conSpec, Pageable pageable) {
             return profileConnectionDAO.findAll(conSpec, pageable);
+    }
+
+    @Override
+    public List<Boolean> checkProfileConnection(String myUserName, Profile otherProfile) {
+        User me = userDAO.findUserByEmail(myUserName).orElse(null);
+        ProfileConnection friendsSent = profileConnectionDAO.findByProfileAndConnectedWithAndConnectionType(me.getProfile(), otherProfile, EConnectionType.WITH_USER);
+        ProfileConnection friendsReceived = profileConnectionDAO.findByProfileAndConnectedWithAndConnectionType(otherProfile, me.getProfile(), EConnectionType.WITH_USER);
+        boolean friends = false;
+        boolean invitationSent = false;
+        boolean invitationReceived = false;
+        List<Boolean> returnList = new ArrayList<>();
+        if (friendsSent != null && friendsSent.isAccepted() || friendsReceived != null && friendsReceived.isAccepted())
+            friends = true;
+
+        if (friendsSent != null && !friendsSent.isAccepted())
+            invitationSent = true;
+
+        if (friendsReceived != null && !friendsReceived.isAccepted())
+            invitationReceived = true;
+
+        returnList.add(friends);
+        returnList.add(invitationSent);
+        returnList.add(invitationReceived);
+
+        return returnList;
     }
 
     @Override

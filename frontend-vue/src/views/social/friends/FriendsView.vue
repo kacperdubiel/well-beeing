@@ -17,7 +17,6 @@
                 </router-link>
             </li>
         </ul>
-        <!--        <p>{{this.$route.name}}</p>-->
         <router-view></router-view>
     </div>
 </template>
