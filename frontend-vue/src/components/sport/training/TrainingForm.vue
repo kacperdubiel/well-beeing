@@ -130,7 +130,7 @@
                                             <td>{{ ex.series }}</td>
                                             <td>{{ this.$func_global.getTimePrettyFromSeconds(ex.time_seconds) }}</td>
                                             <td>
-                                                
+
                                             </td>
                                         </tr>
                                         </tbody>
@@ -298,10 +298,12 @@
                 <font-awesome-icon :icon="['fa', 'list-ul']" class="icon"/>
             </span>
                                         </div>
-                                        <ExercisesListComponent v-if="isListView" :exercises-source="exercisesSource"
-                                                                :mode="'toTraining'"/>
-                                        <ExercisesGridComponent v-if="!isListView" :exercises-source="exercisesSource"
-                                                                :mode="'toTraining'"/>
+                                        <exercises-list-component v-if="isListView" :exercises-source="exercisesSource"
+                                                                  :in-modal="true"
+                                                                  :mode="'toTraining'"/>
+                                        <exercises-grid-component v-if="!isListView" :exercises-source="exercisesSource"
+                                                                  :in-modal="true"
+                                                                  :mode="'toTraining'"/>
 
                                         <div class="row justify-content-center mt-3">
                                             <div class="col-4">
@@ -490,11 +492,9 @@ export default {
             this.nameTaken = false
         },
         setListView(value) {
-            console.log(value)
             this.isListView = value
         },
         createTraining() {
-            console.log('name: ' + this.name + ' difficulty: ' + this.trainingDifficulty)
             this.submittingCreateTraining = true
             this.clearStatus()
             if (this.invalidName || this.invalidDifficultyLevel || this.invalidDescription || this.invalidInstruction) {
@@ -512,7 +512,6 @@ export default {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
             this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response.data)
                 this.createdTraining = response.data
                 this.successCreateTraining = true
                 this.showExercises = true
@@ -561,7 +560,6 @@ export default {
         async getExercisesWithFilters(resetGoToPage) {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             if (resetGoToPage)
                 this.userNavigation.goToPage = 0
             const myParams = {
@@ -594,7 +592,6 @@ export default {
                     if (i === this.navigation.currentPage + 2)
                         break;
                 }
-                console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -623,7 +620,6 @@ export default {
             await this.getExercisesWithFilters(true)
         },
         handleSubmit() {
-            console.log('name: ' + this.name + ' type: ' + this.type + ' met: ' + this.met)
             this.submittingCreateTraining = true
             this.clearStatus()
             if (this.invalidName || this.invalidType || this.invalidMet || this.invalidDescription || this.invalidInstruction) {

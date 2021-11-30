@@ -198,9 +198,10 @@
                                 </div>
                             </div>
                         </div>
-                        <TrainingsGridComponent v-if="!isListView" :mode="'toPlan'"
-                                                :trainings-source="trainingsSource"/>
-                        <TrainingsListComponent v-if="isListView" :mode="'toPlan'" :trainings-source="trainingsSource"/>
+                        <trainings-grid-component v-if="!isListView" :in-modal="true" :mode="'toPlan'"
+                                                  :trainings-source="trainingsSource"/>
+                        <trainings-list-component v-if="isListView" :in-modal="true" :mode="'toPlan'"
+                                                  :trainings-source="trainingsSource"/>
                         <div v-if="errorAddTrainingToPlan && !invalidTimeOfDay" class="row text-end">
                             <p class="has-error m-0">
                                 Wybierz trening!

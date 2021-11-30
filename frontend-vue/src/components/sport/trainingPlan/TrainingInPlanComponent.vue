@@ -13,8 +13,11 @@
                            @change="check($event)">
                 </div>
             </div>
-            <div class="training-name" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
+            <div v-if="!inModal" class="training-name" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
                  @click="openInfoModal(trainingPosition.training)">{{ trainingPosition.training.name }}
+            </div>
+            <div v-else class="training-name in-modal">
+                {{ trainingPosition.training.name }}
             </div>
             <div class="training-descr">{{
                     trainingPosition.training.description != null ? trainingPosition.training.description.substring(0, 35) : " "
@@ -50,7 +53,8 @@ export default {
     props: {
         trainingPosition: Object,
         create: Boolean,
-        details: Boolean
+        details: Boolean,
+        inModal: Boolean
     },
     methods: {
         closeModal() {
@@ -65,11 +69,9 @@ export default {
         async updateTrainingStatus() {
             const url = `${this.apiURL}sport/training-plan/${this.trainingPosition.trainingPositionId}/update-position-status?newStatus=COMPLETED`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.patch(url, {}, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.trainings = response.data['content']
                 this.$emit('update:active')
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -88,7 +90,6 @@ export default {
             }
         },
         openInfoModal(training) {
-            console.log('Dotarł 0', training)
             this.$emit('set:training', training)
         }
     }
@@ -112,7 +113,8 @@ export default {
     font-size: 18px;
 }
 
-.training-name:hover {
+.training-name:hover,
+.training-name.in-modal {
     font-size: 18px;
     color: var(--SPORT);
 }

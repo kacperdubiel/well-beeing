@@ -9,8 +9,7 @@
                     <th scope="col">Czas</th>
                     <th scope="col">Trudność</th>
                     <th scope="col">kcal/h</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
+                    <th v-if="!inModal" scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -22,14 +21,16 @@
                     <td>{{ this.$func_global.getTimePrettyFromSeconds(tr.totalTrainingTimeSeconds) }}</td>
                     <td>{{ this.$func_global.mapTrainingDifficulty(tr.trainingDifficulty) }}</td>
                     <td>{{ tr.caloriesBurned }}</td>
-                    <td>
+                    <td v-if="!inModal" class="text-end">
+                        <button
+                            v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER') && this.$store.getters.getProfileId === tr.creatorId"
+                            class="btn-white mx-2"
+                            @click="deleteTraining(tr.trainingId)">
+                            <font-awesome-icon :icon="['fa', 'trash']"/>
+                        </button>
                         <button class="btn-white mx-2" data-bs-toggle="modal" href="#infoTrainingModal"
                                 @click="openInfoModal(tr)">
                             <font-awesome-icon :icon="['fa', 'info']"/>
-                        </button>
-                        <button v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')" class="btn-white mx-2"
-                                @click="deleteTraining(tr.trainingId)">
-                            <font-awesome-icon :icon="['fa', 'trash']"/>
                         </button>
                     </td>
                 </tr>
@@ -55,7 +56,8 @@ export default {
     },
     props: {
         trainingsSource: Array,
-        mode: String
+        mode: String,
+        inModal: Boolean
     },
     methods: {
         getTimePrettyFromSeconds(seconds) {

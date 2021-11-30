@@ -6,10 +6,12 @@
                     <div class="col-lg-12 col-md-9 col-sm-7 col-10">
                         <div class="row align-content-center">
                             <div v-for="tr in trainingsSource"
-                                 :key="tr.trainingId" class="col-xl-3 col-lg-4 col-md-12 col-12 px-2 py-2 mx-0 section-bg training"
+                                 :key="tr.trainingId"
+                                 class="col-xl-3 col-lg-4 col-md-12 col-12 px-2 py-2 mx-0 section-bg training"
                                  v-bind:class="{'selected-training' : (mode === 'toPlan' && this.$store.getters.getPlanTrainingId === tr.trainingId) }"
                                  v-on:click="mode === 'toPlan' ? this.$store.commit('setPlanTrainingId', tr.trainingId) : null">
-                                <training-node :mode="mode" :training-source="tr" @set:training="setTraining"/>
+                                <training-node :in-modal="inModal" :mode="mode" :training-source="tr"
+                                               @set:training="setTraining"/>
                             </div>
                         </div>
                     </div>
@@ -36,7 +38,8 @@ export default {
     },
     props: {
         trainingsSource: Array,
-        mode: String
+        mode: String,
+        inModal: Boolean
     },
     methods: {
         setTraining(training) {

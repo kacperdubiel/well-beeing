@@ -7,7 +7,7 @@
                 <p>{{ trainingSource.name }}</p>
             </div>
             <div class="col-4">
-                <button class="btn-white" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
+                <button v-if="!inModal" class="btn-white" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
                         @click="openInfoModal(trainingSource)">
                     <font-awesome-icon :icon="['fa', 'info']"/>
                 </button>
@@ -34,7 +34,8 @@ export default {
     name: "TrainingNode",
     props: {
         trainingSource: Object,
-        mode: String
+        mode: String,
+        inModal: Boolean
     },
     methods: {
         getTimePrettyFromSeconds(seconds) {

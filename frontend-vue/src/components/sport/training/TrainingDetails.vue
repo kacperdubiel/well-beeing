@@ -14,7 +14,7 @@
                         </button>
                         <button id="infoTrainingModalClose" ref="infoTrainingModalClose" aria-label="Close"
                                 class="btn-close"
-                                data-bs-dismiss="modal" type="button" @click="clearInputs()"></button>
+                                data-bs-dismiss="modal" type="button" @click="clearInputs(); clearStatus;"></button>
                     </div>
                     <div class="modal-body">
                         <div id="modal-container" class="container-fluid">
@@ -38,7 +38,7 @@
                                             Istnieje już trening o takiej nazwie!
                                         </p>
                                     </div>
-                                    <div class="col-xl-4 col-md-12 px-0">
+                                    <div :class="{'ps-2' : edit}" class="col-xl-4 col-md-12 px-0">
                                         <p class="form-label">Trudność</p>
                                         <p v-if="!edit" class="info-value">
                                             {{
@@ -364,12 +364,14 @@
                                                   @click="setListView(true)">
                 <font-awesome-icon :icon="['fa', 'list-ul']" class="icon"/>
             </span>
-                                            <ExercisesListComponent v-if="isListView"
-                                                                    :exercises-source="exercisesSource"
-                                                                    :mode="'toTraining'"/>
-                                            <ExercisesGridComponent v-if="!isListView"
-                                                                    :exercises-source="exercisesSource"
-                                                                    :mode="'toTraining'"/>
+                                            <exercises-list-component v-if="isListView"
+                                                                      :exercises-source="exercisesSource"
+                                                                      :in-modal="true"
+                                                                      :mode="'toTraining'"/>
+                                            <exercises-grid-component v-if="!isListView"
+                                                                      :exercises-source="exercisesSource"
+                                                                      :in-modal="true"
+                                                                      :mode="'toTraining'"/>
 
                                             <div class="row justify-content-center mt-3">
                                                 <div class="col-4">
@@ -562,12 +564,10 @@ export default {
     },
     methods: {
         submitEditTraining() {
-            console.log('name: ' + this.editedTraining.name + ' difficulty: ' + this.editedTraining.trainingDifficulty)
             this.submittingCreateTraining = true
             this.clearStatus()
             if (this.invalidName || this.invalidDifficultyLevel || this.invalidDescription || this.invalidInstruction) {
                 this.errorCreateTraining = true
-                console.log('ERROR')
                 return
             }
             const data = {
@@ -658,7 +658,6 @@ export default {
                 "time_seconds": time_seconds,
                 "series": exercise.series
             }
-            console.log('Adding exercise with data:', data)
             this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
                 // this.refreshCreatedTraining()
@@ -688,14 +687,12 @@ export default {
             this.edit = false
         },
         setListView(value) {
-            console.log(value)
             this.isListView = value
         },
         editTraining() {
             this.editedTraining = Object.assign({}, this.training)
             this.editedTraining.exerciseInTrainings = Object.assign([], this.training.exerciseInTrainings)
             this.getExercisesWithFilters(true)
-            // console.log('Array Labels ',this.values)
             this.edit = true
         },
         toggle(id) {
@@ -709,10 +706,8 @@ export default {
         async getTraining() {
             const url = `${this.apiURL}sport/training/${this.$store.getters.getTrainingId}`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.training = response.data
-                console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -720,7 +715,6 @@ export default {
         async getExercises() {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.exercisesSource = response.data['content']
             }).catch(error => {
@@ -730,7 +724,6 @@ export default {
         async getExercisesWithFilters(resetGoToPage) {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             if (resetGoToPage)
                 this.userNavigation.goToPage = 0
             const myParams = {
@@ -763,7 +756,6 @@ export default {
                     if (i === this.navigation.currentPage + 2)
                         break;
                 }
-                console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -803,6 +795,7 @@ export default {
         clearStatus() {
             this.errorEditTraining = false
             this.successEditTraining = false
+            this.submittingAddExercise = false
             this.nameTaken = false
         },
         randomColor(seed) {

@@ -16,10 +16,11 @@
                     <div class="col-lg-12 col-md-9 col-sm-7 col-10">
                         <div class="row align-content-center">
                             <div v-for="ex in exercisesSource"
-                                 :key="ex.exerciseId" class="col-xl-3 col-lg-4 col-md-12 col-sm-12 col-12 px-2 py-2 mx-0 section-bg training"
+                                 :key="ex.exerciseId"
+                                 class="col-xl-3 col-lg-4 col-md-12 col-sm-12 col-12 px-2 py-2 mx-0 section-bg training"
                                  v-bind:class="{'selected-exercise' : (mode === 'toTraining' && this.$store.getters.getExerciseToTrainingId === ex.exerciseId) }"
                                  v-on:click="mode === 'toTraining' ? this.$store.commit('setExerciseToTrainingId', ex.exerciseId) : null">
-                                <exercise-node :exercise-source="ex" @set:exercise="setExercise"/>
+                                <exercise-node :exercise-source="ex" :in-modal="inModal" @set:exercise="setExercise"/>
                             </div>
                         </div>
                     </div>
@@ -46,7 +47,8 @@ export default {
     },
     props: {
         exercisesSource: Array,
-        mode: String
+        mode: String,
+        inModal: Boolean
     },
     methods: {
         setExercise(exercise) {
