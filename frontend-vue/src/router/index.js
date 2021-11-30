@@ -58,6 +58,15 @@ import SportTrainerView from "@/views/sport/SportTrainerView";
 import TrainingPlanRequest from "@/views/sport/TrainingPlanRequest";
 import TrainingPlanRequestForm from "@/components/sport/request/TrainingPlanRequestForm";
 import SearchProfilesView from "@/views/social/SearchProfilesView";
+import FriendsView from "@/views/social/friends/FriendsView";
+import MyFriendsView from "@/views/social/friends/MyFriendsView";
+import FriendsInvitationsReceivedView from "@/views/social/friends/FriendsInvitationsReceivedView";
+import FriendsInvitationsSentView from "@/views/social/friends/FriendsInvitationsSentView";
+import UserUserConversationView from "@/views/social/messages/UserUserConversationView";
+import UserUserConversationsView from "@/views/social/messages/UserUserConversationsView";
+import FollowView from "@/views/social/follow/FollowView";
+import MyFollowingsView from "@/views/social/follow/MyFollowingsView";
+import MyFollowersView from "@/views/social/follow/MyFollowersView";
 
 const routes = [
   {
@@ -394,6 +403,57 @@ const routes = [
     name: 'ProfileEdit',
     component: ProfileEdit
   },
+  {
+    path: '/conversations/:conversationId',
+    name: 'UserUserConversationView',
+    component: UserUserConversationView
+  },
+  {
+    path: '/conversations',
+    name: 'UserUserConversationsView',
+    component: UserUserConversationsView
+  },
+  {
+    path: '/friends',
+    redirect: {name: 'MyFriendsView'},
+    name: 'FriendsView',
+    component: FriendsView,
+    children: [
+      {
+        path: 'my',
+        name: 'MyFriendsView',
+        component: MyFriendsView
+      },
+      {
+        path: 'invitations/sent',
+        name: 'FriendsInvitationsSentView',
+        component: FriendsInvitationsSentView
+      },
+      {
+        path: 'invitations/received',
+        name: 'FriendsInvitationsReceivedView',
+        component: FriendsInvitationsReceivedView
+      },
+    ]
+  },
+  {
+    path: '/follows',
+    redirect: {name: 'MyFollowingsView'},
+    name: 'FollowView',
+    component: FollowView,
+    children: [
+      {
+        path: 'followings',
+        name: 'MyFollowingsView',
+        component: MyFollowingsView
+      },
+      {
+        path: 'followers',
+        name: 'MyFollowersView',
+        component: MyFollowersView
+      },
+    ]
+  }
 ]
 
 const router = createRouter({

@@ -131,6 +131,14 @@ public class Profile {
     private Set<Post> profilePosts = new HashSet<>();
 
     @JsonIgnore
+    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL)
+    private Set<Follow> followers = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private Set<Follow> followings = new HashSet<>();
+
+    @JsonIgnore
     @OneToMany(mappedBy = "giver", cascade = CascadeType.ALL)
     private Set<Opinion> profileGivenOpinions = new HashSet<>();
 

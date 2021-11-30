@@ -235,11 +235,18 @@ export default {
                 this.$store.commit('setLastName', response.data['lastName']);
                 this.$store.commit('setProfileId', response.data['id']);
                 this.$store.commit('setProfileImageSrc', response.data['profileImgPath']);
+                this.$store.commit('setDoctorProfile', response.data['doctorProfile']);
+                this.$store.commit('setDieticianProfile', response.data['dieticianProfile']);
+                this.$store.commit('setTrainerProfile', response.data['trainerProfile']);
+
                 localStorage.setItem('userId', response.data['id'])
                 console.log(this.$store.getters.getFirstName)
                 console.log(this.$store.getters.getLastName)
                 console.log(this.$store.getters.getProfileId)
                 console.log(this.$store.getters.getProfileImageSrc)
+                console.log(this.$store.getters.getDoctorProfile)
+                console.log(this.$store.getters.getDieticianProfile)
+                console.log(this.$store.getters.getTrainerProfile)
                 let roles = []
                 response.data['roles'].forEach((e) => {
                     roles.push(e['role'])

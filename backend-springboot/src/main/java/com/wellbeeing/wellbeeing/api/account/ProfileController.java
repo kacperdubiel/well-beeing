@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -69,7 +70,11 @@ public class ProfileController {
                     @Spec(path = "eSportTag", spec = Equal.class),
                     @Spec(path = "eNutritionTag", spec = Equal.class),
             }) Specification<Profile> profileSpec,
-            @PageableDefault(sort = {"fullName"}, size = 8, direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(size = 8)
+            @SortDefault.SortDefaults({
+                    @SortDefault(sort = "lastName", direction = Sort.Direction.ASC),
+                    @SortDefault(sort = "firstName", direction = Sort.Direction.ASC)
+            })Pageable pageable) {
 
         Page<Profile> pageProfiles = profileService.getProfilesFiltered(profileSpec, pageable);
         return new ResponseEntity<>(pageProfiles, HttpStatus.OK);
