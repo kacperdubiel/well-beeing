@@ -56,7 +56,6 @@ public class PDFFromTrainingPlan {
 
         try {
             File file = new File("backend-springboot/data");
-            System.out.println(file.getAbsolutePath());
             PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(file.getAbsolutePath() + "/NewTraining.pdf"));
             System.out.println("PDF created.");
 //opens the PDF
@@ -93,7 +92,6 @@ public class PDFFromTrainingPlan {
         try {
 //generate a PDF at the specified location
             File file = new File("backend-springboot/data");
-            System.out.println(file.getAbsolutePath());
             PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(file.getAbsolutePath() + filename));
             fileStream = new FileInputStream(file.getAbsolutePath() + filename);
             System.out.println("PDF created.");

@@ -235,7 +235,6 @@ export default {
         async getTrainingsWithFilters(resetGoToPage) {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             if (resetGoToPage)
                 this.userNavigation.goToPage = 0
             const myParams = {
@@ -270,10 +269,6 @@ export default {
                     if (i === this.navigation.currentPage + 2)
                         break;
                 }
-                // this.userNavigation.pagesNavbar.push(this.navigation.currentPage+1)
-                // if (this.navigation.currentPage === 0)
-                //     this.userNavigation.pagesNavbar.push(this.navigation.currentPage+2)
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -281,10 +276,8 @@ export default {
         async getExercises() {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.exercises = response.data['content']
-                console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -292,10 +285,8 @@ export default {
         async getTrainings() {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.trainings = response.data['content']
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -303,10 +294,8 @@ export default {
         async getLabels() {
             const url = `${this.apiURL}sport/exercise/labels`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.labels = response.data
-                console.log(this.labels)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -322,7 +311,6 @@ export default {
             });
         },
         setListView(value) {
-            console.log(value)
             this.isListView = value
         }
     },

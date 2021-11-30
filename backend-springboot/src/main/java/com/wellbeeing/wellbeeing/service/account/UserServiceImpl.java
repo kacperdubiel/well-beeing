@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                            @Qualifier("roleDAO") RoleDAO roleDAO,
                            @Qualifier("profileDAO") ProfileDAO profileDAO,
                            @Qualifier("profileCardDAO") ProfileCardDAO profileCardDAO,
-                           @Qualifier("profileDietCalculationDAO") ProfileDietCalculationDAO profileDietCalculationDAO){
+                           @Qualifier("profileDietCalculationDAO") ProfileDietCalculationDAO profileDietCalculationDAO) {
         this.userDAO = userDAO;
         this.profileDAO = profileDAO;
         this.profileCardDAO = profileCardDAO;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User foundUser = userDAO.findUserByEmail(email).orElse(null);
-        if(foundUser != null)
+        if (foundUser != null)
             return foundUser;
         else throw new UsernameNotFoundException("User: " + email + " not found");
     }
@@ -55,14 +55,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User loadUserByEmail(String email) throws UsernameNotFoundException {
         User foundUser = userDAO.findUserByEmail(email).orElse(null);
-        if(foundUser != null)
+        if (foundUser != null)
             return foundUser;
         else throw new UsernameNotFoundException("User: " + email + " not found");
     }
 
     @Override
     public boolean register(User user) {
-        if(userDAO.findUserByEmail(user.getUsername()).orElse(null) == null){
+        if (userDAO.findUserByEmail(user.getUsername()).orElse(null) == null) {
             Set<Role> roles = new HashSet<>();
             roles.add(roleDAO.findRoleByName(ERole.ROLE_BASIC_USER).orElse(null));
             user.setRoles(roles);
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public boolean addRoleToUser(String userUsername, String role) {
         User foundUser = userDAO.findUserByEmail(userUsername).orElse(null);
         Role foundRole = roleDAO.findRoleByName(ERole.valueOf(role)).orElse(null);
-        if (foundUser != null && foundRole != null){
+        if (foundUser != null && foundRole != null) {
             foundUser.addRole(foundRole);
             userDAO.save(foundUser);
             System.out.println("Authorities" + foundUser.getAuthorities());
@@ -99,9 +99,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public boolean addRoleToUser(UUID userId, String role) {
         User foundUser = userDAO.findUserById(userId).orElse(null);
         Role foundRole = roleDAO.findRoleByName(ERole.valueOf(role)).orElse(null);
-        System.out.println(foundUser);
-        System.out.println(foundRole);
-        if (foundUser != null && foundRole != null){
+        if (foundUser != null && foundRole != null) {
             foundUser.addRole(foundRole);
             userDAO.save(foundUser);
             System.out.println("Authorities" + foundUser.getAuthorities());
@@ -113,7 +111,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UUID findUserIdByUsername(String username) {
         User foundUser = userDAO.findUserByEmail(username).orElse(null);
-        if(foundUser != null)
+        if (foundUser != null)
             return foundUser.getId();
         else throw new UsernameNotFoundException("User: " + username + " not found");
     }
@@ -129,15 +127,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User changeUserEmail(UUID userId, String email) throws ConflictException {
         User user = userDAO.findUserById(userId).orElse(null);
 
-        if(user == null)
+        if (user == null)
             throw new UsernameNotFoundException("User: " + email + " not found");
 
-        if(userDAO.findUserByEmail(email).isPresent()) {
+        if (userDAO.findUserByEmail(email).isPresent()) {
             throw new ConflictException("Email: " + email + " is already taken");
         }
         user.setEmail(email);
         return userDAO.save(user);
     }
+
     @Override
     public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
 //        new BCryptPasswordEncoder().encode()

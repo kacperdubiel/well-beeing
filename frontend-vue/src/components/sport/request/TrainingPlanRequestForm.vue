@@ -38,7 +38,7 @@
             <div class="col-2 text-end p-0">
                 <button
                     v-if="!['DENIED','CANCELLED', 'COMPLETED'].includes(requestSource.requestStatus)"
-                    class="register-btn btn-panel-sport p-2" @click="setStatus(requestSource.id, 'DENIED')">Odrzuć
+                    class="register-btn btn-panel- p-2" @click="setStatus(requestSource.id, 'DENIED')">Odrzuć
                 </button>
             </div>
             <div class="col-2 text-end p-0">
@@ -79,7 +79,6 @@ export default {
         async setStatus(requestId, newStatus) {
             const url = `${this.apiURL}sport/training-plan/request`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             const body = {
                 requestId: requestId,
                 newStatus: newStatus

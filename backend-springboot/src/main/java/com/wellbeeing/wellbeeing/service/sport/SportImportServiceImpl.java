@@ -102,9 +102,6 @@ public class SportImportServiceImpl implements SportImportService {
             categories.addAll(labelsNames);
         }
 
-        System.out.println(addExercises);
-        System.out.println(categories);
-
         Map<String, Object> result = new HashMap<>();
         result.put("exercises", addExercises);
         result.put("labels", categories);

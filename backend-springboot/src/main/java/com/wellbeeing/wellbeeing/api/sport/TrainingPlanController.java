@@ -181,7 +181,6 @@ public class TrainingPlanController {
                     @Spec(path = "requestStatus", spec = EqualIgnoreCase.class)
             }) Specification<TrainingPlanRequest> requestSpec,
             @PageableDefault(sort = {"requestDate"}, direction = Sort.Direction.DESC, size = 20) Pageable pageable, Principal principal, @RequestParam UUID trainer) throws NotFoundException {
-        System.out.println("trainer: " + trainer);
         User user = userDAO.findUserById(trainer).orElse(null);
         User userPrincipal = userDAO.findUserByEmail(principal.getName()).orElse(null);
         if (!Objects.equals(user, userPrincipal)) {

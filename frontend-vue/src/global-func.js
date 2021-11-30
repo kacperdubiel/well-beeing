@@ -161,7 +161,6 @@ export const func_global = {
     getIsActive5minutes(userLastRequestTime) {
         let duration = moment.duration(moment(new Date()).diff(userLastRequestTime));
         let minutes = duration.asMinutes()
-        // console.log('minutes: ', minutes)
         return minutes < 5
     },
     convertNewLines(text) {
@@ -290,7 +289,6 @@ export const func_global = {
     },
     dateDayMonth(date) {
         date = new Date(date)
-        console.log('Data day month', date)
         return date.getDate().toString().padStart(2, '0') + '.' + eval(date.getMonth() + 1).toString().padStart(2, '0');
     },
     getTimePrettyFromSeconds(seconds) {
@@ -330,7 +328,6 @@ export const func_global = {
                 beginningDate: currentMondayDate.addDays(i * 7),
                 range: this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7))
             })
-            // console.log('Week from ', currentMondayDate.addDays(i * 7), ' range: ', this.getWeekRangeFromMonday(currentMondayDate.addDays(i * 7)))
         }
         return weekArray;
     },
