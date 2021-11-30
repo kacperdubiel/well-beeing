@@ -342,7 +342,7 @@ export default {
 }
 
 #messages-box {
-    height: 50vh;
+    height: 60vh;
     overflow-y: auto;
     padding-right: 10px;
 }
