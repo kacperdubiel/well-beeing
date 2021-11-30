@@ -51,6 +51,29 @@
                 <label class="form-check-label mx-2">Ukryj osie Y</label>
             </div>
         </div>
+
+        <div class="row mt-4 px-4" v-if="selectedCheckboxes.length > 0">
+            <table class="table stats-table">
+                <thead>
+                <tr>
+                    <th scope="col">Typ pomiaru</th>
+                    <th scope="col">Wartość minimalna</th>
+                    <th scope="col">Wartość maksymalna</th>
+                    <th scope="col">Średnia</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="selected in selectedCheckboxes" :key="selected">
+                        <td>{{ this.getSeriesName(selected) }}</td>
+                        <td>{{ this.analysisDataStats[selected]['min'] }}</td>
+                        <td>{{ this.analysisDataStats[selected]['max'] }}</td>
+                        <td>{{ this.analysisDataStats[selected]['avg'] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
     </div>
 </template>
 
@@ -93,6 +116,7 @@ export default {
             this.updateSeries();
         },
         isUpdated: function() {
+            this.getStatsValues();
             this.updateSeries();
         },
     },
@@ -120,6 +144,7 @@ export default {
             maxSelected: 4,
 
             analysisData: {},
+            analysisDataStats: {},
             isDataUpdated: {
                 telemedic: false,
                 diet: false,
@@ -333,6 +358,35 @@ export default {
             this.analysisData[TRAINING_MEASURES.BURNED_CALORIES.EN].push({x: x, y: y, description: desc,
                 precision: TRAINING_MEASURES.BURNED_CALORIES.PRECISION});
         },
+        getStatsValues(){
+            for(const element in this.analysisData){
+                this.analysisDataStats[element] = {};
+                this.analysisDataStats[element]['min'] = this.getMinValue(this.analysisData[element])
+                    .toFixed(this.getSeriesPrecision(element));
+                this.analysisDataStats[element]['max'] = this.getMaxValue(this.analysisData[element])
+                    .toFixed(this.getSeriesPrecision(element));
+                this.analysisDataStats[element]['avg'] = this.getAvgValue(this.analysisData[element])
+                    .toFixed(this.getSeriesPrecision(element));
+            }
+        },
+        getMinValue(arr){
+            if(arr.length > 0)
+                return Math.min.apply(null, arr.map(function(chartElement){return chartElement.y;}))
+            else
+                return 0;
+        },
+        getMaxValue(arr){
+            if(arr.length > 0)
+                return Math.max.apply(null, arr.map(function(chartElement){return chartElement.y;}))
+            else
+                return 0;
+        },
+        getAvgValue(arr){
+            if(arr.length > 0)
+                return arr.reduce((total, next) => total + next.y, 0) / arr.length;
+            else
+                return 0;
+        },
         updateSeries(){
             this.series = [];
             this.stroke = { width: [], dashArray: [] };
@@ -378,6 +432,28 @@ export default {
                 }
             }
             return seriesName;
+        },
+        getSeriesPrecision(selected){
+            let precision = 1;
+
+            let measureType = this.measureTypes.find(m => m.id === selected);
+            if(measureType) {
+                precision = measureType.precision;
+            }
+            else {
+                for(const MEASURE in DIET_MEASURES){
+                    if(selected === DIET_MEASURES[MEASURE].EN){
+                        precision = DIET_MEASURES[MEASURE].PRECISION;
+                    }
+                }
+
+                for(const MEASURE in TRAINING_MEASURES){
+                    if(selected === TRAINING_MEASURES[MEASURE].EN){
+                        precision = TRAINING_MEASURES[MEASURE].PRECISION;
+                    }
+                }
+            }
+            return precision;
         },
         getStrokeWidth(selected){
             let strokeWidth = 3;
@@ -462,5 +538,8 @@ export default {
     gap: 0 15px;
 }
 
+.stats-table {
+    color: white;
+}
 
 </style>
