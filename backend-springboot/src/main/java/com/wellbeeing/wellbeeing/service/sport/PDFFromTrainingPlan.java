@@ -5,7 +5,6 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.BaseFont;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
@@ -19,7 +18,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +25,7 @@ import java.util.stream.Collectors;
 @Setter
 public class PDFFromTrainingPlan {
 
-    private static final ArrayList<String> WEEK_DAYS = new ArrayList<String>(){
+    private static final ArrayList<String> WEEK_DAYS = new ArrayList<String>() {
         {
             add("Poniedziałek");
             add("Wtorek");
@@ -38,28 +36,25 @@ public class PDFFromTrainingPlan {
             add("Niedziela");
         }
     };
-
-    private static String weekRange = "08.11 - 14.11";
-    private static final BaseFont base = FontFactory.getFont("/backend-springboot/fonts/calibri.ttf", BaseFont.WINANSI).getBaseFont();
-    private static final Font dayPartFont = FontFactory.getFont(String.valueOf(base), BaseFont.CP1250, 8, Font.NORMAL);
-    private static final Font nameFont = FontFactory.getFont(String.valueOf(base), BaseFont.CP1250, 12, Font.BOLD);
-    private static final Font descriptionFont = FontFactory.getFont(String.valueOf(base),10, BaseColor.DARK_GRAY);
-    private static final Font trainingFont = FontFactory.getFont(String.valueOf(base),16, BaseColor.RED);
-    private static final Font time_kcalFont = FontFactory.getFont(String.valueOf(base), BaseFont.CP1250, 8, Font.ITALIC);
-    private static final Font ultimateHeaderFont = FontFactory.getFont(String.valueOf(base),32, Font.BOLD);
-    private static final Font headerFont = FontFactory.getFont(String.valueOf(base),28, Font.BOLD);
-    private static final Font secondHeaderFont = FontFactory.getFont(String.valueOf(base),12, Font.BOLD);
-
+    //    private static final BaseFont base = FontFactory.getFont("/backend-springboot/fonts/calibri.ttf", BaseFont.WINANSI).getBaseFont();
+    private static final String base = BaseFont.COURIER;
+    private static final Font dayPartFont = FontFactory.getFont(base, BaseFont.CP1250, 8, Font.NORMAL);
+    private static final Font nameFont = FontFactory.getFont(base, BaseFont.CP1250, 12, Font.BOLD);
+    private static final Font descriptionFont = FontFactory.getFont(base, BaseFont.CP1250, 10, Font.NORMAL, BaseColor.DARK_GRAY);
+    private static final Font trainingFont = FontFactory.getFont(base, BaseFont.CP1250, 16, Font.NORMAL, BaseColor.RED);
+    private static final Font time_kcalFont = FontFactory.getFont(base, BaseFont.CP1250, 8, Font.ITALIC);
+    private static final Font ultimateHeaderFont = FontFactory.getFont(base, BaseFont.CP1250, 32, Font.BOLD);
+    private static final Font headerFont = FontFactory.getFont(base, BaseFont.CP1250, 28, Font.BOLD);
+    private static final Font secondHeaderFont = FontFactory.getFont(base, BaseFont.CP1250, 12, Font.BOLD);
     public static InputStream fileStream;
+    private static String weekRange = "08.11 - 14.11";
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
 
         Document doc = new Document();
         doc.setPageSize(PageSize.A4.rotate());
 
-        try
-        {
+        try {
             File file = new File("backend-springboot/data");
             System.out.println(file.getAbsolutePath());
             PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(file.getAbsolutePath() + "/NewTraining.pdf"));
@@ -67,8 +62,8 @@ public class PDFFromTrainingPlan {
 //opens the PDF
             doc.open();
             Font font = FontFactory.getFont(BaseFont.COURIER, BaseFont.CP1250);
-            Font headerFont = FontFactory.getFont(BaseFont.COURIER,28, Font.BOLD);
-            Paragraph paragraph = new Paragraph("Plan treningowy na tydzien: " + weekRange, headerFont);
+            Font headerFont = FontFactory.getFont(BaseFont.COURIER, 28, Font.BOLD);
+            Paragraph paragraph = new Paragraph("Plan treningowy na tydzień: " + weekRange, headerFont);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             paragraph.setSpacingAfter(12f);
             doc.add(paragraph);
@@ -84,30 +79,28 @@ public class PDFFromTrainingPlan {
             doc.close();
 //closes the writer
             writer.close();
-        } catch (DocumentException | URISyntaxException | IOException e)
-        {
+        } catch (DocumentException | URISyntaxException | IOException e) {
             e.printStackTrace();
         }
     }
 
     public static Document generatePDFFromTrainingPlan(TrainingPlan trainingPlan, String name) {
         weekRange = PDFFromTrainingPlan.getDateRangeOfWeek(trainingPlan.getBeginningDate());
-        String filename = name.equals("") ? "/NewTrainingPlan.pdf" : "/"+name+".pdf";
+        String filename = name.equals("") ? "/NewTrainingPlan.pdf" : "/" + name + ".pdf";
         Document doc = new Document();
         doc.setPageSize(PageSize.A4.rotate());
 
-        try
-        {
+        try {
 //generate a PDF at the specified location
             File file = new File("backend-springboot/data");
             System.out.println(file.getAbsolutePath());
             PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(file.getAbsolutePath() + filename));
             fileStream = new FileInputStream(file.getAbsolutePath() + filename);
             System.out.println("PDF created.");
-            Paragraph paragraph = new Paragraph("Plan treningowy na tydzien: " + weekRange, ultimateHeaderFont);
+            Paragraph paragraph = new Paragraph("Plan treningowy na tydzień: " + weekRange, ultimateHeaderFont);
 //prepares trainingPlan
             Map<String, Object> tableMap = PDFFromTrainingPlan.formatTrainingPlan(trainingPlan);
-            TrainingPosition [][] formattedTable = (TrainingPosition[][]) tableMap.get("table");
+            TrainingPosition[][] formattedTable = (TrainingPosition[][]) tableMap.get("table");
             int max_size = (int) tableMap.get("maxSize");
             PdfPTable table = new PdfPTable(7);
             Font font = FontFactory.getFont(BaseFont.COURIER, BaseFont.CP1250, 12, Font.BOLD);
@@ -118,8 +111,8 @@ public class PDFFromTrainingPlan {
             paragraph.setAlignment(Element.ALIGN_CENTER);
             paragraph.setSpacingAfter(12f);
             doc.add(paragraph);
-            for (int i =0; i<max_size; i++) {
-                for (int j =0; j<7; j++) {
+            for (int i = 0; i < max_size; i++) {
+                for (int j = 0; j < 7; j++) {
                     PdfPCell cell = new PdfPCell();
                     if (formattedTable[i][j] != null)
                         cell = PDFFromTrainingPlan.CellFromPosition(formattedTable[i][j]);
@@ -134,7 +127,7 @@ public class PDFFromTrainingPlan {
 
             doc.newPage();
 //adds paragraph to the PDF file
-            Paragraph newParagraph = new Paragraph("Szczególy planu:", ultimateHeaderFont);
+            Paragraph newParagraph = new Paragraph("Szczegóły planu:", ultimateHeaderFont);
             newParagraph.setSpacingBefore(20);
             newParagraph.setSpacingAfter(20);
             doc.add(newParagraph);
@@ -145,42 +138,40 @@ public class PDFFromTrainingPlan {
             doc.close();
 //closes the writer
             writer.close();
-        } catch (DocumentException | IOException e)
-        {
+        } catch (DocumentException | IOException e) {
             e.printStackTrace();
         }
 
         return doc;
     }
 
-    private static Map<String,Object> formatTrainingPlan (TrainingPlan plan) {
+    private static Map<String, Object> formatTrainingPlan(TrainingPlan plan) {
 //        ArrayList<ArrayList<TrainingPosition>> positionsMatrix = new ArrayList<>();
-        Map<String,ArrayList<TrainingPosition>> daysPositions = new HashMap<>();
+        Map<String, ArrayList<TrainingPosition>> daysPositions = new HashMap<>();
         WEEK_DAYS.forEach(day -> daysPositions.put(day, new ArrayList<>()));
-        for (TrainingPosition pos:
-             plan.getTrainingPositions()) {
-                daysPositions.get(pos.getDayOfTheWeek()).add(pos);
+        for (TrainingPosition pos :
+                plan.getTrainingPositions()) {
+            daysPositions.get(pos.getDayOfTheWeek()).add(pos);
         }
-        int max_pos = Collections.max(daysPositions.values(),Comparator.comparing(ArrayList::size)).size();
+        int max_pos = Collections.max(daysPositions.values(), Comparator.comparing(ArrayList::size)).size();
 
-        TrainingPosition [][] table = new TrainingPosition[max_pos][7]; // Rows = trainings, cols = days
-            int day_num = 0;
-            for (String day:
-                 WEEK_DAYS) {
-                ArrayList<TrainingPosition> poss = daysPositions.get(day);
-                for (int i =0; i<poss.size(); i++)
-                {
-                    table[i][day_num] = poss.get(i);
-                }
-                    day_num++;
+        TrainingPosition[][] table = new TrainingPosition[max_pos][7]; // Rows = trainings, cols = days
+        int day_num = 0;
+        for (String day :
+                WEEK_DAYS) {
+            ArrayList<TrainingPosition> poss = daysPositions.get(day);
+            for (int i = 0; i < poss.size(); i++) {
+                table[i][day_num] = poss.get(i);
             }
-            Map<String,Object> resultMap = new HashMap<>();
-            resultMap.put("table",table);
-            resultMap.put("maxSize",max_pos);
+            day_num++;
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("table", table);
+        resultMap.put("maxSize", max_pos);
         return resultMap;
     }
 
-    private static PdfPCell CellFromPosition (TrainingPosition position) {
+    private static PdfPCell CellFromPosition(TrainingPosition position) {
         PdfPCell positionCell = new PdfPCell();
 
         Paragraph dayTime = new Paragraph(position.getTimeOfDay().toString(), dayPartFont);
@@ -192,7 +183,7 @@ public class PDFFromTrainingPlan {
 
         positionCell.addElement(name);
         String description = position.getTraining().getDescription() != null ? position.getTraining().getDescription() : "Brak opisu";
-        Paragraph desc = new Paragraph(description.subSequence(0,Math.min(description.length(), 20)).toString(), descriptionFont);
+        Paragraph desc = new Paragraph(description.subSequence(0, Math.min(description.length(), 20)).toString(), descriptionFont);
 
         positionCell.addElement(desc);
 
@@ -208,15 +199,15 @@ public class PDFFromTrainingPlan {
         return positionCell;
     }
 
-    private static void addTrainingPlanContent (Document doc, Map<String,Object> formattedTrainingPlan) throws DocumentException {
+    private static void addTrainingPlanContent(Document doc, Map<String, Object> formattedTrainingPlan) throws DocumentException {
         int max_size = (int) formattedTrainingPlan.get("maxSize");
-        TrainingPosition [][] formattedTable = (TrainingPosition[][]) formattedTrainingPlan.get("table");
-        for (int j=0; j<7; j++) {
+        TrainingPosition[][] formattedTable = (TrainingPosition[][]) formattedTrainingPlan.get("table");
+        for (int j = 0; j < 7; j++) {
             Paragraph newParagraph = new Paragraph(WEEK_DAYS.get(j), headerFont);
             newParagraph.setSpacingBefore(20);
             newParagraph.setSpacingAfter(10);
             doc.add(newParagraph);
-            for (int i =0; i<max_size; i++) {
+            for (int i = 0; i < max_size; i++) {
                 TrainingPosition position = formattedTable[i][j];
                 if (position == null) break;
                 Paragraph name = new Paragraph(position.getTraining().getName(), trainingFont);
@@ -228,17 +219,17 @@ public class PDFFromTrainingPlan {
                 doc.add(dayTime);
 
                 String description = position.getTraining().getDescription() != null ? position.getTraining().getDescription() : "Brak";
-                Paragraph desc = new Paragraph(String.format("%s - %s","Opis:", description), descriptionFont);
+                Paragraph desc = new Paragraph(String.format("%s - %s", "Opis:", description), descriptionFont);
                 desc.setSpacingAfter(5);
                 doc.add(desc);
 
                 String instruction = position.getTraining().getInstruction() != null ? position.getTraining().getInstruction() : "Brak";
-                Paragraph inst = new Paragraph(String.format("%s - %s","Wskazówki do treningu:", instruction), descriptionFont);
+                Paragraph inst = new Paragraph(String.format("%s - %s", "Wskazówki do treningu:", instruction), descriptionFont);
                 inst.setSpacingAfter(5);
                 doc.add(inst);
 
-                Paragraph calories = new Paragraph("Trening powinien trwac " + PDFFromTrainingPlan.getTimePrettyFromSeconds(position.getTraining().getTotalTrainingTimeSeconds())
-                        + " i powinienes podczas niego spalic " +
+                Paragraph calories = new Paragraph("Trening powinien trwać " + PDFFromTrainingPlan.getTimePrettyFromSeconds(position.getTraining().getTotalTrainingTimeSeconds())
+                        + " i powinieneś podczas niego spalić " +
                         position.getTraining().getCaloriesBurned()
                         + " kcal", descriptionFont);
                 calories.setSpacingAfter(10);
@@ -246,31 +237,31 @@ public class PDFFromTrainingPlan {
 
                 if (position.getTraining().getExerciseInTrainings().size() == 0)
                     break;
-                Paragraph exercises = new Paragraph("Cwiczenia w treningu:", secondHeaderFont);
+                Paragraph exercises = new Paragraph("Ćwiczenia w treningu:", secondHeaderFont);
                 exercises.setSpacingAfter(5);
                 doc.add(exercises);
 
                 int exCounter = 1;
-                for (ExerciseInTraining ex:
-                     position.getTraining().getExerciseInTrainings()) {
-                    Paragraph exName = new Paragraph(String.format("%d. %s",exCounter++,ex.getExercise().getName()), nameFont);
+                for (ExerciseInTraining ex :
+                        position.getTraining().getExerciseInTrainings()) {
+                    Paragraph exName = new Paragraph(String.format("%d. %s", exCounter++, ex.getExercise().getName()), nameFont);
                     exName.setSpacingAfter(5);
                     doc.add(exName);
 
-                    Paragraph exUtils = new Paragraph(String.format("Zakres: %s serii po %s powtórzen. Kazda seria powinna trwac %s",
+                    Paragraph exUtils = new Paragraph(String.format("Zakres: %s serii po %s powtórzeń. Każda seria powinna trwać %s",
                             ex.getSeries(),
                             ex.getRepetitions(),
                             PDFFromTrainingPlan.getTimePrettyFromSeconds(ex.getTime_seconds())), descriptionFont);
                     exUtils.setSpacingAfter(5);
                     doc.add(exUtils);
 
-                    String exDescription = position.getTraining().getDescription() != null ? position.getTraining().getDescription() : "Brak";
-                    Paragraph exDesc = new Paragraph(String.format("%s - %s","Opis:", exDescription), descriptionFont);
+                    String exDescription = ex.getExercise().getDescription() != null ? ex.getExercise().getDescription() : "Brak";
+                    Paragraph exDesc = new Paragraph(String.format("%s - %s", "Opis:", exDescription), descriptionFont);
                     exDesc.setSpacingAfter(5);
                     doc.add(exDesc);
 
-                    String exInstruction = position.getTraining().getInstruction() != null ? position.getTraining().getInstruction() : "Brak";
-                    Paragraph exInstr = new Paragraph(String.format("%s - %s","Instrukcja:", exInstruction), descriptionFont);
+                    String exInstruction = ex.getExercise().getInstruction() != null ? ex.getExercise().getInstruction() : "Brak";
+                    Paragraph exInstr = new Paragraph(String.format("%s - %s", "Instrukcja:", exInstruction), descriptionFont);
                     exInstr.setSpacingAfter(5);
                     doc.add(exInstr);
 
@@ -278,7 +269,7 @@ public class PDFFromTrainingPlan {
                             .map(SportLabel::getName)
                             .collect(Collectors.joining(", "));
 
-                    Paragraph exLabels = new Paragraph(String.format("Etykiety: %s",labels), descriptionFont);
+                    Paragraph exLabels = new Paragraph(String.format("Etykiety: %s", labels), descriptionFont);
                     exLabels.setSpacingAfter(10);
                     doc.add(exLabels);
                 }
@@ -290,15 +281,15 @@ public class PDFFromTrainingPlan {
 
     private static void addTableHeader(PdfPTable table, Font font) {
         PDFFromTrainingPlan.WEEK_DAYS.forEach(columnTitle -> {
-                    PdfPCell header = new PdfPCell();
-                    header.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    header.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                    header.setMinimumHeight(30);
-                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setBorderWidth(2);
-                    header.setPhrase(new Phrase(columnTitle, font));
-                    table.addCell(header);
-                });
+            PdfPCell header = new PdfPCell();
+            header.setHorizontalAlignment(Element.ALIGN_CENTER);
+            header.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            header.setMinimumHeight(30);
+            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            header.setBorderWidth(2);
+            header.setPhrase(new Phrase(columnTitle, font));
+            table.addCell(header);
+        });
     }
 
     private static void addRows(PdfPTable table) {
@@ -328,26 +319,24 @@ public class PDFFromTrainingPlan {
     private static String getTimePrettyFromSeconds(int seconds) {
         if (seconds < 60) {
             return seconds + "s";
-        }
-        else if (seconds < 3600) {
-            return (int) Math.floor(seconds/60) + "min";
-        }
-        else {
-            int hours = (int) Math.floor(seconds/3600);
-            int minutes = (int) Math.floor((seconds - hours*3600)/60);
-            return hours + "h " + (minutes != 0 ? minutes + "min": "");
+        } else if (seconds < 3600) {
+            return (int) Math.floor(seconds / 60) + "min";
+        } else {
+            int hours = (int) Math.floor(seconds / 3600);
+            int minutes = (int) Math.floor((seconds - hours * 3600) / 60);
+            return hours + "h " + (minutes != 0 ? minutes + "min" : "");
         }
     }
 
 
-    private static String getDateRangeOfWeek(Date date){
+    private static String getDateRangeOfWeek(Date date) {
         LocalDate week = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         LocalDate start = week.with(DayOfWeek.MONDAY);
         LocalDate end = start.plusDays(6);
-        System.out.println(start +" - "+ end);
+        System.out.println(start + " - " + end);
         DateTimeFormatter ft = DateTimeFormatter.ofPattern("dd.MM");
-        return ft.format(start) +" - "+ ft.format(end);
+        return ft.format(start) + " - " + ft.format(end);
 
 //        Calendar calendar = Calendar.getInstance();
 //        calendar.clear();

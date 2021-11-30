@@ -7,7 +7,8 @@
                     {{ this.$func_global.mapTimeOfDay(trainingPosition.timeOfDay) }}
                 </div>
                 <div v-if="!create && !details" class="col-3 form-switch justify-content-end">
-                    <input id="flexSwitchCheckDefault" :checked="trainingPosition.trainingStatus === 'COMPLETED'" :disabled="trainingPosition.trainingStatus === 'COMPLETED'" class="form-check-input"
+                    <input id="flexSwitchCheckDefault" :checked="trainingPosition.trainingStatus === 'COMPLETED'"
+                           :disabled="trainingPosition.trainingStatus === 'COMPLETED'" class="form-check-input"
                            type="checkbox"
                            @change="check($event)">
                 </div>
@@ -15,7 +16,10 @@
             <div class="training-name" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
                  @click="openInfoModal(trainingPosition.training)">{{ trainingPosition.training.name }}
             </div>
-            <div class="training-descr">{{ trainingPosition.training.description }}</div>
+            <div class="training-descr">{{
+                    trainingPosition.training.description != null ? trainingPosition.training.description.substring(0, 35) : " "
+                }}...
+            </div>
             <div class="training-additional">
                 {{ this.$func_global.getTimePrettyFromSeconds(trainingPosition.training.totalTrainingTimeSeconds) }} |
                 {{ trainingPosition.training.caloriesBurned }} kcal
@@ -101,6 +105,7 @@ export default {
     font-weight: bold;
     text-align: left;
     border-radius: 2px;
+    min-height: 0;
 }
 
 .training-name {

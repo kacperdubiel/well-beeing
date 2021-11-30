@@ -144,7 +144,7 @@ public class TrainingPlanController {
                 request.getBeginningDate()
         );
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     @PostMapping("/send-request")

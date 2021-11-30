@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.domain.sport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import com.wellbeeing.wellbeeing.domain.account.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +34,8 @@ public class ActivityGoal {
     @Column(name = "goal_target_date")
     private Date goalTargetDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "owner")
     private Profile owner;
 
