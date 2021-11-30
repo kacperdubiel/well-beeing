@@ -246,7 +246,19 @@ public class SportReportServiceImpl implements SportReportService {
         Profile profile = profileDAO.findById(profileId).orElse(null);
         if (profile == null)
             throw new NotFoundException("Profile with id: " + profileId + " not found");
-        return sportReportDAO.findByReportOwnerIdAndReportDateBetweenOrderByReportDate(profileId, start, end);
+        double weight = profile.getProfileCard().getWeight();
+        List<SportReport> reports = sportReportDAO.findByReportOwnerIdAndReportDateBetweenOrderByReportDate(profileId, start, end);
+        reports.forEach(re -> {
+            re.getExerciseList().forEach(ex -> {
+                ex.getExercise().setCaloriesBurned(ex.getExercise().countCaloriesPerHour(weight));
+            });
+            re.getTrainingList().forEach(tr -> {
+                tr.getTraining().setCaloriesBurned(tr.getTraining().caloriesBurned(weight));
+                tr.getTraining().getExerciseInTrainings().forEach(ex -> ex.setCaloriesBurned(ex.countCaloriesPerExerciseDuration(weight)));
+            });
+            re.preUpdate();
+        });
+        return reports;
     }
 
     @Override
