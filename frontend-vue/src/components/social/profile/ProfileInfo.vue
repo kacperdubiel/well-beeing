@@ -3,16 +3,17 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img v-if="!this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
-                <img v-else-if="this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="100" width="100">
+                <img v-if="!this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="120" width="120">
+                <img v-else-if="this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="120" width="120">
 
-                <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="100" width="100">
+                <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="120" width="120">
             </div>
 
             <div class="d-flex flex-column align-self-center w-100">
 
-                <div class="text-start d-flex justify-content-between ms-3">
-                    <h3>{{this.profileSource.firstName}} {{this.profileSource.lastName}}</h3>
+                <div class="text-start d-flex ms-3">
+                    <h3 class="align-self-center mb-0">{{this.profileSource.firstName}} {{this.profileSource.lastName}}</h3>
+                    <font-awesome-icon :icon="['fa', 'certificate']" size="1x" v-if="isSpecialist" id="specialist-badge" class="ms-2 align-self-center"/>
 
                     <button class="btn-white ms-auto fw-bolder" v-if="isProfileMine">
                         <router-link :to="{ name: 'ProfileEdit' }">
@@ -20,6 +21,27 @@
                         </router-link>
                     </button>
                 </div>
+
+                <div class="row text-start mt-2 ms-2">
+                    <div class="d-flex flex-row align-items-baseline" v-if="this.profileSource.doctorProfile != null">
+                        <span class="fw-bolder role">Lekarz</span>
+                        <span
+                            v-for="spec in this.profileSource.doctorProfile.specializations" :key=spec.id
+                            class="ms-2 spec fw-bolder"
+                        >
+                            ∙ {{spec.name}}
+                        </span>
+                    </div>
+
+                    <div class="d-flex flex-row" v-if="this.profileSource.dieticianProfile != null">
+                        <span class="fw-bolder role">Dietetyk</span>
+                    </div>
+
+                    <div class="d-flex flex-row" v-if="this.profileSource.trainerProfile != null">
+                        <span class="fw-bolder role">Trener</span>
+                    </div>
+                </div>
+
 
                 <div class="text-start d-flex flex-row ms-2 mt-2">
                     <div class="p-2 mx-2 tag-sport fw-bolder" v-if="this.profileSource.esportTag !== 'NONE' && this.profileSource.esportTag != null">
@@ -41,9 +63,15 @@
                 Przestań obserwować
             </button>
 
-            <button class="btn-white fw-bolder" v-if="!isProfileMine && isFriend" @click="deleteInvitation(0)">
-                Usuń ze znajomych
-            </button>
+
+            <div  class="dropdown btn-white fw-bolder" v-if="!isProfileMine && isFriend">
+                <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-is-friend" data-bs-toggle="dropdown" aria-expanded="false">
+                    Znajomi
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdown-is-friend">
+                    <li><a @click="deleteInvitation(0)" class="dropdown-item">Usuń ze znajomych</a></li>
+                </ul>
+            </div>
 
             <div  class="dropdown btn-white fw-bolder" v-else-if="!isProfileMine && isInvitedByMe">
                 <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-inv-sent" data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,7 +92,7 @@
                 </ul>
             </div>
 
-            <button class="btn-white fw-bolder" v-else-if="!isProfileMine && isNoConncection" @click="inviteFriend">
+            <button class="btn-white fw-bolder" v-else-if="!isProfileMine && isNoConnection" @click="inviteFriend">
                 Zaproś do znajomych
             </button>
         </div>
@@ -198,7 +226,7 @@ export default {
         hasInvitedMe() {
             return this.connectionsList[0] == null && this.connectionsList[1] == null && this.connectionsList[2] != null
         },
-        isNoConncection() {
+        isNoConnection() {
             return this.connectionsList[0] == null && this.connectionsList[1] == null && this.connectionsList[2] == null
         }
     },
@@ -232,5 +260,17 @@ div[class*="tag-"] {
 a {
     color: var(--GREY3);
     text-decoration: none;
+}
+
+#specialist-badge {
+    color: var(--DARK-YELLOW);
+}
+
+.role {
+    font-size: 18px;
+}
+
+.spec {
+    color: var(--GREY1);
 }
 </style>

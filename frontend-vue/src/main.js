@@ -97,7 +97,9 @@ library.add(faCheck)
 
 //profile
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
+import { faCertificate } from '@fortawesome/free-solid-svg-icons'
 library.add(faEllipsisH)
+library.add(faCertificate)
 
 //telemedic
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
