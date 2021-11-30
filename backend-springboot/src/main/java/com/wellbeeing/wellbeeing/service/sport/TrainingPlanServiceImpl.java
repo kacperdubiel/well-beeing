@@ -213,7 +213,7 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
             );
             plan.setCaloriesBurned(plan.getTrainingPositions().stream().map(pos -> pos.getTraining().getCaloriesBurned()).mapToInt(num -> num).sum());
         });
-        return trainingPlanDAO.findTrainingPlansByOwnerProfileUserEmail(ownerName).stream().sorted(Comparator.comparing(TrainingPlan::getBeginningDate)).collect(Collectors.toList());
+        return myPlans.stream().sorted(Comparator.comparing(TrainingPlan::getBeginningDate)).collect(Collectors.toList());
     }
 
     @Override

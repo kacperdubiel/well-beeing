@@ -50,9 +50,10 @@ public class SportReport {
     public void preUpdate() {
         if (this.exerciseList == null)
             this.exerciseList = new ArrayList<>();
-        countTotalCalories();
+
         if (this.trainingList == null)
             this.trainingList = new ArrayList<>();
+        countTotalCalories();
         countTotalSeconds();
     }
 
