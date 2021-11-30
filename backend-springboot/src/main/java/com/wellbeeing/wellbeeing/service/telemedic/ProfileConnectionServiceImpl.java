@@ -52,26 +52,32 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     }
 
     @Override
-    public List<Boolean> checkProfileConnection(String myUserName, Profile otherProfile) {
+    public List<ProfileConnection> checkProfileConnection(String myUserName, Profile otherProfile) {
         User me = userDAO.findUserByEmail(myUserName).orElse(null);
         ProfileConnection friendsSent = profileConnectionDAO.findByProfileAndConnectedWithAndConnectionType(me.getProfile(), otherProfile, EConnectionType.WITH_USER);
         ProfileConnection friendsReceived = profileConnectionDAO.findByProfileAndConnectedWithAndConnectionType(otherProfile, me.getProfile(), EConnectionType.WITH_USER);
-        boolean friends = false;
-        boolean invitationSent = false;
-        boolean invitationReceived = false;
-        List<Boolean> returnList = new ArrayList<>();
-        if (friendsSent != null && friendsSent.isAccepted() || friendsReceived != null && friendsReceived.isAccepted())
-            friends = true;
 
+        List<ProfileConnection> returnList = new ArrayList<>();
+
+//        friend connection
+        if (friendsSent != null && friendsSent.isAccepted())
+            returnList.add(friendsSent);
+        else if (friendsReceived != null && friendsReceived.isAccepted())
+            returnList.add(friendsReceived);
+        else
+            returnList.add(null);
+
+//        sent invite connection
         if (friendsSent != null && !friendsSent.isAccepted())
-            invitationSent = true;
+            returnList.add(friendsSent);
+        else
+            returnList.add(null);
 
+//        received invite connection
         if (friendsReceived != null && !friendsReceived.isAccepted())
-            invitationReceived = true;
-
-        returnList.add(friends);
-        returnList.add(invitationSent);
-        returnList.add(invitationReceived);
+            returnList.add(friendsReceived);
+        else
+            returnList.add(null);
 
         return returnList;
     }

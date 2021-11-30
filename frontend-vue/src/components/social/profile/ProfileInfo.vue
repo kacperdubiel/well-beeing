@@ -41,30 +41,30 @@
                 Przestań obserwować
             </button>
 
-            <button class="btn-white fw-bolder" v-if="!isProfileMine && this.isFriends[0]">
+            <button class="btn-white fw-bolder" v-if="!isProfileMine && isFriend" @click="deleteInvitation(0)">
                 Usuń ze znajomych
             </button>
 
-            <div  class="dropdown btn-white fw-bolder" v-else-if="!isProfileMine && !this.isFriends[0] && this.isFriends[1]">
+            <div  class="dropdown btn-white fw-bolder" v-else-if="!isProfileMine && isInvitedByMe">
                 <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-inv-sent" data-bs-toggle="dropdown" aria-expanded="false">
                     Wysłano zaproszenie do znajomych
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown-inv-sent">
-                    <li><a @click="handleLogout" class="dropdown-item">Anuluj zaproszenie</a></li>
+                    <li><a @click="deleteInvitation(1)" class="dropdown-item">Anuluj zaproszenie</a></li>
                 </ul>
             </div>
 
-            <div  class="dropdown btn-white fw-bolder" v-else-if="!isProfileMine && !this.isFriends[0] && this.isFriends[2]">
+            <div  class="dropdown btn-white fw-bolder" v-else-if="!isProfileMine && hasInvitedMe">
                 <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-inv-received" data-bs-toggle="dropdown" aria-expanded="false">
                     Odpowiedz na  zaproszenie do znajomych
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown-inv-received">
-                    <li><a @click="handleLogout" class="dropdown-item">Potwierdź</a></li>
-                    <li><a @click="handleLogout" class="dropdown-item">Odrzuć</a></li>
+                    <li><a @click="acceptInvitation" class="dropdown-item">Potwierdź</a></li>
+                    <li><a @click="deleteInvitation(2)" class="dropdown-item">Odrzuć</a></li>
                 </ul>
             </div>
 
-            <button class="btn-white fw-bolder" v-else-if="!isProfileMine && !this.isFriends[0] && !this.isFriends[1] && !this.isFriends[2]">
+            <button class="btn-white fw-bolder" v-else-if="!isProfileMine && isNoConncection" @click="inviteFriend">
                 Zaproś do znajomych
             </button>
         </div>
@@ -82,7 +82,7 @@ export default {
         return {
             profilePictureSrc: "",
             isFollowedByMe: false,
-            isFriends: []
+            connectionsList: []
         }
     },
     props: {
@@ -133,11 +133,54 @@ export default {
             const url = `${this.apiURL}profile-connections/${this.$route.params.profileId}/check`
             const token = this.$store.getters.getToken;
             this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                this.isFriends = response.data
+                this.connectionsList = response.data
             }).catch(error => {
                 console.log(error.response.status)
             });
-        }
+        },
+
+
+
+
+
+
+        deleteInvitation(connectionIndexOnList) {
+            const url = `${this.apiURL}profile-connections/${this.connectionsList[connectionIndexOnList].id}`
+            const token = this.$store.getters.getToken;
+
+            this.axios.delete(url,{headers: {Authorization: `Bearer ${token}`}}).then(() => {
+                this.checkFriends()
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+        },
+        acceptInvitation(){
+            const url = `${this.apiURL}profile-connections/${this.connectionsList[2].id}/mark-as-accepted`
+            const token = this.$store.getters.getToken;
+
+            this.axios.put(url, null,{headers: {Authorization: `Bearer ${token}`}}).then(() => {
+                this.checkFriends()
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+        },
+        inviteFriend(){
+            const url = `${this.apiURL}profile-connections`
+            const token = this.$store.getters.getToken;
+
+            const data = {
+                "connectionType": "WITH_USER",
+                "connectedWith": {
+                    "id": this.$route.params.profileId,
+                },
+            }
+
+            this.axios.post(url, data,{headers: {Authorization: `Bearer ${token}`}}).then(() => {
+                this.checkFriends()
+            }).catch(error => {
+                console.log(error.response.status)
+            });
+        },
     },
     computed: {
         isProfileMine() {
@@ -145,6 +188,18 @@ export default {
         },
         isSpecialist() {
             return this.profileSource.doctorProfile != null || this.profileSource.dieticianProfile != null || this.profileSource.trainerProfile != null
+        },
+        isFriend() {
+            return this.connectionsList[0] != null && this.connectionsList[1] == null && this.connectionsList[2] == null
+        },
+        isInvitedByMe() {
+            return this.connectionsList[0] == null && this.connectionsList[1] != null && this.connectionsList[2] == null
+        },
+        hasInvitedMe() {
+            return this.connectionsList[0] == null && this.connectionsList[1] == null && this.connectionsList[2] != null
+        },
+        isNoConncection() {
+            return this.connectionsList[0] == null && this.connectionsList[1] == null && this.connectionsList[2] == null
         }
     },
     mounted() {

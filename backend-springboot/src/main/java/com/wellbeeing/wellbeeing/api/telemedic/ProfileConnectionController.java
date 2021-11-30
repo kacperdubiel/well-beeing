@@ -80,7 +80,7 @@ public class ProfileConnectionController {
     @GetMapping("profile-connections/{userId}/check")
     public ResponseEntity<?> checkUserConnection(@PathVariable UUID userId, Principal principal) throws NotFoundException {
         Profile profile = profileService.getProfileById(userId);
-        List<Boolean> response = profileConnectionService.checkProfileConnection(principal.getName(), profile);
+        List<ProfileConnection> response = profileConnectionService.checkProfileConnection(principal.getName(), profile);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -28,5 +28,5 @@ public interface ProfileConnectionService {
 
     Page<ProfileConnection> getProfileConnectionsFriends(Specification<ProfileConnection> conSpec, Pageable pageable);
 
-    List<Boolean> checkProfileConnection(String myUserName, Profile otherProfile);
+    List<ProfileConnection> checkProfileConnection(String myUserName, Profile otherProfile);
 }
