@@ -91,7 +91,9 @@
                         </button>
                     </div>
                     <div v-if="filters.typeFilter !== ''" class="form-label label-node p-2 mx-1 my-1">
-                        <span class="fst-italic">Typ: "{{ filters.typeFilter }}"</span>
+                        <span class="fst-italic">Typ: "{{
+                                this.$func_global.mapExerciseType(filters.typeFilter)
+                            }}"</span>
                         <button class="btn btn-sm btn-outline-4 size" type="button" @click="removeFilters('type')">
                             <font-awesome-icon :icon="['fa', 'times']"/>
                         </button>

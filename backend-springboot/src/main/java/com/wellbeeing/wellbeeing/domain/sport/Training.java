@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -34,7 +35,7 @@ public class Training {
     @Column(name = "instruction")
     private String instruction;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator")
     @JsonIgnore
     private Profile creator;
@@ -55,12 +56,15 @@ public class Training {
     @JsonIgnore
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
     private Set<TrainingPosition> trainingPlans = new HashSet<>();
+    @Transient
+    private UUID creatorId;
 
     public Training(String name, ETrainingDifficulty difficulty) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;
         this.trainingDifficulty = difficulty;
         this.exerciseInTrainings = new HashSet<>();
     }
+
 
     public int caloriesBurned(double user_weight) {
         return this.exerciseInTrainings.stream().map(ex -> ex.countCaloriesPerExerciseDuration(user_weight)).mapToInt(num -> num).sum();
@@ -80,6 +84,8 @@ public class Training {
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
         }
+        if (this.creator != null)
+            this.creatorId = this.creator.getId();
     }
 
     @Override

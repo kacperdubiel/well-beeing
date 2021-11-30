@@ -81,7 +81,9 @@
                         </button>
                     </div>
                     <div v-if="filters.difficultyFilter !== ''" class="form-label label-node p-2 mx-1 my-1">
-                        <span class="fst-italic my-auto">Poziom: "{{ filters.difficultyFilter }}"</span>
+                        <span class="fst-italic my-auto">Poziom: "{{
+                                this.$func_global.mapTrainingDifficulty(filters.difficultyFilter)
+                            }}"</span>
                         <button class="btn btn-sm btn-outline-4 size" type="button" @click="removeFilters('type')">
                             <font-awesome-icon :icon="['fa', 'times']"/>
                         </button>
@@ -138,12 +140,14 @@
                 <font-awesome-icon :icon="['fa', 'list-ul']" class="icon"/>
             </span>
         </div>
-        <trainings-list-component v-if="isListView" :trainings-source="trainings" @get:trainings="getTrainings"
+        <trainings-list-component v-if="isListView" :trainings-source="trainings"
+                                  @get:trainings="getTrainingsWithFilters(false)"
                                   @delete:training="deleteTraining"/>
-        <trainings-grid-component v-if="!isListView" :trainings-source="trainings" @get:trainings="getTrainings"
+        <trainings-grid-component v-if="!isListView" :trainings-source="trainings"
+                                  @get:trainings="getTrainingsWithFilters(false)"
                                   @delete:training="deleteTraining"/>
         <!--Modal-->
-        <training-form :exercises-source="exercises" :labels-source="labels" @get:exercises="getExercises"
+        <training-form :labels-source="labels"
                        @get:trainings="getTrainings"/>
     </div>
 </template>

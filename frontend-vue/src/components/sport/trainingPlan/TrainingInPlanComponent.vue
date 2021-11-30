@@ -16,7 +16,7 @@
             <div class="training-name" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
                  @click="openInfoModal(trainingPosition.training)">{{ trainingPosition.training.name }}
             </div>
-            <div class="training-descr">{{ trainingPosition.training.description }}</div>
+            <div class="training-descr">{{ trainingPosition.training.description.substring(0, 35) }}...</div>
             <div class="training-additional">
                 {{ this.$func_global.getTimePrettyFromSeconds(trainingPosition.training.totalTrainingTimeSeconds) }} |
                 {{ trainingPosition.training.caloriesBurned }} kcal
