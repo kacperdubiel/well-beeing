@@ -25,6 +25,15 @@ export const func_global = {
         return this.uploadFileFunc(formData, type, token, id)
     },
 
+    async importSportDataFunc(myfile, token, type, id) {
+        // let myfile = this.$refs.myfile;
+        let files = myfile.files;
+        let file = files[0];
+        var formData = new FormData();
+        formData.append("file", file);
+        return this.uploadFileFunc(formData, type, token, id)
+    },
+
     async uploadFileFunc(data, type, token, id) {
         let url;
         if (type === 'roleRequest')
@@ -41,6 +50,10 @@ export const func_global = {
             url = `${apiURL}import/diets`
         else if (type === 'importAilments')
             url = `${apiURL}import/ailments`
+        else if (type === 'importExercises')
+            url = `${apiURL}sport/import/exercises`
+        else if (type === 'importTrainings')
+            url = `${apiURL}sport/import/trainings`
         return axios.post(url, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -541,8 +554,8 @@ export const func_global = {
         else
             return "Opublikowane"
     },
-    mapDay(day){
-        if(day == 'MONDAY')
+    mapDay(day) {
+        if (day == 'MONDAY')
             return 'Poniedziałek'
         else if (day == 'TUESDAY')
             return 'Wtorek'
@@ -557,7 +570,7 @@ export const func_global = {
         else if (day == 'SUNDAY')
             return 'Niedziela'
     },
-    mealsList(){
+    mealsList() {
         return ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK', 'SUPPER']
     },
     proteinCalories() {

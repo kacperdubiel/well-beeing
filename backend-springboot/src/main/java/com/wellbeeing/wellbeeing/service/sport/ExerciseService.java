@@ -49,6 +49,8 @@ public interface ExerciseService {
 
     SportLabel addSportLabel(SportLabel sportLabel, String creatorName) throws NotFoundException, ForbiddenException;
 
+    SportLabel addSportLabel(SportLabel sportLabel);
+
     SportLabel addSportLabelWithAilments(SportLabel sportLabel, ArrayList<Map<String, Object>> ailments) throws NotFoundException;
 
     boolean deleteSportLabel(long sportLabelId, String userName) throws NotFoundException;

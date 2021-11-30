@@ -91,6 +91,8 @@ public class Exercise {
     }
 
     public void addLabelToExercise(SportLabel sportLabel) {
+        if (this.labels == null)
+            this.labels = new HashSet<>();
         this.labels.add(sportLabel);
     }
 

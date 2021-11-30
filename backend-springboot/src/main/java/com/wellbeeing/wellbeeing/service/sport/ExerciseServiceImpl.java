@@ -52,10 +52,10 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     @Override
     public Exercise addExercise(Exercise exercise, String creatorName) throws HttpMessageNotReadableException, NotFoundException {
         User user = userDAO.findUserByEmail(creatorName).orElse(null);
-        System.out.println("Print id:" + user.getId());
-        exercise.setCreator(user.getProfile());
+        if (user != null)
+            exercise.setCreator(user.getProfile());
         if (exerciseDAO.findAllByName(exercise.getName()).isEmpty()) {
-            System.out.println("Pront name: " + exercise.getName());
+            System.out.println("Print name: " + exercise.getName());
             if (exercise.getName() == null || Objects.equals(exercise.getName(), "")) {
                 throw new NotFoundException("Exercise must have a name!");
             } else if (exercise.getExerciseType() == null) {
