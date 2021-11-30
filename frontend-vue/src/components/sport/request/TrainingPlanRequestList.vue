@@ -24,13 +24,16 @@
                                 @click="openInfoModal(req); req.requestStatus === 'SUBMITTED' ? setStatus(req.id,'SEEN') : '' ">
                             <font-awesome-icon :icon="['fa', 'info']"/>
                         </button>
-                        <button v-if="['SEEN','SUBMITTED'].includes(req.requestStatus)" class="btn-white mx-2">
-                            <font-awesome-icon :icon="['fa', 'check']" @click="setStatus(req.id,'ACCEPTED')"/>
-                        </button>
+                    </td>
+                    <td class="text-start">
                         <button v-if="!['CANCELLED', 'DENIED', 'COMPLETED'].includes(req.requestStatus)"
                                 class="btn-white mx-2"
                                 @click="setStatus(req.id,'DENIED')">
                             <font-awesome-icon :icon="['fa', 'times']"/>
+                        </button>
+
+                        <button v-if="['SEEN','SUBMITTED'].includes(req.requestStatus)" class="btn-white mx-2">
+                            <font-awesome-icon :icon="['fa', 'check']" @click="setStatus(req.id,'ACCEPTED')"/>
                         </button>
                     </td>
                 </tr>
