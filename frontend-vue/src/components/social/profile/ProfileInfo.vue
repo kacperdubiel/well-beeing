@@ -69,7 +69,8 @@
                     Znajomi
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown-is-friend">
-                    <li><a @click="deleteInvitation(0)" class="dropdown-item">Usuń ze znajomych</a></li>
+                    <li><a @click="setDeleteProps(0)" class="dropdown-item"
+                           data-bs-toggle="modal" data-bs-target="#deleteFriendConnectionModal">Usuń ze znajomych</a></li>
                 </ul>
             </div>
 
@@ -78,7 +79,8 @@
                     Wysłano zaproszenie do znajomych
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown-inv-sent">
-                    <li><a @click="deleteInvitation(1)" class="dropdown-item">Anuluj zaproszenie</a></li>
+                    <li><a @click="setDeleteProps(1)" class="dropdown-item"
+                           data-bs-toggle="modal" data-bs-target="#deleteFriendConnectionModal">Anuluj zaproszenie</a></li>
                 </ul>
             </div>
 
@@ -87,14 +89,19 @@
                     Odpowiedz na  zaproszenie do znajomych
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdown-inv-received">
-                    <li><a @click="acceptInvitation" class="dropdown-item">Potwierdź</a></li>
-                    <li><a @click="deleteInvitation(2)" class="dropdown-item">Odrzuć</a></li>
+                    <li><a class="dropdown-item"
+                           data-bs-toggle="modal" data-bs-target="#acceptFriendModal">Potwierdź</a></li>
+                    <li><a @click="setDeleteProps(2)" class="dropdown-item"
+                           data-bs-toggle="modal" data-bs-target="#deleteFriendConnectionModal">Odrzuć</a></li>
                 </ul>
             </div>
 
             <button class="btn-white fw-bolder" v-else-if="!isProfileMine && isNoConnection" @click="inviteFriend">
                 Zaproś do znajomych
             </button>
+
+            <delete-connection-friend-modal :delete-type="deleteType" @delete:invitation="deleteInvitation"/>
+            <accept-friend-modal @accept:invitation="acceptInvitation"/>
         </div>
         <div class="row text-start px-4 py-3">
             <p v-html="this.$func_global.convertNewLines(this.profileSource.description)"></p>
@@ -104,19 +111,40 @@
 </template>
 
 <script>
+import DeleteConnectionFriendModal from "@/components/social/profile/DeleteConnectionFriendModal";
+import AcceptFriendModal from "@/components/social/profile/AcceptFriendModal";
+
 export default {
     name: "ProfileInfo",
+    components: {
+        DeleteConnectionFriendModal,
+        AcceptFriendModal
+    },
     data() {
         return {
             profilePictureSrc: "",
             isFollowedByMe: false,
-            connectionsList: []
+            connectionsList: [],
+            deleteType: "",
+            connectionIndexOnList: Number
         }
     },
     props: {
         profileSource: Object
     },
     methods: {
+
+        setDeleteProps(index) {
+            this.connectionIndexOnList = index
+            if(index === 0)
+                this.deleteType = 'friend'
+            else if (index === 1)
+                this.deleteType = 'invitationSent'
+            else if (index === 2) {
+                this.deleteType = 'invitationReceived'
+            }
+        },
+
         downloadMyProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
             const token = this.$store.getters.getToken;
@@ -167,13 +195,8 @@ export default {
             });
         },
 
-
-
-
-
-
-        deleteInvitation(connectionIndexOnList) {
-            const url = `${this.apiURL}profile-connections/${this.connectionsList[connectionIndexOnList].id}`
+        deleteInvitation() {
+            const url = `${this.apiURL}profile-connections/${this.connectionsList[this.connectionIndexOnList].id}`
             const token = this.$store.getters.getToken;
 
             this.axios.delete(url,{headers: {Authorization: `Bearer ${token}`}}).then(() => {

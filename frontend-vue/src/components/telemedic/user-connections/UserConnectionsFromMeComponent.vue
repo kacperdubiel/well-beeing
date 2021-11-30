@@ -368,6 +368,9 @@ export default {
                 })
         },
         getUserConnections() {
+            if(this.connectionType === 'WITH_USER')
+                this.selectedAcceptState = false
+
             this.axios.get(`${this.apiURL}profile-connections/from-me/type/${this.connectionType}/`
                 + `accepted/${this.selectedAcceptState}?page=${this.navigation.toGoPage ?? 0}`, {
                 headers: {
