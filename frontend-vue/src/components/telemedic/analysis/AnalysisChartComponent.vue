@@ -3,12 +3,14 @@
 </template>
 
 <script>
-import pl from "apexcharts/dist/locales/pl.json";    // ref="realtimeChart"
+import pl from "apexcharts/dist/locales/pl.json";
 
 export default {
     name: "AnalysisChartComponent",
     props: {
         data: {},
+        strokes: {},
+        markers: {},
         hideYAxis: Boolean,
     },
     watch: {
@@ -18,6 +20,12 @@ export default {
         },
         hideYAxis: function() {
             this.updateYAxis();
+        },
+        strokes: function() {
+            this.updateStrokes();
+        },
+        markers: function() {
+            this.updateMarkers();
         },
     },
     data() {
@@ -65,6 +73,7 @@ export default {
                 stroke: {
                     curve: 'smooth',
                     width: 3,
+                    dashArray: 0,
                 },
                 markers: {
                     size: 4,
@@ -289,6 +298,29 @@ export default {
                 },
             };
         },
+        updateStrokes(){
+            let currentStroke = this.chartOptions.stroke;
+            currentStroke.width = this.strokes.width;
+            currentStroke.dashArray = this.strokes.dashArray;
+
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    stroke: currentStroke,
+                },
+            };
+        },
+        updateMarkers(){
+            let currentMarkers = this.chartOptions.markers;
+            currentMarkers.size = this.markers.size;
+
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    markers: currentMarkers,
+                },
+            };
+        }
     },
     created() {
 

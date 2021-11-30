@@ -43,7 +43,7 @@
         </div>
 
         <div class="pt-2">
-            <analysis-chart-component :data="series" :hide-y-axis="hideYAxis"/>
+            <analysis-chart-component :data="series" :strokes="stroke" :markers="marker" :hide-y-axis="hideYAxis" />
         </div>
         <div class="row">
             <div class="form-check form-switch d-flex justify-content-center">
@@ -102,8 +102,8 @@ export default {
             TRAINING_MEASURES: TRAINING_MEASURES,
 
             dateRange: {
-                start: new Date(),
-                end: new Date()
+                start: new Date(new Date().setHours(0,0,0,0)),
+                end: new Date(new Date().setHours(23,59,59,0))
             },
             datePickerConfig: {
                 start: {
@@ -129,6 +129,8 @@ export default {
 
             series: [],
             hideYAxis: false,
+            stroke: {},
+            marker: {},
         }
     },
     methods: {
@@ -144,6 +146,9 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
+            .then(() => {
+                this.getAnalysisData();
+            })
         },
         getAnalysisData(){
             this.analysisData = {};
@@ -193,7 +198,6 @@ export default {
                             min: measure.measureType.minValue,
                             precision: measure.measureType.precision,
                         }
-
                         this.analysisData[measureTypeId].push(chartElement)
                     });
 
@@ -331,8 +335,13 @@ export default {
         },
         updateSeries(){
             this.series = [];
+            this.stroke = { width: [], dashArray: [] };
+            this.marker = { size: [] };
             this.selectedCheckboxes.forEach(selected => {
                 let seriesName = this.getSeriesName(selected);
+                this.stroke.width.push(this.getStrokeWidth(selected));
+                this.stroke.dashArray.push(this.getStrokeDash(selected));
+                this.marker.size.push(this.getMarkerSize(selected));
 
                 if(this.analysisData[selected]){
                     let sortedData = this.analysisData[selected].sort(function(a,b){
@@ -346,6 +355,7 @@ export default {
             this.isDataUpdated.telemedic = false;
             this.isDataUpdated.diet = false;
             this.isDataUpdated.training = false;
+
         },
         getSeriesName(selected){
             let seriesName = "";
@@ -369,13 +379,63 @@ export default {
             }
             return seriesName;
         },
+        getStrokeWidth(selected){
+            let strokeWidth = 3;
+
+            for(const MEASURE in DIET_MEASURES){
+                if(selected === DIET_MEASURES[MEASURE].EN){
+                    strokeWidth = 1;
+                }
+            }
+
+            for(const MEASURE in TRAINING_MEASURES){
+                if(selected === TRAINING_MEASURES[MEASURE].EN){
+                    strokeWidth = 1;
+                }
+            }
+
+            return strokeWidth;
+        },
+        getStrokeDash(selected){
+            let strokeDash = 0;
+
+            for(const MEASURE in DIET_MEASURES){
+                if(selected === DIET_MEASURES[MEASURE].EN){
+                    strokeDash = 12;
+                }
+            }
+
+            for(const MEASURE in TRAINING_MEASURES){
+                if(selected === TRAINING_MEASURES[MEASURE].EN){
+                    strokeDash = 12;
+                }
+            }
+
+            return strokeDash;
+        },
+        getMarkerSize(selected){
+            let markerSize = 4;
+
+            for(const MEASURE in DIET_MEASURES){
+                if(selected === DIET_MEASURES[MEASURE].EN){
+                    markerSize = 4;
+                }
+            }
+
+            for(const MEASURE in TRAINING_MEASURES){
+                if(selected === TRAINING_MEASURES[MEASURE].EN){
+                    markerSize = 4;
+                }
+            }
+
+            return markerSize;
+        },
         isSelected(element){
             return this.selectedCheckboxes.indexOf(element) === -1
         },
     },
     created() {
         this.getMeasureTypes();
-        this.getAnalysisData();
     }
 }
 </script>
