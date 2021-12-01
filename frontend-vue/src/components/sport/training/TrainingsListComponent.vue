@@ -5,10 +5,10 @@
                 <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Nazwa</th>
-                    <th scope="col">Czas</th>
-                    <th scope="col">Trudność</th>
-                    <th scope="col">kcal/h</th>
+                    <th class="text-start" scope="col">Nazwa</th>
+                    <th class="text-start" scope="col">Czas</th>
+                    <th class="text-start" scope="col">Trudność</th>
+                    <th class="text-end" scope="col">kcal/h</th>
                     <th v-if="!inModal" scope="col"></th>
                 </tr>
                 </thead>
@@ -17,10 +17,13 @@
                     v-bind:class="{'selected-training' : (mode === 'toPlan' && this.$store.getters.getPlanTrainingId === tr.trainingId) }"
                     v-on:click="mode === 'toPlan' ? this.$store.commit('setPlanTrainingId', tr.trainingId) : null">
                     <td>{{ tr.trainingId }}</td>
-                    <td>{{ tr.name }}</td>
-                    <td>{{ this.$func_global.getTimePrettyFromSeconds(tr.totalTrainingTimeSeconds) }}</td>
-                    <td>{{ this.$func_global.mapTrainingDifficulty(tr.trainingDifficulty) }}</td>
-                    <td>{{ tr.caloriesBurned }}</td>
+                    <td class="text-start">{{ tr.name }}</td>
+                    <td class="text-start">{{
+                            this.$func_global.getTimePrettyFromSeconds(tr.totalTrainingTimeSeconds)
+                        }}
+                    </td>
+                    <td class="text-start">{{ this.$func_global.mapTrainingDifficulty(tr.trainingDifficulty) }}</td>
+                    <td class="text-end">{{ tr.caloriesBurned }}</td>
                     <td v-if="!inModal" class="text-end">
                         <button
                             v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER') && this.$store.getters.getProfileId === tr.creatorId"

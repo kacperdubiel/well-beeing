@@ -1,28 +1,30 @@
 <template>
     <div>
-        <div v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')"
-             class="add-exercise row my-2 align-items-center add">
-            <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj etykiete</span>
-            <span class="col-2 float-end button-icon">
-                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-target="#addLabelModal"
-                                   data-bs-toggle="modal"/>
-            </span>
-        </div>
-        <div v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')"
-             class="add-exercise row my-2 align-items-center add">
-            <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj ćwiczenie</span>
-            <span class="col-2 float-end button-icon">
-                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-target="#addExerciseModal"
-                                   data-bs-toggle="modal"/>
-            </span>
-        </div>
-        <div class="row mt-3">
+        <div class="row ms-2 mt-2 align-items-end">
             <div class="col header">
                 Baza ćwiczeń
             </div>
+            <div v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')"
+                 class="add-exercise col mt-2 align-items-center add">
+                <span class="h3 text-end justify-content-end">Dodaj etykiete</span>
+                <span class="loat-end button-icon">
+                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon white-bg-circle  mx-4"
+                                   data-bs-target="#addLabelModal"
+                                   data-bs-toggle="modal"/>
+            </span>
+            </div>
+            <div v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')"
+                 class="add-exercise col mt-2 align-items-center add">
+                <span class="h3  text-end justify-content-end">Dodaj ćwiczenie</span>
+                <span class="float-end align-content-end button-icon">
+                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon white-bg-circle  mx-4"
+                                   data-bs-target="#addExerciseModal"
+                                   data-bs-toggle="modal"/>
+            </span>
+            </div>
         </div>
-        <div class="row justify-content-evenly mt-3">
-            <div class="col-xl-4 col-lg-10 col-sm-10 col-10 align-self-center">
+        <div class="row justify-content-evenly mt-3 align-items-end">
+            <div class="col-xl-4 col-lg-10 col-sm-10 col-10">
                 <input
                     id="search-input"
                     v-model="filters.nameSearch"
@@ -31,38 +33,6 @@
                     type="text"
                     v-on:keyup.enter="getExercisesWithFilters(true)"
                 />
-            </div>
-            <div class="col-xl-1 col-lg-2 col-sm-2 col-2 align-self-center">
-                <span class="float-start button-icon" @click="getExercisesWithFilters(true)">
-                    <font-awesome-icon :icon="['fa', 'search']" class="icon"/>
-                </span>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
-                <p class="m-0 px-1 text-start">Sortowanie</p>
-                <select
-                    v-model="filters.sortBy"
-                    class=" p-2 w-100"
-                    style="border-radius: 5px"
-                    @change="getExercisesWithFilters(true)"
-                >
-                    <option disabled value="">Wybierz sortowanie</option>
-                    <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{
-                            sort.label
-                        }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12  filter-control align-self-center">
-                <p class="m-0 px-1 text-start">Rozmiar strony</p>
-                <select
-                    v-model="userNavigation.pageSize"
-                    class=" p-2 w-100"
-                    style="border-radius: 5px"
-                    @change="getExercisesWithFilters(true)"
-                >
-                    <option disabled value="">Rozmiar strony</option>
-                    <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
-                </select>
             </div>
             <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
                 <p class="m-0 px-1 text-start">Typ ćwiczenia</p>
@@ -79,8 +49,35 @@
                     </option>
                 </select>
             </div>
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12  filter-control align-self-center">
+                <p class="m-0 px-1 text-start">Rozmiar strony</p>
+                <select
+                    v-model="userNavigation.pageSize"
+                    class=" p-2 w-100"
+                    style="border-radius: 5px"
+                    @change="getExercisesWithFilters(true)"
+                >
+                    <option disabled value="">Rozmiar strony</option>
+                    <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
+                </select>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12  filter-control">
+                <p class="m-0 px-1 text-start">Sortowanie</p>
+                <select
+                    v-model="filters.sortBy"
+                    class=" p-2 w-100"
+                    style="border-radius: 5px"
+                    @change="getExercisesWithFilters(true)"
+                >
+                    <option disabled value="">Wybierz sortowanie</option>
+                    <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{
+                            sort.label
+                        }}
+                    </option>
+                </select>
+            </div>
         </div>
-        <div class="row mb-3 px-3 mt-3 mw-100">
+        <div v-if="(filters.lastNameSearch !== '' || filters.typeFilter !== '')" class="row mb-3 px-3 mt-3 mw-100">
             <div class="col-md-12 search-info">
                 <div class="container d-inline-flex px-1 py-1 align-text-center">
                     <span id="search-results" class="align-text-bottom me-2">Nałożone filtry: </span>
@@ -105,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="row my-2 align-items-center justify-content-end d-flex">
+        <div class="row my-2 mt-4 align-items-center justify-content-end d-flex">
             <nav aria-label="..."
                  class="col-xl-8 col-lg-4 col-md-8 col-8 offset-xl-2 offset-lg-2 offset-md-0 offset-0 ">
                 <ul class="pagination justify-content-center my-auto">
@@ -401,5 +398,13 @@ span {
     text-align: left;
     font-size: 36px;
     font-weight: bold;
+}
+
+select {
+    height: 50px;
+}
+
+.white-bg-circle {
+    background: radial-gradient(white 50%, transparent 0%);
 }
 </style>

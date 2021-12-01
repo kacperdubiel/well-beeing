@@ -1,19 +1,21 @@
 <template>
     <div>
-        <div class="add-exercise row my-2 align-items-center">
-            <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj trening</span>
-            <span class="col-2 float-end button-icon">
-                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-toggle="modal"
-                                   href="#addTrainingModal"/>
-            </span>
-        </div>
-        <div class="row mt-3">
-            <div class="col header">
+
+        <div class="row ms-2 mt-2 align-items-end justify-content-between ">
+            <div class="col-4 header">
                 Baza treningów
             </div>
+            <div class="add-exercise col mt-2 align-items-center ">
+                <span class="float-end button-icon ">
+                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon white-bg-circle mx-4"
+                                   data-bs-toggle="modal"
+                                   href="#addTrainingModal"/>
+            </span>
+                <span class="h3 text-end justify-content-end float-end">Dodaj trening</span>
+            </div>
         </div>
-        <div class="row justify-content-evenly mt-3">
-            <div class="col-xl-4 col-lg-10 col-sm-10 col-10 align-self-center">
+        <div class="row justify-content-evenly mt-3 align-items-end">
+            <div class="col-xl-4 col-lg-10 col-sm-10 col-10">
                 <input
                     id="search-input"
                     v-model="filters.nameSearch"
@@ -23,23 +25,17 @@
                     v-on:keyup.enter="getTrainingsWithFilters(true)"
                 />
             </div>
-            <div class="col-xl-1 col-lg-2 col-sm-2 col-2 align-self-center">
-                <span class="float-start button-icon" @click="getTrainingsWithFilters(true)">
-                    <font-awesome-icon :icon="['fa', 'search']" class="icon"/>
-                </span>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
-                <p class="m-0 px-1 text-start">Sortowanie</p>
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+                <p class="m-0 px-1 text-start">Poziom trudności</p>
                 <select
-                    v-model="filters.sortBy"
+                    v-model="filters.difficultyFilter"
                     class=" p-2 w-100"
                     style="border-radius: 5px"
                     @change="getTrainingsWithFilters(true)"
                 >
-                    <option disabled value="">Wybierz sortowanie</option>
-                    <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{
-                            sort.label
-                        }}
+                    <option disabled value="">Poziom</option>
+                    <option v-for="diff in filters.allDifficultyFilters" :key="diff.label" :value="diff.value">
+                        {{ diff.label }}
                     </option>
                 </select>
             </div>
@@ -55,17 +51,18 @@
                     <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
                 </select>
             </div>
-            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
-                <p class="m-0 px-1 text-start">Poziom trudności</p>
+            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+                <p class="m-0 px-1 text-start">Sortowanie</p>
                 <select
-                    v-model="filters.difficultyFilter"
+                    v-model="filters.sortBy"
                     class=" p-2 w-100"
                     style="border-radius: 5px"
                     @change="getTrainingsWithFilters(true)"
                 >
-                    <option disabled value="">Poziom</option>
-                    <option v-for="diff in filters.allDifficultyFilters" :key="diff.label" :value="diff.value">
-                        {{ diff.label }}
+                    <option disabled value="">Wybierz sortowanie</option>
+                    <option v-for="sort in filters.sortByOptions" :key="sort.label" :value="sort.value">{{
+                            sort.label
+                        }}
                     </option>
                 </select>
             </div>
@@ -381,5 +378,13 @@ span {
     text-align: left;
     font-size: 36px;
     font-weight: bold;
+}
+
+select {
+    height: 50px;
+}
+
+.white-bg-circle {
+    background: radial-gradient(white 50%, transparent 0%);
 }
 </style>
