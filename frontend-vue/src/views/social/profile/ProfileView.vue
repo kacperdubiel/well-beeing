@@ -29,13 +29,15 @@
         </div>
 
         <div class="row mx-4 py-2" v-if="!isPostView && !isProfileMine && (myOpinion === null || myOpinion.deleted === true) ">
-            <new-opinion v-if="profile"/>
+            <new-opinion v-if="profile" @add:opinion="getMyOpinionToSpecialist(); getProfile(); getOpinions(0, false);"/>
         </div>
-        <div class="row mx-4 py-2" v-else-if="!isPostView && !isProfileMine && myOpinion !== null || myOpinion.deleted === false">
-            <opinion :opinion-source="myOpinion"/>
+        <div class="row mx-4 py-2" v-else-if="!isPostView && !isProfileMine && myOpinion !== null && myOpinion.deleted === false">
+            <h4 class="text-start">Twoja opinia:</h4>
+            <opinion :opinion-source="myOpinion" @delete:opinion="getMyOpinionToSpecialist(); getOpinions();"/>
         </div>
 
-        <div class="row mx-4 py-2" v-if="!isPostView">
+        <div class="row mx-4 py-2" v-if="!isPostView && opinions.length > 0">
+            <h4 class="text-start">Opinie innych użytkowników:</h4>
             <opinions-list v-if="opinions" :opinions-source="opinions" id="opinions"/>
         </div>
 

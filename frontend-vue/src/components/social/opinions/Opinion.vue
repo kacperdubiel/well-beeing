@@ -22,7 +22,7 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="more">
                             <li><a class="dropdown-item" @click="handleEdit(this.opinionSource)" data-bs-toggle="modal" data-bs-target="#postEditModal">Edytuj</a></li>
-                            <li><a class="dropdown-item" @click="deletePost(this.opinionSource.opinionId)">Usuń</a></li>
+                            <li><a class="dropdown-item" @click="deleteOpinion(this.opinionSource.opinionId)">Usuń</a></li>
                         </ul>
                     </div>
                 </div>
@@ -61,13 +61,23 @@ export default {
                 this.$router.push({ name: 'MyProfileView'})
             else
                 this.$router.push({ name: 'ProfileView', params: {profileId: id} })
+        },
+        deleteOpinion(opinionId) {
+            const url = `${this.apiURL}opinion/${opinionId}/delete`
+            const token = this.$store.getters.getToken;
+            this.axios.patch(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                this.$emit('delete:opinion')
+            }).catch(error => {
+                console.log(error.response.status)
+            });
         }
     },
     mounted() {
         this.downloadProfilePicture()
     },
     computed: {
-        isPostMine() {
+        isOpinionMine() {
             return this.opinionSource.giver.id === this.$store.getters.getProfileId
         }
     }

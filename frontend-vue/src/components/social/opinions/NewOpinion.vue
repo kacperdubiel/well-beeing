@@ -33,15 +33,16 @@
                     >
                     </textarea>
                 </div>
+                <div class="row text-start mb-3 px-2" v-if="errorOpinion">
+                    <div class="col">
+                        <p class="has-error m-0">
+                            Proszę wybrać ocenę!
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row text-start mb-3 px-2" v-if="errorOpinion">
-            <div class="col">
-                <p class="has-error m-0">
-                    Proszę wybrać ocenę!
-                </p>
-            </div>
-        </div>
+
         <div class="row justify-content-end px-4 pb-3">
             <div class="col-12 col-md-5 align-self-end text-end">
                 <button class="btn-panel-social-outline px-5" @click="addOpinion">
@@ -96,6 +97,7 @@ export default {
                 this.successOpinion = true
                 this.submittingOpinion = false
                 document.getElementById('opinion-content').style.height = '80px'
+                this.$emit('add:opinion')
             }).catch(error => {
                 console.log(error.response)
             });
