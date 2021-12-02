@@ -51,6 +51,13 @@ public class OpinionController {
         return new ResponseEntity<>(pageOpinions, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/opinions/{userId}/my")
+    public ResponseEntity<?> getMyOpinionToSpecialist(@PathVariable UUID userId, Principal principal) throws NotFoundException, ForbiddenException {
+        Profile specialistProfile = profileService.getProfileById(userId);
+        Opinion myOpinion = opinionService.getMyOpinionToSpecialist(specialistProfile, principal.getName());
+        return new ResponseEntity<>(myOpinion, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/opinion/{profileId}")
     public ResponseEntity<?> addOpinion(@PathVariable UUID profileId, @RequestBody @NonNull Opinion opinion, Principal principal) throws ForbiddenException, NotFoundException {
         Profile receiver = profileService.getProfileById(profileId);

@@ -12,6 +12,7 @@ import java.util.Map;
 public interface OpinionService {
     Page<Opinion> getSpecialistOpinions(Profile receiver, Pageable pageable);
     Opinion getOpinion(long opinionId);
+    Opinion getMyOpinionToSpecialist(Profile specialist, String myName) throws ForbiddenException;
 
     Opinion addOpinion(String creatorName, Profile receiver, Opinion opinion) throws ForbiddenException;
     Opinion partialUpdateOpinion(long opinionId, Map<String, Object> fields, String updaterName) throws NotFoundException, ForbiddenException;

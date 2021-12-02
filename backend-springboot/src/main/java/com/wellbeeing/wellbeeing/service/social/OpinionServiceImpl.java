@@ -43,6 +43,19 @@ public class OpinionServiceImpl implements OpinionService {
     }
 
     @Override
+    public Opinion getMyOpinionToSpecialist(Profile specialist, String myName) throws ForbiddenException {
+        User user = userDAO.findUserByEmail(myName).orElse(null);
+        if (user == null)
+            throw new UsernameNotFoundException("User: " + myName + " not found");
+
+        if (specialist.getDoctorProfile() == null && specialist.getDieticianProfile() == null && specialist.getTrainerProfile() == null)
+            throw new ForbiddenException("This user is not a specialist!");
+
+        return opinionDAO.findByGiverAndReceiver(user.getProfile(), specialist).orElse(null);
+
+    }
+
+    @Override
     public Opinion addOpinion(String creatorName, Profile receiver, Opinion opinion) throws ForbiddenException {
         User user = userDAO.findUserByEmail(creatorName).orElse(null);
         if (user == null)
