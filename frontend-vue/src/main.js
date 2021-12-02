@@ -102,8 +102,10 @@ library.add(faCheck)
 //profile
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 import { faCertificate } from '@fortawesome/free-solid-svg-icons'
+import { faStar } from '@fortawesome/free-solid-svg-icons'
 library.add(faEllipsisH)
 library.add(faCertificate)
+library.add(faStar)
 
 //telemedic
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'

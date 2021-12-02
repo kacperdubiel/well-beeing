@@ -11,7 +11,7 @@
                 <h5 class="m-0" @click="redirectToProfile(this.profileSource.id)">
                     {{this.profileSource.firstName}} {{this.profileSource.lastName}}
                 </h5>
-                <button class="btn-white ms-auto mx-1">
+                <button class="btn-white ms-auto mx-1" @click="getConversation(this.profileSource.id)" v-if="!isProfileMine">
                     <font-awesome-icon :icon="['fa', 'comments']" size="1x"/>
                 </button>
             </div>
@@ -48,11 +48,56 @@ export default {
                 this.$router.push({ name: 'MyProfileView'})
             else
                 this.$router.push({ name: 'ProfileView', params: {profileId: id} })
-        }
+        },
+        getConversation(profileId) {
+            let modalToClose = document.getElementById('likes-modal-close')
+
+            const url = `${this.apiURL}conversations/profile/${profileId}/type/WITH_USER`
+            const token = this.$store.getters.getToken;
+            this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then(response => {
+                this.openConversation(response.data.id);
+                if(modalToClose)
+                    modalToClose.click();
+            })
+                .catch(e => {
+                    console.log(e);
+                    this.addConversation(profileId);
+                    if(modalToClose)
+                        modalToClose.click();
+                })
+        },
+        addConversation(otherUserId) {
+            const url = `${this.apiURL}conversations`
+            const token = this.$store.getters.getToken;
+
+            const data = {
+                "connectionType": "WITH_USER",
+                "firstProfile": {
+                    "id": this.userId,
+                },
+                "secondProfile": {
+                    "id": otherUserId,
+                },
+            }
+            this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.openConversation(response.data.id);
+            }).catch(error => {
+                console.log(error)
+            });
+
+        },
+        openConversation(conversationId) {
+            this.$router.push({ name: 'UserUserConversationView', params: { conversationId: conversationId } });
+        },
     },
     mounted() {
         this.downloadProfilePicture()
     },
+    computed: {
+        isProfileMine() {
+            return this.profileSource.id === this.$store.getters.getProfileId
+        }
+    }
 }
 </script>
 
