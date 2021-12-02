@@ -24,12 +24,15 @@
             <posts-list v-if="posts" :posts-source="posts" id="posts"/>
         </div>
 
-        <div class="row mx-4 py-2" v-if="!isPostView && profile && opinions.length > 0">
+        <div class="row mx-4 py-2" v-if="!isPostView && profile && (opinions.length > 0 || myOpinion.deleted === false)">
             <opinion-average :average="profile.opinionsAverage" :opinions-number="opinionNavigation.totalElements"/>
         </div>
 
-        <div class="row mx-4 py-2" v-if="!isPostView && !isProfileMine">
+        <div class="row mx-4 py-2" v-if="!isPostView && !isProfileMine && (myOpinion === null || myOpinion.deleted === true) ">
             <new-opinion v-if="profile"/>
+        </div>
+        <div class="row mx-4 py-2" v-else-if="!isPostView && !isProfileMine && myOpinion !== null || myOpinion.deleted === false">
+            <opinion :opinion-source="myOpinion"/>
         </div>
 
         <div class="row mx-4 py-2" v-if="!isPostView">
@@ -46,6 +49,7 @@ import PostsList from "@/components/social/posts/PostsList";
 import OpinionsList from "@/components/social/opinions/OpinionsList";
 import NewOpinion from "@/components/social/opinions/NewOpinion";
 import OpinionAverage from "@/components/social/opinions/OpinionAverage";
+import Opinion from "@/components/social/opinions/Opinion";
 export default {
     name: "ProfileView",
     components: {
@@ -54,13 +58,15 @@ export default {
         PostsList,
         OpinionsList,
         NewOpinion,
-        OpinionAverage
+        OpinionAverage,
+        Opinion
     },
     data () {
         return {
             profile: null,
             posts: [],
             opinions: [],
+            myOpinion: null,
             postNavigation: {
                 nextPage: 0,
                 pageSize: 5,
@@ -174,11 +180,12 @@ export default {
 
             return this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response.data)
+                let newOpinions = response.data['content'].filter(op => op.giver.id !== this.$store.getters.getProfileId)
                 this.opinionNavigation.totalElements = response.data['totalElements']
                 if(!this.opinionNavigation.last && isScroll)
-                    this.opinions = this.opinions.concat(response.data['content'])
+                    this.opinions = this.opinions.concat(newOpinions)
                 else if (!isScroll) {
-                    this.opinions = response.data['content']
+                    this.opinions = newOpinions
                     this.opinionNavigation.nextPage = 0
                 }
 
@@ -191,6 +198,17 @@ export default {
                 }
                 return 'sth'
             })
+        },
+        getMyOpinionToSpecialist() {
+            if (this.$route.params.profileId && this.$route.params.profileId !== this.$store.getters.getProfileId) {
+                const url = `${this.apiURL}opinions/${this.$route.params.profileId}/my`
+                const token = this.$store.getters.getToken;
+
+                return this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                    if (response.data !== "")
+                        this.myOpinion = response.data
+                })
+            }
         },
         scroll () {
             window.onscroll = () => {
@@ -233,6 +251,7 @@ export default {
         this.getProfile()
         this.getPosts(this.postNavigation.nextPage, false, 0)
         this.getOpinions(this.postNavigation.nextPage, false)
+        this.getMyOpinionToSpecialist()
     },
     mounted () {
         this.scroll()
