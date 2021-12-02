@@ -9,7 +9,9 @@
 
             <div class="d-flex flex-column align-self-center w-100">
                 <div class="text-start d-flex align-items-baseline ms-3">
-                    <h5>{{this.opinionSource.giver.firstName}} {{this.opinionSource.giver.lastName}}</h5>
+                    <h5 @click="redirectToProfile(this.opinionSource.giver.id)">
+                        {{this.opinionSource.giver.firstName}} {{this.opinionSource.giver.lastName}}
+                    </h5>
                     <h5 class="ms-2">|
                         <font-awesome-icon :icon="['fa', 'star']" id="star"/>
                         {{this.opinionSource.rating}}</h5>
@@ -54,6 +56,12 @@ export default {
             const token = this.$store.getters.getToken;
             this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
+        redirectToProfile(id) {
+            if(id === this.$store.getters.getProfileId)
+                this.$router.push({ name: 'MyProfileView'})
+            else
+                this.$router.push({ name: 'ProfileView', params: {profileId: id} })
+        }
     },
     mounted() {
         this.downloadProfilePicture()
@@ -90,5 +98,9 @@ h6 {
 
 #star {
     color: var(--DARK-YELLOW);
+}
+
+h5:hover {
+    text-decoration: underline;
 }
 </style>
