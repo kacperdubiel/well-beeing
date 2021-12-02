@@ -67,7 +67,6 @@ export default {
             opinion: {
                 opinionContent: "",
                 rating: 0
-
             },
             profilePictureSrc: "",
             submittingOpinion: false,

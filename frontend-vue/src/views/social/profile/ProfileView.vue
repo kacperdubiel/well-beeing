@@ -24,6 +24,7 @@
             <posts-list v-if="posts" :posts-source="posts" id="posts"/>
         </div>
 
+        
         <div class="row mx-4 py-2" v-if="!isPostView && profile && (opinions.length > 0 || myOpinion.deleted === false)">
             <opinion-average :average="profile.opinionsAverage" :opinions-number="opinionNavigation.totalElements"/>
         </div>
@@ -33,7 +34,7 @@
         </div>
         <div class="row mx-4 py-2" v-else-if="!isPostView && !isProfileMine && myOpinion !== null && myOpinion.deleted === false">
             <h4 class="text-start">Twoja opinia:</h4>
-            <opinion :opinion-source="myOpinion" @delete:opinion="getMyOpinionToSpecialist(); getOpinions();"/>
+            <opinion :opinion-source="myOpinion" @delete:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();" @update:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();"/>
         </div>
 
         <div class="row mx-4 py-2" v-if="!isPostView && opinions.length > 0">

@@ -167,7 +167,7 @@ public class Profile {
 
     @PostLoad
     private void countOpinionAverage(){
-        this.opinionsAverage = BigDecimal.valueOf(this.profileReceivedOpinions.stream().mapToInt(Opinion::getRating).average().orElse(0))
+        this.opinionsAverage = BigDecimal.valueOf(this.profileReceivedOpinions.stream().filter(o -> !o.isDeleted()).mapToInt(Opinion::getRating).average().orElse(0))
                 .setScale(2, RoundingMode.HALF_UP)
                 .doubleValue();
 
