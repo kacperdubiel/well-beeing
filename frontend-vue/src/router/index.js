@@ -68,6 +68,7 @@ import FollowView from "@/views/social/follow/FollowView";
 import MyFollowingsView from "@/views/social/follow/MyFollowingsView";
 import MyFollowersView from "@/views/social/follow/MyFollowersView";
 import SportDataImportsViewAdmin from "@/views/social/admin/SportDataImportsViewAdmin";
+import SportStatsView from "@/views/sport/SportStatsView";
 
 const routes = [
     {
@@ -309,6 +310,11 @@ const routes = [
                 path: 'user-trainers/search',
                 name: 'SearchTrainersView',
                 component: SearchTrainersView
+            },
+            {
+                path: 'stats',
+                name: 'SportStatsView',
+                component: SportStatsView
             },
             {
                 path: 'conversations',

@@ -324,7 +324,15 @@ public class SportReportServiceImpl implements SportReportService {
         int userOverallLongestTrainingStreak = longestTrainingStreak.size();
 
         Map<String, Object> favouriteTrainingMap = findFavouriteTraining(userReports);
-
+        int favouriteTrainingCount;
+        Training favouriteTraining;
+        if (favouriteTrainingMap.size() > 0) {
+            favouriteTraining = (Training) favouriteTrainingMap.get("favouriteTraining");
+            favouriteTrainingCount = (Integer) favouriteTrainingMap.get("trainingCount");
+        } else {
+            favouriteTrainingCount = 0;
+            favouriteTraining = null;
+        }
         ProfileStatisticsResponse response = ProfileStatisticsResponse
                 .builder()
                 .from(from)
@@ -342,8 +350,8 @@ public class SportReportServiceImpl implements SportReportService {
                 .userTrainingMinutesBetterThanPercent(userTrainingMinutesBetterThanPercent)
                 .userOverallLongestTrainingStreak(userOverallLongestTrainingStreak)
                 .userOverallLongestTrainingStreakDates(longestTrainingStreak)
-                .userFavouriteTraining((Training) favouriteTrainingMap.get("favouriteTraining"))
-                .userFavouriteTrainingCount((Integer) favouriteTrainingMap.get("trainingCount"))
+                .userFavouriteTraining(favouriteTraining)
+                .userFavouriteTrainingCount(favouriteTrainingCount)
                 .build();
         return response;
     }
@@ -357,6 +365,8 @@ public class SportReportServiceImpl implements SportReportService {
                 map.forEach((k, v) -> trainingCountMap.merge(k, v, Long::sum));
             }
         }
+        if (trainingCountMap.size() == 0)
+            return new HashMap<>();
         Training favouriteTraining = (Training) Collections.max(trainingCountMap.entrySet(), Map.Entry.comparingByValue()).getKey();
         Map<String, Object> result = new HashMap<>();
         result.put("favouriteTraining", favouriteTraining);
