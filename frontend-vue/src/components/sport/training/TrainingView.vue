@@ -1,19 +1,21 @@
 <template>
     <div>
-        <div class="add-exercise row my-2 align-items-center">
-            <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj trening</span>
-            <span class="col-2 float-end button-icon">
-                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-toggle="modal"
-                                   href="#addTrainingModal"/>
-            </span>
-        </div>
-        <div class="row mt-3">
-            <div class="col header">
+
+        <div class="row ms-2 mt-2 align-items-end justify-content-between ">
+            <div class="col-4 header">
                 Baza treningów
             </div>
+            <div class="add-exercise col mt-2 align-items-center ">
+                <span class="float-end button-icon ">
+                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon white-bg-circle mx-4"
+                                   data-bs-toggle="modal"
+                                   href="#addTrainingModal"/>
+            </span>
+                <span class="h3 text-end justify-content-end float-end">Dodaj trening</span>
+            </div>
         </div>
-        <div class="row justify-content-evenly mt-3">
-            <div class="col-xl-4 col-lg-10 col-sm-10 col-10 align-self-center">
+        <div class="row justify-content-evenly mt-3 align-items-end">
+            <div class="col-xl-4 col-lg-10 col-sm-10 col-10">
                 <input
                     id="search-input"
                     v-model="filters.nameSearch"
@@ -23,10 +25,31 @@
                     v-on:keyup.enter="getTrainingsWithFilters(true)"
                 />
             </div>
-            <div class="col-xl-1 col-lg-2 col-sm-2 col-2 align-self-center">
-                <span class="float-start button-icon" @click="getTrainingsWithFilters(true)">
-                    <font-awesome-icon :icon="['fa', 'search']" class="icon"/>
-                </span>
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
+                <p class="m-0 px-1 text-start">Poziom trudności</p>
+                <select
+                    v-model="filters.difficultyFilter"
+                    class=" p-2 w-100"
+                    style="border-radius: 5px"
+                    @change="getTrainingsWithFilters(true)"
+                >
+                    <option disabled value="">Poziom</option>
+                    <option v-for="diff in filters.allDifficultyFilters" :key="diff.label" :value="diff.value">
+                        {{ diff.label }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 filter-control align-self-center">
+                <p class="m-0 px-1 text-start">Rozmiar strony</p>
+                <select
+                    v-model="userNavigation.pageSize"
+                    class=" p-2 w-100"
+                    style="border-radius: 5px"
+                    @change="getTrainingsWithFilters(true)"
+                >
+                    <option disabled value="">Rozmiar strony</option>
+                    <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
+                </select>
             </div>
             <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
                 <p class="m-0 px-1 text-start">Sortowanie</p>
@@ -43,34 +66,9 @@
                     </option>
                 </select>
             </div>
-            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 filter-control align-self-center">
-                <p class="m-0 px-1 text-start">Rozmiar strony</p>
-                <select
-                    v-model="userNavigation.pageSize"
-                    class=" p-2 w-100"
-                    style="border-radius: 5px"
-                    @change="getTrainingsWithFilters(true)"
-                >
-                    <option disabled value="">Rozmiar strony</option>
-                    <option v-for="size in userNavigation.pageSizeOptions" :key="size" :value="size">{{ size }}</option>
-                </select>
-            </div>
-            <div class="col-xl-2 col-lg-4 col-md-4 col-sm-12 align-self-center filter-control">
-                <p class="m-0 px-1 text-start">Poziom trudności</p>
-                <select
-                    v-model="filters.difficultyFilter"
-                    class=" p-2 w-100"
-                    style="border-radius: 5px"
-                    @change="getTrainingsWithFilters(true)"
-                >
-                    <option disabled value="">Poziom</option>
-                    <option v-for="diff in filters.allDifficultyFilters" :key="diff.label" :value="diff.value">
-                        {{ diff.label }}
-                    </option>
-                </select>
-            </div>
         </div>
-        <div class="row mb-3 px-3 mt-3 mw-100">
+        <div v-if="(filters.lastNameSearch !== '' || filters.difficultyFilter !== '')"
+             class="row mb-3 px-3 mt-3 mw-100">
             <div class="col-md-12 search-info">
                 <div class="container d-inline-flex px-1 py-1 align-text-center">
                     <span id="search-results" class="align-text-bottom me-2">Nałożone filtry: </span>
@@ -235,7 +233,6 @@ export default {
         async getTrainingsWithFilters(resetGoToPage) {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             if (resetGoToPage)
                 this.userNavigation.goToPage = 0
             const myParams = {
@@ -270,10 +267,6 @@ export default {
                     if (i === this.navigation.currentPage + 2)
                         break;
                 }
-                // this.userNavigation.pagesNavbar.push(this.navigation.currentPage+1)
-                // if (this.navigation.currentPage === 0)
-                //     this.userNavigation.pagesNavbar.push(this.navigation.currentPage+2)
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -281,10 +274,8 @@ export default {
         async getExercises() {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.exercises = response.data['content']
-                console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -292,10 +283,8 @@ export default {
         async getTrainings() {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.trainings = response.data['content']
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -303,10 +292,8 @@ export default {
         async getLabels() {
             const url = `${this.apiURL}sport/exercise/labels`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.labels = response.data
-                console.log(this.labels)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -322,7 +309,6 @@ export default {
             });
         },
         setListView(value) {
-            console.log(value)
             this.isListView = value
         }
     },
@@ -393,5 +379,13 @@ span {
     text-align: left;
     font-size: 36px;
     font-weight: bold;
+}
+
+select {
+    height: 50px;
+}
+
+.white-bg-circle {
+    background: radial-gradient(white 50%, transparent 0%);
 }
 </style>

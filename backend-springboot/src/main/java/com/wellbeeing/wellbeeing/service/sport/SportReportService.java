@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.service.sport;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
+import com.wellbeeing.wellbeeing.domain.message.sport.ProfileStatisticsResponse;
 import com.wellbeeing.wellbeeing.domain.sport.ReportExercise;
 import com.wellbeeing.wellbeeing.domain.sport.ReportTraining;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
@@ -45,4 +46,6 @@ public interface SportReportService {
     SportReport deleteTrainingsFromReportByReportId(UUID reportId, List<Long> trainings) throws NotFoundException;
 
     SportReport addTrainingsToReportByReportId(List<ReportTraining> trainings, UUID reportId) throws NotFoundException;
+
+    ProfileStatisticsResponse getStatisticsByProfileIdAndDate(UUID userId, LocalDate from, LocalDate to) throws NotFoundException, ConflictException;
 }

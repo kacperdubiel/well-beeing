@@ -171,9 +171,6 @@ export default {
             })
                 .then(data => {
                     this.reportsToShow = data.data;
-                    console.log("TU")
-                    console.log(data)
-                    console.log(this.reportsToShow)
                 }).catch(e => alert(e))
         },
         clearError() {

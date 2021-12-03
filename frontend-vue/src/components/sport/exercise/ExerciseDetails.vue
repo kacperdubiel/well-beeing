@@ -245,7 +245,6 @@ export default {
             this.editedExercise = Object.assign({}, this.exercise)
             this.values = this.editedExercise.labels.map(l => l.sportLabelId)
 
-            console.log('Array Labels ', this.values)
             this.edit = true
         },
         async submitEditExercise() {
@@ -256,10 +255,8 @@ export default {
         async getExercise() {
             const url = `${this.apiURL}sport/exercise/${this.$store.getters.getExerciseId}`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.exercise = response.data
-                console.log(this.exercises)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -267,10 +264,8 @@ export default {
         async getLabels() {
             const url = `${this.apiURL}sport/exercise/labels`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.labelsSource = response.data
-                console.log(this.labelsSource)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -296,7 +291,6 @@ export default {
             if (this.exercise.pathToVideoInstruction) {
                 const url = `${this.apiURL}sport/exercise/export/${this.exercise.exerciseId}`
                 const token = this.$store.getters.getToken;
-                console.log('post')
                 this.$func_global.downloadMp4Video(url, token).then(result => this.instructionVideoSrc = result)
             }
         }

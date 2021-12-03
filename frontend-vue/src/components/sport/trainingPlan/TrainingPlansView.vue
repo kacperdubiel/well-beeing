@@ -275,7 +275,6 @@ export default {
                     let isDown = false;
                     let startX;
                     let scrollLeft;
-                    console.log(sliders)
                     if (sliders != null) {
                         sliders.forEach(slider => {
                             slider.addEventListener('mousedown', (e) => {
@@ -323,14 +322,13 @@ export default {
             });
         },
         async updateBeginningDate() {
-            console.log('New week: ', this.newPlan.beginningDate)
+            // console.log('New week: ', this.newPlan.beginningDate)
             const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
             let data = {
                 beginningDate: moment(new Date(this.newPlan.beginningDate)).format('DD.MM.YYYY')
             }
             await this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response.data)
                 console.log('New post week: ', response.data)
                 // Dodać zmianę dat w pozycjach treningowych
                 this.refreshNewPlan()
@@ -416,7 +414,6 @@ export default {
         async refreshNewPlan() {
             const url = `${this.apiURL}sport/training-plan/${this.newPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
-            console.log('here')
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 // this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
@@ -436,7 +433,7 @@ export default {
             } else {
                 this.newCreatedPlan = scratchPlan
                 this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate();
-                console.log('Data scratch', this.newCreatedPlan.beginningDate)
+                // console.log('Data scratch', this.newCreatedPlan.beginningDate)
                 this.newPlan.week = moment(new Date(this.newCreatedPlan.beginningDate)).toDate().getWeek()
                 this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.newPlan.trainingPlanId = this.newCreatedPlan.trainingPlanId
@@ -445,10 +442,9 @@ export default {
         async createNewPlan() {
             const url = `${this.apiURL}sport/training-plan`
             const token = this.$store.getters.getToken;
-            console.log('here')
             const data = {
                 trainingPlan: {
-                    beginningDate: this.newPlan.beginningDate,
+                    beginningDate: moment().clone().isoWeekday(1).startOf('day').toDate(),
                     // details: this.newPlan.details,
                     details: "Nowy plan"
                 }
@@ -456,6 +452,8 @@ export default {
             await this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
+                this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate()
+                this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
             }).catch(error => {
                 console.log(error.response);
             });
@@ -470,7 +468,6 @@ export default {
             let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
             let plan = this.myTrainingPlans.find(plan => plan.planStatus === 'STARTED' && new Date(new Date(plan.beginningDate) - tzoffset).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
-            console.log('Active', plan)
             if (plan != null) {
                 this.activePlan = plan;
                 this.calculateProgress()
@@ -500,7 +497,6 @@ export default {
         async getTrainingsWithFilters(resetGoToPage) {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             if (resetGoToPage)
                 this.userNavigation.goToPage = 0
             const myParams = {
@@ -535,10 +531,6 @@ export default {
                     if (i === this.navigation.currentPage + 2)
                         break;
                 }
-                // this.userNavigation.pagesNavbar.push(this.navigation.currentPage+1)
-                // if (this.navigation.currentPage === 0)
-                //     this.userNavigation.pagesNavbar.push(this.navigation.currentPage+2)
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -546,10 +538,8 @@ export default {
         async getTrainings() {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.trainings = response.data['content']
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });

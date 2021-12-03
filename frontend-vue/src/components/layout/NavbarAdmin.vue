@@ -1,19 +1,27 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler" data-bs-target="#navbarSupportedContent"
+                    data-bs-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div id="navbarSupportedContent" class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link" :to="{name: 'RoleRequestsViewAdmin'}">Prośby o nadanie roli</router-link>
+                        <router-link :to="{name: 'RoleRequestsViewAdmin'}" class="nav-link">Prośby o nadanie roli
+                        </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" :to="{name: 'DataImportsViewAdmin'}">Import danych</router-link>
+                        <router-link :to="{name: 'DataImportsViewAdmin'}" class="nav-link">Import danych</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" :to="{name: 'LoginAdminView'}">Inne</router-link>
+                        <router-link :to="{name: 'SportDataImportsViewAdmin'}" class="nav-link">Import danych
+                            sportowych
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link :to="{name: 'LoginAdminView'}" class="nav-link">Inne</router-link>
                     </li>
 
                 </ul>

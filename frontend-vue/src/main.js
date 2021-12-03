@@ -28,7 +28,7 @@ import {
     faTh,
     faThermometerFull,
     faTrash,
-    faUserSecret
+    faUserSecret, faVideo
 } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faUserFriends } from '@fortawesome/free-solid-svg-icons'
@@ -86,6 +86,7 @@ library.add(faChevronRight)
 library.add(faFastBackward)
 library.add(faFastForward)
 library.add(faPaperPlane)
+library.add(faVideo)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'

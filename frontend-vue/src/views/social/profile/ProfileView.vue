@@ -1,11 +1,11 @@
 <template>
     <div class="section-bg">
         <div class="row mx-4 pt-4 pb-2">
-            <profile-info :profile-source="profile" v-if="profile"/>
+            <profile-info v-if="profile" :profile-source="profile"/>
         </div>
 
-        <div class="social-tabs pt-4 px-4" v-if="profile && isSpecialist">
-            <ul class="nav nav-tabs" >
+        <div v-if="profile && isSpecialist" class="social-tabs pt-4 px-4">
+            <ul class="nav nav-tabs">
                 <li class="nav-item" @click="changeView">
                     <span class="nav-link" v-bind:class="{ active: isPostView }">Posty</span>
                 </li>
@@ -16,30 +16,36 @@
             </ul>
         </div>
 
-        <div class="row mx-4 py-2" v-if="isPostView && isProfileMine">
+        <div v-if="isPostView && isProfileMine" class="row mx-4 py-2">
             <new-post v-if="profile" @refresh:posts="getPosts"/>
         </div>
 
-        <div class="row mx-4 py-2" v-if="isPostView">
-            <posts-list v-if="posts" :posts-source="posts" id="posts"/>
+        <div v-if="isPostView" class="row mx-4 py-2">
+            <posts-list v-if="posts" id="posts" :posts-source="posts"/>
         </div>
 
-        
-        <div class="row mx-4 py-2" v-if="!isPostView && profile && (opinions.length > 0 || myOpinion.deleted === false)">
+
+        <div v-if="!isPostView && profile && (opinions.length > 0 || (myOpinion != null && myOpinion.deleted === false))"
+             class="row mx-4 py-2">
             <opinion-average :average="profile.opinionsAverage" :opinions-number="opinionNavigation.totalElements"/>
         </div>
 
-        <div class="row mx-4 py-2" v-if="!isPostView && !isProfileMine && (myOpinion === null || myOpinion.deleted === true) ">
-            <new-opinion v-if="profile" @add:opinion="getMyOpinionToSpecialist(); getProfile(); getOpinions(0, false);"/>
+        <div v-if="!isPostView && !isProfileMine && (myOpinion === null || myOpinion.deleted === true) "
+             class="row mx-4 py-2">
+            <new-opinion v-if="profile"
+                         @add:opinion="getMyOpinionToSpecialist(); getProfile(); getOpinions(0, false);"/>
         </div>
-        <div class="row mx-4 py-2" v-else-if="!isPostView && !isProfileMine && myOpinion !== null && myOpinion.deleted === false">
+        <div v-else-if="!isPostView && !isProfileMine && myOpinion !== null && myOpinion.deleted === false"
+             class="row mx-4 py-2">
             <h4 class="text-start">Twoja opinia:</h4>
-            <opinion :opinion-source="myOpinion" @delete:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();" @update:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();"/>
+            <opinion :opinion-source="myOpinion"
+                     @delete:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();"
+                     @update:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();"/>
         </div>
 
-        <div class="row mx-4 py-2" v-if="!isPostView && opinions.length > 0">
+        <div v-if="!isPostView && opinions.length > 0" class="row mx-4 py-2">
             <h4 class="text-start">Opinie innych użytkowników:</h4>
-            <opinions-list v-if="opinions" :opinions-source="opinions" id="opinions"/>
+            <opinions-list v-if="opinions" id="opinions" :opinions-source="opinions"/>
         </div>
 
     </div>
@@ -53,6 +59,7 @@ import OpinionsList from "@/components/social/opinions/OpinionsList";
 import NewOpinion from "@/components/social/opinions/NewOpinion";
 import OpinionAverage from "@/components/social/opinions/OpinionAverage";
 import Opinion from "@/components/social/opinions/Opinion";
+
 export default {
     name: "ProfileView",
     components: {
@@ -64,7 +71,7 @@ export default {
         OpinionAverage,
         Opinion
     },
-    data () {
+    data() {
         return {
             profile: null,
             posts: [],
@@ -94,7 +101,7 @@ export default {
     methods: {
         getProfile() {
             let url;
-            if(!this.$route.params.profileId) {
+            if (!this.$route.params.profileId) {
                 url = `${this.apiURL}profile/my`
             } else {
                 url = `${this.apiURL}profile/${this.$route.params.profileId}`
@@ -120,12 +127,12 @@ export default {
             this.postNavigation.nextPage = 0
             this.loadedPost = false
             const pages = this.postNavigation.currentPage
-            this.getPosts(this.postNavigation.nextPage, false, pages+1)
+            this.getPosts(this.postNavigation.nextPage, false, pages + 1)
             this.loadedPost = true
         },
         getPosts(page, isScroll, pagesAfterDelete) {
             let url;
-            if(!this.$route.params.profileId) {
+            if (!this.$route.params.profileId) {
                 url = `${this.apiURL}posts/my`
             } else {
                 url = `${this.apiURL}posts/${this.$route.params.profileId}`
@@ -136,16 +143,19 @@ export default {
                 page: page,
                 size: this.postNavigation.pageSize
             }
-            if(this.postNavigation.last && isScroll)
+            if (this.postNavigation.last && isScroll)
                 return
 
             console.log('PreGET: ', page, isScroll)
 
-            return this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+            return this.axios.get(url, {
+                params: myParams,
+                headers: {Authorization: `Bearer ${token}`}
+            }).then((response) => {
                 console.log('POST GET: ', page, isScroll)
 
                 console.log(response.data)
-                if(!this.postNavigation.last && isScroll)
+                if (!this.postNavigation.last && isScroll)
                     this.posts = this.posts.concat(response.data['content'])
                 else if (!isScroll) {
                     this.posts = response.data['content']
@@ -157,17 +167,17 @@ export default {
                 this.postNavigation.currentPage = response.data['number']
 
                 if (!this.postNavigation.last) {
-                    this.postNavigation.nextPage = this.postNavigation.currentPage+1
+                    this.postNavigation.nextPage = this.postNavigation.currentPage + 1
                 }
-                if(pagesAfterDelete>1) {
-                    this.getPosts(this.postNavigation.nextPage, true, pagesAfterDelete-1)
+                if (pagesAfterDelete > 1) {
+                    this.getPosts(this.postNavigation.nextPage, true, pagesAfterDelete - 1)
                 }
                 return 'sth'
             })
         },
         getOpinions(page, isScroll) {
             let url;
-            if(!this.$route.params.profileId) {
+            if (!this.$route.params.profileId) {
                 url = `${this.apiURL}opinions/${this.$store.getters.getProfileId}`
             } else {
                 url = `${this.apiURL}opinions/${this.$route.params.profileId}`
@@ -178,14 +188,17 @@ export default {
                 page: page,
                 size: this.opinionNavigation.pageSize
             }
-            if(this.opinionNavigation.last && isScroll)
+            if (this.opinionNavigation.last && isScroll)
                 return
 
-            return this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+            return this.axios.get(url, {
+                params: myParams,
+                headers: {Authorization: `Bearer ${token}`}
+            }).then((response) => {
                 console.log(response.data)
                 let newOpinions = response.data['content'].filter(op => op.giver.id !== this.$store.getters.getProfileId)
                 this.opinionNavigation.totalElements = response.data['totalElements']
-                if(!this.opinionNavigation.last && isScroll)
+                if (!this.opinionNavigation.last && isScroll)
                     this.opinions = this.opinions.concat(newOpinions)
                 else if (!isScroll) {
                     this.opinions = newOpinions
@@ -197,7 +210,7 @@ export default {
                 this.opinionNavigation.currentPage = response.data['number']
 
                 if (!this.opinionNavigation.last) {
-                    this.opinionNavigation.nextPage = this.opinionNavigation.currentPage+1
+                    this.opinionNavigation.nextPage = this.opinionNavigation.currentPage + 1
                 }
                 return 'sth'
             })
@@ -213,7 +226,7 @@ export default {
                 })
             }
         },
-        scroll () {
+        scroll() {
             window.onscroll = () => {
                 let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) +
                     window.innerHeight + 5 >= document.documentElement.offsetHeight
@@ -223,14 +236,14 @@ export default {
                 if (bottomOfWindow) {
                     if (!this.postNavigation.last && this.scrolledToBottomPost && this.loadedPost && this.isPostView) {
                         this.scrolledToBottomPost = false
-                            this.getPosts(this.postNavigation.nextPage, true, 0).then((response) => {
-                                setTimeout(() => {
-                                    this.scrolledToBottomPost = true
-                                }, 300)
-                                console.log(response)
-                            }, error => {
-                                console.log(error)
-                            })
+                        this.getPosts(this.postNavigation.nextPage, true, 0).then((response) => {
+                            setTimeout(() => {
+                                this.scrolledToBottomPost = true
+                            }, 300)
+                            console.log(response)
+                        }, error => {
+                            console.log(error)
+                        })
                     } else if (!this.opinionNavigation.last && this.scrolledToBottomOpinion && this.loadedOpinion && !this.isPostView) {
                         this.scrolledToBottomOpinion = false
                         this.getOpinions(this.postNavigation.nextPage, true).then((response) => {
@@ -256,7 +269,7 @@ export default {
         this.getOpinions(this.postNavigation.nextPage, false)
         this.getMyOpinionToSpecialist()
     },
-    mounted () {
+    mounted() {
         this.scroll()
     },
     computed: {

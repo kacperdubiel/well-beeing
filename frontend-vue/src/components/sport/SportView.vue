@@ -3,41 +3,44 @@
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <router-link :to="{ name: 'SportView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainingPlansView' }">Plany treningowe</span>
+                    <span :class="{ active: this.$route.name === 'TrainingPlansView' }" class="nav-link">Plany treningowe</span>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'ExerciseView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'ExerciseView' }">Ćwiczenia</span>
+                    <span :class="{ active: this.$route.name === 'ExerciseView' }" class="nav-link">Ćwiczenia</span>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'TrainingView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'TrainingView' }">Treningi</span>
+                    <span :class="{ active: this.$route.name === 'TrainingView' }" class="nav-link">Treningi</span>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'SportReportsComponent' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'SportReportsComponent' }">Raporty</span>
+                    <span :class="{ active: this.$route.name === 'SportReportsComponent' }"
+                          class="nav-link">Raporty</span>
                 </router-link>
             </li>
             <li class="nav-item item-link">
                 <router-link :to="{ name: 'UserTrainersView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'UserTrainersView' }">Trenerzy</span>
+                    <span :class="{ active: this.$route.name === 'UserTrainersView' }" class="nav-link">Trenerzy</span>
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{ name: 'SportView' }">
-                    <span class="nav-link">Analizy</span>
+                <router-link :to="{ name: 'SportStatsView' }">
+                    <span :class="{ active: this.$route.name === 'SportStatsView' }" class="nav-link">Analizy</span>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'UserTrainerConversationsView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'UserTrainerConversationsView' || this.$route.name === 'UserTrainerConversationView' }">Wiadomości</span>
+                    <span
+                        :class="{ active: this.$route.name === 'UserTrainerConversationsView' || this.$route.name === 'UserTrainerConversationView' }"
+                        class="nav-link">Wiadomości</span>
                 </router-link>
             </li>
         </ul>
-<!--        <p>{{this.$route.name}}</p>-->
+        <!--        <p>{{this.$route.name}}</p>-->
         <router-view></router-view>
     </div>
 </template>
@@ -46,16 +49,14 @@
 export default {
     name: "SportComponent",
     components: {},
-    data () {
+    data() {
         return {
-            week:43,
-            year:2021,
-            days:['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
+            week: 43,
+            year: 2021,
+            days: ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela']
         }
     },
-    methods: {
-
-    },
+    methods: {},
 }
 
 </script>
@@ -65,7 +66,7 @@ export default {
     border-bottom-color: var(--SPORT);
 }
 
-.sport-tabs{
+.sport-tabs {
     margin-bottom: 20px;
 }
 
