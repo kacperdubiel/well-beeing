@@ -153,13 +153,13 @@ export default {
 
             exercisesToSelect: [],
             actualSelectedExercise: '',
-            actualSelectedExerciseTime: 3600,
+            actualSelectedExerciseTime: 30,
             actualSelectedExerciseMeasure: 'min',
             actualSelectedExerciseExercisingTime: '12:00',
 
             trainingsToSelect: [],
             actualSelectedTraining: '',
-            actualSelectedTrainingTime: 3600,
+            actualSelectedTrainingTime: 30,
             actualSelectedTrainingMeasure: 'min',
             actualSelectedTrainingExercisingTime: '12:00',
         }

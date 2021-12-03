@@ -67,7 +67,8 @@
                 </select>
             </div>
         </div>
-        <div class="row mb-3 px-3 mt-3 mw-100">
+        <div v-if="(filters.lastNameSearch !== '' || filters.difficultyFilter !== '')"
+             class="row mb-3 px-3 mt-3 mw-100">
             <div class="col-md-12 search-info">
                 <div class="container d-inline-flex px-1 py-1 align-text-center">
                     <span id="search-results" class="align-text-bottom me-2">Nałożone filtry: </span>

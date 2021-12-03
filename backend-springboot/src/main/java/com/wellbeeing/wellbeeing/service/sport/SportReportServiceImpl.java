@@ -219,7 +219,7 @@ public class SportReportServiceImpl implements SportReportService {
             throw new NotFoundException("Profile with id: " + profileId + " not found");
         double weight = profile.getProfileCard().getWeight();
         List<SportReport> reports = profile.getSportReports().stream().filter
-                        (r -> r.getReportDate().getMonth().getValue() == month && r.getReportDate().getYear() == year)
+                        (r -> r.getReportDate().getMonth().getValue() == month && r.getReportDate().getYear() == year).sorted(Comparator.comparing(SportReport::getReportDate))
                 .collect(Collectors.toList());
         reports.forEach(re -> {
             re.getExerciseList().forEach(ex -> {

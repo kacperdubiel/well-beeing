@@ -220,8 +220,11 @@
 
         <TrainingDetails :training="infoTraining"/>
         <AddTrainingToPlanModal v-if="newCreatedPlan != null && newCreatedPlan.trainingPlanId != null"
+                                :filters="filters" :navigation="navigation"
                                 :training-plan-id="newCreatedPlan.trainingPlanId"
-                                :trainings-source="trainings" class="popup-focus"
+                                :trainings-source="trainings" :user-navigation="userNavigation"
+                                class="popup-focus" @goto:page="goToPage" @remove:filters="removeFilters"
+                                @get:trainings="getTrainingsWithFilters"
                                 @new:plan="refreshNewPlan"/>
     </div>
 </template>
@@ -229,7 +232,6 @@
 <script>
 // import MeasuresComponent from "@/components/telemedic/MeasuresComponent";
 
-import AilmentRowComponent from "@/components/diet/profile-card/AilmentRowComponent";
 import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import moment from "moment";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
@@ -263,7 +265,41 @@ export default {
             },
             trainings: [],
             createManual: false,
-            savedNewPlan: false
+            savedNewPlan: false,
+            filters: {
+                allDifficultyFilters: [
+                    {label: '-', value: ''},
+                    {label: 'Łatwe', value: 'EASY'},
+                    {label: 'Średnie', value: 'MEDIUM'},
+                    {label: 'Trudne', value: 'HARD'}
+                ],
+                difficultyFilter: '',
+                nameSearch: '',
+                lastNameSearch: '',
+                exerciseNameSearch: '',
+                lastExerciseNameSearch: '',
+                sortByOptions: [
+                    {label: 'Nazwa A-Z', value: 'name,asc'},
+                    {label: 'Nazwa Z-A', value: 'name,desc'},
+                    {label: 'Trudność rosnąco', value: 'trainingDifficulty,asc'},
+                    {label: 'Trudność malejąco', value: 'trainingDifficulty,desc'}],
+                sortBy: 'name,asc'
+            },
+            navigation: {
+                totalElements: 0,
+                totalPages: 0,
+                isFirst: false,
+                isLast: false,
+                isEmpty: false,
+                currentPage: 0,
+                pageSize: 20
+            },
+            userNavigation: {
+                goToPage: 0,
+                pageSizeOptions: [1, 3, 5, 10, 20, 50],
+                pageSize: 20,
+                pagesNavbar: []
+            }
         }
     },
     props: {
@@ -466,6 +502,73 @@ export default {
                 console.log(error.response);
             });
         },
+        goToPage(pageNo) {
+            this.userNavigation.goToPage = pageNo;
+            this.getTrainingsWithFilters(false)
+        },
+        async removeFilters(filter) {
+            switch (filter) {
+                case 'name':
+                    this.filters.nameSearch = '';
+                    this.filters.lastNameSearch = '';
+                    break;
+                case 'difficulty':
+                    this.filters.difficultyFilter = '';
+                    break;
+                default: {
+                    this.filters.nameSearch = '';
+                    this.filters.difficultyFilter = '';
+                    this.filters.lastNameSearch = '';
+                    this.filters.exerciseNameSearch = ''
+                    this.filters.lastExerciseNameSearch = '';
+                    break;
+                }
+            }
+
+            await this.getTrainingsWithFilters(true)
+        },
+        async getTrainingsWithFilters(resetGoToPage) {
+            const url = `${this.apiURL}sport/training`
+            const token = this.$store.getters.getToken;
+            if (resetGoToPage)
+                this.userNavigation.goToPage = 0
+            const myParams = {
+                page: this.userNavigation.goToPage,
+                size: this.userNavigation.pageSize,
+                sort: this.filters.sortBy,
+                name: this.filters.nameSearch,
+                exerciseName: this.filters.exerciseNameSearch,
+                trainingDifficulty: this.filters.difficultyFilter
+            }
+            await this.axios.get(url, {
+                params: myParams,
+                headers: {Authorization: `Bearer ${token}`}
+            }).then((response) => {
+                this.trainings = response.data['content']
+                this.navigation.totalElements = response.data['totalElements']
+                this.navigation.totalPages = response.data['totalPages']
+                this.navigation.isFirst = response.data['first']
+                this.navigation.isLast = response.data['last']
+                this.navigation.isEmpty = response.data['empty']
+                this.navigation.currentPage = response.data['number']
+                this.navigation.pageSize = response.data['size']
+                this.filters.lastNameSearch = myParams.name
+                this.filters.lastExerciseNameSearch = myParams.exerciseName
+                this.userNavigation.pagesNavbar = []
+                if (this.navigation.currentPage > 1)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage - 2)
+                if (this.navigation.currentPage !== 0)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage - 1)
+                for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
+                    this.userNavigation.pagesNavbar.push(i)
+                    if (i === this.navigation.currentPage + 2)
+                        break;
+                }
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+
 
     },
     created() {

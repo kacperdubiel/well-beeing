@@ -5,8 +5,11 @@
                 <p class="form-label text-start">Tydzień</p>
                 <select
                     v-model="generatorData.beginningDate"
+                    :class="{ 'has-error': submittingGenerate && invalidGenerateWeek}"
                     class=" p-2 float-start"
                     style="border-radius: 5px"
+                    @focus="clearStatusGenerator"
+                    @keypress="clearStatusGenerator"
                 >
                     <option disabled value="">Wybierz tydzień</option>
                     <option v-for="range in this.$func_global.generateNWeeks(7)" :key="range.weekNo"
@@ -18,8 +21,11 @@
                 <p class="form-label text-start">Sposób realizacji celu (aktywność : dieta)</p>
                 <select
                     v-model="generatorData.strategy"
+                    :class="{ 'has-error': submittingGenerate && invalidWorkoutStrategy}"
                     class=" p-2 float-start"
                     style="border-radius: 5px"
+                    @focus="clearStatusGenerator"
+                    @keypress="clearStatusGenerator"
                 >
                     <option disabled value="">Wybierz proporcje</option>
                     <option v-for="strategy in strategies" :key="strategy"
@@ -29,12 +35,16 @@
             </div>
         </div>
         <div class="row">
-            <p class="form-label text-start mt-3">Wprowadź liczbę treningów każdego dnia</p>
+            <p :class="{ 'has-error': submittingGenerate && invalidGenerateTrainingsPerDay}"
+               class="form-label text-start mt-3">Wprowadź liczbę treningów
+                każdego dnia</p>
             <div v-for="day in this.$func_global.days" :key="day" class="col-1">
                 {{ day.short }}
                 <input v-model="generatorData.trainingsPerDay[day.num !== 0 ? day.num-1 : 6]"
                        class="trainings-number w-100 p-0" max="5"
-                       min="0" type="number"/>
+                       min="0" type="number"
+                       @focus="clearStatusGenerator"
+                       @keypress="clearStatusGenerator"/>
             </div>
         </div>
         <div class="row m-3 mx-4 header">
@@ -57,8 +67,10 @@
                 <p class="form-label text-start">Cel aktywności</p>
                 <select
                     v-model="activityGoal.goalType"
+                    :class="{ 'has-error': submittingAddActivityGoal && invalidGoalType}"
                     class=" p-2 float-start"
                     style="border-radius: 5px"
+                    @focus="clearStatus"
                 >
                     <option disabled value="">Wybierz typ celu aktywności</option>
                     <option v-for="goal in activityGoalTypes" :key="goal"
@@ -70,9 +82,12 @@
                 <p class="form-label text-start">Wartość numeryczna</p>
                 <input
                     v-model="activityGoal.numericValue"
+                    :class="{ 'has-error': submittingAddActivityGoal && invalidNumericValue}"
                     class=" p-2 float-start"
                     style="border-radius: 5px"
                     type="number"
+                    @focus="clearStatus"
+                    @keypress="clearStatus"
                 >
             </div>
             <div class="col-auto ">
@@ -88,10 +103,18 @@
                 <DatePicker
                     id="input-target"
                     v-model="activityGoal.goalTargetDate"
+                    :class="{ 'has-error': submittingAddActivityGoal && invalidGoalTargetDate}"
                     class="d-block"
+                    @focus="clearStatus"
+                    @keypress="clearStatus"
                 />
             </div>
-            <div class="row">
+            <div v-if="submittingAddActivityGoal && activityGoalError"
+                 class="alert alert-danger m-3 alert-dismissible fade show"
+                 role="alert">
+                Wypełnij poprawnie wszystkie pola!
+            </div>
+            <div class="row mt-4">
                 <div class="col-12">
                     <button class="btn-panel-sport " type="button" @click="createActivityGoal">Dodaj cel</button>
                 </div>
@@ -106,12 +129,16 @@
                 <activity-goal-node v-if="activeActivityGoal" :activity-goal-source="activeActivityGoal"/>
             </div>
         </div>
+        <div v-if="submittingGenerate && generateError"
+             class="alert alert-danger m-3 alert-dismissible fade show"
+             role="alert">
+            Wypełnij poprawnie wszystkie pola!
+        </div>
         <div v-if="activeActivityGoal" class="row mt-3 mx-4">
             <div class="col-12">
                 <button class="btn-panel-sport " type="button" @click="generatePlan">Wygeneruj</button>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -138,28 +165,54 @@ export default {
             activityGoal: {
                 goalType: null,
                 numericValue: 0,
-                textValue: 0,
+                textValue: '',
                 goalTargetDate: null
             },
             myActivityGoals: [],
-            activeActivityGoal: null
+            activeActivityGoal: null,
+            submittingAddActivityGoal: false,
+            activityGoalError: false,
+            submittingGenerate: false,
+            generateSuccess: false,
+            generateError: false
         }
     },
     methods: {
+        clearStatus() {
+            this.activityGoalError = false
+            this.submittingAddActivityGoal = false
+        },
+        clearStatusGenerator() {
+            this.generateSuccess = false
+            this.submittingGenerate = false
+            this.generateError = false
+        },
         async generatePlan() {
+            this.submittingGenerate = true
             const url = `${this.apiURL}sport/training-plan/generate-plan`
             const token = this.$store.getters.getToken;
+            if (this.invalidGenerateWeek || this.invalidGenerateTrainingsPerDay || this.invalidWorkoutStrategy) {
+                this.generateError = true
+                return
+            }
             this.generatorData.activityGoalId = this.activeActivityGoal.activityGoalId
             const data = this.generatorData
             await this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.$emit('set:generated', response.data)
+                this.generateSuccess = true
             }).catch(error => {
                 console.log(error.response);
             });
+            this.submittingGenerate = false
         },
         async createActivityGoal() {
+            this.submittingAddActivityGoal = true
             const url = `${this.apiURL}sport/activity-goal`
             const token = this.$store.getters.getToken;
+            if (this.invalidGoalType || this.invalidGoalTargetDate || this.invalidNumericValue) {
+                this.activityGoalError = true
+                return
+            }
             const data = {
                 goalType: this.activityGoal.goalType,
                 numericValue: this.activityGoal.numericValue,
@@ -173,6 +226,7 @@ export default {
             }).catch(error => {
                 console.log(error.response);
             });
+            this.submittingAddActivityGoal = false
         },
         setActionGoalModeCreate(create) {
             this.createNewActivityGoal = create;
@@ -198,6 +252,26 @@ export default {
         },
         setGoalAsActive(activityGoal) {
             this.activeActivityGoal = activityGoal
+        }
+    },
+    computed: {
+        invalidGoalType() {
+            return this.activityGoal.goalType == null
+        },
+        invalidNumericValue() {
+            return this.activityGoal.numericValue == null || this.activityGoal.numericValue === '' || this.activityGoal.numericValue < 0
+        },
+        invalidGoalTargetDate() {
+            return this.activityGoal.goalTargetDate == null || this.activityGoal.goalTargetDate === ''
+        },
+        invalidGenerateWeek() {
+            return this.generatorData.beginningDate == null
+        },
+        invalidGenerateTrainingsPerDay() {
+            return this.generatorData.trainingsPerDay.includes('') || this.generatorData.trainingsPerDay.filter(t => t < 0).length > 0
+        },
+        invalidWorkoutStrategy() {
+            return this.generatorData.strategy == null
         }
     }
 }
@@ -236,4 +310,7 @@ export default {
     margin: 0;
 }
 
+input.has-error, textarea.has-error, select.has-error, .d-block.has-error, div.has-error {
+    border: 3px solid var(--INTENSE-PINK);
+}
 </style>
