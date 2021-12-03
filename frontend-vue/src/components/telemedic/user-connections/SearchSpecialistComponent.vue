@@ -92,18 +92,19 @@
             <div class="row">
                 <div class="col-12">
                     <table :class="{'specialists-table':connectionType === 'WITH_DOCTOR',
-                                                'trainers-table':connectionType === 'WITH_TRAINER',
-                                                'dieticians-table':connectionType === 'WITH_DIETICIAN'}" class="table specialists-table">
+                                    'trainers-table':connectionType === 'WITH_TRAINER',
+                                    'dieticians-table':connectionType === 'WITH_DIETICIAN'}" class="table specialists-table">
                         <thead>
                         <tr>
                             <th scope="col">Imię i nazwisko</th>
+                            <th scope="col">Ocena</th>
                             <th v-if="connectionType === 'WITH_DOCTOR'" class="w-15" scope="col">Specjalizacja</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="specialist in specialists" v-bind:key="specialist.id">
-                            <td>
+                            <td @click="$emit('open-profile', specialist.id)" class="clickable">
                                 <user-avatar-component :height="40"
                                                        :profileId="specialist.id" :width="40"
                                 />
@@ -111,7 +112,10 @@
                                         {{ specialist.firstName }} {{ specialist.lastName }}
                                     </span>
                             </td>
-
+                            <td>
+                                <font-awesome-icon :icon="['fa', 'star']" id="star"/>
+                                {{ specialist.opinionsAverage }}/5
+                            </td>
                             <td v-if="connectionType === 'WITH_DOCTOR'">
                                 <ul v-for="spec in specialist.doctorProfile.specializations"
                                     v-bind:key="spec.id"
@@ -373,6 +377,10 @@ export default {
     list-style: none outside none;
     padding: 0;
     margin: 0;
+}
+
+#star {
+    color: var(--DARK-YELLOW);
 }
 
 </style>
