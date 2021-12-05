@@ -8,7 +8,7 @@
             <div class="d-flex flex-column align-self-center ms-1 w-100">
                 <div class="row ms-1 mb-1">
                     <div class="text-start d-flex align-items-baseline">
-                        <span class="fw-bolder me-1">{{this.commentSource.commenter.firstName}} {{this.commentSource.commenter.lastName}}</span>
+                        <span class="fw-bolder me-1 clickable">{{this.commentSource.commenter.firstName}} {{this.commentSource.commenter.lastName}}</span>
                         <span id="time">∙ {{this.$func_global.formatDateDateFromNow(this.commentSource.addedDate)}}</span>
                     </div>
                 </div>

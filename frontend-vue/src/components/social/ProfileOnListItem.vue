@@ -8,7 +8,7 @@
 
         <div class="d-flex flex-column align-self-center w-100">
             <div class="text-start d-flex ms-3">
-                <h5 class="m-0" @click="redirectToProfile(this.profileSource.id)">
+                <h5 class="m-0 clickable" @click="redirectToProfile(this.profileSource.id)">
                     {{this.profileSource.firstName}} {{this.profileSource.lastName}}
                 </h5>
                 <button class="btn-white ms-auto mx-1" @click="getConversation(this.profileSource.id)" v-if="!isProfileMine">

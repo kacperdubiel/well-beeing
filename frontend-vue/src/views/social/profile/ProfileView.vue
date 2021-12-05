@@ -6,11 +6,11 @@
 
         <div v-if="profile && isSpecialist" class="social-tabs pt-4 px-4">
             <ul class="nav nav-tabs">
-                <li class="nav-item" @click="changeView">
+                <li class="nav-item clickable" @click="changeView('posts')">
                     <span class="nav-link" v-bind:class="{ active: isPostView }">Posty</span>
                 </li>
 
-                <li class="nav-item" @click="changeView">
+                <li class="nav-item clickable" @click="changeView('opinions')">
                     <span class="nav-link" v-bind:class="{ active: !isPostView}">Opinie</span>
                 </li>
             </ul>
@@ -258,8 +258,11 @@ export default {
                 }
             }
         },
-        changeView() {
-            this.isPostView = !this.isPostView
+        changeView(type) {
+            if (type === 'posts')
+                this.isPostView = true
+            else if (type === 'opinions')
+                this.isPostView = false
         }
     },
 

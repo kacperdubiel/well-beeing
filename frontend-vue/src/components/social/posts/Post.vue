@@ -10,7 +10,7 @@
             <div class="d-flex flex-column align-self-center w-100">
 
                 <div class="text-start d-flex align-items-baseline ms-3">
-                    <h5>{{this.postSource.creator.firstName}} {{this.postSource.creator.lastName}}</h5>
+                    <h5 class="clickable">{{this.postSource.creator.firstName}} {{this.postSource.creator.lastName}}</h5>
                     <h6 class="ms-3">| {{this.$func_global.formatDateDateFromNow(this.postSource.addedDate)}}</h6>
                     <div class="dropdown ms-auto dropstart" v-if="isPostMine">
                         <button class="no-bg" type="button" id="more" data-bs-toggle="dropdown" aria-expanded="false">

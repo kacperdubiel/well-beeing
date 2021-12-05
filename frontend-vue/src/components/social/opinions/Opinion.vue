@@ -9,7 +9,7 @@
 
             <div class="d-flex flex-column align-self-center w-100" v-if="!isEdit">
                 <div class="text-start d-flex align-items-baseline ms-3">
-                    <h5 @click="redirectToProfile(this.opinionSource.giver.id)">
+                    <h5 class="clickable" @click="redirectToProfile(this.opinionSource.giver.id)">
                         {{this.opinionSource.giver.firstName}} {{this.opinionSource.giver.lastName}}
                     </h5>
                     <h5 class="ms-2">|
