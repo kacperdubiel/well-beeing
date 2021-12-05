@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.Role;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
@@ -50,7 +51,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
     }
 
     @Override
-    public Exercise addExercise(Exercise exercise, String creatorName) throws HttpMessageNotReadableException, NotFoundException {
+    public Exercise addExercise(Exercise exercise, String creatorName) throws HttpMessageNotReadableException, NotFoundException, ConflictException {
         User user = userDAO.findUserByEmail(creatorName).orElse(null);
         if (user != null)
             exercise.setCreator(user.getProfile());
@@ -64,7 +65,7 @@ public class ExerciseServiceImpl implements ExerciseService, SportLabelService {
             exerciseDAO.save(exercise);
             return exercise;
         }
-        throw new NotFoundException(String.format("Exercise with name=%s already exists", exercise.getName()));
+        throw new ConflictException(String.format("Exercise with name=%s already exists", exercise.getName()));
     }
 
     @Override

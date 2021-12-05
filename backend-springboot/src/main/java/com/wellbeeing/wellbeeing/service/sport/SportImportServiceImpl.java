@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
@@ -114,7 +115,7 @@ public class SportImportServiceImpl implements SportImportService {
         addExercises.forEach(ex -> {
             try {
                 exerciseService.addExercise(ex, "None");
-            } catch (NotFoundException e) {
+            } catch (NotFoundException | ConflictException e) {
                 e.printStackTrace();
             }
         });
