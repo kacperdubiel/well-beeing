@@ -1,8 +1,8 @@
 <template>
     <div class="d-flex flex-row w-100">
         <div class="d-flex flex-column text-start">
-            <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="50" width="50">
-            <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="50" width="50">
+            <img v-if="profilePictureSrc.length" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="50" width="50">
+            <img v-else src="@/assets/no-photo.png" alt="Profile picture" class="profile-picture" height="50" width="50">
 
         </div>
 

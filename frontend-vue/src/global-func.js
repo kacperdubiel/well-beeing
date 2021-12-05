@@ -105,11 +105,13 @@ export const func_global = {
             headers: {Authorization: `Bearer ${token}`, 'Accept': 'image/png'},
             responseType: 'arraybuffer'
         }).then((response) => {
-            data = new Blob([response.data], {type: 'image/png'})
-            return urlCreator.createObjectURL(data);
-        }).catch(error => {
-            console.log(error.response.status)
-            return data
+            if (response.status !== 204) {
+                data = new Blob([response.data], {type: 'image/png'})
+                return urlCreator.createObjectURL(data);
+            }
+            else return  ''
+        }).catch(() => {
+            return ''
         });
     },
     async downloadMp4Video(url, token) {
