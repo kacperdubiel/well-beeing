@@ -3,7 +3,7 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-if="profilePictureSrc !== ''" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
 
@@ -219,7 +219,6 @@ export default {
                 this.commentsNavigation.isFirst = response.data['first']
                 this.commentsNavigation.currentPage = response.data['number']
                 this.commentsNavigation.totalElements = response.data['totalElements']
-                console.log(response.data)
 
                 if(this.commentsNavigation.isFirst)
                     this.comments = response.data['content']

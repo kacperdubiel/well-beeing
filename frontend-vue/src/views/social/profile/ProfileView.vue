@@ -197,6 +197,7 @@ export default {
             }).then((response) => {
                 console.log(response.data)
                 let newOpinions = response.data['content'].filter(op => op.giver.id !== this.$store.getters.getProfileId)
+                console.log('opiniossss', newOpinions)
                 this.opinionNavigation.totalElements = response.data['totalElements']
                 if (!this.opinionNavigation.last && isScroll)
                     this.opinions = this.opinions.concat(newOpinions)
@@ -268,9 +269,13 @@ export default {
 
     created() {
         this.getProfile()
-        this.getPosts(this.postNavigation.nextPage, false, 0)
-        this.getOpinions(this.postNavigation.nextPage, false)
-        this.getMyOpinionToSpecialist()
+        this.getPosts(this.postNavigation.nextPage, false, 0).then(() => {
+            if (this.isSpecialist) {
+                console.log('jestem spacjelista')
+                this.getOpinions(this.opinionNavigation.nextPage, false)
+                this.getMyOpinionToSpecialist()
+            }
+        })
     },
     mounted() {
         this.scroll()

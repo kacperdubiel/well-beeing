@@ -2,7 +2,7 @@
     <div class="section-2-bg">
         <div class="d-flex flex-row px-4 py-3">
             <div class="d-flex flex-column text-start">
-                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-if="profilePictureSrc !== ''" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
             <div class="d-flex flex-column align-self-center w-100 ms-3">

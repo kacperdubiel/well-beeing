@@ -3,8 +3,8 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img v-if="!this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="120" width="120">
-                <img v-else-if="this.$route.params.profileId && this.profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="120" width="120">
+                <img v-if="!this.$route.params.profileId && this.profilePictureSrc !== ''" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="120" width="120">
+                <img v-else-if="this.$route.params.profileId && this.profilePictureSrc !== ''" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="120" width="120">
 
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="120" width="120">
             </div>

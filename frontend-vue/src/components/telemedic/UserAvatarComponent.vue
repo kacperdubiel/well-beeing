@@ -1,6 +1,6 @@
 <template>
     <span class="position-relative">
-        <img v-if="this.profileImage" :src="this.profileImage" alt="Profile picture" class="profile-picture"
+        <img v-if="this.profileImage !== ''" :src="this.profileImage" alt="Profile picture" class="profile-picture"
              :height="height" :width="width">
         <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture"
              :height="height" :width="width">
