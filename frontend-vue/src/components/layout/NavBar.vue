@@ -25,7 +25,7 @@
                     <font-awesome-icon :icon="['far', 'bell']" size="2x" class="navbar-icon"/>
                 </div>
                 <div class="col-2 d-flex align-self-center align-items-center">
-                    <img v-if="this.$store.getters.getProfileImageSrc" :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  class="profile-picture" height="40" width="40">
+                    <img v-if="this.$store.getters.getProfileImageSrc !== ''" :src="this.$store.getters.getProfileImageSrc" alt="Profile picture"  class="profile-picture" height="40" width="40">
                     <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="40" width="40">
                     <div class="dropdown">
                         <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-profile" data-bs-toggle="dropdown" aria-expanded="false">

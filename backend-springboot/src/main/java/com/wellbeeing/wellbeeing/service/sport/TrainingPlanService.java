@@ -54,5 +54,5 @@ public interface TrainingPlanService {
 
     TrainingPlan partialUpdateTrainingPlan(TrainingPlan trainingPlan);
 
-    long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate) throws NotFoundException, IllegalArgumentException;
+    long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate, String generatorStrategy) throws NotFoundException, IllegalArgumentException;
 }

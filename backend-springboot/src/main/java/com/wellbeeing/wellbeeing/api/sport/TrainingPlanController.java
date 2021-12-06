@@ -142,7 +142,8 @@ public class TrainingPlanController {
                 request.getActivityGoalId(),
                 requestingUser.getProfile(),
                 request.getStrategy(),
-                request.getBeginningDate()
+                request.getBeginningDate(),
+                "random"
         );
 
         return new ResponseEntity<>(id, HttpStatus.OK);

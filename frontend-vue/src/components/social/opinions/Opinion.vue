@@ -3,13 +3,13 @@
         <div class="d-flex flex-row px-4 py-3">
 
             <div class="d-flex flex-column text-start">
-                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-if="profilePictureSrc !== ''" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
 
             <div class="d-flex flex-column align-self-center w-100" v-if="!isEdit">
                 <div class="text-start d-flex align-items-baseline ms-3">
-                    <h5 @click="redirectToProfile(this.opinionSource.giver.id)">
+                    <h5 class="clickable" @click="redirectToProfile(this.opinionSource.giver.id)">
                         {{this.opinionSource.giver.firstName}} {{this.opinionSource.giver.lastName}}
                     </h5>
                     <h5 class="ms-2">|
@@ -44,7 +44,7 @@
                 </div>
                 <div class="grow-wrap">
                     <textarea
-                        class="textarea js-autoresize w-100"
+                        class="textarea w-100"
                         id="opinion-content"
                         v-model="editedOpinion.opinionContent"
                         placeholder="Jeśli chcesz, uzasadnij swoją ocenę..."
@@ -201,10 +201,10 @@ textarea {
 
 }
 
-.grow-wrap > textarea {
-    resize: none;
-    overflow: hidden;
-}
+/*.grow-wrap > textarea {*/
+/*    resize: none;*/
+/*    overflow: hidden;*/
+/*}*/
 
 textarea::placeholder {
     color: white;

@@ -1,13 +1,12 @@
 package com.wellbeeing.wellbeeing.domain.diet.nutrition_plan;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.diet.Diet;
+import com.wellbeeing.wellbeeing.domain.social.Post;
 import lombok.*;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -36,4 +35,8 @@ public class NutritionPlan {
     @OneToOne
     @JoinColumn(name = "diet_id")
     private Diet diet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "originalNutritionPlan", cascade = CascadeType.ALL)
+    private Set<Post> sharingPosts = new HashSet<>();
 }

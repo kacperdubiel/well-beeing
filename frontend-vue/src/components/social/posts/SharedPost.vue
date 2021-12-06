@@ -3,13 +3,13 @@
         <div class="d-flex flex-row px-4 pt-3">
 
             <div class="d-flex flex-column text-start">
-                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="50" width="50">
+                <img v-if="profilePictureSrc !== ''" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="50" width="50">
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="50" width="50">
             </div>
 
             <div class="d-flex flex-column align-self-center w-100">
                 <div class="text-start d-flex align-items-baseline ms-3">
-                    <span id="creator" class="fw-bolder">{{this.postSource.creator.firstName}} {{this.postSource.creator.lastName}}</span>
+                    <span id="creator" class="fw-bolder clickable" @click="redirectToProfile(this.postSource.creator.id)">{{this.postSource.creator.firstName}} {{this.postSource.creator.lastName}}</span>
                     <span id="time" class="ms-3 fw-bolder">| {{this.$func_global.formatDateDateFromNow(this.postSource.addedDate)}}</span>
                 </div>
             </div>
@@ -55,7 +55,13 @@ export default {
                 const token = this.$store.getters.getToken;
                 this.$func_global.downloadPhoto(url, token).then(result => this.postPictureSrc = result)
             }
-        }
+        },
+        redirectToProfile(id) {
+            if(id === this.$store.getters.getProfileId)
+                this.$router.push({ name: 'MyProfileView'})
+            else
+                this.$router.push({ name: 'ProfileView', params: {profileId: id} })
+        },
     },
     mounted() {
         this.downloadProfilePicture()
