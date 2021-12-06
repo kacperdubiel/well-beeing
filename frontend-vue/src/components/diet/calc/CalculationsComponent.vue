@@ -1,10 +1,10 @@
 <template>
 <div class="container-fluid" >
     <div class="calculations-container">
-        <div v-if="this.calculations == ''" class="alert alert-danger alert-dismissible fade show" role="alert">
-                Uzupełnij swoją kartę!
+        <div v-if="this.calculations == '' && this.dataLoaded" class="alert alert-danger alert-dismissible fade show" role="alert">
+                Aby poznać swoje kalkulacje, najpierw uzupełnij kartę dietetyczną!
         </div>
-        <div v-if="this.calculations != ''">
+        <div :hidden="!this.dataLoaded" v-if="this.calculations != ''">
             <hr style="margin-top: 0px;" class="title-line"/>
             <div style="align-items: flex-start; display: flex">
                 <h6 class="title">SUGEROWANE SPOŻYCIE KALORII</h6>
@@ -157,7 +157,6 @@ export default {
     data() {
         return {
             calculations: Object,
-            loaded: false,
             dataLoaded: false,
         }
     },
@@ -203,7 +202,7 @@ export default {
             })
             .then(data => {
                 this.calculations = data.data
-                this.loaded = true
+                this.dataLoaded = true
                 this.updateChart(Math.round(this.calculations.suggestedProteins) * this.$func_global.proteinCalories(),
                                  Math.round(this.calculations.suggestedCarbohydrates) * this.$func_global.carbCalories(),
                                  Math.round(this.calculations.suggestedFats) * this.$func_global.fatCalories())

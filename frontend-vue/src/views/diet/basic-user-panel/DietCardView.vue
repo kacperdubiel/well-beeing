@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-content">
+    <div style="align-self: center; height:100%; align-items: center; display: flex;" class="tab-content">
         <profile-card-component></profile-card-component>
     </div>
 </template>

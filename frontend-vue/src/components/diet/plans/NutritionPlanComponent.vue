@@ -1,6 +1,7 @@
 <template>
     <div class="container-fluid">
-        <div v-if="this.nutritionPlan.id != null && this.dataLoaded" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
+    <div class="container-fluid">
+        <div v-if="this.nutritionPlan.id != null" id="carouselExampleIndicators" class="carousel" data-bs-interval="false">
             <div class="carousel-inner">
                 <div v-for="day in this.weekdays" :key="day" class="carousel-item" v-bind:class="{'active' : day=='MONDAY'}">
                     <div class="row">
@@ -41,10 +42,10 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        <div v-if="this.nutritionPlan.id == null && !this.fromProfile && this.dataLoaded" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div v-if="this.nutritionPlan.id == null && !this.fromProfile && !fromDietician" class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
                 Stwórz swój własny główny plan dietetyczny lub wybierz jeden z aktualnych! 
         </div>
-        <div v-if="this.nutritionPlanId == null && this.fromProfile && this.dataLoaded" class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+        <div v-if="this.nutritionPlanId == null && this.fromProfile" class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
                 Brak głównego planu dietetycznego 
         </div>
         <div v-if="deletePositionError" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -68,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <div id="addPositionModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="addPositionModalLabel" aria-hidden="false">
+        <div style="min-height: 700px;" id="addPositionModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="addPositionModalLabel" aria-hidden="false">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -150,6 +151,7 @@
             </div>
         </div>
     </div>
+    </div>
 </template>
 
 <script>
@@ -183,7 +185,6 @@ export default {
                 this.getSingleNutritionPlan(this.nutritionPlanId)
             else{
                 this.nutritionPlan.id = null
-                this.dataLoaded = true
             }
             this.isForm = false;
         }
@@ -299,8 +300,6 @@ export default {
             .then(response => {
                 console.log(response)
                 this.nutritionPlan = response.data
-                this.dataLoaded = true
-
             })
             .catch(e => {
                 console.log(e);

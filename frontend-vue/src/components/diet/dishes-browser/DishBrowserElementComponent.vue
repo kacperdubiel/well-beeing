@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!fromNutritionPlan" class="row dish-browser-element" @click="changeModalDish" style="align-self: flex-end; display: flex;" data-bs-toggle="modal" data-bs-target="#dishBrowserModal">
+    <div v-if="!fromNutritionPlan" class="row dish-browser-element clickable" @click="changeModalDish" style="align-self: flex-end; display: flex;" data-bs-toggle="modal" data-bs-target="#dishBrowserModal">
         <div style="border-radius: 10px;" class="col-lg-3 p-1 ">
             <img style="border-radius: 10px;" class="p-1 mb-1" :src="this.dishPhotoSrc">
             <!--<p style="align-self: flex-start; display: flex;">{{actualDish.derivedNutritionalValues.derivedCalories}} kcal / porcja</p>-->

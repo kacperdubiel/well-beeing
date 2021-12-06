@@ -369,6 +369,7 @@ export default {
                 console.log(response)
                 this.onNutritionPlansUpdated(response.data)
                 this.dataLoaded = true
+                this.$emit("plans:fetched")
             })
             .catch(e => {
                 console.log(e);
@@ -387,6 +388,7 @@ export default {
                 console.log(response)
                 this.onNutritionPlansUpdated(response.data)
                 this.dataLoaded = true;
+                this.$emit("plans:fetched")
             })
             .catch(e => {
                 console.log(e);

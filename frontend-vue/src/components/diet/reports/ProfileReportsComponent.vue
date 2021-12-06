@@ -36,7 +36,7 @@
                 </tbody>
             </table>
         </div>
-        <div v-if="this.reportsToShow.length == 0 && this.dataLoaded" class="alert alert-danger" role="alert">
+        <div v-if="this.reportsToShow.length == 0 && this.dataLoaded" class="alert alert-danger mt-4" role="alert">
             Brak raportów na ten rok i miesiąc. 
         </div>
         <div id="reportModal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="false">

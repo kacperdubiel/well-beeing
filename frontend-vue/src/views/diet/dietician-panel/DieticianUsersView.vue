@@ -13,8 +13,9 @@ export default {
         UserConnectionsToMeComponent,
     },
     methods: {
-        openProfile(profileId){
-           this.$router.push({ name: 'DieticianUserProfileView', params: { userId: profileId } });
+        openProfile(profileId, state){
+            if(state == true)
+                this.$router.push({ name: 'DieticianUserProfileView', params: { userId: profileId } });
         },
         openConversation(conversationId){
             this.$router.push({ name: 'DieticianUserConversationView', params: { conversationId: conversationId } });

@@ -1,8 +1,13 @@
 <template>
     <div class="tab-content column-view">
-        <nutrition-plan-component :userId="null" @positions:updated="onPositionsUpdated" :nutritionPlanId="this.actualPlanId"/>
-        <user-nutrition-plans-list-component :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="false" @plan:marked="onPlanMarked" @main:found="onMainFound" :dieticianView="false" :suggested="false" @load:plan="changePlan"/>
-        <user-nutrition-plans-list-component :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="this.mainFound" @plan:marked="onPlanMarked" :dieticianView="false" :suggested="true" @load:plan="changePlan"/>
+        <div style="align-self: center;" v-if="!this.dataLoaded" class="spinner-border mt-3" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div :hidden="!this.dataLoaded" class="container-fluid">
+            <nutrition-plan-component :userId="null" @positions:updated="onPositionsUpdated" :nutritionPlanId="this.actualPlanId"/>
+            <user-nutrition-plans-list-component @plans:fetched="plansFetched" :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="false" @plan:marked="onPlanMarked" @main:found="onMainFound" :dieticianView="false" :suggested="false" @load:plan="changePlan"/>
+            <user-nutrition-plans-list-component @plans:fetched="plansFetched" :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="this.mainFound" @plan:marked="onPlanMarked" :dieticianView="false" :suggested="true" @load:plan="changePlan"/>
+        </div>
     </div>
 </template>
 
@@ -16,7 +21,9 @@ export default {
             actualPlanId: '',
             updatedNutritionPlan: {id: null},
             mainFound: false,
-            updateAfterMark: 0
+            updateAfterMark: 0,
+            dataLoaded: false,
+            updatesNumber: 0
         }
     },
     components: {
@@ -35,6 +42,14 @@ export default {
         },
         onPositionsUpdated(nutritionPlan){
             this.updatedNutritionPlan = nutritionPlan
+        },
+        plansFetched(){
+            this.updatesNumber = this.updatesNumber+1
+            console.log(this.updatesNumber)
+            if(this.updatesNumber >= 2){
+                this.dataLoaded = true
+            }
+                
         }
     },
 }

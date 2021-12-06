@@ -114,13 +114,13 @@ button[class^="btn-card-panel-"] {
 .tab-content {
     padding: 5px;
     margin-top: 15px;
-    min-height: 400px;
     border-radius: 5px;
     border-top-color: var(--DIET);
     border-top-width: 5ch;
     align-items: flex-start;
     display: flex;
     width: 100%;
+    height: 100%;
 }
 
 .btn-panel-telemedic {

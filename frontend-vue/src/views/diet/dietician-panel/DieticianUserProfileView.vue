@@ -15,7 +15,7 @@
         <dietician-profile-reports-component :fromDietician="true" class="mt-3" :userId="this.userId" />
         <h4 style="text-align: start;" class="container mt-4">Główny plan dietetyczny</h4>
         <nutrition-plan-component :userId="this.userId" :fromProfile="true" :editOff="true" v-if="userNutritionPlan != null" :nutritionPlanId="userNutritionPlan.id"/>
-        <div style="align-self: center;" v-else class="alert alert-danger mt-3 mx-3" role="alert">
+        <div style="align-self: center; width:100%;" v-else class="alert alert-danger mt-3 mx-4" role="alert">
                 Użytkownik nie ma ustawionego głównego planu. 
         </div>
     </div>
@@ -60,9 +60,8 @@ export default {
                 }
                 })
                 .then(response => {
-                    this.userNutritionPlan = response.data;
-                    console.log("main")
-                    console.log(this.userNutritionPlan)
+                    if(response.data.id != undefined)
+                        this.userNutritionPlan = response.data;
                 })
                 .catch(e => {
                     console.log(e);

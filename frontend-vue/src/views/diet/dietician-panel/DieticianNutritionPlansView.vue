@@ -1,7 +1,12 @@
-<template>
+<template> 
     <div class="tab-content column-view">
-        <nutrition-plan-component @positions:updated="onPositionsUpdated" :fromDietician="true" :nutritionPlanId="this.actualPlanId"/>
-        <user-nutrition-plans-list-component :dieticianView="true" :suggested="false" @load:plan="changePlan"/>
+        <div style="align-self: center;" v-if="!this.dataLoaded" class="spinner-border mt-3" role="status">
+                <span class="sr-only">Loading...</span>
+        </div>
+        <div :hidden="!this.dataLoaded" class="container-fluid">
+            <nutrition-plan-component @positions:updated="onPositionsUpdated" :fromDietician="true" :nutritionPlanId="this.actualPlanId"/>
+            <user-nutrition-plans-list-component @plans:fetched="plansFetched" :dieticianView="true" :suggested="false" @load:plan="changePlan"/>
+        </div>
     </div>
 </template>
 
@@ -26,6 +31,9 @@ export default {
         },
         onPositionsUpdated(nutritionPlan){
             this.updatedNutritionPlan = nutritionPlan
+        },
+        plansFetched(){
+            this.dataLoaded = true        
         }
     },
 }

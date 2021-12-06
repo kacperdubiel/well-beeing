@@ -83,9 +83,9 @@ export default {
     computed: {
         invalidForm(){
             return this.invalidName ||
-                   this.invalidDescription ||
-                   this.invalidAilments ||
-                   this.invalidDiets 
+                   this.invalidDescription //||
+                   //this.invalidAilments ||
+                   //this.invalidDiets 
         },
         invalidName(){
             return this.name === ''
@@ -93,12 +93,12 @@ export default {
         invalidDescription(){
             return this.description === ''
         },
-        invalidAilments(){
-            return this.selectedAilments.length === 0
-        },
-        invalidDiets(){
-            return this.selectedDiets.length === 0
-        }
+        //invalidAilments(){
+          //  return this.selectedAilments.length === 0
+        //},
+        //invalidDiets(){
+         //   return this.selectedDiets.length === 0
+        //}
     },
     watch: {
         modalOpened: function () {
