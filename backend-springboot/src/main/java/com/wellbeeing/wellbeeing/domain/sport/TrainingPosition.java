@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -64,19 +63,33 @@ public class TrainingPosition {
         String dayName = localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
 //        dayOfTheWeek = dayName; // ENGLISH
         switch (dayName) {
-            case "Monday": dayOfTheWeek = "Poniedziałek"; break;
-            case "Tuesday": dayOfTheWeek = "Wtorek"; break;
-            case "Wednesday": dayOfTheWeek = "Środa"; break;
-            case "Thursday": dayOfTheWeek = "Czwartek"; break;
-            case "Friday": dayOfTheWeek = "Piątek"; break;
-            case "Saturday": dayOfTheWeek = "Sobota"; break;
-            case "Sunday": dayOfTheWeek = "Niedziela"; break;
+            case "Monday":
+                dayOfTheWeek = "Poniedziałek";
+                break;
+            case "Tuesday":
+                dayOfTheWeek = "Wtorek";
+                break;
+            case "Wednesday":
+                dayOfTheWeek = "Środa";
+                break;
+            case "Thursday":
+                dayOfTheWeek = "Czwartek";
+                break;
+            case "Friday":
+                dayOfTheWeek = "Piątek";
+                break;
+            case "Saturday":
+                dayOfTheWeek = "Sobota";
+                break;
+            case "Sunday":
+                dayOfTheWeek = "Niedziela";
+                break;
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(training.getName(), trainingPlan.getTrainingPlanId(), trainingDate, trainingStatus);
+        return Objects.hash(trainingPositionId);
     }
 
 }

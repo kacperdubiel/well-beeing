@@ -5,7 +5,8 @@
                 <p>{{ exerciseSource.name }}</p>
             </div>
             <div class="col-4">
-                <button class="btn-white mx-2" data-bs-target="#infoExerciseModal" data-bs-toggle="modal"
+                <button v-if="!inModal" class="btn-white mx-2" data-bs-target="#infoExerciseModal"
+                        data-bs-toggle="modal"
                         @click="openInfoModal(exerciseSource)">
                     <font-awesome-icon :icon="['fa', 'info']"/>
                 </button>
@@ -28,6 +29,7 @@ export default {
     props: {
         exerciseSource: Object,
         mode: String,
+        inModal: Boolean
     },
     methods: {
         openInfoModal(exercise) {

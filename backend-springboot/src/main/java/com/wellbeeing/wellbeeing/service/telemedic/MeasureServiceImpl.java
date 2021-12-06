@@ -14,7 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +47,7 @@ public class MeasureServiceImpl implements MeasureService {
     }
 
     @Override
-    public List<Measure> getMeasuresByProfileAndMeasureDateBetween(Profile profile, Date start, Date end) {
+    public List<Measure> getMeasuresByProfileAndMeasureDateBetween(Profile profile, LocalDateTime start, LocalDateTime end) {
         return measureDAO.findByOwnerAndMeasureDateBetweenOrderByMeasureDate(profile, start, end);
     }
 

@@ -1,131 +1,140 @@
 <template>
     <div id="panel">
 
-            <div class="row w-80 mb-3">
-                <label for="login-mail" class="form-label text-start text-white fw-bolder">Adres e-mail:</label>
-                <input
-                    id="login-mail"
-                    type="email"
-                    placeholder="Adres-email"
-                    v-model="email"
-                    class="login-input"
-                    :class="{ 'has-error': submittingLogin && invalidEmail || wrongLoginData}"
-                    @focus="clearStatus"
-                    @keypress="clearStatus"
-                    @keydown.enter="login"
-                />
-            </div>
-            <div class="row w-80 mb-1">
-                <label for="login-password" class="form-label text-start text-white fw-bolder">Hasło:</label>
-                <input
-                    id="login-password"
-                    type="password"
-                    placeholder="Hasło"
-                    v-model="password"
-                    class="login-input"
-                    :class="{ 'has-error': submittingLogin && invalidPassword || wrongLoginData}"
-                    @focus="clearStatus"
-                    @keypress="clearStatus"
-                    @keydown.enter="login"
-                />
-            </div>
-            <div class="row w-80 text-end">
-                <p v-if="wrongLoginData" class="has-error">
-                    Niepoprawne dane logowania!
-                </p>
-                <p v-if="errorLogin" class="has-error">
-                    Proszę uzupełnić wszystkie dane poprawnie!
-                </p>
-            </div>
-            <div class="row w-80 mt-4 mb-5">
-                <button class="account-btn pink-btn" @click="login">
-                    Zaloguj się
-                </button>
-            </div>
+        <div class="row w-80 mb-3">
+            <label class="form-label text-start text-white fw-bolder" for="login-mail">Adres e-mail:</label>
+            <input
+                id="login-mail"
+                v-model="email"
+                :class="{ 'has-error': submittingLogin && invalidEmail || wrongLoginData}"
+                class="login-input"
+                placeholder="Adres-email"
+                type="email"
+                @focus="clearStatus"
+                @keypress="clearStatus"
+                @keydown.enter="login"
+            />
+        </div>
+        <div class="row w-80 mb-1">
+            <label class="form-label text-start text-white fw-bolder" for="login-password">Hasło:</label>
+            <input
+                id="login-password"
+                v-model="password"
+                :class="{ 'has-error': submittingLogin && invalidPassword || wrongLoginData}"
+                class="login-input"
+                placeholder="Hasło"
+                type="password"
+                @focus="clearStatus"
+                @keypress="clearStatus"
+                @keydown.enter="login"
+            />
+        </div>
+        <div class="row w-80 text-end">
+            <p v-if="wrongLoginData" class="has-error">
+                Niepoprawne dane logowania!
+            </p>
+            <p v-if="errorLogin" class="has-error">
+                Proszę uzupełnić wszystkie dane poprawnie!
+            </p>
+        </div>
+        <div class="row w-80 mt-4 mb-5">
+            <button class="account-btn pink-btn" @click="login">
+                Zaloguj się
+            </button>
+        </div>
 
         <div class="row w-80">
-            <button class="account-btn grey-btn" data-bs-toggle="modal" data-bs-target="#registerModal" @click="this.submittingLogin=false">
+            <button class="account-btn grey-btn" data-bs-target="#registerModal" data-bs-toggle="modal"
+                    @click="this.submittingLogin=false">
                 Utwórz nowe konto
             </button>
 
             <!-- Modal -->
-            <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div id="registerModal" aria-hidden="true" aria-labelledby="registerModalLabel" class="modal fade"
+                 tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title ms-2" id="registerModalLabel">{{!successRegister ? 'Podaj dane do rejestracji' : ''}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInputs(); clearStatusWithTimeout()"></button>
+                            <h5 id="registerModalLabel" class="modal-title ms-2">
+                                {{ !successRegister ? 'Podaj dane do rejestracji' : '' }}</h5>
+                            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"
+                                    @click="clearInputs(); clearStatusWithTimeout()"></button>
                         </div>
                         <div class="modal-body">
 
-                            <div class="container-fluid" id="modal-container">
+                            <div id="modal-container" class="container-fluid">
                                 <div v-if="!successRegister" class="col-11 mx-auto">
 
-                                        <div class="row">
-                                            <label for="register-mail" class="form-label text-start">Adres e-mail:</label>
-                                            <input
-                                                id="register-mail"
-                                                type="email"
-                                                placeholder="Adres-email"
-                                                v-model="newEmail"
-                                                class="register-input p-2"
-                                                :class="{ 'has-error': submittingRegister && invalidNewEmail || emailTaken}"
-                                                @focus="clearStatus"
-                                                @keypress="clearStatus"
-                                                @keydown.enter="register"
-                                            />
+                                    <div class="row">
+                                        <label class="form-label text-start" for="register-mail">Adres e-mail:</label>
+                                        <input
+                                            id="register-mail"
+                                            v-model="newEmail"
+                                            :class="{ 'has-error': submittingRegister && invalidNewEmail || emailTaken}"
+                                            class="register-input p-2"
+                                            placeholder="Adres-email"
+                                            type="email"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
+                                            @keydown.enter="register"
+                                        />
+                                    </div>
+                                    <div class="row text-end">
+                                        <p v-if="emailTaken" class="has-error m-0">
+                                            Do tego e-mail'a jest już przypisane konto!
+                                        </p>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <label class="form-label text-start" for="register-password">Hasło:</label>
+                                        <input
+                                            id="register-password"
+                                            v-model="newPassword"
+                                            :class="{ 'has-error': submittingRegister && (invalidNewPassword || invalidEqualPassword)}"
+                                            class="register-input p-2"
+                                            placeholder="Hasło"
+                                            type="password"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
+                                            @keydown.enter="register"
+                                        />
+                                    </div>
+                                    <div class="row mt-2">
+                                        <label class="form-label text-start" for="register-password-second">Powtórz
+                                            hasło:</label>
+                                        <input
+                                            id="register-password-second"
+                                            v-model="newPasswordSecond"
+                                            :class="{ 'has-error': submittingRegister && (invalidNewPasswordSecond || invalidEqualPassword)}"
+                                            class="register-input p-2"
+                                            placeholder="Powtórz hasło"
+                                            type="password"
+                                            @focus="clearStatus"
+                                            @keypress="clearStatus"
+                                            @keydown.enter="register"
+                                        />
+                                    </div>
+                                    <div v-if="errorRegister" class="row text-end">
+                                        <p class="has-error m-0">
+                                            Proszę uzupełnić wszystkie dane poprawnie!
+                                        </p>
+                                    </div>
+                                    <div v-if="errorEqualPassword" class="row text-end">
+                                        <p class="has-error m-0">
+                                            Podane hasła się różnią!
+                                        </p>
+                                    </div>
+                                    <div class="row justify-content-center mt-5">
+                                        <div class="col-6">
+                                            <button class="register-btn grey-btn p-2"
+                                                    data-bs-dismiss="modal"
+                                                    @click="clearInputs(); clearStatusWithTimeout()">Anuluj
+                                            </button>
                                         </div>
-                                        <div class="row text-end">
-                                            <p v-if="emailTaken" class="has-error m-0">
-                                                Do tego e-mail'a jest już przypisane konto!
-                                            </p>
+                                        <div class="col-6">
+                                            <button class="register-btn pink-btn p-2" @click="register">Rejestruj
+                                            </button>
                                         </div>
-                                        <div class="row mt-2">
-                                            <label for="register-password" class="form-label text-start">Hasło:</label>
-                                            <input
-                                                id="register-password"
-                                                type="password"
-                                                placeholder="Hasło"
-                                                v-model="newPassword"
-                                                class="register-input p-2"
-                                                :class="{ 'has-error': submittingRegister && (invalidNewPassword || invalidEqualPassword)}"
-                                                @focus="clearStatus"
-                                                @keypress="clearStatus"
-                                                @keydown.enter="register"
-                                            />
-                                        </div>
-                                        <div class="row mt-2">
-                                            <label for="register-password-second" class="form-label text-start">Powtórz hasło:</label>
-                                            <input
-                                                id="register-password-second"
-                                                type="password"
-                                                placeholder="Powtórz hasło"
-                                                v-model="newPasswordSecond"
-                                                class="register-input p-2"
-                                                :class="{ 'has-error': submittingRegister && (invalidNewPasswordSecond || invalidEqualPassword)}"
-                                                @focus="clearStatus"
-                                                @keypress="clearStatus"
-                                                @keydown.enter="register"
-                                            />
-                                        </div>
-                                        <div v-if="errorRegister" class="row text-end">
-                                            <p class="has-error m-0">
-                                                Proszę uzupełnić wszystkie dane poprawnie!
-                                            </p>
-                                        </div>
-                                        <div v-if="errorEqualPassword" class="row text-end">
-                                            <p class="has-error m-0">
-                                                Podane hasła się różnią!
-                                            </p>
-                                        </div>
-                                        <div class="row justify-content-center mt-5">
-                                            <div class="col-6">
-                                                <button class="register-btn grey-btn p-2" @click="clearInputs(); clearStatusWithTimeout()" data-bs-dismiss="modal">Anuluj</button>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="register-btn pink-btn p-2" @click="register">Rejestruj</button>
-                                            </div>
-                                        </div>
+                                    </div>
 
 
                                 </div>
@@ -151,7 +160,7 @@
 <script>
 export default {
     name: "LoginPanel",
-    data () {
+    data() {
         return {
             email: "",
             password: "",
@@ -227,7 +236,7 @@ export default {
             });
             this.submittingRegister = false
         },
-        getUserInfo () {
+        getUserInfo() {
             const url = `${this.apiURL}profile/my`
 
             this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
@@ -235,11 +244,20 @@ export default {
                 this.$store.commit('setLastName', response.data['lastName']);
                 this.$store.commit('setProfileId', response.data['id']);
                 this.$store.commit('setProfileImageSrc', response.data['profileImgPath']);
+                this.$store.commit('setDoctorProfile', response.data['doctorProfile']);
+                this.$store.commit('setDieticianProfile', response.data['dieticianProfile']);
+                this.$store.commit('setTrainerProfile', response.data['trainerProfile']);
+                this.$store.commit('setSex', response.data['esex']);
+
                 localStorage.setItem('userId', response.data['id'])
                 console.log(this.$store.getters.getFirstName)
                 console.log(this.$store.getters.getLastName)
                 console.log(this.$store.getters.getProfileId)
                 console.log(this.$store.getters.getProfileImageSrc)
+                console.log(this.$store.getters.getDoctorProfile)
+                console.log(this.$store.getters.getDieticianProfile)
+                console.log(this.$store.getters.getTrainerProfile)
+                console.log(this.$store.getters.getSex)
                 let roles = []
                 response.data['roles'].forEach((e) => {
                     roles.push(e['role'])

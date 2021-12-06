@@ -43,7 +43,7 @@
         </div>
 
         <div class="pt-2">
-            <analysis-chart-component :data="series" :hide-y-axis="hideYAxis"/>
+            <analysis-chart-component :data="series" :strokes="stroke" :markers="marker" :hide-y-axis="hideYAxis" />
         </div>
         <div class="row">
             <div class="form-check form-switch d-flex justify-content-center">
@@ -51,6 +51,29 @@
                 <label class="form-check-label mx-2">Ukryj osie Y</label>
             </div>
         </div>
+
+        <div class="row mt-4 px-4" v-if="selectedCheckboxes.length > 0">
+            <table class="table stats-table">
+                <thead>
+                <tr>
+                    <th scope="col">Typ pomiaru</th>
+                    <th scope="col">Wartość minimalna</th>
+                    <th scope="col">Wartość maksymalna</th>
+                    <th scope="col">Średnia</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="selected in selectedCheckboxes" :key="selected">
+                        <td>{{ this.getSeriesName(selected) }}</td>
+                        <td>{{ this.analysisDataStats[selected]['min'] }}</td>
+                        <td>{{ this.analysisDataStats[selected]['max'] }}</td>
+                        <td>{{ this.analysisDataStats[selected]['avg'] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
     </div>
 </template>
 
@@ -93,6 +116,7 @@ export default {
             this.updateSeries();
         },
         isUpdated: function() {
+            this.getStatsValues();
             this.updateSeries();
         },
     },
@@ -102,8 +126,8 @@ export default {
             TRAINING_MEASURES: TRAINING_MEASURES,
 
             dateRange: {
-                start: new Date(),
-                end: new Date()
+                start: new Date(new Date().setHours(0,0,0,0)),
+                end: new Date(new Date().setHours(23,59,59,0))
             },
             datePickerConfig: {
                 start: {
@@ -120,6 +144,7 @@ export default {
             maxSelected: 4,
 
             analysisData: {},
+            analysisDataStats: {},
             isDataUpdated: {
                 telemedic: false,
                 diet: false,
@@ -129,6 +154,8 @@ export default {
 
             series: [],
             hideYAxis: false,
+            stroke: {},
+            marker: {},
         }
     },
     methods: {
@@ -144,6 +171,9 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
+            .then(() => {
+                this.getAnalysisData();
+            })
         },
         getAnalysisData(){
             this.analysisData = {};
@@ -193,7 +223,6 @@ export default {
                             min: measure.measureType.minValue,
                             precision: measure.measureType.precision,
                         }
-
                         this.analysisData[measureTypeId].push(chartElement)
                     });
 
@@ -329,10 +358,44 @@ export default {
             this.analysisData[TRAINING_MEASURES.BURNED_CALORIES.EN].push({x: x, y: y, description: desc,
                 precision: TRAINING_MEASURES.BURNED_CALORIES.PRECISION});
         },
+        getStatsValues(){
+            for(const element in this.analysisData){
+                this.analysisDataStats[element] = {};
+                this.analysisDataStats[element]['min'] = this.getMinValue(this.analysisData[element])
+                    .toFixed(this.getSeriesPrecision(element));
+                this.analysisDataStats[element]['max'] = this.getMaxValue(this.analysisData[element])
+                    .toFixed(this.getSeriesPrecision(element));
+                this.analysisDataStats[element]['avg'] = this.getAvgValue(this.analysisData[element])
+                    .toFixed(this.getSeriesPrecision(element));
+            }
+        },
+        getMinValue(arr){
+            if(arr.length > 0)
+                return Math.min.apply(null, arr.map(function(chartElement){return chartElement.y;}))
+            else
+                return 0;
+        },
+        getMaxValue(arr){
+            if(arr.length > 0)
+                return Math.max.apply(null, arr.map(function(chartElement){return chartElement.y;}))
+            else
+                return 0;
+        },
+        getAvgValue(arr){
+            if(arr.length > 0)
+                return arr.reduce((total, next) => total + next.y, 0) / arr.length;
+            else
+                return 0;
+        },
         updateSeries(){
             this.series = [];
+            this.stroke = { width: [], dashArray: [] };
+            this.marker = { size: [] };
             this.selectedCheckboxes.forEach(selected => {
                 let seriesName = this.getSeriesName(selected);
+                this.stroke.width.push(this.getStrokeWidth(selected));
+                this.stroke.dashArray.push(this.getStrokeDash(selected));
+                this.marker.size.push(this.getMarkerSize(selected));
 
                 if(this.analysisData[selected]){
                     let sortedData = this.analysisData[selected].sort(function(a,b){
@@ -346,6 +409,7 @@ export default {
             this.isDataUpdated.telemedic = false;
             this.isDataUpdated.diet = false;
             this.isDataUpdated.training = false;
+
         },
         getSeriesName(selected){
             let seriesName = "";
@@ -369,13 +433,85 @@ export default {
             }
             return seriesName;
         },
+        getSeriesPrecision(selected){
+            let precision = 1;
+
+            let measureType = this.measureTypes.find(m => m.id === selected);
+            if(measureType) {
+                precision = measureType.precision;
+            }
+            else {
+                for(const MEASURE in DIET_MEASURES){
+                    if(selected === DIET_MEASURES[MEASURE].EN){
+                        precision = DIET_MEASURES[MEASURE].PRECISION;
+                    }
+                }
+
+                for(const MEASURE in TRAINING_MEASURES){
+                    if(selected === TRAINING_MEASURES[MEASURE].EN){
+                        precision = TRAINING_MEASURES[MEASURE].PRECISION;
+                    }
+                }
+            }
+            return precision;
+        },
+        getStrokeWidth(selected){
+            let strokeWidth = 3;
+
+            for(const MEASURE in DIET_MEASURES){
+                if(selected === DIET_MEASURES[MEASURE].EN){
+                    strokeWidth = 1;
+                }
+            }
+
+            for(const MEASURE in TRAINING_MEASURES){
+                if(selected === TRAINING_MEASURES[MEASURE].EN){
+                    strokeWidth = 1;
+                }
+            }
+
+            return strokeWidth;
+        },
+        getStrokeDash(selected){
+            let strokeDash = 0;
+
+            for(const MEASURE in DIET_MEASURES){
+                if(selected === DIET_MEASURES[MEASURE].EN){
+                    strokeDash = 12;
+                }
+            }
+
+            for(const MEASURE in TRAINING_MEASURES){
+                if(selected === TRAINING_MEASURES[MEASURE].EN){
+                    strokeDash = 12;
+                }
+            }
+
+            return strokeDash;
+        },
+        getMarkerSize(selected){
+            let markerSize = 4;
+
+            for(const MEASURE in DIET_MEASURES){
+                if(selected === DIET_MEASURES[MEASURE].EN){
+                    markerSize = 4;
+                }
+            }
+
+            for(const MEASURE in TRAINING_MEASURES){
+                if(selected === TRAINING_MEASURES[MEASURE].EN){
+                    markerSize = 4;
+                }
+            }
+
+            return markerSize;
+        },
         isSelected(element){
             return this.selectedCheckboxes.indexOf(element) === -1
         },
     },
     created() {
         this.getMeasureTypes();
-        this.getAnalysisData();
     }
 }
 </script>
@@ -402,5 +538,8 @@ export default {
     gap: 0 15px;
 }
 
+.stats-table {
+    color: white;
+}
 
 </style>

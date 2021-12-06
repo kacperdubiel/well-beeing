@@ -111,6 +111,33 @@ button[class^="btn-card-panel-"] {
     padding: 0.3rem 0.6rem;
 }
 
+.social-tabs {
+    border-bottom-color: var(--DARK-YELLOW) !important;
+    margin-bottom: 20px !important;
+}
+
+.social-tabs a {
+    text-decoration: none !important;
+}
+
+.social-tabs .nav-link.active {
+    background-color: var(--DARK-YELLOW) !important;
+    border-color: var(--DARK-YELLOW) !important;
+}
+
+.social-tabs .nav-link {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.social-tabs .nav-tabs {
+    border-bottom-color: var(--DARK-YELLOW) !important;
+}
+
+.social-tabs .nav-link:hover {
+    border-color: var(--DARK-YELLOW) !important;
+}
+
 .tab-content {
     padding: 5px;
     margin-top: 15px;
@@ -401,6 +428,38 @@ input {
 .pagination > li.admin-page.disabled > a {
     color: var(--GREY1);
     background-color: white;
+}
+
+.pagination > li.social-page > a {
+    background-color: white;
+    color: var(--DARK-YELLOW);
+}
+
+.pagination > li.social-page > a:focus,
+.pagination > li.social-page > a:hover,
+.pagination > li.social-page > span:focus,
+.pagination > li.social-page > span:hover {
+    color: white;
+    background-color: var(--DARK-YELLOW);
+    border-color: var(--DARK-YELLOW);
+    cursor: pointer;
+}
+
+.pagination > .social-page.active > a {
+    color: white;
+    background-color: var(--DARK-YELLOW) !Important;
+    border: solid 1px var(--DARK-YELLOW) !Important;
+}
+
+.pagination > li.social-page.disabled > a {
+    color: var(--GREY1);
+    background-color: white;
+}
+
+.pagination > .social-page.active > a:hover
+{
+    background-color: var(--DARK-YELLOW) !Important;
+    border: solid 1px var(--DARK-YELLOW);
 }
 
 p.has-error {

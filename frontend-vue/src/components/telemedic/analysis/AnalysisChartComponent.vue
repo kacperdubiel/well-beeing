@@ -3,12 +3,14 @@
 </template>
 
 <script>
-import pl from "apexcharts/dist/locales/pl.json";    // ref="realtimeChart"
+import pl from "apexcharts/dist/locales/pl.json";
 
 export default {
     name: "AnalysisChartComponent",
     props: {
         data: {},
+        strokes: {},
+        markers: {},
         hideYAxis: Boolean,
     },
     watch: {
@@ -18,6 +20,12 @@ export default {
         },
         hideYAxis: function() {
             this.updateYAxis();
+        },
+        strokes: function() {
+            this.updateStrokes();
+        },
+        markers: function() {
+            this.updateMarkers();
         },
     },
     data() {
@@ -65,6 +73,7 @@ export default {
                 stroke: {
                     curve: 'smooth',
                     width: 3,
+                    dashArray: 0,
                 },
                 markers: {
                     size: 4,
@@ -116,18 +125,18 @@ export default {
                         },
                         axisBorder: {
                             show: false,
-                            color: "#008FFB"
+                            color: "var(--TELEMEDIC-ANALYSIS-FIRST)"
                         },
                         labels: {
                             style: {
-                                colors: "#008FFB",
+                                colors: "var(--TELEMEDIC-ANALYSIS-FIRST)",
                             },
                             formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series A",
                             style: {
-                                color: "#008FFB",
+                                color: "var(--TELEMEDIC-ANALYSIS-FIRST)",
                                 fontSize: '15px',
                                 fontWeight: 400,
                             }
@@ -142,18 +151,18 @@ export default {
                         },
                         axisBorder: {
                             show: false,
-                            color: "#00E396"
+                            color: "var(--TELEMEDIC-ANALYSIS-SECOND)"
                         },
                         labels: {
                             style: {
-                                colors: "#00E396"
+                                colors: "var(--TELEMEDIC-ANALYSIS-SECOND)"
                             },
                             formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series B",
                             style: {
-                                color: "#00E396",
+                                color: "var(--TELEMEDIC-ANALYSIS-SECOND)",
                                 fontSize: '15px',
                                 fontWeight: 400,
                             }
@@ -168,18 +177,18 @@ export default {
                         },
                         axisBorder: {
                             show: false,
-                            color: "#FEB019"
+                            color: "var(--TELEMEDIC-ANALYSIS-THIRD)"
                         },
                         labels: {
                             style: {
-                                colors: "#FEB019"
+                                colors: "var(--TELEMEDIC-ANALYSIS-THIRD)"
                             },
                             formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series C",
                             style: {
-                                color: "#FEB019",
+                                color: "var(--TELEMEDIC-ANALYSIS-THIRD)",
                                 fontSize: '15px',
                                 fontWeight: 400,
                             }
@@ -194,18 +203,18 @@ export default {
                         },
                         axisBorder: {
                             show: false,
-                            color: "#FF4560"
+                            color: "var(--TELEMEDIC-ANALYSIS-FOURTH)"
                         },
                         labels: {
                             style: {
-                                colors: "#FF4560"
+                                colors: "var(--TELEMEDIC-ANALYSIS-FOURTH)"
                             },
                             formatter: (val) => { return val.toFixed(1)},
                         },
                         title: {
                             text: "Series D",
                             style: {
-                                color: "#FF4560",
+                                color: "var(--TELEMEDIC-ANALYSIS-FOURTH)",
                                 fontSize: '15px',
                                 fontWeight: 400,
                             }
@@ -289,6 +298,29 @@ export default {
                 },
             };
         },
+        updateStrokes(){
+            let currentStroke = this.chartOptions.stroke;
+            currentStroke.width = this.strokes.width;
+            currentStroke.dashArray = this.strokes.dashArray;
+
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    stroke: currentStroke,
+                },
+            };
+        },
+        updateMarkers(){
+            let currentMarkers = this.chartOptions.markers;
+            currentMarkers.size = this.markers.size;
+
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    markers: currentMarkers,
+                },
+            };
+        }
     },
     created() {
 

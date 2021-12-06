@@ -13,7 +13,7 @@
             </router-link>
         </div>
         <div class="side-menu">
-            <router-link to="/">
+            <router-link :to="{ name: 'FriendsView' }">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'user-friends']"/>
@@ -25,7 +25,7 @@
             </router-link>
         </div>
         <div class="side-menu">
-            <router-link to="/">
+            <router-link :to="{ name: 'FollowView' }">
                 <div class="row mx-4 py-2 sidebar-item">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'users']"/>
@@ -39,7 +39,7 @@
 
 
         <div class="side-menu">
-            <router-link to="/">
+            <router-link :to="{ name: 'UserUserConversationsView' }">
                 <div class="row mx-4 py-2">
                     <div class="col-2 ps-2">
                         <font-awesome-icon :icon="['fa', 'comments']"/>

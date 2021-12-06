@@ -7,6 +7,7 @@ import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
+import com.wellbeeing.wellbeeing.repository.sport.TrainingPlanDAO;
 import com.wellbeeing.wellbeeing.service.sport.TrainingPlanService;
 import com.wellbeeing.wellbeeing.service.sport.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +28,23 @@ import java.util.stream.Collectors;
 @Component
 public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGeneratorStrategy {
     TrainingDAO trainingDAO;
+    TrainingPlanDAO trainingPlanDAO;
     TrainingPlanService trainingPlanService;
     TrainingService trainingService;
+    int MIN_TRAINING_CALORIES = 200;
+    int MAX_TRAINING_CALORIES = 2000;
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
     public TrainingPlanGeneratorRandomStrategy(@Qualifier("trainingDAO") TrainingDAO trainingDAO,
+                                               @Qualifier("trainingPlanDAO") TrainingPlanDAO trainingPlanDAO,
                                                @Lazy @Qualifier("trainingPlanService") TrainingPlanService trainingPlanService,
                                                @Qualifier("trainingService") TrainingService trainingService) {
         this.trainingDAO = trainingDAO;
         this.trainingPlanService = trainingPlanService;
         this.trainingService = trainingService;
+        this.trainingPlanDAO = trainingPlanDAO;
     }
 
     @Override
@@ -85,7 +91,11 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
                                                         .stream()
                                                         .map(SportLabelAilment::getAilment)
                                                         .collect(Collectors.toList())
-                                                , userAilments))
+                                                , userAilments)
+                                )
+                                && t.getCaloriesBurned() >= Math.max(MIN_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 - deviation))
+                                && t.getCaloriesBurned() <= Math.min(MAX_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 + deviation))
+
 
                 )
                 .collect(Collectors.toList());
@@ -95,6 +105,11 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
             System.out.println("No trainings matching criteria");
             return -1;
         }
+
+        System.out.printf("Choosing from %d Trainings in range: (%f ,%f)%n", trainings.size(),
+                Math.max(MIN_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 - deviation)),
+                Math.min(MAX_TRAINING_CALORIES, averageCaloriesBurnedPerTraining * (1 + deviation)));
+
         LocalDate start = beginningDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().with(DayOfWeek.MONDAY);
 
         TrainingPlan newTrainingPlan = TrainingPlan.builder()
@@ -104,7 +119,8 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
                 .beginningDate(Date.from(start.atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         newTrainingPlan = trainingPlanService.addTrainingPlan(newTrainingPlan, userName, profile.getProfileUser().getId(), 0);
-
+        newTrainingPlan.setPlanStatus(EPlanStatus.PLANNED);
+        newTrainingPlan = trainingPlanDAO.save(newTrainingPlan);
         for (int i = 0; i < trainingsPerDay.size(); i++) {
             Date currentDate = Date.from(start.plusDays(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
             for (int j = 0; j < trainingsPerDay.get(i); j++) {

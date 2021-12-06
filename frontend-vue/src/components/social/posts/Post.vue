@@ -143,14 +143,12 @@ export default {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.postSource.creator.id}`
             const token = this.$store.getters.getToken;
-            console.log('profile')
             this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
         downloadPostPicture () {
             if (this.postSource.postImgPath) {
                 const url = `${this.apiURL}post/export/${this.postSource.postId}`
                 const token = this.$store.getters.getToken;
-                console.log('post')
                 this.$func_global.downloadPhoto(url, token).then(result => this.postPictureSrc = result)
             }
         },

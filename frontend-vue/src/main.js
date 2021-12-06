@@ -28,7 +28,7 @@ import {
     faTh,
     faThermometerFull,
     faTrash,
-    faUserSecret
+    faUserSecret, faVideo
 } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faUserFriends } from '@fortawesome/free-solid-svg-icons'
@@ -86,6 +86,7 @@ library.add(faChevronRight)
 library.add(faFastBackward)
 library.add(faFastForward)
 library.add(faPaperPlane)
+library.add(faVideo)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
@@ -101,13 +102,19 @@ library.add(faCheck)
 
 //profile
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
+import { faCertificate } from '@fortawesome/free-solid-svg-icons'
+import { faStar } from '@fortawesome/free-solid-svg-icons'
 library.add(faEllipsisH)
+library.add(faCertificate)
+library.add(faStar)
 
 //telemedic
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
 import { faChartBar } from '@fortawesome/free-solid-svg-icons'
+import { faImage } from '@fortawesome/free-solid-svg-icons'
 library.add(faCalendarCheck)
 library.add(faChartBar)
+library.add(faImage)
 
 //post
 import { faHeart } from '@fortawesome/free-solid-svg-icons'

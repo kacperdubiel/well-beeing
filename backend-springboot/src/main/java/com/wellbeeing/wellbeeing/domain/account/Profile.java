@@ -3,12 +3,10 @@ package com.wellbeeing.wellbeeing.domain.account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.report.Report;
-import com.wellbeeing.wellbeeing.domain.sport.SportReport;
+import com.wellbeeing.wellbeeing.domain.sport.*;
 import lombok.*;
 import com.wellbeeing.wellbeeing.domain.social.*;
-import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.SportReport;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.NoArgsConstructor;
 
 import com.wellbeeing.wellbeeing.domain.telemedic.Measure;
@@ -17,6 +15,8 @@ import org.hibernate.annotations.Formula;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -63,6 +63,9 @@ public class Profile {
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private User profileUser;
+
+    @Transient
+    private double opinionsAverage;
 
     @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL)
     private DoctorProfile doctorProfile;
@@ -131,6 +134,14 @@ public class Profile {
     private Set<Post> profilePosts = new HashSet<>();
 
     @JsonIgnore
+    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL)
+    private Set<Follow> followers = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private Set<Follow> followings = new HashSet<>();
+
+    @JsonIgnore
     @OneToMany(mappedBy = "giver", cascade = CascadeType.ALL)
     private Set<Opinion> profileGivenOpinions = new HashSet<>();
 
@@ -152,5 +163,13 @@ public class Profile {
         profileUser.setProfile(this);
         this.id = profileUser.getId();
         System.out.println("Escaped constructor");
+    }
+
+    @PostLoad
+    private void countOpinionAverage(){
+        this.opinionsAverage = BigDecimal.valueOf(this.profileReceivedOpinions.stream().filter(o -> !o.isDeleted()).mapToInt(Opinion::getRating).average().orElse(0))
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+
     }
 }

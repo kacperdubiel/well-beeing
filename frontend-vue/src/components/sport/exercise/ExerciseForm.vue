@@ -191,7 +191,6 @@ export default {
             this.nameTaken = false
         },
         handleSubmit() {
-            console.log('name: ' + this.name + ' type: ' + this.type + ' met: ' + this.met)
             this.submittingCreateExercise = true
             this.clearStatus()
             if (this.invalidName || this.invalidType || this.invalidMet || this.invalidDescription || this.invalidInstruction) {

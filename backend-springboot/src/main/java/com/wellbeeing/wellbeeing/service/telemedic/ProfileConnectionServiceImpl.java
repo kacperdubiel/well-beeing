@@ -1,32 +1,38 @@
 package com.wellbeeing.wellbeeing.service.telemedic;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
 import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
+import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.telemedic.ProfileConnectionDAO;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service("profileConnectionService")
 public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     private ProfileConnectionDAO profileConnectionDAO;
+    private UserDAO userDAO;
     private ProfileService profileService;
 
     @Autowired
     public ProfileConnectionServiceImpl(@Qualifier("profileConnectionDAO") ProfileConnectionDAO profileConnectionDAO,
+                                        @Qualifier("userDAO") UserDAO userDAO,
                                         @Qualifier("profileService") ProfileService profileService)
     {
         this.profileConnectionDAO = profileConnectionDAO;
+        this.userDAO = userDAO;
         this.profileService = profileService;
     }
 
@@ -41,15 +47,46 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     }
 
     @Override
+    public Page<ProfileConnection> getProfileConnectionsFriends(Specification<ProfileConnection> conSpec, Pageable pageable) {
+            return profileConnectionDAO.findAll(conSpec, pageable);
+    }
+
+    @Override
+    public List<ProfileConnection> checkProfileConnection(String myUserName, Profile otherProfile) {
+        User me = userDAO.findUserByEmail(myUserName).orElse(null);
+        ProfileConnection friendsSent = profileConnectionDAO.findByProfileAndConnectedWithAndConnectionType(me.getProfile(), otherProfile, EConnectionType.WITH_USER);
+        ProfileConnection friendsReceived = profileConnectionDAO.findByProfileAndConnectedWithAndConnectionType(otherProfile, me.getProfile(), EConnectionType.WITH_USER);
+
+        List<ProfileConnection> returnList = new ArrayList<>();
+
+//        friend connection
+        if (friendsSent != null && friendsSent.isAccepted())
+            returnList.add(friendsSent);
+        else if (friendsReceived != null && friendsReceived.isAccepted())
+            returnList.add(friendsReceived);
+        else
+            returnList.add(null);
+
+//        sent invite connection
+        if (friendsSent != null && !friendsSent.isAccepted())
+            returnList.add(friendsSent);
+        else
+            returnList.add(null);
+
+//        received invite connection
+        if (friendsReceived != null && !friendsReceived.isAccepted())
+            returnList.add(friendsReceived);
+        else
+            returnList.add(null);
+
+        return returnList;
+    }
+
+    @Override
     public Page<ProfileConnection> getProfileConnectionsByProfileAndTypeAndIsAccepted(
             Profile profile, EConnectionType connectionType, boolean isAccepted, int page, int size)
     {
-        if(connectionType == EConnectionType.WITH_USER){
-            return profileConnectionDAO.findByProfileOrConnectedWithAndConnectionTypeAndIsAccepted(
-                    profile, connectionType, isAccepted, PageRequest.of(page, size));
-        }
-
-        return profileConnectionDAO.findByProfileAndConnectionTypeAndIsAccepted(profile, connectionType, isAccepted,
+            return profileConnectionDAO.findByProfileAndConnectionTypeAndIsAccepted(profile, connectionType, isAccepted,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "requestDate")));
     }
 
@@ -57,11 +94,6 @@ public class ProfileConnectionServiceImpl implements ProfileConnectionService {
     public Page<ProfileConnection> getProfileConnectionsByConnectedWithAndTypeAndIsAccepted(Profile connectedWith,
             EConnectionType connectionType, boolean isAccepted, int page, int size)
     {
-        if(connectionType == EConnectionType.WITH_USER){
-            return profileConnectionDAO.findByProfileOrConnectedWithAndConnectionTypeAndIsAccepted(
-                    connectedWith, connectionType, isAccepted, PageRequest.of(page, size));
-        }
-
         return profileConnectionDAO.findByConnectedWithAndConnectionTypeAndIsAccepted(connectedWith, connectionType, isAccepted,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "requestDate")));
     }

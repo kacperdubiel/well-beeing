@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -24,7 +24,7 @@ public class Measure {
     @Column(name = "value", nullable = false)
     private double value;
     @Column(name = "measure_date", nullable = false)
-    private Date measureDate;
+    private LocalDateTime measureDate;
 
     @ManyToOne
     private MeasureType measureType;

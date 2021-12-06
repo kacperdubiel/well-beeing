@@ -80,9 +80,9 @@ export default {
                 ],
                 sportTagFilter: '',
                 sortByOptions: [
-                    {label:'A-Z', value:'fullName,asc'},
-                    {label:'Z-A', value:'fullName,desc'}],
-                sortBy: 'fullName,asc'
+                    {label:'A-Z', value:'asc'},
+                    {label:'Z-A', value:'desc'}],
+                sortBy: 'asc'
             },
             navigation: {
                 totalElements: 0,
@@ -111,13 +111,13 @@ export default {
         getProfilesFiltered (page, isScroll) {
             const url = `${this.apiURL}profile`
             const token = this.$store.getters.getToken;
-            const myParams = {
-                fullName: this.$store.getters.getSearchPhrase,
-                page: page,
-                sort: this.filters.sortBy,
-                eSportTag: this.filters.sportTagFilter,
-                eNutritionTag: this.filters.nutritionTagFilter
-            }
+            let params = new URLSearchParams()
+            params.append("fullName", this.$store.getters.getSearchPhrase)
+            params.append("page", page)
+            params.append("sort", "lastName,"+this.filters.sortBy)
+            params.append("sort", "firstName,"+this.filters.sortBy)
+            params.append("eSportTag", this.filters.sportTagFilter)
+            params.append("eNutritionTag", this.filters.nutritionTagFilter)
 
             if(this.navigation.isLast && isScroll)
                 return 'sth'
@@ -125,7 +125,7 @@ export default {
             if(page === 0)
                 this.scrolledToBottom = true
 
-            this.axios.get(url, {params: myParams, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+            this.axios.get(url, {params: params, headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 if(!this.navigation.isLast && isScroll)
                     this.$store.commit('addSearchProfileResult', response.data['content']);
                 else if (!isScroll)

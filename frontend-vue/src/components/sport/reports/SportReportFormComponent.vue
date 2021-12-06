@@ -16,7 +16,7 @@
                     <input
                         id="productReportInput"
                         v-model="this.actualSelectedExerciseTime"
-                        class="w-100"
+                        class="w-100 h-75"
                         min=0
                         type="number"
                     />
@@ -25,13 +25,13 @@
                     <select id="measureProductInput" v-model="this.actualSelectedExerciseMeasure"
                             aria-label="Product measure"
                             class="form-select w-100">
-                        <option value="SEC">s</option>
-                        <option value="MIN">min</option>
-                        <option value="H">h</option>
+                        <option value="s">s</option>
+                        <option value="min">min</option>
+                        <option value="h">h</option>
                     </select>
                 </div>
                 <div class="col-2">
-                    <input id="productTime" v-model="this.actualSelectedExerciseExercisingTime" class="w-100"
+                    <input id="productTime" v-model="this.actualSelectedExerciseExercisingTime" class="w-100 h-75"
                            type="time"/>
                 </div>
                 <div class="col-2">
@@ -75,27 +75,28 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <v-select v-model="this.actualSelectedTraining" :options="this.trainingsToSelect"
-                                  :reduce="name => name.trainingId" label="name" @keypress="this.getTrainingsToSelect"/>
+                                  :reduce="name => name.trainingId"
+                                  class="sport" label="name" @keypress="this.getTrainingsToSelect"/>
                     </div>
                     <div class="col-lg-2">
                         <input
                             id="trainingReportInput"
                             v-model="this.actualSelectedTrainingTime"
-                            class="w-100"
+                            class="w-100 h-75"
                             min=1
                             type="number"
                         />
                     </div>
                     <div class="col-lg-2">
-                        <select id="measureProductInput" v-model="this.actualSelectedExerciseMeasure"
+                        <select id="measureProductInput" v-model="this.actualSelectedTrainingMeasure"
                                 aria-label="Product measure" class="form-select w-100">
-                            <option value="SEC">s</option>
-                            <option value="MIN">min</option>
-                            <option value="H">h</option>
+                            <option value="s">s</option>
+                            <option value="min">min</option>
+                            <option value="h">h</option>
                         </select>
                     </div>
                     <div class="col-lg-2">
-                        <input id="productTime2" v-model="this.actualSelectedTrainingExercisingTime" class="w-100"
+                        <input id="productTime2" v-model="this.actualSelectedTrainingExercisingTime" class="w-100 h-75"
                                type="time"/>
                     </div>
                     <div class="col-lg-2">
@@ -152,25 +153,15 @@ export default {
 
             exercisesToSelect: [],
             actualSelectedExercise: '',
-            actualSelectedExerciseTime: 3600,
-            actualSelectedExerciseMeasure: 's',
+            actualSelectedExerciseTime: 30,
+            actualSelectedExerciseMeasure: 'min',
             actualSelectedExerciseExercisingTime: '12:00',
 
             trainingsToSelect: [],
             actualSelectedTraining: '',
-            actualSelectedTrainingTime: 3600,
-            actualSelectedTrainingMeasure: 's',
+            actualSelectedTrainingTime: 30,
+            actualSelectedTrainingMeasure: 'min',
             actualSelectedTrainingExercisingTime: '12:00',
-            // productsToSelect: [],
-            // actualSelectedProduct: '',
-            // actualSelectedProductAmount: 100,
-            // actualSelectedProductMeasure: '',
-            // actualSelectedProductConsumingTime: '12:00',
-            //
-            // dishesToSelect: [],
-            // actualSelectedDish: '',
-            // actualSelectedDishPortions: 1,
-            // actualSelectedDishConsumingTime: '12:00',
         }
     },
     watch: {
@@ -179,12 +170,25 @@ export default {
         }
     },
     mounted() {
-        // this.getProductsToSelect()
-        // this.getDishesToSelect()
         this.getExercisesToSelect()
         this.getTrainingsToSelect()
     },
     methods: {
+        getProperTimeInSeconds(time, units) {
+            let time_seconds = 0;
+            switch (units) {
+                case "s":
+                    time_seconds = time;
+                    break;
+                case "min":
+                    time_seconds = time * 60;
+                    break;
+                case "h":
+                    time_seconds = time * 3600;
+                    break;
+            }
+            return time_seconds
+        },
         getExercisesToSelect() {
             const url = `${this.apiURL}sport/exercise`
             const token = this.$store.getters.getToken;
@@ -214,8 +218,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log("POBIERAM TRENINGI DO SELECTA")
-                    console.log(response.data)
                     this.trainingsToSelect = response.data['content']
                 }).catch(e => alert(e))
         },
@@ -226,7 +228,7 @@ export default {
                 exercise: {
                     exerciseId: this.actualSelectedExercise
                 },
-                seconds: this.actualSelectedExerciseTime,
+                seconds: this.getProperTimeInSeconds(this.actualSelectedExerciseTime, this.actualSelectedExerciseMeasure),
                 exercisingTime: this.makeConsumingTimestamp(this.actualSelectedExerciseExercisingTime)
             }]
             axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}})
@@ -246,32 +248,10 @@ export default {
                 training: {
                     trainingId: this.actualSelectedTraining
                 },
-                seconds: this.actualSelectedTrainingTime,
+                seconds: this.getProperTimeInSeconds(this.actualSelectedTrainingTime, this.actualSelectedTrainingMeasure),
                 trainingTime: this.makeConsumingTimestamp(this.actualSelectedTrainingExercisingTime)
             }]
             axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}})
-                .then((response) => {
-                    this.getCurrentReport();
-                    console.log(response);
-                    this.$emit('updated:report', response.data);
-                })
-                .catch(e => {
-                    console.log(e);
-                })
-        },
-        addDishToReport() {
-            axios({
-                method: 'post',
-                headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
-                url: "http://localhost:8090/report/" + this.report.id + "/dish",
-                data: [{
-                    dish: {
-                        id: this.actualSelectedDish
-                    },
-                    portions: this.actualSelectedDishPortions,
-                    consumingTime: this.makeConsumingTimestamp(this.actualSelectedDishConsumingTime)
-                }]
-            })
                 .then((response) => {
                     this.getCurrentReport();
                     console.log(response);

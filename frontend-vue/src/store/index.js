@@ -11,10 +11,14 @@ export default createStore({
             token: "",
             firstName: "",
             lastName: "",
+            sex: "",
             roles: [],
             specializations: [],
             searchPhrase: "",
             searchProfileResult: null,
+            doctorProfile: null,
+            dieticianProfile: null,
+            trainerProfile: null,
             // PHYSICAL ACTIVITY
             exerciseId: 0,
             trainingId: 0,
@@ -56,25 +60,37 @@ export default createStore({
         setLastName(state, value) {
             state.lastName = value;
         },
+        setSex(state, value) {
+            state.sex = value;
+        },
         addRole(state, value) {
             state.roles.push(value);
         },
         setRoles(state, value) {
             state.roles = value;
         },
-        addSpecialization (state, value) {
+        addSpecialization(state, value) {
             state.specializations.push(value);
         },
-        setSpecialization (state, value) {
+        setSpecialization(state, value) {
             state.specializations = value;
         },
-        setSearchPhrase (state, value) {
+        setSearchPhrase(state, value) {
             state.searchPhrase = value;
         },
-        setSearchProfileResult (state, value) {
+        setDoctorProfile(state, value) {
+            state.doctorProfile = value;
+        },
+        setDieticianProfile(state, value) {
+            state.dieticianProfile = value;
+        },
+        setTrainerProfile(state, value) {
+            state.trainerProfile = value;
+        },
+        setSearchProfileResult(state, value) {
             state.searchProfileResult = value;
         },
-        addSearchProfileResult (state, value) {
+        addSearchProfileResult(state, value) {
             state.searchProfileResult.content = state.searchProfileResult.content.concat(value);
         },
         // PHYSICAL ACTIVITY
@@ -134,17 +150,29 @@ export default createStore({
         getLastName(state) {
             return state.lastName;
         },
+        getSex(state) {
+            return state.sex;
+        },
         getRoles(state) {
             return state.roles;
         },
-        getSpecializations (state) {
+        getSpecializations(state) {
             return state.specializations;
         },
-        getSearchPhrase (state) {
+        getSearchPhrase(state) {
             return state.searchPhrase;
         },
-        getSearchProfileResult (state) {
+        getSearchProfileResult(state) {
             return state.searchProfileResult;
+        },
+        getDoctorProfile(state) {
+            return state.doctorProfile;
+        },
+        getDieticianProfile(state) {
+            return state.dieticianProfile;
+        },
+        getTrainerProfile(state) {
+            return state.trainerProfile;
         },
         // PHYSICAL ACTIVITY
         getExerciseId(state) {

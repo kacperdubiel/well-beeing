@@ -18,8 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service("fileService")
-public class FileServiceImpl implements FileService{
+public class FileServiceImpl implements FileService {
     @Value("${upload.path}")
     private String uploadPath;
 
@@ -40,13 +41,12 @@ public class FileServiceImpl implements FileService{
                 init();
             }
 
-            Timestamp ts=new Timestamp(System.currentTimeMillis());
+            Timestamp ts = new Timestamp(System.currentTimeMillis());
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
-            String newName = format.format(ts)+"_"+file.getOriginalFilename();
-            System.out.println(newName);
+            String newName = format.format(ts) + "_" + file.getOriginalFilename();
 
 
-        Files.copy(file.getInputStream(), root.resolve(newName));
+            Files.copy(file.getInputStream(), root.resolve(newName));
             System.out.println("File path ? : " + root.resolve(newName));
             return newName;
         } catch (Exception e) {

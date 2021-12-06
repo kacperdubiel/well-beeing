@@ -9,6 +9,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Getter
@@ -40,7 +41,7 @@ public class Exercise {
     @Transient
     private int caloriesBurned;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator")
     @JsonIgnore
     private Profile creator;
@@ -57,6 +58,8 @@ public class Exercise {
     private Set<ExerciseInTraining> exerciseInTrainings;
     @Column
     private String pathToVideoInstruction;
+    @Transient
+    private UUID creatorId;
 
     public Exercise(String name, double met) { //, ExerciseInTraining... exerciseInTrainings
         this.name = name;
@@ -65,6 +68,12 @@ public class Exercise {
         this.exerciseInTrainings = new HashSet<>();
 //        for(ExerciseInTraining exerciseInTraining : exerciseInTrainings) exerciseInTraining.setExercise(this);
 //        this.exerciseInTrainings = Stream.of(exerciseInTrainings).collect(Collectors.toSet());
+    }
+
+    @PostLoad
+    public void postLoad() {
+        if (this.creator != null)
+            this.creatorId = this.creator.getId();
     }
 
     public int countCaloriesPerHour(double user_weight) {
@@ -82,6 +91,8 @@ public class Exercise {
     }
 
     public void addLabelToExercise(SportLabel sportLabel) {
+        if (this.labels == null)
+            this.labels = new HashSet<>();
         this.labels.add(sportLabel);
     }
 
