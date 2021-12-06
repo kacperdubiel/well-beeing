@@ -1,7 +1,7 @@
 <template>
     <div class="section-bg pt-3">
         <div class="row mx-4 py-2">
-            <new-post @refresh:posts="getPosts"/>
+            <new-post :is-feed="true" @refresh:posts="getPostsFeedWithNewPost"/>
         </div>
 
         <div class="row mx-4 py-2">
@@ -38,6 +38,21 @@ export default {
         }
     },
     methods: {
+        getPostsFeedWithNewPost(page, isScroll, postId) {
+            this.getPostsFeed(page, isScroll).then(() => {
+                const url = `${this.apiURL}post/${postId}`
+                const token = this.$store.getters.getToken;
+                this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                    console.log('moj poscik' , response.data)
+                    this.posts.unshift(response.data)
+                }).catch(error => {
+                    console.log(error.response.status)
+                });
+            })
+
+
+
+        },
         getPostsFeed(page, isScroll) {
             let url = `${this.apiURL}posts/feed`
             const token = this.$store.getters.getToken;

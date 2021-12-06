@@ -59,7 +59,7 @@ public class PostPositioningPointsStrategy implements PostPositioningStrategy {
         Date fromDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());;
         List<Post> allPostsToShow = new ArrayList<>();
         for (Profile profile: connectedProfiles) {
-            allPostsToShow.addAll(profile.getProfilePosts().stream().filter(p -> (p.getAddedDate().after(fromDate) && p.getAddedDate().before(requestDate))).collect(Collectors.toList()));
+            allPostsToShow.addAll(profile.getProfilePosts().stream().filter(p -> (!p.isDeleted() && p.getAddedDate().after(fromDate) && p.getAddedDate().before(requestDate))).collect(Collectors.toList()));
             likesMap.put(profile, likeDAO.findByLikerAndPostCreator(myProfile, profile));
             commentsMap.put(profile, commentDAO.findByCommenterAndPostCreator(myProfile, profile));
         }
@@ -85,7 +85,8 @@ public class PostPositioningPointsStrategy implements PostPositioningStrategy {
 
         int first = (int) (pageable.getOffset());
         int last = (int) (pageable.getOffset() + pageable.getPageSize());
-
+        if (last > posts.size()-1)
+            last = posts.size();
         List<Post> postsPage = posts.subList(first, last);
         System.out.println("Strony");
         postsPage.forEach(s -> {

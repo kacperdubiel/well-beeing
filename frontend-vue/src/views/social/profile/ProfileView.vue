@@ -17,7 +17,7 @@
         </div>
 
         <div v-if="isPostView && isProfileMine" class="row mx-4 py-2">
-            <new-post v-if="profile" @refresh:posts="getPosts"/>
+            <new-post :is-feed="false" v-if="profile" @refresh:posts="getPosts"/>
         </div>
 
         <div v-if="isPostView" class="row mx-4 py-2">

@@ -10,7 +10,7 @@
             <div class="d-flex flex-column align-self-center w-100">
 
                 <div class="text-start d-flex align-items-baseline ms-3">
-                    <h5 class="clickable">{{this.postSource.creator.firstName}} {{this.postSource.creator.lastName}}</h5>
+                    <h5 class="clickable" @click="redirectToProfile(this.postSource.creator.id)">{{this.postSource.creator.firstName}} {{this.postSource.creator.lastName}}</h5>
                     <h6 class="ms-3">| {{this.$func_global.formatDateDateFromNow(this.postSource.addedDate)}}</h6>
                     <div class="dropdown ms-auto dropstart" v-if="isPostMine">
                         <button class="no-bg" type="button" id="more" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,13 +61,6 @@
 
                 </button>
             </div>
-<!--            <div class="d-flex flex-column text-start">-->
-<!--                <button class="no-bg-btn">-->
-<!--                    <span>-->
-<!--                        {{this.postSource.sharingCounter}} {{this.$func_global.mapShareForm(this.postSource.sharingCounter)}}-->
-<!--                    </span>-->
-<!--                </button>-->
-<!--            </div>-->
         </div>
 
         <div class="row mx-4 py-2 align-items-center" id="interactions">
@@ -234,6 +227,12 @@ export default {
                     this.getComments(this.commentsNavigation.nextPage, true, pagesAfterDelete-1)
                 }
             })
+        },
+        redirectToProfile(id) {
+            if(id === this.$store.getters.getProfileId)
+                this.$router.push({ name: 'MyProfileView'})
+            else
+                this.$router.push({ name: 'ProfileView', params: {profileId: id} })
         },
 
     },
