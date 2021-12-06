@@ -13,7 +13,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.context.annotation.Bean;
+
 import java.util.List;
 
 @SpringBootApplication
@@ -44,7 +44,7 @@ public class WellbeeingApplication implements WebMvcConfigurer {
     CommandLineRunner init(@Qualifier("fileService") FileService fileService,
                            @Qualifier("exerciseService") ExerciseService exerciseService) {
         return (args) -> {
-            exerciseService.initiateExercises();
+//            exerciseService.initiateExercises();
 //			fileService.deleteAll();
 //			fileService.init();
         };

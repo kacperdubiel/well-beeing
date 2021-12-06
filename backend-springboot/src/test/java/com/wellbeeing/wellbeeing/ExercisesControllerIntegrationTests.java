@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestPropertySource(
-        locations = "classpath:application.properties")
+        locations = "classpath:test.properties")
 
 public class ExercisesControllerIntegrationTests {
 
