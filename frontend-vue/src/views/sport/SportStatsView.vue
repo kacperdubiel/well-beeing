@@ -4,7 +4,7 @@
     </div>
     <hr/>
     <div class="row ps-3">
-        <div class="col my-auto ">
+        <div class="col align-self-start">
             <p id="short" class="text-start">Skróty</p>
             <ol class="text-start">
                 <li @click="scrollMeTo('calories-burned-section')">Spalone kalorie</li>
@@ -87,7 +87,7 @@
                 </div>
                 <hr/>
                 <div class="col-lg-6 col-sm-12 col-12 my-3  justify-content-center">
-                    <label class="stat-label" for="calories-average">Aktywność ruchowa</label>
+                    <label class="stat-label" for="calories-average">Aktywność treningowa</label>
                     <stats-column-chart
                         :data="newSeriesData(userStatistics.userTrainingMinutes, userStatistics.totalTrainingMinutesAverage, 'min' ,'Czas treningu' )"/>
                 </div>
@@ -101,7 +101,7 @@
                         %</p>
                     <label class="stat-label" for="trainings-percent">pozostałych użytkowników</label>
                 </div>
-                <hr class="between-sections"/>
+                <hr v-if="userStatistics.userFavouriteTraining" class="between-sections"/>
                 <div v-if="userStatistics.userFavouriteTraining"
                      ref="favourite-training-section" class="col-lg-6 col-sm-12 col-12 my-3 ">
                     <label class="stat-label" for="favourite-training">Twoim ulubionym treningiem był</label>
@@ -289,14 +289,14 @@ p.stat-value {
 
 hr.between-sections {
     background: var(--GREY2);
-    border-top: 10px dashed var(--SPORT);
+    border-top: 7px dashed var(--SPORT);
     opacity: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
 ol {
-    font-size: 30px;
+    font-size: 20px;
 }
 
 li:hover {
