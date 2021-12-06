@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
@@ -44,6 +45,8 @@ public interface TrainingPlanService {
     Page<TrainingPlanRequest> getMyRequestsFiltered(Specification<TrainingPlanRequest> spec, Pageable page, String userName) throws NotFoundException;
 
     TrainingPlanRequest changeTrainingPlanRequestStatus(String userName, long requestId, String newStatus) throws NotFoundException;
+
+    TrainingPlanRequest getTrainingPlanRequest(long requestId, String userName) throws NotFoundException, ForbiddenException;
 
     TrainingPlanRequest sendRequestToTrainer(UUID trainerId, String submitterName, String message, LocalDateTime beginningDate) throws NotFoundException;
 
