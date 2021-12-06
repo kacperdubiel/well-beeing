@@ -1,9 +1,9 @@
 <template>
-<div style="align-self: center;" class="container-fluid">
+<div style="align-self: center; display: flex; align-items: stretch;" class="container-fluid">
     <div class="card-container">
         <div class="card-elem-container">
             <div class="col-lg-8">
-                <p class="card-elem-container-row">Waga </p>
+                <p class="card-elem-container-row">Waga</p>
             </div>
             <hr/>
             <div class="col-lg-8">
@@ -216,6 +216,7 @@ export default {
     .card-elem-container {
         display: flex;
         border-top: 1pt solid gray;
+        height: 60px;
     }
     .card-elem-container-row {
         align-items: flex-end;

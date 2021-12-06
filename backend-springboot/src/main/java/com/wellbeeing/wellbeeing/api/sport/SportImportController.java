@@ -1,7 +1,7 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.message.diet.CsvImportResponse;
+import com.wellbeeing.wellbeeing.api.diet.message.CsvImportResponse;
 import com.wellbeeing.wellbeeing.service.files.FileService;
 import com.wellbeeing.wellbeeing.service.sport.ExerciseService;
 import com.wellbeeing.wellbeeing.service.sport.SportImportService;
