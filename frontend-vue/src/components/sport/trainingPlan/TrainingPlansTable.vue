@@ -40,6 +40,9 @@
                         <button v-if="enableButtons" class="btn-white mx-2">
                             <font-awesome-icon :icon="['fa', 'trash']"/>
                         </button>
+                        <button class="btn-white mx-2" @click="handleShare(plan.trainingPlanId)" data-bs-toggle="modal" data-bs-target="#postShareModal">
+                            <font-awesome-icon :icon="['fa', 'share-square']"/>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -69,6 +72,9 @@ export default {
         isActive: Boolean
     },
     methods: {
+        handleShare(planId) {
+            this.$emit('share:plan', planId)
+        },
         moment() {
             return moment()
         },

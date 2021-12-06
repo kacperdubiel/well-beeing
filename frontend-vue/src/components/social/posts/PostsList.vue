@@ -2,7 +2,7 @@
     <div v-if="postsSource" class="container-fluid p-0">
         <post v-for="post in postsSource" :key="post.postId" :post-source="post" class="mb-4" @edit:post="setModalPost" @share:post="setModalPostId" @get:likes="setLikesList"/>
         <post-edit :edited-post-source="modalPost"/>
-        <post-share :shared-post-id="modalPostId"/>
+        <post-share :shared-id="modalPostId" sharing-type="post"/>
         <likes-list :likes-source="likesModal" />
     </div>
 </template>

@@ -43,7 +43,6 @@ export default {
                 const url = `${this.apiURL}post/${postId}`
                 const token = this.$store.getters.getToken;
                 this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                    console.log('moj poscik' , response.data)
                     this.posts.unshift(response.data)
                 }).catch(error => {
                     console.log(error.response.status)
