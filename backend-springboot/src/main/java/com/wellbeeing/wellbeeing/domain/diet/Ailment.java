@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EAilmentType;
 import com.wellbeeing.wellbeeing.domain.sport.SportLabelAilment;
-import com.wellbeeing.wellbeeing.domain.sport.TrainingPosition;
 import lombok.*;
-import com.wellbeeing.wellbeeing.domain.SportLabel;
+
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -20,7 +22,7 @@ public class Ailment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    @Column(unique = true)
     private String name;
     @Column
     private String description;

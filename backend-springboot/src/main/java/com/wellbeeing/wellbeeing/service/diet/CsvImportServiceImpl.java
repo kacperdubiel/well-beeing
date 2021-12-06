@@ -52,7 +52,7 @@ public class CsvImportServiceImpl implements CsvImportService {
         Path file = Paths.get(uploadPath)
                 .resolve(productsPath);
         ArrayList<String> errorMessages = new ArrayList<>();
-        try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.ISO_8859_1)){
+        try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8)){
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;
@@ -182,7 +182,7 @@ public class CsvImportServiceImpl implements CsvImportService {
         Path file = Paths.get(uploadPath)
                 .resolve(ailmentsPath);
         ArrayList<String> errorMessages = new ArrayList<>();
-        try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.ISO_8859_1)){
+        try(BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8)){
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;
@@ -234,7 +234,7 @@ public class CsvImportServiceImpl implements CsvImportService {
                 .resolve(dietsPath);
         ArrayList<String> errorMessages = new ArrayList<>();
 
-        try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.ISO_8859_1)) {
+        try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
             String[] header = (br.readLine()).split(";");
             String line;
             int lineNumber = 1;

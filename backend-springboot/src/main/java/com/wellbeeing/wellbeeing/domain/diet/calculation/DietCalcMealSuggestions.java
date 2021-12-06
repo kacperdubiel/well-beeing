@@ -27,6 +27,7 @@ public class DietCalcMealSuggestions {
     private EMealType mealType;
     @Column
     private double numberOfCalories;
+    @Enumerated(EnumType.STRING)
     @Column
     private EGlycemicIndexLevel glycemicIndexLevel;
 }

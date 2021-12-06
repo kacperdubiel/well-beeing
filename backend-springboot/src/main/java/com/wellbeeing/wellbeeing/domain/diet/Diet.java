@@ -18,7 +18,7 @@ public class Diet {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    @Column(unique = true)
     private String name;
     @Column
     private String description;

@@ -66,7 +66,7 @@ public class NutritionLabelServiceImpl implements NutritionLabelService {
     @Override
     public NutritionLabel deleteNutritionLabel(UUID nutritionLabelId) throws NotFoundException {
         NutritionLabel nutritionLabelToDelete = getNutritionLabelById(nutritionLabelId);
-        nutritionLabelToDelete.setActive(false);
-        return nutritionLabelDAO.save(nutritionLabelToDelete);
+        nutritionLabelDAO.deleteById(nutritionLabelId);
+        return nutritionLabelToDelete;
     }
 }

@@ -1,9 +1,8 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wellbeeing.wellbeeing.domain.diet.*;
+import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
-import com.wellbeeing.wellbeeing.domain.diet.product.Product;
 import com.wellbeeing.wellbeeing.domain.diet.type.EActivityLevel;
 import com.wellbeeing.wellbeeing.domain.diet.type.EDietGoal;
 import lombok.*;
@@ -38,19 +37,9 @@ public class ProfileCard {
             inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     )
     private List<Ailment> ailments;
-    @ManyToMany
-    @JoinTable(
-            name = "profile_card_disliked_product",
-            joinColumns = @JoinColumn(name = "disliked_product_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
-    )
-    private List<Product> dislikedProducts;
     @Enumerated(EnumType.STRING)
     @Column
     private EActivityLevel activityLevel;
-//    @OneToOne(mappedBy = "profileCard", fetch = FetchType.EAGER, optional = false)
-//    @JsonIgnore
-//    private Profile profile;
     @Column
     private int trainingActivityTimePerWeek;
     @Enumerated(EnumType.STRING)
