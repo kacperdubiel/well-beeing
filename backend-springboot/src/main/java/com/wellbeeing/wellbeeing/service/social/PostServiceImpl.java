@@ -5,7 +5,13 @@ import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.repository.social.CommentDAO;
+import com.wellbeeing.wellbeeing.repository.social.LikeDAO;
 import com.wellbeeing.wellbeeing.repository.social.PostDAO;
+import com.wellbeeing.wellbeeing.service.social.postPositioning.PostPositioningPointsStrategy;
+import com.wellbeeing.wellbeeing.service.social.postPositioning.PostPositioningStrategy;
+import com.wellbeeing.wellbeeing.service.sport.alg.TrainingPlanGeneratorCSPStrategy;
+import com.wellbeeing.wellbeeing.service.sport.alg.TrainingPlanGeneratorRandomStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,17 +20,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Map;
 
 @Service("postService")
 public class PostServiceImpl implements PostService {
     private final PostDAO postDAO;
     private final UserDAO userDAO;
+    private final LikeDAO likeDAO;
+    private final CommentDAO commentDAO;
 
     public PostServiceImpl(@Qualifier("postDAO") PostDAO postDAO,
-                           @Qualifier("userDAO") UserDAO userDAO) {
+                           @Qualifier("userDAO") UserDAO userDAO,
+                           @Qualifier("likeDAO") LikeDAO likeDAO,
+                           @Qualifier("commentDAO") CommentDAO commentDAO) {
         this.postDAO = postDAO;
         this.userDAO = userDAO;
+        this.likeDAO = likeDAO;
+        this.commentDAO = commentDAO;
     }
 
     @Override
@@ -159,5 +172,23 @@ public class PostServiceImpl implements PostService {
         targetPost.setDeleted(true);
         postDAO.save(targetPost);
         return true;
+    }
+
+    @Override
+    public Page<Post> getPostsFeed(String userName, Date requestDate, Pageable pageable, String positioningType) {
+        Profile profile = userDAO.findUserByEmail(userName).orElse(null).getProfile();
+        PostPositioningStrategy postPositioningStrategy;
+
+        switch (positioningType) {
+            case "points":
+                postPositioningStrategy = new PostPositioningPointsStrategy(likeDAO, commentDAO);
+                break;
+            default:
+                postPositioningStrategy = new PostPositioningPointsStrategy(likeDAO, commentDAO);
+                break;
+        }
+
+        return postPositioningStrategy.generatePositioning(profile, requestDate, pageable);
+
     }
 }

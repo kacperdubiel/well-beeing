@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,6 +51,12 @@ public class PostController {
         this.profileService = profileService;
         this.likeService = likeService;
         this.fileService = fileService;
+    }
+
+    @GetMapping(path = "/posts/feed")
+    public ResponseEntity<?> getPostsFeed(@PageableDefault(size = 20) Pageable pageable, Principal principal, @RequestParam Date requestDate, @RequestParam  String positioningType) throws NotFoundException {
+        Page<Post> pagePosts = postService.getPostsFeed(principal.getName(), requestDate, pageable, positioningType);
+        return new ResponseEntity<>(pagePosts, HttpStatus.OK);
     }
 
     @GetMapping(path = "/posts/my")
