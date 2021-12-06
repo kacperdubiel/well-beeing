@@ -79,25 +79,29 @@
                 </select>
             </div>
             <div class="col-auto ">
-                <p class="form-label text-start">Wartość numeryczna</p>
+                <p class="form-label text-start">{{ numericLabel(activityGoal.goalType) }}</p>
                 <input
                     v-model="activityGoal.numericValue"
                     :class="{ 'has-error': submittingAddActivityGoal && invalidNumericValue}"
+                    :disabled="['MAINTAIN_WEIGHT', 'EXTEND_LUNGS_CAPACITY', '', null].includes(activityGoal.goalType)"
                     class=" p-2 float-start"
+                    max="2.0"
+                    min="0"
+                    step="0.1"
                     style="border-radius: 5px"
                     type="number"
                     @focus="clearStatus"
                     @keypress="clearStatus"
                 >
             </div>
-            <div class="col-auto ">
-                <p class="form-label text-start">Wartość tekstowa</p>
-                <input
-                    v-model="activityGoal.textValue"
-                    class=" p-2 float-start"
-                    style="border-radius: 5px"
-                >
-            </div>
+            <!--            <div class="col-auto ">-->
+            <!--                <p class="form-label text-start">Wartość tekstowa</p>-->
+            <!--                <input-->
+            <!--                    v-model="activityGoal.textValue"-->
+            <!--                    class=" p-2 float-start"-->
+            <!--                    style="border-radius: 5px"-->
+            <!--                >-->
+            <!--            </div>-->
             <div class="col-auto ">
                 <label class="form-label" for="input-target">Do kiedy</label>
                 <DatePicker
@@ -178,6 +182,18 @@ export default {
         }
     },
     methods: {
+        numericLabel(goal) {
+            switch (goal) {
+                case "LOSE_WEIGHT":
+                    return "Tempo [kg/tydz.]"
+                case "GAIN_WEIGHT":
+                    return "Tempo [kg/tydz.]"
+                case "BUILD_MUSCLE":
+                    return "Tempo [kg/tydz.]"
+                default:
+                    return "Wartość"
+            }
+        },
         clearStatus() {
             this.activityGoalError = false
             this.submittingAddActivityGoal = false

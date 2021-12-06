@@ -1,9 +1,8 @@
 package com.wellbeeing.wellbeeing;
 
-import com.wellbeeing.wellbeeing.repository.account.ProfileCardDAO;
-import com.wellbeeing.wellbeeing.repository.account.ProfileDAO;
-import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
-import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.account.Role;
+import com.wellbeeing.wellbeeing.repository.account.*;
 import com.wellbeeing.wellbeeing.repository.sport.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MyRunner implements CommandLineRunner {
@@ -51,8 +54,19 @@ public class MyRunner implements CommandLineRunner {
     @Qualifier("sportLabelDAO")
     private SportLabelDAO sportLabelDAO;
 
+    @Autowired
+    @Qualifier("roleDAO")
+    private RoleDAO roleDAO;
+
     @Override
     public void run(String... args) throws Exception {
+        List<String> rolesToAdd = Arrays.asList("ROLE_BASIC_USER", "ROLE_ADMIN", "ROLE_DOCTOR", "ROLE_DIETICIAN", "ROLE_TRAINER");
+        List<String> existingRoles = roleDAO.findAll().stream().map(er -> er.getRole().name()).collect(Collectors.toList());
+        System.out.println(existingRoles);
+        rolesToAdd.forEach(r -> {
+            if (!existingRoles.contains(r))
+                roleDAO.save(Role.builder().name(ERole.valueOf(r)).build());
+        });
 //        trainingPositionDAO.deleteAll();
 //        trainingPlanDAO.deleteAll();
 //        activityGoalDAO.deleteAll();

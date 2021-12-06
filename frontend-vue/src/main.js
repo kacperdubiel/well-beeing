@@ -70,6 +70,7 @@ import {faChevronLeft} from "@fortawesome/free-solid-svg-icons/faChevronLeft"
 import {faFastBackward} from "@fortawesome/free-solid-svg-icons/faFastBackward"
 import {faFastForward} from "@fortawesome/free-solid-svg-icons/faFastForward"
 
+import { faShareSquare } from '@fortawesome/free-solid-svg-icons'
 //sport
 library.add(faPencilAlt)
 library.add(faInfo)
@@ -87,6 +88,7 @@ library.add(faFastBackward)
 library.add(faFastForward)
 library.add(faPaperPlane)
 library.add(faVideo)
+library.add(faShareSquare)
 //role request
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
@@ -120,11 +122,11 @@ library.add(faImage)
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 import { faCommentAlt } from '@fortawesome/free-regular-svg-icons'
-import { faShareSquare } from '@fortawesome/free-regular-svg-icons'
+import { faShareSquare as farShareSquare} from '@fortawesome/free-regular-svg-icons'
 library.add(faHeart)
 library.add(farHeart)
 library.add(faCommentAlt)
-library.add(faShareSquare)
+library.add(farShareSquare)
 
 const app = createApp(App).use(router);
 

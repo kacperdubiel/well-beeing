@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.SportLabel;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface ExerciseService {
-    Exercise addExercise(Exercise exercise, String creatorName) throws NotFoundException;
+    Exercise addExercise(Exercise exercise, String creatorName) throws NotFoundException, ConflictException;
 
     boolean deleteExercise(long exerciseId) throws NotFoundException;
 

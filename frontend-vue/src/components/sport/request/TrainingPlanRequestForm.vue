@@ -87,7 +87,21 @@ export default {
                 headers: {Authorization: `Bearer ${token}`}
             }).then((response) => {
                 console.log(response)
+                this.getRefreshedRequest(requestId)
                 this.getRequestsWithFilters()
+
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        async getRefreshedRequest(requestId) {
+            const url = `${this.apiURL}sport/training-plan/request/${requestId}`
+            const token = this.$store.getters.getToken;
+            await this.axios.get(url, {
+                headers: {Authorization: `Bearer ${token}`}
+            }).then((response) => {
+                console.log(response)
+                this.requestSource = response.data
             }).catch(error => {
                 console.log(error.response);
             });

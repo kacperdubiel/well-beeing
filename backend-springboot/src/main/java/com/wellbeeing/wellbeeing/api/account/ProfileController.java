@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -112,11 +113,18 @@ public class ProfileController {
     @GetMapping("/export/{profileId}")
     public ResponseEntity<?> exportData(@PathVariable UUID profileId) throws NotFoundException {
         Profile profile = profileService.getProfileById(profileId);
-        Resource file = fileService.load(profile.getProfileImgPath());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "profilePhoto")
-                .contentType(MediaType.parseMediaType("image/png"))
-                .body(file);
+//        System.out.println("sciezka " + profile.getProfileImgPath());
+//        System.out.println("klasa " + profile.getProfileImgPath().getClass());
+        if (profile.getProfileImgPath() != null) {
+            Resource file = fileService.load(profile.getProfileImgPath());
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "profilePhoto")
+                    .contentType(MediaType.parseMediaType("image/png"))
+                    .body(file);
+        }
+        else
+//            throw new NotFoundException("No picture to download");
+            return new ResponseEntity<>("No picture to download", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(path = "/doctors/doctor-specializations/{spec_id}")

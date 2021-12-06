@@ -308,7 +308,7 @@
                                         <div class="row justify-content-center mt-3">
                                             <div class="col-4">
                                                 <button class="register-btn btn-panel-sport p-2 mb-3"
-                                                        @click="setCurrent">Dodaj
+                                                        @click="setCurrent">Wybierz
                                                 </button>
                                             </div>
                                         </div>
@@ -346,7 +346,7 @@
                                         />
                                     </div>
                                     <div class="col-3">
-                                        <label class="form-label white" for="time-form">Czas
+                                        <label class="form-label white" for="time-form">Czas serii
                                             [{{ currentExercise.timeUnits }}]</label>
                                         <input
                                             id="time-form"

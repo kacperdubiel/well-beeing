@@ -2,7 +2,7 @@
     <div class="section-2-bg">
         <div class="d-flex flex-row px-4 py-3">
             <div class="d-flex flex-column text-start">
-                <img v-if="profilePictureSrc" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
+                <img v-if="profilePictureSrc !== ''" :src="profilePictureSrc" alt="Profile picture"  class="profile-picture" height="60" width="60">
                 <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="60" width="60">
             </div>
             <div class="d-flex flex-column align-self-center w-100 ms-3">
@@ -64,6 +64,9 @@ export default {
             errorPost: false
         }
     },
+    props: {
+        isFeed: Boolean
+    },
     methods: {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.$store.getters.getProfileId}`
@@ -93,7 +96,10 @@ export default {
                 this.successPost = true
                 this.submittingPost = false
                 document.getElementById('post-content').style.height = '80px'
-                this.$emit('refresh:posts', 0, false, 0)
+                if (this.isFeed)
+                    this.$emit('refresh:posts', 0, false, postId)
+                else
+                    this.$emit('refresh:posts', 0, false, 0)
             }).catch(error => {
                 console.log(error.response)
             });

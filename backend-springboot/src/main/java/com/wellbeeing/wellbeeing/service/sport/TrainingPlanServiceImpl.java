@@ -4,12 +4,14 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
 import com.wellbeeing.wellbeeing.repository.account.TrainerProfileDAO;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.sport.*;
+import com.wellbeeing.wellbeeing.service.sport.alg.TrainingPlanGeneratorRandomStrategy;
 import com.wellbeeing.wellbeeing.service.sport.alg.TrainingPlanGeneratorStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -31,8 +33,9 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     private final TrainerProfileDAO trainerProfileDAO;
     private final TrainingPlanRequestDAO trainingPlanRequestDAO;
     private final ActivityGoalDAO activityGoalDAO;
-    private final TrainingPlanGeneratorStrategy planGeneratorStrategy;
+    private TrainingPlanGeneratorStrategy planGeneratorStrategy;
     private final SportReportService sportReportService;
+    private final TrainingService trainingService;
 
     public TrainingPlanServiceImpl(@Qualifier("trainerProfileDAO") TrainerProfileDAO trainerProfileDAO,
                                    @Qualifier("trainingDAO") TrainingDAO trainingDAO,
@@ -41,8 +44,8 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
                                    @Qualifier("trainingPlanRequestDAO") TrainingPlanRequestDAO trainingPlanRequestDAO,
                                    @Qualifier("userDAO") UserDAO userDAO,
                                    @Qualifier("activityGoalDAO") ActivityGoalDAO activityGoalDAO,
-                                   TrainingPlanGeneratorStrategy planGeneratorStrategy,
-                                   @Qualifier("sportReportService") SportReportService sportReportService) {
+                                   @Qualifier("sportReportService") SportReportService sportReportService,
+                                   @Qualifier("trainingService") TrainingService trainingService) {
 //        this.exerciseDAO = exerciseDAO;
         this.trainingDAO = trainingDAO;
 //        this.exerciseInTrainingDAO = exerciseInTrainingDAO;
@@ -52,8 +55,8 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         this.trainingPositionDAO = trainingPositionDAO;
         this.trainingPlanRequestDAO = trainingPlanRequestDAO;
         this.activityGoalDAO = activityGoalDAO;
-        this.planGeneratorStrategy = planGeneratorStrategy;
         this.sportReportService = sportReportService;
+        this.trainingService = trainingService;
     }
 
 
@@ -266,6 +269,22 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     }
 
     @Override
+    public TrainingPlanRequest getTrainingPlanRequest(long requestId, String userName) throws NotFoundException, ForbiddenException {
+        User user = userDAO.findUserByEmail(userName).orElse(null);
+        if (user == null)
+            throw new NotFoundException(String.format("User with name=%s doesn't exist", userName));
+        TrainingPlanRequest foundRequest = trainingPlanRequestDAO.findById(requestId).orElse(null);
+        if (foundRequest == null)
+            throw new NotFoundException(String.format("Request with id=%d doesn't exist", requestId));
+
+        if (foundRequest.getSubmitter() != user.getProfile() && foundRequest.getTrainer().getUserProfile() != user.getProfile())
+            throw new ForbiddenException("You have no permission to get that request! You must be the submitter or trainer!");
+
+
+        return foundRequest;
+    }
+
+    @Override
     public TrainingPlanRequest sendRequestToTrainer(UUID trainerId, String submitterName, String message, LocalDateTime beginningDate) throws NotFoundException {
         TrainerProfile trainerProfile = trainerProfileDAO.findById(trainerId).orElse(null);
         User submitterUser = userDAO.findUserByEmail(submitterName).orElse(null);
@@ -343,10 +362,18 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
     }
 
     @Override
-    public long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate) throws NotFoundException, IllegalArgumentException {
+    public long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate, String generatorStrategy) throws NotFoundException, IllegalArgumentException {
         ActivityGoal goal = activityGoalDAO.findById(activityGoalId).orElse(null);
         if (goal == null)
             return -1;
+        switch(generatorStrategy){
+            case "random":
+                this.planGeneratorStrategy = new TrainingPlanGeneratorRandomStrategy(trainingDAO, trainingPlanDAO, this, trainingService);
+                break;
+            default:
+                this.planGeneratorStrategy = new TrainingPlanGeneratorRandomStrategy(trainingDAO, trainingPlanDAO, this, trainingService);
+                break;
+        }
         return planGeneratorStrategy.generateTrainingPlan(trainingsPerDay, goal, profile, strategy, beginningDate);
     }
 

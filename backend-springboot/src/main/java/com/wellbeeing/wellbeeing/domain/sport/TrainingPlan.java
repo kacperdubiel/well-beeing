@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.domain.sport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.social.Post;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,6 +53,10 @@ public class TrainingPlan {
     private TrainingPlanRequest request;
     @Transient
     private long requestId;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "originalTrainingPlan", cascade = CascadeType.ALL)
+    private Set<Post> sharingPosts = new HashSet<>();
 
     @PostLoad
     public void PostLoad() {

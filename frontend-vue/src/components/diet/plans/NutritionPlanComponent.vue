@@ -5,12 +5,12 @@
             <div class="carousel-inner">
                 <div v-for="day in this.weekdays" :key="day" class="carousel-item" v-bind:class="{'active' : day=='MONDAY'}">
                     <div class="row">
-                        <h4><span>{{this.$func_global.mapDay(day)}} - </span>
+                        <h4 class="text-center"><span>{{this.$func_global.mapDay(day)}} - </span>
                             <span>{{this.nutritionPlan.name}}</span>
-                            <button @click="this.fetchPlanDayPositions(day)" class="btn-icon-panel-diet ms-4" data-bs-toggle="modal" data-bs-target="#planDayModal">
+                            <button v-if="!this.fromPost" @click="this.fetchPlanDayPositions(day)" class="btn-icon-panel-diet ms-4" data-bs-toggle="modal" data-bs-target="#planDayModal">
                                 <font-awesome-icon :icon="['fa', 'info']"/>
                             </button>
-                            <button v-if="!this.editOff" @click="this.changeComponentState" class="btn-icon-panel-diet">
+                            <button v-if="!this.editOff && !this.fromPost" @click="this.changeComponentState" class="btn-icon-panel-diet">
                                 <font-awesome-icon v-if="!this.isForm" :icon="['fa', 'edit']"/>
                                 <font-awesome-icon v-else :icon="['fa', 'times']"/>
                             </button>
@@ -20,7 +20,7 @@
                         </h4>
                     </div>
                     <div v-for="meal in meals" :key="meal" class="carousel-item-item-container">
-                        <nutrition-plan-position-component @open:position="openDishModal" @delete:position="deletePosition" @add:position="changeAddParams" @positions:updated="onPositionsUpdated" :planId="this.nutritionPlan.id" :componentState="this.isForm" :id="meal + '_' + day" class="meal-item" style="width: 100%" :meal="meal" :day="day" :position="findPosition(day, meal)"/>
+                        <nutrition-plan-position-component @open:position="openDishModal" @delete:position="deletePosition" @add:position="changeAddParams" @positions:updated="onPositionsUpdated" :planId="this.nutritionPlan.id" :componentState="this.isForm" :id="meal + '_' + day" class="meal-item" style="width: 100%" :meal="meal" :day="day" :position="findPosition(day, meal)" :from-post="this.fromPost"/>
                     </div>
                 </div>
             </div>
@@ -177,7 +177,10 @@ export default {
         },
         userId: {
             type:String
-        }
+        },
+        fromPost: {
+            type: Boolean
+        },
     },
     watch: {
         nutritionPlanId: function () {
@@ -196,7 +199,7 @@ export default {
         NutritionPlanDayDetailsComponent
     },
     mounted(){
-        if(this.fromProfile)
+        if(this.fromProfile || this.fromPost)
             this.getSingleNutritionPlan(this.nutritionPlanId)
         this.isForm = false;
         this.getDiets()

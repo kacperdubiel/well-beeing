@@ -3,8 +3,9 @@
         <div class="add-exercise row my-2 align-items-center">
             <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj</span>
             <span class="col-2 float-end button-icon">
-                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-target="#addExerciseModal"
-                                   data-bs-toggle="modal" @click="addNewReportForToday"/>
+                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon white-bg-circle mx-4"
+                                   data-bs-target="#sportReportAddNewModal"
+                                   data-bs-toggle="modal"/>
             </span>
         </div>
         <div class="row">
@@ -110,6 +111,47 @@
                 </div>
             </div>
         </div>
+        <div id="sportReportAddNewModal" aria-hidden="false" aria-labelledby="sportReportAddNewModalLabel"
+             class="modal fade"
+             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="sportReportAddNewModalLabel" class="modal-title" style="color: black;">Dodaj raport</h5>
+                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                    </div>
+                    <div class="modal-body mx-auto">
+                        <div style="text-align: start;">
+                            <p style="color: black;">Wybierz datę raportu: </p>
+                            <DatePicker
+                                id="input-report-date"
+                                v-model="newReportDate"
+                                :max-date="new Date()"
+                                class="d-block"
+                            />
+                            <div class="text-center">
+                                <button class="btn-panel-sport my-4"
+                                        type="button"
+                                        @click="addNewReportForDay">Dodaj raport
+                                </button>
+                            </div>
+                            <div v-if="this.showConflictError"
+                                 class="alert alert-danger alert-dismissible fade show my-1" role="alert">
+                                Raport na ten dzień już istnieje!
+                            </div>
+                            <div v-if="this.addReportSuccess"
+                                 class="alert alert-success alert-dismissible fade show my-1" role="alert">
+                                Dodano raport.
+                            </div>
+                            <div v-if="this.addReportError" class="alert alert-danger alert-dismissible fade show my-1"
+                                 role="alert">
+                                Wystąpił błąd dodawania raportu.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -117,20 +159,24 @@
 import axios from 'axios'
 import SportReportComponent from "@/components/sport/reports/SportReportComponent";
 import SportReportFormComponent from "@/components/sport/reports/SportReportFormComponent";
+import {DatePicker} from 'v-calendar';
 
 export default {
     name: "SportReportsComponent",
     components: {
         SportReportComponent,
-        SportReportFormComponent
+        SportReportFormComponent,
+        DatePicker
     },
     data() {
         return {
             reportsToShow: [],
             showConflictError: false,
+            addReportSuccess: false,
             actualMonth: '',
             actualModalReport: {},
-            closeInfoModal: false
+            closeInfoModal: false,
+            newReportDate: new Date()
         }
     },
     mounted() {
@@ -138,11 +184,37 @@ export default {
         this.getReportsToShow()
     },
     methods: {
+        resetNotifications() {
+            this.showConflictError = false
+            this.addReportSuccess = false
+        },
+        getActualLocalDate() {
+            const date = new Date()
+            return this.$func_global.formatDateDatePicker(date)
+        },
         async addNewReportForToday() {
             const url = `${this.apiURL}sport/report`
             const token = this.$store.getters.getToken;
             await this.axios.post(url, null, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.getReportsToShow();
+                console.log(response)
+            })
+                .catch(error => {
+                        console.log(error)
+                        if (error.response.status === 409) {
+                            this.showConflictError = true
+                        }
+                    }
+                )
+        },
+        async addNewReportForDay() {
+            this.resetNotifications()
+            const url = `${this.apiURL}sport/report/date`
+            const token = this.$store.getters.getToken;
+            let date = this.newReportDate
+            await this.axios.post(url, date, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.getReportsToShow();
+                this.addReportSuccess = true
                 console.log(response)
             })
                 .catch(error => {
@@ -226,4 +298,13 @@ span {
     -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
 
+.white-bg-circle {
+    background: radial-gradient(white 50%, transparent 0%);
+}
+
+.button-icon {
+    cursor: pointer;
+    color: var(--SPORT);
+    background-color: transparent;
+}
 </style>

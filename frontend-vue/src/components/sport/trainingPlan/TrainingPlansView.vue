@@ -47,6 +47,10 @@
                 </div>
             </div>
             <div class="col-xxl-2 col-xl-3 col-md-4 d-flex ms-auto">
+                <button class="btn-panel-sport mx-2 ms-auto" @click="setSharePlanId(this.activePlan.trainingPlanId)"
+                        data-bs-toggle="modal" data-bs-target="#postShareModal">
+                    <font-awesome-icon :icon="['fa', 'share-square']"/>
+                </button>
                 <button class="btn-panel-sport mx-2 ms-auto" @click="downloadPlan(this.activePlan.trainingPlanId)">
                     <font-awesome-icon :icon="['fa', 'download']"/>
                 </button>
@@ -62,12 +66,14 @@
         <div v-if="myTrainingPlans != null && myTrainingPlans.length > 0" class="m-3 mx-4 header">
             <span>Twoje pozostałe plany</span>
         </div>
-        <training-plans-table v-if="myTrainingPlans != null && myTrainingPlans.length > 0"
-                              :is-active="activePlan.trainingPlanId != null"
-                              :training-plans-source="myTrainingPlans.filter(p => p.planStatus === 'PLANNED')"
-                              @update:items="updateItems"
-                              @set:active="setNewActive" @download:plan="downloadPlan"
-                              @update:plan="getMyTrainingPlans"/>
+        <training-plans-table
+            v-if="myTrainingPlans != null && myTrainingPlans.filter(p => p.planStatus === 'PLANNED').length > 0"
+            :is-active="activePlan.trainingPlanId != null"
+            :training-plans-source="myTrainingPlans.filter(p => p.planStatus === 'PLANNED')"
+            @update:items="updateItems"
+            @set:active="setNewActive" @download:plan="downloadPlan"
+            @update:plan="getMyTrainingPlans"
+            @share:plan="setSharePlanId"/>
         <div class="m-3 mx-4 header">
             <span>Tworzenie nowego planu </span>
         </div>
@@ -150,6 +156,8 @@
                                 @get:trainings="getTrainingsWithFilters"
                                 @new:plan="refreshNewPlan"/>
 
+
+        <post-share :shared-id="sharePlanId" sharing-type="training-plan"/>
     </div>
 </template>
 
@@ -160,15 +168,17 @@ import TrainingDetails from "@/components/sport/training/TrainingDetails";
 import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
 import TrainingPlansTable from "@/components/sport/trainingPlan/TrainingPlansTable";
 import TrainingPlanGenerator from "@/components/sport/trainingPlan/TrainingPlanGenerator";
+import PostShare from "@/components/social/posts/PostShare";
 
 export default {
     name: "TrainingPlansView",
-    components: {TrainingPlanGenerator, TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails, TrainingPlanWeek,},
+    components: {TrainingPlanGenerator, TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails, TrainingPlanWeek, PostShare},
     data() {
         return {
             beginningDate: new Date(),
             week: 43,
             year: 2021,
+            sharePlanId: Number,
             myTrainingPlans: [],
             trainingPlan: {
                 "trainingPlanId": 27,
@@ -250,6 +260,9 @@ export default {
         }
     },
     methods: {
+        setSharePlanId(planId) {
+            this.sharePlanId = planId
+        },
         moment: function () {
             return moment();
         },

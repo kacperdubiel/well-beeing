@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGeneratorStrategy {
     TrainingDAO trainingDAO;
     TrainingPlanDAO trainingPlanDAO;
@@ -71,8 +70,11 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
                 weeklyCaloriesToBurn -= muscleGrowthAsPercentOfBodyWeight * CALORIES_TO_GAIN_1KG_MUSCLE;
                 break;
             case MAINTAIN_WEIGHT:
+                weeklyCaloriesToBurn -= goal.getNumericValue() * CALORIES_TO_BURN_1KG;
                 break;
             case EXTEND_LUNGS_CAPACITY:
+                weeklyCaloriesToBurn -= goal.getNumericValue() * CALORIES_TO_BURN_1KG;
+                break;
         }
         weeklyCaloriesToBurn = (int) (weeklyCaloriesToBurn * strategy.getWorkoutWeight());
         int totalTrainings = trainingsPerDay.stream().mapToInt(Integer::intValue).sum();
@@ -115,7 +117,7 @@ public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGenerato
         TrainingPlan newTrainingPlan = TrainingPlan.builder()
                 .owner(profile)
                 .creator(profile)
-                .details("Randomly generated plan")
+                .details("Plan generated from calories range and labels filter")
                 .beginningDate(Date.from(start.atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         newTrainingPlan = trainingPlanService.addTrainingPlan(newTrainingPlan, userName, profile.getProfileUser().getId(), 0);

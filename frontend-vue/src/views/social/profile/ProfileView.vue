@@ -6,18 +6,18 @@
 
         <div v-if="profile && isSpecialist" class="social-tabs pt-4 px-4">
             <ul class="nav nav-tabs">
-                <li class="nav-item" @click="changeView">
+                <li class="nav-item clickable" @click="changeView('posts')">
                     <span class="nav-link" v-bind:class="{ active: isPostView }">Posty</span>
                 </li>
 
-                <li class="nav-item" @click="changeView">
+                <li class="nav-item clickable" @click="changeView('opinions')">
                     <span class="nav-link" v-bind:class="{ active: !isPostView}">Opinie</span>
                 </li>
             </ul>
         </div>
 
         <div v-if="isPostView && isProfileMine" class="row mx-4 py-2">
-            <new-post v-if="profile" @refresh:posts="getPosts"/>
+            <new-post :is-feed="false" v-if="profile" @refresh:posts="getPosts"/>
         </div>
 
         <div v-if="isPostView" class="row mx-4 py-2">
@@ -197,6 +197,7 @@ export default {
             }).then((response) => {
                 console.log(response.data)
                 let newOpinions = response.data['content'].filter(op => op.giver.id !== this.$store.getters.getProfileId)
+                console.log('opiniossss', newOpinions)
                 this.opinionNavigation.totalElements = response.data['totalElements']
                 if (!this.opinionNavigation.last && isScroll)
                     this.opinions = this.opinions.concat(newOpinions)
@@ -258,16 +259,23 @@ export default {
                 }
             }
         },
-        changeView() {
-            this.isPostView = !this.isPostView
+        changeView(type) {
+            if (type === 'posts')
+                this.isPostView = true
+            else if (type === 'opinions')
+                this.isPostView = false
         }
     },
 
     created() {
         this.getProfile()
-        this.getPosts(this.postNavigation.nextPage, false, 0)
-        this.getOpinions(this.postNavigation.nextPage, false)
-        this.getMyOpinionToSpecialist()
+        this.getPosts(this.postNavigation.nextPage, false, 0).then(() => {
+            if (this.isSpecialist) {
+                console.log('jestem spacjelista')
+                this.getOpinions(this.opinionNavigation.nextPage, false)
+                this.getMyOpinionToSpecialist()
+            }
+        })
     },
     mounted() {
         this.scroll()

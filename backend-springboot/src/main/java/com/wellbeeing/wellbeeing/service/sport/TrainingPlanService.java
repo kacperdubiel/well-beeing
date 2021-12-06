@@ -1,6 +1,7 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
@@ -45,11 +46,13 @@ public interface TrainingPlanService {
 
     TrainingPlanRequest changeTrainingPlanRequestStatus(String userName, long requestId, String newStatus) throws NotFoundException;
 
+    TrainingPlanRequest getTrainingPlanRequest(long requestId, String userName) throws NotFoundException, ForbiddenException;
+
     TrainingPlanRequest sendRequestToTrainer(UUID trainerId, String submitterName, String message, LocalDateTime beginningDate) throws NotFoundException;
 
     TrainingPosition updateTrainingPositionStatus(Long positionId, String newStatus, String userName) throws IllegalArgumentException, NotFoundException;
 
     TrainingPlan partialUpdateTrainingPlan(TrainingPlan trainingPlan);
 
-    long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate) throws NotFoundException, IllegalArgumentException;
+    long generateTrainingPlanForMe(List<Integer> trainingsPerDay, long activityGoalId, Profile profile, EWorkoutStrategy strategy, Date beginningDate, String generatorStrategy) throws NotFoundException, IllegalArgumentException;
 }

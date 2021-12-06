@@ -123,6 +123,13 @@ public class SportReportController {
         return new ResponseEntity<>(newReport, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/date")
+    public ResponseEntity<?> addReportOnDate(@RequestBody @NonNull LocalDate date, Principal principal) throws NotFoundException, ConflictException {
+        UUID profileId = userService.findUserIdByUsername(principal.getName());
+        SportReport newReport = sportReportService.addSportReportForProfileByDateAndProfileId(date, profileId);
+        return new ResponseEntity<>(newReport, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/{date}/date")
     public ResponseEntity<?> getReportByDate(Principal principal,
                                              @PathVariable("date") LocalDate date) throws NotFoundException {

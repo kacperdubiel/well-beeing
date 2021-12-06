@@ -77,10 +77,6 @@ public class Profile {
     @JoinColumn(name = "profile_card_id", referencedColumnName = "id")
     private ProfileCard profileCard;
 
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Settings settings;
-
     @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private List<Measure> measures;

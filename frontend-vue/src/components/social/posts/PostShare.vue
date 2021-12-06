@@ -18,7 +18,7 @@
                             <div class="col">
                                 <div class="grow-wrap">
                                     <textarea
-                                        :id="sharedPostId"
+                                        :id="sharedId"
                                         class="textarea js-autoresize w-100"
                                         v-model="sharingPost.postContent"
                                         placeholder="Jeśli chcesz, dodaj opis do posta..."
@@ -54,16 +54,26 @@ export default {
         }
     },
     props: {
-        sharedPostId: Number,
+        sharedId: Number,
+        sharingType: String
     },
     methods: {
         sharePost() {
-            const url = `${this.apiURL}post/${this.sharedPostId}/share`
+            let url;
+            if (this.sharingType === 'post')
+                url = `${this.apiURL}post/${this.sharedId}/share`
+            else if (this.sharingType === 'nutrition-plan')
+                url = `${this.apiURL}nutrition-plan/${this.sharedId}/share`
+            else if (this.sharingType === 'training-plan')
+                url = `${this.apiURL}training-plan/${this.sharedId}/share`
             const token = this.$store.getters.getToken;
             this.axios.post(url, this.sharingPost, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 console.log(response)
                 document.getElementById('share-close').click();
-                this.$parent.$parent.getPosts(0, false, 0)
+                if (this.$route.name === 'FeedView')
+                    this.$parent.$parent.getPostsFeedWithNewPost(0, false, response.data['postId'])
+                else if (this.sharingType === 'post')
+                    this.$parent.$parent.getPosts(0, false, 0)
             }).catch(error => {
                 console.log(error.response)
             });
@@ -71,10 +81,10 @@ export default {
     },
     mounted() {
         setResizeListeners(this.$el, ".js-autoresize")
-        document.getElementById(String(this.sharedPostId)).style.height = '80px'
+        document.getElementById(String(this.sharedId)).style.height = '80px'
     },
     watch: {
-        sharedPostId: function () {
+        sharedId: function () {
             this.sharingPost.postContent = ""
         }
     }

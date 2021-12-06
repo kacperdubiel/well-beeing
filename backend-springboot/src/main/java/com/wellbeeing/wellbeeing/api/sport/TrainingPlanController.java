@@ -3,6 +3,7 @@ package com.wellbeeing.wellbeeing.api.sport;
 import com.itextpdf.text.Document;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
@@ -141,10 +142,17 @@ public class TrainingPlanController {
                 request.getActivityGoalId(),
                 requestingUser.getProfile(),
                 request.getStrategy(),
-                request.getBeginningDate()
+                request.getBeginningDate(),
+                "random"
         );
 
         return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @GetMapping("/request/{id}")
+    public ResponseEntity<?> getTrainingPlanRequest(@PathVariable(value = "id") long requestId, Principal principal) throws NotFoundException, ForbiddenException {
+        TrainingPlanRequest request = trainingPlanService.getTrainingPlanRequest(requestId, principal.getName());
+        return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
     @PostMapping("/send-request")
