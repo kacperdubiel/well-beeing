@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post findOriginalPost(Post post) {
-        if (post.isSharing())
+        if (post.isSharing() && post.getOriginalPost() != null && !post.getOriginalPost().isDeleted())
             return findOriginalPost(post.getOriginalPost());
         else
             return post;

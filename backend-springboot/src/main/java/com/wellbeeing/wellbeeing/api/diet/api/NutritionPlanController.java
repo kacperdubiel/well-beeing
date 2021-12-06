@@ -166,16 +166,16 @@ public class NutritionPlanController {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         NutritionPlan nutritionPlan = nutritionPlanService.getNutritionPlanById(planId);
 
-        Profile userProfile = profileService.getProfileById(profileId);
-        Profile creatorProfile = nutritionPlan.getCreatorProfile();
-
-        ProfileConnection pc = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(creatorProfile, userProfile, EConnectionType.WITH_DIETICIAN);
-        if ((!profileId.equals(nutritionPlan.getCreatorProfile().getId()))){
-            if(((nutritionPlan.getOwnerProfile() == null) || (!profileId.equals(nutritionPlan.getOwnerProfile().getId())))) {
-                if (pc == null || !nutritionPlan.isMain())
-                    throw new ForbiddenException("Access to nutrition plan with id: " + planId + " forbidden");
-            }
-        }
+//        Profile userProfile = profileService.getProfileById(profileId);
+//        Profile creatorProfile = nutritionPlan.getCreatorProfile();
+//
+//        ProfileConnection pc = profileConnectionService.getProfileConnectionByProfileAndConnectedWithAndTypeAndIsAccepted(creatorProfile, userProfile, EConnectionType.WITH_DIETICIAN);
+//        if ((!profileId.equals(nutritionPlan.getCreatorProfile().getId()))){
+//            if(((nutritionPlan.getOwnerProfile() == null) || (!profileId.equals(nutritionPlan.getOwnerProfile().getId())))) {
+//                if (pc == null || !nutritionPlan.isMain())
+//                    throw new ForbiddenException("Access to nutrition plan with id: " + planId + " forbidden");
+//            }
+//        }
         return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
     }
 

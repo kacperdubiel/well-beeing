@@ -48,6 +48,11 @@
                                   @update:items="updateItems"  @set:training="setTraining"/>
             </div>
         </div>
+        <div class="row text-start pb-3" v-else-if="this.postSource.originalNutritionPlan">
+            <div class="col">
+                <nutrition-plan-component :userId="null" :from-post="true" :nutritionPlanId="this.postSource.originalNutritionPlan.id"/>
+            </div>
+        </div>
         <div class="d-flex flex-row px-4 py-2 align-items-center">
 
             <div class="d-flex flex-column text-start" v-if="this.postSource.likes.length > 0">
@@ -116,6 +121,7 @@ import CommentsList from "@/components/social/comments/CommentsList";
 import SharedPost from "@/components/social/posts/SharedPost";
 import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
+import NutritionPlanComponent from "@/components/diet/plans/NutritionPlanComponent";
 export default {
     name: "Post",
     props: {
@@ -126,7 +132,8 @@ export default {
         NewComment,
         CommentsList,
         SharedPost,
-        TrainingDetails
+        TrainingDetails,
+        NutritionPlanComponent
     },
     data() {
         return {

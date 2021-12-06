@@ -5,15 +5,17 @@
         </div>
         <div :hidden="!this.dataLoaded" class="container-fluid">
             <nutrition-plan-component :userId="null" @positions:updated="onPositionsUpdated" :nutritionPlanId="this.actualPlanId"/>
-            <user-nutrition-plans-list-component @plans:fetched="plansFetched" :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="false" @plan:marked="onPlanMarked" @main:found="onMainFound" :dieticianView="false" :suggested="false" @load:plan="changePlan"/>
-            <user-nutrition-plans-list-component @plans:fetched="plansFetched" :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="this.mainFound" @plan:marked="onPlanMarked" :dieticianView="false" :suggested="true" @load:plan="changePlan"/>
+            <user-nutrition-plans-list-component @plans:fetched="plansFetched" :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="false" @plan:marked="onPlanMarked" @main:found="onMainFound" :dieticianView="false" :suggested="false" @load:plan="changePlan" @share:plan="setSharePlanId"/>
+            <user-nutrition-plans-list-component @plans:fetched="plansFetched" :updateAfterChoice="this.actualPlanId" :updateAfterMark="this.updateAfterMark" :mainFound="this.mainFound" @plan:marked="onPlanMarked" :dieticianView="false" :suggested="true" @load:plan="changePlan" @share:plan="setSharePlanId"/>
         </div>
+        <post-share :shared-id="sharePlanId" sharing-type="nutrition-plan"/>
     </div>
 </template>
 
 <script>
 import NutritionPlanComponent from "@/components/diet/plans/NutritionPlanComponent.vue"
 import UserNutritionPlansListComponent from "@/components/diet/plans/UserNutritionPlansListComponent"
+import PostShare from "@/components/social/posts/PostShare";
 export default {
     name: "UserNutritionPlansView",
     data(){
@@ -23,14 +25,19 @@ export default {
             mainFound: false,
             updateAfterMark: 0,
             dataLoaded: false,
-            updatesNumber: 0
+            updatesNumber: 0,
+            sharePlanId: String
         }
     },
     components: {
         NutritionPlanComponent,
-        UserNutritionPlansListComponent
+        UserNutritionPlansListComponent,
+        PostShare
     },
     methods: {
+        setSharePlanId(planId) {
+            this.sharePlanId = planId
+        },
         onPlanMarked(){
             this.updateAfterMark = this.updateAfterMark+1
         },

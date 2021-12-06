@@ -35,9 +35,14 @@
                         <p style="margin:0px;" v-if="this.suggested">{{plan.creatorProfile.firstName}} {{plan.creatorProfile.lastName}}</p>
                     </td>
                     <td class="col-sm-2" style="text-align: end;">
+                        <button class="btn-icon-panel-diet" @click="handleShare(plan.id)"
+                                data-bs-toggle="modal" data-bs-target="#postShareModal">
+                            <font-awesome-icon :icon="['fa', 'share-square']"/>
+                        </button>
                         <button v-if="!dieticianView && !plan.main" @click="this.markNutritionPlanAsMain(plan)" class="btn-icon-panel-diet"><font-awesome-icon :icon="['fa', 'home']"/></button>
                         <button v-if="!dieticianView && plan.main" @click="this.markNutritionPlanAsMain(plan)" class="btn-icon-panel-diet"><font-awesome-icon :icon="['fa', 'times']"/></button>
-                        <button @click="this.setPlanToDelete(plan)" class="btn-icon-panel-diet" data-bs-toggle="modal" :data-bs-target="'#planDeleteModal_' + this.suggested"><font-awesome-icon :icon="['fa', 'trash']"/></button>          
+                        <button @click="this.setPlanToDelete(plan)" class="btn-icon-panel-diet" data-bs-toggle="modal" :data-bs-target="'#planDeleteModal_' + this.suggested"><font-awesome-icon :icon="['fa', 'trash']"/></button>
+
                     </td>
                 </tr>
             </tbody>
@@ -194,6 +199,9 @@ export default {
         this.getNutritionPlans()
     },
     methods: {
+        handleShare(planId) {
+            this.$emit('share:plan', planId)
+        },
         getNutritionPlans(){
             if(!this.dieticianView)
                 this.getUserNutritionPlans()
