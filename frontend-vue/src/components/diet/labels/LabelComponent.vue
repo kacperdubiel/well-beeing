@@ -18,7 +18,7 @@
         <div class="title start-flex">
             <h6 class="title">ZALECANA DLA CHORÓB / ALERGII / STANÓW FIZYCZNYCH</h6>
         </div>
-        <div>
+        <div v-if="label.labeledAilments != undefined && label.labeledAilments.length != 0">
             <table style="text-align: start; color: var(--GREY3);" class="table table-hover table-borderless">
                 <thead>
                     <th class="col-lg-4">Nazwa</th>
@@ -38,7 +38,7 @@
         <div class="title start-flex">
             <h6 class="title">ZALECANA DLA DIET</h6>
         </div>
-        <div>
+        <div v-if="label.labeledDiets != undefined && label.labeledDiets.length != 0">
             <table style="text-align: start; color: var(--GREY3);" class="table table-hover table-borderless">
                 <thead>
                     <th class="col-lg-4">Nazwa</th>

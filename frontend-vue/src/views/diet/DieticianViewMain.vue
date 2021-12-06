@@ -23,7 +23,7 @@
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'DieticianNutritionPlansView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianNutritionPlansView'}">Plan</span>
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianNutritionPlansView'}">Plany</span>
                 </router-link>
             </li>
         </ul>

@@ -216,7 +216,7 @@ export default {
     .card-elem-container {
         display: flex;
         border-top: 1pt solid gray;
-        height: 60px;
+        min-height: 60px;
     }
     .card-elem-container-row {
         align-items: flex-end;

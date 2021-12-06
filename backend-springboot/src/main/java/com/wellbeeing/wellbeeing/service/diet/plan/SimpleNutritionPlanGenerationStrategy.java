@@ -53,7 +53,7 @@ public class SimpleNutritionPlanGenerationStrategy implements NutritionPlanGener
                     if(finalDietLabels.size() != 0){
                         dishMealType = dishMealTypeDAO.findAllByMealType(mealType).stream()
                                 .filter(dmt ->
-                                        (Math.abs(dmt.getDish().getDerivedNutritionalValues().getDerivedCalories() - sugg.getNumberOfCalories()) < CALORIES_TOLERANCE) && (dmt.getDish().getAllowedForNutritionLabels().containsAll(finalDietLabels)))
+                                        (Math.abs(dmt.getDish().getDerivedNutritionalValues().getDerivedCalories() - sugg.getNumberOfCalories()) < CALORIES_TOLERANCE) && (dmt.getDish().getAllowedForNutritionLabels().stream().anyMatch(finalDietLabels::contains)))
                                 .findAny()
                                 .orElse(null);
                     }
