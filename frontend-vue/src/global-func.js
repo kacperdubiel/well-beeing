@@ -150,6 +150,11 @@ export const func_global = {
             return moment(String(date)).format('DD/MM/YYYY HH:mm')
         }
     },
+    formatDateTimeFeed(date) {
+        if (date) {
+            return moment(String(date)).format('YYYY/MM/DD HH:mm')
+        }
+    },
     formatDateDatePicker(date) {
         if (date) {
             return moment(String(date)).format('YYYY-MM-DD')

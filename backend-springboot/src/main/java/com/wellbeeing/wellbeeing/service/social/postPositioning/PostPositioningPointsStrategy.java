@@ -85,7 +85,7 @@ public class PostPositioningPointsStrategy implements PostPositioningStrategy {
             System.out.printf("ID:%d\n", s.getPostId());
         });
 
-        Page<Post> page = new PageImpl<>(posts, pageable, posts.size());
+        Page<Post> page = new PageImpl<>(posts, pageable, pageable.getPageSize());
         return page;
     }
 
