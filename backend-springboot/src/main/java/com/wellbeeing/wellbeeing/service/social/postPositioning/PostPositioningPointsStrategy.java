@@ -77,22 +77,12 @@ public class PostPositioningPointsStrategy implements PostPositioningStrategy {
 
         List<Post> posts = postsToShowScores.entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).map(Map.Entry::getKey).collect(Collectors.toList());
-        System.out.println("Wszytskie");
-        posts.forEach(s -> {
-            System.out.printf("ID:%d\n", s.getPostId());
-        });
-        System.out.println();
 
         int first = (int) (pageable.getOffset());
         int last = (int) (pageable.getOffset() + pageable.getPageSize());
         if (last > posts.size()-1)
             last = posts.size();
         List<Post> postsPage = posts.subList(first, last);
-        System.out.println("Strony");
-        postsPage.forEach(s -> {
-            System.out.printf("ID:%d\n", s.getPostId());
-        });
-        System.out.println();
 
         Page<Post> page = new PageImpl<>(postsPage, pageable, posts.size());
         return page;

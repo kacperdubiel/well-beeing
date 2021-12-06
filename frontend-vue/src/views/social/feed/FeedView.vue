@@ -48,9 +48,15 @@ export default {
                     console.log(error.response.status)
                 });
             })
+        },
+        getEditedPost(postId) {
+            const url = `${this.apiURL}post/${postId}`
+            const token = this.$store.getters.getToken;
 
-
-
+            return this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                const index = this.posts.findIndex((post => post.postId === postId));
+                this.posts[index] = response.data
+            })
         },
         getPostsFeed(page, isScroll) {
             let url = `${this.apiURL}posts/feed`
