@@ -63,7 +63,7 @@ export default {
                     this.postNavigation.nextPage = 0
                 }
 
-                this.loadedPost = true
+                this.loaded = true
                 this.postNavigation.last = response.data['last']
                 this.postNavigation.currentPage = response.data['number']
 
