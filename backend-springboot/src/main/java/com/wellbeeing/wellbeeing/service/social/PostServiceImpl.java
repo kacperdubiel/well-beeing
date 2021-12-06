@@ -3,7 +3,6 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
-import com.wellbeeing.wellbeeing.domain.social.EPrivacy;
 import com.wellbeeing.wellbeeing.domain.social.Post;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
 import com.wellbeeing.wellbeeing.repository.social.PostDAO;
@@ -135,8 +134,6 @@ public class PostServiceImpl implements PostService {
 
             if (field != null) {
                 field.setAccessible(true);
-                if (field.getType() == EPrivacy.class)
-                    v = EPrivacy.valueOf((String) v);
                 ReflectionUtils.setField(field, targetPost, v);
             }
         });

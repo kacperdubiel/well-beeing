@@ -26,8 +26,6 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String postContent;
     @Enumerated(EnumType.STRING)
-    @Column
-    private EPrivacy privSettings = EPrivacy.FOR_EVERYONE;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_id")
