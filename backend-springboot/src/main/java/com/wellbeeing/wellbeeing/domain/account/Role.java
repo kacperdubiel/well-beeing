@@ -1,13 +1,17 @@
 package com.wellbeeing.wellbeeing.domain.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
+@Builder
 @Entity
+@AllArgsConstructor
 @Table(name = "wb_role")
 public class Role implements GrantedAuthority {
 
