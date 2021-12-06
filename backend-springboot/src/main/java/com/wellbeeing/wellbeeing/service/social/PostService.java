@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 public interface PostService {
     Page<Post> getUsersPosts(Profile creatorParam, Pageable pageable);
@@ -17,6 +18,9 @@ public interface PostService {
 
     Post addPost(Post post, String creatorName) throws NotFoundException;
     Post sharePost(long postId, Post post, String creatorName) throws NotFoundException;
+    Post shareNutritionPlan(UUID nutritionPlanId, Post post, String creatorName) throws NotFoundException;
+    Post shareTrainingPlan(long trainingPlanId, Post post, String creatorName) throws NotFoundException;
+
     Post partialUpdatePost(long id, Map<String, Object> fields, String updaterName) throws NotFoundException, ForbiddenException;
 
     Post updatePost(long id, Post post, String updaterName) throws NotFoundException, ForbiddenException;

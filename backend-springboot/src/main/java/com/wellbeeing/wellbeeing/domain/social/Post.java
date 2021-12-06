@@ -2,6 +2,8 @@ package com.wellbeeing.wellbeeing.domain.social;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +42,15 @@ public class Post {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "original_post_id")
     private Post originalPost = null;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "original_nutrition_plan_id")
+    private NutritionPlan originalNutritionPlan = null;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "original_training_plan_id")
+    private TrainingPlan originalTrainingPlan = null;
+
     @JsonIgnore
     @OneToMany(mappedBy = "originalPost", cascade = CascadeType.ALL)
     private Set<Post> sharingPosts = new HashSet<>();
@@ -60,6 +71,22 @@ public class Post {
         this.creator = creator;
         this.isSharing = true;
         this.originalPost = originalPost;
+    }
+
+    public Post(String postContent, Profile creator, NutritionPlan originalNutritionPlan) {
+        this.postImgPath = null;
+        this.postContent = postContent;
+        this.creator = creator;
+        this.isSharing = true;
+        this.originalNutritionPlan = originalNutritionPlan;
+    }
+
+    public Post(String postContent, Profile creator, TrainingPlan originalTrainingPlan) {
+        this.postImgPath = null;
+        this.postContent = postContent;
+        this.creator = creator;
+        this.isSharing = true;
+        this.originalTrainingPlan = originalTrainingPlan;
     }
 
     public void increaseSharingCounter() {

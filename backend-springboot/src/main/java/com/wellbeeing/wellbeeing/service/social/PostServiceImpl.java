@@ -1,13 +1,17 @@
 package com.wellbeeing.wellbeeing.service.social;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.social.Post;
+import com.wellbeeing.wellbeeing.domain.sport.TrainingPlan;
 import com.wellbeeing.wellbeeing.repository.account.UserDAO;
+import com.wellbeeing.wellbeeing.repository.diet.nutrition_plan.NutritionPlanDAO;
 import com.wellbeeing.wellbeeing.repository.social.CommentDAO;
 import com.wellbeeing.wellbeeing.repository.social.LikeDAO;
 import com.wellbeeing.wellbeeing.repository.social.PostDAO;
+import com.wellbeeing.wellbeeing.repository.sport.TrainingPlanDAO;
 import com.wellbeeing.wellbeeing.service.social.postPositioning.PostPositioningPointsStrategy;
 import com.wellbeeing.wellbeeing.service.social.postPositioning.PostPositioningStrategy;
 import com.wellbeeing.wellbeeing.service.sport.alg.TrainingPlanGeneratorCSPStrategy;
@@ -22,6 +26,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Service("postService")
 public class PostServiceImpl implements PostService {
@@ -29,15 +34,21 @@ public class PostServiceImpl implements PostService {
     private final UserDAO userDAO;
     private final LikeDAO likeDAO;
     private final CommentDAO commentDAO;
+    private final NutritionPlanDAO nutritionPlanDAO;
+    private final TrainingPlanDAO trainingPlanDAO;
 
     public PostServiceImpl(@Qualifier("postDAO") PostDAO postDAO,
                            @Qualifier("userDAO") UserDAO userDAO,
                            @Qualifier("likeDAO") LikeDAO likeDAO,
-                           @Qualifier("commentDAO") CommentDAO commentDAO) {
+                           @Qualifier("commentDAO") CommentDAO commentDAO,
+                           @Qualifier("nutritionPlanDAO") NutritionPlanDAO nutritionPlanDAO,
+                           @Qualifier("trainingPlanDAO") TrainingPlanDAO trainingPlanDAO) {
         this.postDAO = postDAO;
         this.userDAO = userDAO;
         this.likeDAO = likeDAO;
         this.commentDAO = commentDAO;
+        this.nutritionPlanDAO = nutritionPlanDAO;
+        this.trainingPlanDAO = trainingPlanDAO;
     }
 
     @Override
@@ -93,6 +104,48 @@ public class PostServiceImpl implements PostService {
         sharedPost.increaseSharingCounter();
 
         postDAO.save(sharedPost);
+        postDAO.save(sharingPost);
+        return sharingPost;
+    }
+
+    @Override
+    public Post shareNutritionPlan(UUID nutritionPlanId, Post post, String creatorName) throws NotFoundException {
+        User user = userDAO.findUserByEmail(creatorName).orElse(null);
+
+        if (user == null)
+        {
+            throw new UsernameNotFoundException("User: " + creatorName + " not found");
+        }
+
+        NutritionPlan sharedPlan = nutritionPlanDAO.findById(nutritionPlanId).orElse(null);
+
+        if (sharedPlan == null)
+            throw new NotFoundException(String.format("There's no nutrition plan with id=%s", nutritionPlanId));
+
+        Post sharingPost = new Post(post.getPostContent(), user.getProfile(), sharedPlan);
+
+        nutritionPlanDAO.save(sharedPlan);
+        postDAO.save(sharingPost);
+        return sharingPost;
+    }
+
+    @Override
+    public Post shareTrainingPlan(long trainingPlanId, Post post, String creatorName) throws NotFoundException {
+        User user = userDAO.findUserByEmail(creatorName).orElse(null);
+
+        if (user == null)
+        {
+            throw new UsernameNotFoundException("User: " + creatorName + " not found");
+        }
+
+        TrainingPlan sharedPlan = trainingPlanDAO.findById(trainingPlanId).orElse(null);
+
+        if (sharedPlan == null)
+            throw new NotFoundException(String.format("There's no training plan with id=%s", trainingPlanId));
+
+        Post sharingPost = new Post(post.getPostContent(), user.getProfile(), sharedPlan);
+
+        trainingPlanDAO.save(sharedPlan);
         postDAO.save(sharingPost);
         return sharingPost;
     }

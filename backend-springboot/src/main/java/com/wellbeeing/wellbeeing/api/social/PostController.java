@@ -91,6 +91,18 @@ public class PostController {
         return new ResponseEntity<>(sharingPost, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/nutrition-plan/{planId}/share")
+    public ResponseEntity<?> shareNutritionPlan(@PathVariable UUID planId, @RequestBody @NonNull Post post, Principal principal) throws NotFoundException {
+        Post sharingPost = postService.shareNutritionPlan(planId, post, principal.getName());
+        return new ResponseEntity<>(sharingPost, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/training-plan/{planId}/share")
+    public ResponseEntity<?> shareTrainingPlan(@PathVariable long planId, @RequestBody @NonNull Post post, Principal principal) throws NotFoundException {
+        Post sharingPost = postService.shareTrainingPlan(planId, post, principal.getName());
+        return new ResponseEntity<>(sharingPost, HttpStatus.OK);
+    }
+
     @PatchMapping(path = "/post/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePost(@PathVariable(value = "id") long postId, @RequestBody Map<String, Object> fields, Principal principal) throws NotFoundException, ForbiddenException {
         Post newPost = postService.partialUpdatePost(postId, fields, principal.getName());
