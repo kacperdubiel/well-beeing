@@ -5,6 +5,7 @@ import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.domain.diet.calculation.ProfileDietCalculation;
 import com.wellbeeing.wellbeeing.domain.sport.ActivityGoal;
 import com.wellbeeing.wellbeeing.domain.sport.EWorkoutStrategy;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;

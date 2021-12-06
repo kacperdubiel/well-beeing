@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class TrainingPlanGeneratorRandomStrategy implements TrainingPlanGeneratorStrategy {
     TrainingDAO trainingDAO;
     TrainingPlanDAO trainingPlanDAO;
