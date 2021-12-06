@@ -4,6 +4,7 @@ import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.TrainerProfile;
 import com.wellbeeing.wellbeeing.domain.account.User;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.IllegalArgumentException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.*;
@@ -263,6 +264,22 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
             return editedRequest;
         } else
             throw new NotFoundException("You're not connected to this request! You can't edit it!");
+    }
+
+    @Override
+    public TrainingPlanRequest getTrainingPlanRequest(long requestId, String userName) throws NotFoundException, ForbiddenException {
+        User user = userDAO.findUserByEmail(userName).orElse(null);
+        if (user == null)
+            throw new NotFoundException(String.format("User with name=%s doesn't exist", userName));
+        TrainingPlanRequest foundRequest = trainingPlanRequestDAO.findById(requestId).orElse(null);
+        if (foundRequest == null)
+            throw new NotFoundException(String.format("Request with id=%d doesn't exist", requestId));
+
+        if (foundRequest.getSubmitter() != user.getProfile() && foundRequest.getTrainer().getUserProfile() != user.getProfile())
+            throw new ForbiddenException("You have no permission to get that request! You must be the submitter or trainer!");
+
+
+        return foundRequest;
     }
 
     @Override

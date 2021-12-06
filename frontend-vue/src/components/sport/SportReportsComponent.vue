@@ -3,7 +3,8 @@
         <div class="add-exercise row my-2 align-items-center">
             <span class="h3 col-8 offset-2 text-end justify-content-end">Dodaj</span>
             <span class="col-2 float-end button-icon">
-                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon  mx-4" data-bs-target="#addExerciseModal"
+                <font-awesome-icon :icon="['fa', 'plus-circle']" class="icon white-bg-circle mx-4"
+                                   data-bs-target="#addExerciseModal"
                                    data-bs-toggle="modal" @click="addNewReportForToday"/>
             </span>
         </div>
@@ -226,4 +227,13 @@ span {
     -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
 }
 
+.white-bg-circle {
+    background: radial-gradient(white 50%, transparent 0%);
+}
+
+.button-icon {
+    cursor: pointer;
+    color: var(--SPORT);
+    background-color: transparent;
+}
 </style>

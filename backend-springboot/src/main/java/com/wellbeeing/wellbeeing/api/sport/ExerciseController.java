@@ -2,6 +2,7 @@ package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsRequest;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddLabelWithAilmentsRequest;
@@ -75,16 +76,18 @@ public class ExerciseController {
 
     @PostMapping(path = "")
     @RolesAllowed(ERole.Name.ROLE_TRAINER)
-    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> addExercise(@RequestBody @NonNull AddExerciseWithLabelsRequest request, Principal principal) throws NotFoundException, ConflictException {
         Exercise createdExercise;
         createdExercise = exerciseService.addExercise(request.getExercise(), principal.getName());
-        request.getLabelsIds().forEach(labelId -> {
-            try {
-                exerciseService.addLabelToExerciseByLabelId(createdExercise.getExerciseId(), labelId);
-            } catch (NotFoundException e) {
-                e.printStackTrace();
-            }
-        });
+        if (request.getLabelsIds() != null) {
+            request.getLabelsIds().forEach(labelId -> {
+                try {
+                    exerciseService.addLabelToExerciseByLabelId(createdExercise.getExerciseId(), labelId);
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
         if (createdExercise == null) {
             return new ResponseEntity<>("Couldn't create exercise!", HttpStatus.CONFLICT);
         }

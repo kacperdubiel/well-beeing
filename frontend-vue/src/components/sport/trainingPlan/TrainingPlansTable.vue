@@ -23,7 +23,7 @@
                     <td>{{ plan.trainingPositions.length }}</td>
                     <td>{{ this.$func_global.mapTrainingPlanStatus(plan.planStatus) }}</td>
                     <td>{{ plan.caloriesBurned }}</td>
-                    <td>
+                    <td class="text-end">
                         <button
                             v-if="!isActive && this.$func_global.getWeekRangeFromMonday(new Date(plan.beginningDate)) === this.$func_global.getWeekRangeFromMonday(moment().clone().isoWeekday(1).toDate())"
                             class="btn-white"
