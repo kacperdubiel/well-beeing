@@ -97,7 +97,7 @@
                         <thead>
                         <tr>
                             <th scope="col">Imię i nazwisko</th>
-                            <th scope="col">Ocena</th>
+                            <th scope="col" class="text-center">Ocena</th>
                             <th v-if="connectionType === 'WITH_DOCTOR'" class="w-15" scope="col">Specjalizacja</th>
                             <th scope="col"></th>
                         </tr>
@@ -112,9 +112,12 @@
                                         {{ specialist.firstName }} {{ specialist.lastName }}
                                     </span>
                             </td>
-                            <td>
+                            <td v-if="specialist.opinionsAverage !== 0" class="text-center">
                                 <font-awesome-icon :icon="['fa', 'star']" id="star"/>
                                 {{ specialist.opinionsAverage }}/5
+                            </td>
+                            <td v-else class="text-center">
+                                Brak opinii
                             </td>
                             <td v-if="connectionType === 'WITH_DOCTOR'">
                                 <ul v-for="spec in specialist.doctorProfile.specializations"
