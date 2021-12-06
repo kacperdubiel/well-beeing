@@ -6,11 +6,10 @@
                 <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Nazwa</th>
-                    <th scope="col">Typ</th>
-                    <th scope="col">kcal/h</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
+                    <th class="text-start">Nazwa</th>
+                    <th class="text-start" scope="col">Typ</th>
+                    <th class="text-end" scope="col">kcal/h</th>
+                    <th v-if="!inModal" scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -18,17 +17,21 @@
                     v-bind:class="{'selected-exercise' : (mode === 'toTraining' && this.$store.getters.getExerciseToTrainingId === ex.exerciseId) }"
                     v-on:click="mode === 'toTraining' ? this.$store.commit('setExerciseToTrainingId', ex.exerciseId) : null">
                     <td>{{ ex.exerciseId }}</td>
-                    <td>{{ ex.name }}</td>
-                    <td>{{ this.$func_global.mapExerciseType(ex.exerciseType) }}</td>
-                    <td>{{ ex.caloriesBurned }}</td>
-                    <td>
+                    <td class="text-start">{{ ex.name }}
+                        <font-awesome-icon v-if="ex.pathToVideoInstruction != null" :icon="['fa', 'video']"/>
+                    </td>
+                    <td class="text-start">{{ this.$func_global.mapExerciseType(ex.exerciseType) }}</td>
+                    <td class="text-end">{{ ex.caloriesBurned }}</td>
+                    <td v-if="!inModal" class="text-end">
+                        <button
+                            v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER') && this.$store.getters.getProfileId === ex.creatorId"
+                            class="btn-white mx-2"
+                            @click="deleteExercise(ex.exerciseId)">
+                            <font-awesome-icon :icon="['fa', 'trash']"/>
+                        </button>
                         <button class="btn-white mx-2" data-bs-toggle="modal" href="#infoExerciseModal"
                                 @click="openInfoModal(ex)">
                             <font-awesome-icon :icon="['fa', 'info']"/>
-                        </button>
-                        <button v-if="this.$store.getters.getRoles.includes('ROLE_TRAINER')" class="btn-white mx-2"
-                                @click="deleteExercise(ex.exerciseId)">
-                            <font-awesome-icon :icon="['fa', 'trash']"/>
                         </button>
                     </td>
                 </tr>
@@ -62,7 +65,8 @@ export default {
     },
     props: {
         exercisesSource: Array,
-        mode: String
+        mode: String,
+        inModal: Boolean
     },
     methods: {
         submitEditExercise(exercise, labels) {

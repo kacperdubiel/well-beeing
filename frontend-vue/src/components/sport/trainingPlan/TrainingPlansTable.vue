@@ -24,6 +24,12 @@
                     <td>{{ this.$func_global.mapTrainingPlanStatus(plan.planStatus) }}</td>
                     <td>{{ plan.caloriesBurned }}</td>
                     <td>
+                        <button
+                            v-if="!isActive && this.$func_global.getWeekRangeFromMonday(new Date(plan.beginningDate)) === this.$func_global.getWeekRangeFromMonday(moment().clone().isoWeekday(1).toDate())"
+                            class="btn-white"
+                            @click="setActive(plan)">
+                            <font-awesome-icon :icon="['fa', 'check']"/>
+                        </button>
                         <button class="btn-white mx-2" data-bs-toggle="modal" href="#infoPlanModal"
                                 @click="openInfoModal(plan)">
                             <font-awesome-icon :icon="['fa', 'info']"/>
@@ -59,7 +65,8 @@ export default {
         }
     },
     props: {
-        trainingPlansSource: Object
+        trainingPlansSource: Object,
+        isActive: Boolean
     },
     methods: {
         moment() {
@@ -71,6 +78,9 @@ export default {
         openInfoModal(plan) {
             this.trainingPlan = plan;
             this.$emit('update:items')
+        },
+        setActive(plan) {
+            this.$emit('set:active', plan)
         }
     }
 }

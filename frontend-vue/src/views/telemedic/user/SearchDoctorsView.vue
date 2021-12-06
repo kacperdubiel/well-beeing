@@ -1,6 +1,6 @@
 <template>
-    <div class="section-bg telemedic-section">
-        <search-specialist-component connection-type="WITH_DOCTOR"/>
+    <div>
+        <search-specialist-component connection-type="WITH_DOCTOR" v-on:open-profile="openProfile"/>
     </div>
 </template>
 
@@ -18,7 +18,9 @@ export default {
         }
     },
     methods: {
-
+        openProfile(profileId){
+            this.$router.push({ name: 'ProfileView', params: { profileId: profileId } });
+        },
     },
     created(){
 

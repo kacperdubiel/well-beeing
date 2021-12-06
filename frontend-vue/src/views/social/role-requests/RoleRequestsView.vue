@@ -1,6 +1,6 @@
 <template>
     <div class="section-bg">
-        <div v-if="!['ROLE_TRAINER', 'ROLE_DOCTOR', 'ROLE_DIETICIAN'].every(elem => this.$store.getters.getRoles.includes(elem))">
+        <div v-if="!['ROLE_TRAINER', 'ROLE_DIETICIAN'].every(elem => this.$store.getters.getRoles.includes(elem)) || this.possibleSpecializations.length !== 0">
             <div class="row">
                 <h4 class="pt-3">
                     Złóż prośbę o weryfikację konta specjalisty
@@ -95,6 +95,9 @@
             <div class="col-11">
                 <role-requests-table :role-requests-source="roleRequests" :key="roleRequests" @cancel:roleRequest="cancelRoleRequest"/>
             </div>
+        </div>
+        <div class="row justify-content-center mt-5" v-else>
+            <span>Nie posiadasz złożonych próśb</span>
         </div>
 
     </div>

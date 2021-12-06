@@ -53,17 +53,6 @@ public class TrainingPlan {
     @Transient
     private long requestId;
 
-    public TrainingPlan(Profile owner, int year, int week, String details) {
-        this.owner = owner;
-        this.details = details;
-    }
-
-    public TrainingPlan(Profile owner, int year, int week, String details, Profile creator) {
-        this.owner = owner;
-        this.details = details;
-        this.creator = creator;
-    }
-
     @PostLoad
     public void PostLoad() {
         if (request != null)

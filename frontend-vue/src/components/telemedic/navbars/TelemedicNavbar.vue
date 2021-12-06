@@ -7,7 +7,8 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{ name: 'UserDoctorsView' }" class="nav-link" active-class="active">
+                <router-link :to="{ name: 'UserDoctorsView' }" class="nav-link" active-class="active"
+                             v-bind:class="{ active: this.$route.name === 'UserDoctorsView' || this.$route.name === 'SearchDoctorsView' }">
                     Lekarze
                 </router-link>
             </li>

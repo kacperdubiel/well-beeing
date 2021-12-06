@@ -6,7 +6,8 @@
         <div v-if="componentError === false">
             <div class="row">
                 <div class="col-1">
-                    <font-awesome-icon :icon="['fa', 'chevron-left']" size="2x" class="clickable" @click="$router.go(-1)"/>
+                    <font-awesome-icon :icon="['fa', 'chevron-left']" class="clickable" size="2x"
+                                       @click="$router.go(-1)"/>
                 </div>
                 <div class="col align-left">
                     <h3>
@@ -16,13 +17,14 @@
             </div>
             <div class="row mt-3">
                 <div class="col input-group">
-                    <input v-model="searchValue" @change="getSpecialists" type="text" class="form-control" placeholder="Wyszukaj...">
+                    <input v-model="searchValue" class="form-control" placeholder="Wyszukaj..." type="text"
+                           @change="getSpecialists">
                 </div>
             </div>
             <div v-if="connectionType === 'WITH_DOCTOR'" class="row mt-3">
                 <div class="col-10 col-md-7">
-                    <select class="form-select" v-model="selectedDoctorSpecialization">
-                        <option v-for="doctorSpec in doctorSpecializations" :value="doctorSpec" :key="doctorSpec.id">
+                    <select v-model="selectedDoctorSpecialization" class="form-select">
+                        <option v-for="doctorSpec in doctorSpecializations" :key="doctorSpec.id" :value="doctorSpec">
                             {{ doctorSpec.name }}
                         </option>
                     </select>
@@ -30,14 +32,15 @@
             </div>
 
             <!-- Modal - ConnectWithSpecialist -->
-            <div class="modal fade" id="connectWithSpecialistModal" tabindex="-1" aria-labelledby="connectWithSpecialistModalLabel" aria-hidden="true">
+            <div id="connectWithSpecialistModal" aria-hidden="true" aria-labelledby="connectWithSpecialistModalLabel"
+                 class="modal fade" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title ms-2" id="connectWithSpecialistModalLabel">
+                            <h5 id="connectWithSpecialistModalLabel" class="modal-title ms-2">
                                 <span>Zapisz się do specjalisty</span>
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                         </div>
                         <div class="modal-body">
                             <div class="container-fluid">
@@ -51,27 +54,28 @@
 
                                     <div class="row justify-content-end mt-3">
                                         <div class="col-3">
-                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2"
-                                                    :class="{
+                                            <button v-if="!connectionDone" :class="{
                                                     'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
                                                     'btn-panel-sport':connectionType === 'WITH_TRAINER',
                                                     'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
-                                                    data-bs-dismiss="modal">Anuluj</button>
+                                                    class="btn-panel-telemedic p-2"
+                                                    data-bs-dismiss="modal">Anuluj
+                                            </button>
                                         </div>
                                         <div class="col-3">
-                                            <button v-if="!connectionDone" class="btn-panel-telemedic p-2"
-                                                    :class="{
+                                            <button v-if="!connectionDone" :class="{
                                                     'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
                                                     'btn-panel-sport':connectionType === 'WITH_TRAINER',
                                                     'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    class="btn-panel-telemedic p-2"
                                                     @click="connectWithSpecialist">
                                                 <span>Zapisz</span>
                                             </button>
-                                            <button v-else class="btn-panel-telemedic p-2"
-                                                    :class="{
+                                            <button v-else :class="{
                                                     'btn-panel-telemedic':connectionType === 'WITH_DOCTOR',
                                                     'btn-panel-sport':connectionType === 'WITH_TRAINER',
                                                     'btn-panel-diet':connectionType === 'WITH_DIETICIAN'}"
+                                                    class="btn-panel-telemedic p-2"
                                                     data-bs-dismiss="modal">
                                                 <span>Zamknij</span>
                                             </button>
@@ -87,43 +91,47 @@
 
             <div class="row">
                 <div class="col-12">
-                    <table class="table specialists-table" :class="{'specialists-table':connectionType === 'WITH_DOCTOR',
-                                                'trainers-table':connectionType === 'WITH_TRAINER',
-                                                'dieticians-table':connectionType === 'WITH_DIETICIAN'}">
+                    <table :class="{'specialists-table':connectionType === 'WITH_DOCTOR',
+                                    'trainers-table':connectionType === 'WITH_TRAINER',
+                                    'dieticians-table':connectionType === 'WITH_DIETICIAN'}" class="table specialists-table">
                         <thead>
-                            <tr>
-                                <th scope="col">Imię i nazwisko</th>
-                                <th v-if="connectionType === 'WITH_DOCTOR'" scope="col" class="w-15">Specjalizacja</th>
-                                <th scope="col"></th>
-                            </tr>
+                        <tr>
+                            <th scope="col">Imię i nazwisko</th>
+                            <th scope="col">Ocena</th>
+                            <th v-if="connectionType === 'WITH_DOCTOR'" class="w-15" scope="col">Specjalizacja</th>
+                            <th scope="col"></th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="specialist in specialists" v-bind:key="specialist.id">
-                                <td>
-                                    <user-avatar-component :profileId="specialist.id"
-                                                           :height="40" :width="40"
-                                    />
-                                    <span class="mx-2">
+                        <tr v-for="specialist in specialists" v-bind:key="specialist.id">
+                            <td @click="$emit('open-profile', specialist.id)" class="clickable">
+                                <user-avatar-component :height="40"
+                                                       :profileId="specialist.id" :width="40"
+                                />
+                                <span class="mx-2">
                                         {{ specialist.firstName }} {{ specialist.lastName }}
                                     </span>
-                                </td>
-
-                                <td v-if="connectionType === 'WITH_DOCTOR'">
-                                    <ul v-for="spec in specialist.doctorProfile.specializations"
-                                        v-bind:key="spec.id"
-                                        class="specialization-list"
-                                    >
-                                        <li>{{ spec.name }}</li>
-                                    </ul>
-                                </td>
-                                <td class="align-right">
-                                    <button class="btn-white m-r-5 btn-hover"
-                                            data-bs-toggle="modal" data-bs-target="#connectWithSpecialistModal"
-                                            @click="selectSpecialist(specialist)">
-                                        Zapisz się
-                                    </button>
-                                </td>
-                            </tr>
+                            </td>
+                            <td>
+                                <font-awesome-icon :icon="['fa', 'star']" id="star"/>
+                                {{ specialist.opinionsAverage }}/5
+                            </td>
+                            <td v-if="connectionType === 'WITH_DOCTOR'">
+                                <ul v-for="spec in specialist.doctorProfile.specializations"
+                                    v-bind:key="spec.id"
+                                    class="specialization-list"
+                                >
+                                    <li>{{ spec.name }}</li>
+                                </ul>
+                            </td>
+                            <td class="align-right">
+                                <button class="btn-white m-r-5 btn-hover"
+                                        data-bs-target="#connectWithSpecialistModal" data-bs-toggle="modal"
+                                        @click="selectSpecialist(specialist)">
+                                    Zapisz się
+                                </button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -132,35 +140,37 @@
             <div v-if="this.navigation.totalPages > 0" class="row w-100 mt-3">
                 <nav>
                     <ul class="pagination justify-content-center my-auto">
-                        <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(), 'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
-                            <a class="page-link" @click="goToPage(0)" tabindex="-1" aria-disabled="true">
-                                <font-awesome-icon :icon="['fa', 'fast-backward']" />
+                        <li class="page-item telemedic-page"
+                            v-bind:class="{'disabled' : isPageFirst(), 'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
+                            <a aria-disabled="true" class="page-link" tabindex="-1" @click="goToPage(0)">
+                                <font-awesome-icon :icon="['fa', 'fast-backward']"/>
                             </a>
                         </li>
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageFirst(),
                         'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
-                            <a class="page-link" @click="goToPage(navigation.currentPage-1)" tabindex="-1" aria-disabled="true">
-                                <font-awesome-icon :icon="['fa', 'chevron-left']" />
+                            <a aria-disabled="true" class="page-link" tabindex="-1"
+                               @click="goToPage(navigation.currentPage-1)">
+                                <font-awesome-icon :icon="['fa', 'chevron-left']"/>
                             </a>
                         </li>
-                        <li class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
+                        <li v-for="page in navigation.pagesNavbar" :key="page"
+                            class="page-item telemedic-page" v-bind:class="{'active' : navigation.currentPage === page,
                         'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}"
-                            v-for="page in navigation.pagesNavbar" :key="page"
                         >
-                            <a class="page-link" @click="goToPage(page)" >
-                                {{page+1}}
+                            <a class="page-link" @click="goToPage(page)">
+                                {{ page + 1 }}
                             </a>
                         </li>
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
                         'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.currentPage+1)">
-                                <font-awesome-icon :icon="['fa', 'chevron-right']" />
+                                <font-awesome-icon :icon="['fa', 'chevron-right']"/>
                             </a>
                         </li>
                         <li class="page-item telemedic-page" v-bind:class="{'disabled' : isPageLast(),
                         'sport-page' : connectionType === 'WITH_TRAINER', 'diet-page' : connectionType==='WITH_DIETICIAN'}">
                             <a class="page-link" @click="goToPage(navigation.totalPages-1)">
-                                <font-awesome-icon :icon="['fa', 'fast-forward']" />
+                                <font-awesome-icon :icon="['fa', 'fast-forward']"/>
                             </a>
                         </li>
                     </ul>
@@ -196,15 +206,14 @@ export default {
         }
     },
     watch: {
-        selectedDoctorSpecialization: function() {
+        selectedDoctorSpecialization: function () {
             this.getSpecialists();
         },
     },
     methods: {
-        isConnectionTypeCorrect(){
-            if(this.connectionType === "WITH_DOCTOR" || this.connectionType === "WITH_DIETICIAN" ||
-                this.connectionType === "WITH_TRAINER")
-            {
+        isConnectionTypeCorrect() {
+            if (this.connectionType === "WITH_DOCTOR" || this.connectionType === "WITH_DIETICIAN" ||
+                this.connectionType === "WITH_TRAINER") {
                 this.componentError = false;
                 this.getDoctorSpecializations();
             } else {
@@ -219,7 +228,7 @@ export default {
             })
                 .then(response => {
                     this.doctorSpecializations = response.data;
-                    if(response.data.length > 0){
+                    if (response.data.length > 0) {
                         this.selectedDoctorSpecialization = response.data[0];
                         this.getSpecialists();
                     }
@@ -230,15 +239,15 @@ export default {
         },
         getSpecialists() {
             let endpoint = "";
-            if(this.connectionType === "WITH_DOCTOR"){
+            if (this.connectionType === "WITH_DOCTOR") {
                 endpoint = `profile/doctors/doctor-specializations/${this.selectedDoctorSpecialization.id}`;
-            } else if(this.connectionType === "WITH_DIETICIAN"){
+            } else if (this.connectionType === "WITH_DIETICIAN") {
                 endpoint = "profile/dieticians";
-            } else if(this.connectionType === "WITH_TRAINER"){
+            } else if (this.connectionType === "WITH_TRAINER") {
                 endpoint = "profile/trainers";
             }
-            if(this.connectionType === "WITH_TRAINER") {
-                this.axios.get(`${this.apiURL}${endpoint}?firstName=${this.searchValue}&lastName=${this.searchValue}&role=ROLE_TRAINER`, {
+            if (this.connectionType === "WITH_TRAINER") {
+                this.axios.get(`${this.apiURL}${endpoint}?fullName=${this.searchValue}&role=ROLE_TRAINER`, {
                     headers: {
                         Authorization: 'Bearer ' + this.$store.getters.getToken
                     }
@@ -253,8 +262,8 @@ export default {
                 return
             }
             this.axios.get(`${this.apiURL}${endpoint}?like=${this.searchValue}`
-                            + `&page=${this.navigation.toGoPage ?? 0}`, {
-                            headers: {
+                + `&page=${this.navigation.toGoPage ?? 0}`, {
+                headers: {
                     Authorization: 'Bearer ' + this.$store.getters.getToken
                 }
             })
@@ -268,12 +277,12 @@ export default {
                     console.log(e);
                 })
         },
-        getPagesNavbar(){
+        getPagesNavbar() {
             this.navigation.pagesNavbar = []
             if (this.navigation.currentPage > 1)
-                this.navigation.pagesNavbar.push(this.navigation.currentPage-2);
+                this.navigation.pagesNavbar.push(this.navigation.currentPage - 2);
             if (this.navigation.currentPage !== 0)
-                this.navigation.pagesNavbar.push(this.navigation.currentPage-1);
+                this.navigation.pagesNavbar.push(this.navigation.currentPage - 1);
             for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
                 this.navigation.pagesNavbar.push(i);
                 if (i === this.navigation.currentPage + 2)
@@ -284,18 +293,18 @@ export default {
             this.navigation.toGoPage = pageNo;
             this.getSpecialists();
         },
-        isPageFirst(){
+        isPageFirst() {
             return this.navigation.currentPage === 0;
         },
-        isPageLast(){
+        isPageLast() {
             return this.navigation.currentPage === this.navigation.totalPages - 1;
         },
-        selectSpecialist(specialist){
+        selectSpecialist(specialist) {
             this.connectionDone = false;
             this.connectionResultMsg = "";
             this.selectedSpecialist = specialist;
         },
-        connectWithSpecialist(){
+        connectWithSpecialist() {
             const data = {
                 "connectionType": this.connectionType,
                 "connectedWith": {
@@ -306,19 +315,19 @@ export default {
             this.axios({
                 method: 'post',
                 url: `${this.apiURL}profile-connections`,
-                headers: { Authorization: 'Bearer ' + this.$store.getters.getToken },
+                headers: {Authorization: 'Bearer ' + this.$store.getters.getToken},
                 data: data
             })
                 .then(() => {
                     this.connectionResultMsg = "Zapisano. Poczekaj na akceptację przez specjalistę.";
                     this.connectionDone = true;
                 }).catch(() => {
-                    this.connectionResultMsg = "Nie udało się zapisać. Prawdopodobnie zrobiłeś to już wczesniej.";
-                    this.connectionDone = true;
-                })
+                this.connectionResultMsg = "Nie udało się zapisać. Prawdopodobnie zrobiłeś to już wczesniej.";
+                this.connectionDone = true;
+            })
         },
     },
-    created(){
+    created() {
         this.isConnectionTypeCorrect();
     },
 }
@@ -330,7 +339,7 @@ export default {
     margin-right: 5px
 }
 
-.btn-panel-telemedic{
+.btn-panel-telemedic {
     font-size: medium;
 }
 
@@ -368,6 +377,10 @@ export default {
     list-style: none outside none;
     padding: 0;
     margin: 0;
+}
+
+#star {
+    color: var(--DARK-YELLOW);
 }
 
 </style>

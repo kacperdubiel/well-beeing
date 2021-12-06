@@ -7,15 +7,22 @@
                     {{ this.$func_global.mapTimeOfDay(trainingPosition.timeOfDay) }}
                 </div>
                 <div v-if="!create && !details" class="col-3 form-switch justify-content-end">
-                    <input id="flexSwitchCheckDefault" :checked="trainingPosition.trainingStatus === 'COMPLETED'" :disabled="trainingPosition.trainingStatus === 'COMPLETED'" class="form-check-input"
+                    <input id="flexSwitchCheckDefault" :checked="trainingPosition.trainingStatus === 'COMPLETED'"
+                           :disabled="trainingPosition.trainingStatus === 'COMPLETED'" class="form-check-input"
                            type="checkbox"
                            @change="check($event)">
                 </div>
             </div>
-            <div class="training-name" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
+            <div v-if="!inModal" class="training-name" data-bs-target="#infoTrainingModal" data-bs-toggle="modal"
                  @click="openInfoModal(trainingPosition.training)">{{ trainingPosition.training.name }}
             </div>
-            <div class="training-descr">{{ trainingPosition.training.description }}</div>
+            <div v-else class="training-name in-modal">
+                {{ trainingPosition.training.name }}
+            </div>
+            <div class="training-descr">{{
+                    trainingPosition.training.description != null ? trainingPosition.training.description.substring(0, 35) : " "
+                }}...
+            </div>
             <div class="training-additional">
                 {{ this.$func_global.getTimePrettyFromSeconds(trainingPosition.training.totalTrainingTimeSeconds) }} |
                 {{ trainingPosition.training.caloriesBurned }} kcal
@@ -46,7 +53,8 @@ export default {
     props: {
         trainingPosition: Object,
         create: Boolean,
-        details: Boolean
+        details: Boolean,
+        inModal: Boolean
     },
     methods: {
         closeModal() {
@@ -61,11 +69,9 @@ export default {
         async updateTrainingStatus() {
             const url = `${this.apiURL}sport/training-plan/${this.trainingPosition.trainingPositionId}/update-position-status?newStatus=COMPLETED`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
             await this.axios.patch(url, {}, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.trainings = response.data['content']
                 this.$emit('update:active')
-                console.log(this.trainings)
             }).catch(error => {
                 console.log(error.response);
             });
@@ -84,7 +90,6 @@ export default {
             }
         },
         openInfoModal(training) {
-            console.log('Dotarł 0', training)
             this.$emit('set:training', training)
         }
     }
@@ -101,13 +106,15 @@ export default {
     font-weight: bold;
     text-align: left;
     border-radius: 2px;
+    min-height: 0;
 }
 
 .training-name {
     font-size: 18px;
 }
 
-.training-name:hover {
+.training-name:hover,
+.training-name.in-modal {
     font-size: 18px;
     color: var(--SPORT);
 }

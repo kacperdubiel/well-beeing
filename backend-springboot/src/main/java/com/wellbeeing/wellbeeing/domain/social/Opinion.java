@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -20,11 +21,16 @@ public class Opinion {
     @Column
     private int rating;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column
+    private Date addedDate = new Date();
+    @Column
+    private boolean isDeleted = false;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "giver_id")
     private Profile giver;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "receiver_id")
     private Profile receiver;
 }

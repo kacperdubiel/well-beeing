@@ -22,6 +22,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -50,8 +52,8 @@ public class MeasureController {
 
     @RequestMapping(path = "measures/user/{user_id}/from/{date_from}/to/{date_to}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserMeasuresByDate(@PathVariable("user_id") UUID measuresOwnerId,
-                                                          @PathVariable("date_from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
-                                                          @PathVariable("date_to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date to, Principal principal)
+                                                          @PathVariable("date_from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                          @PathVariable("date_to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to, Principal principal)
             throws NotFoundException, ForbiddenException
     {
         UUID authorizedUserId = userService.findUserIdByUsername(principal.getName());

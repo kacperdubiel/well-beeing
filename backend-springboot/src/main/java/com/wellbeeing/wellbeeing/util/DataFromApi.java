@@ -1,17 +1,17 @@
 package com.wellbeeing.wellbeeing.util;
-import com.wellbeeing.wellbeeing.domain.SportLabel;
+
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import okhttp3.*;
-//import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.simple.parser.ParseException;
-import org.springframework.security.core.parameters.P;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public abstract class DataFromApi {
@@ -19,8 +19,7 @@ public abstract class DataFromApi {
     private static final String DEEP_API_KEY = "8e0083f3-c620-1b01-cfee-69485fa69b35:fx";
     private static final String DEEP_URL = "api-free.deepl.com/v2/translate?auth_key=";
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         try {
             getExercisesFromJsonWger();
         } catch (JSONException | IOException | ParseException e) {
@@ -61,7 +60,7 @@ public abstract class DataFromApi {
 
     }
 
-    public static Map<String,Object> getExercisesFromJsonWger() throws JSONException, IOException, ParseException {
+    public static Map<String, Object> getExercisesFromJsonWger() throws JSONException, IOException, ParseException {
 
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader("wger.json"));
@@ -91,16 +90,12 @@ public abstract class DataFromApi {
             categories.add(l);
         }
 
-        System.out.println(exercises);
-        System.out.println(categories);
-
         Map<String, Object> result = new HashMap<>();
         result.put("exercises", exercises);
         result.put("labels", categories);
-        result.put("exerciseLabels",resultMap);
-        return  result;
+        result.put("exerciseLabels", resultMap);
+        return result;
     }
-
 
 
     public static void getExerciseDataWger() throws IOException {

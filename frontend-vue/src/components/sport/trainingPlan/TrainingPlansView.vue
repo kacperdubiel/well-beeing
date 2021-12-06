@@ -53,7 +53,7 @@
             </div>
         </div>
         <!--Active plan-->
-        <TrainingPlanWeek v-if="activePlan.trainingPlanId != null" :days="days"
+        <TrainingPlanWeek v-if="activePlan.trainingPlanId != null" :days="this.$func_global.days"
                           :plan="activePlan" :plan-type="'active'"
                           :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(activePlan.beginningDate))"
                           @update:items="updateItems"
@@ -63,9 +63,11 @@
             <span>Twoje pozostałe plany</span>
         </div>
         <training-plans-table v-if="myTrainingPlans != null && myTrainingPlans.length > 0"
+                              :is-active="activePlan.trainingPlanId != null"
                               :training-plans-source="myTrainingPlans.filter(p => p.planStatus === 'PLANNED')"
                               @update:items="updateItems"
-                              @download:plan="downloadPlan" @update:plan="getMyTrainingPlans"/>
+                              @set:active="setNewActive" @download:plan="downloadPlan"
+                              @update:plan="getMyTrainingPlans"/>
         <div class="m-3 mx-4 header">
             <span>Tworzenie nowego planu </span>
         </div>
@@ -82,7 +84,18 @@
             </span>
         </div>
         <div v-if="createAuto">
-            AUTO
+            <training-plan-generator @set:generated="setGeneratedPlan"/>
+            <div v-if="generatedPlan">
+                <div class="m-3 mx-4 header">
+                    <span>Wygenerowany plan </span>
+                </div>
+                <TrainingPlanWeek v-if="generatedPlan.trainingPlanId != null" :days="this.$func_global.days"
+                                  :plan="generatedPlan"
+                                  :plan-type="'details'"
+                                  :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(generatedPlan.beginningDate))"
+                                  @update:items="updateItems" @set:training="setTraining"/>
+
+            </div>
         </div>
         <div v-if="createManual">
             <div class="row my-3 mx-3">
@@ -108,12 +121,10 @@
                         </div>
                     </div>
                 </div>
-                <!--                <div class="col-4">-->
-                <!--                    <button type="button" class="new-plan-option-btn dark-grey-btn" @click="createNewPlan">Utwórz</button>-->
-                <!--                </div>-->
             </div>
             <!--New plan-->
-            <TrainingPlanWeek v-if="newCreatedPlan.trainingPlanId != null" :days="days" :plan="newCreatedPlan"
+            <TrainingPlanWeek v-if="newCreatedPlan.trainingPlanId != null" :days="this.$func_global.days"
+                              :plan="newCreatedPlan"
                               :plan-type="'create'"
                               :week-dates="this.$func_global.getDatesArrayFromMonday(new Date(newCreatedPlan.beginningDate))"
                               @update:items="updateItems" @set:training="setTraining"/>
@@ -133,7 +144,10 @@
         </div>
         <TrainingDetails :training="infoTraining"/>
         <AddTrainingToPlanModal v-if="newCreatedPlan != null && newCreatedPlan.trainingPlanId != null"
+                                :filters="filters" :navigation="navigation"
                                 :training-plan-id="newCreatedPlan.trainingPlanId" :trainings-source="trainings"
+                                :user-navigation="userNavigation" @goto:page="goToPage" @remove:filters="removeFilters"
+                                @get:trainings="getTrainingsWithFilters"
                                 @new:plan="refreshNewPlan"/>
 
     </div>
@@ -145,45 +159,16 @@ import TrainingPlanWeek from "@/components/sport/trainingPlan/TrainingPlanWeek";
 import TrainingDetails from "@/components/sport/training/TrainingDetails";
 import AddTrainingToPlanModal from "@/components/sport/trainingPlan/AddTrainingToPlanModal";
 import TrainingPlansTable from "@/components/sport/trainingPlan/TrainingPlansTable";
+import TrainingPlanGenerator from "@/components/sport/trainingPlan/TrainingPlanGenerator";
 
 export default {
     name: "TrainingPlansView",
-    components: {TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails, TrainingPlanWeek,},
+    components: {TrainingPlanGenerator, TrainingPlansTable, AddTrainingToPlanModal, TrainingDetails, TrainingPlanWeek,},
     data() {
         return {
             beginningDate: new Date(),
             week: 43,
             year: 2021,
-            days: [
-                {
-                    num: 1,
-                    name: 'Poniedziałek'
-                },
-                {
-                    num: 2,
-                    name: 'Wtorek'
-                },
-                {
-                    num: 3,
-                    name: 'Środa'
-                },
-                {
-                    num: 4,
-                    name: 'Czwartek'
-                },
-                {
-                    num: 5,
-                    name: 'Piątek'
-                },
-                {
-                    num: 6,
-                    name: 'Sobota'
-                },
-                {
-                    num: 0,
-                    'name': 'Niedziela'
-                }
-            ],
             myTrainingPlans: [],
             trainingPlan: {
                 "trainingPlanId": 27,
@@ -217,7 +202,6 @@ export default {
             newPlan: {
                 trainingPlanId: -1,
                 week: 0,
-                beginningDate: "2021-11-22T23:00:00.000+00:00",
                 details: "",
                 planStatus: "",
                 trainingPositions: []
@@ -226,12 +210,63 @@ export default {
                 trainingPositions: []
             },
             trainings: [],
-            infoTraining: {}
+            infoTraining: {},
+            generatedPlan: null,
+
+            filters: {
+                allDifficultyFilters: [
+                    {label: '-', value: ''},
+                    {label: 'Łatwe', value: 'EASY'},
+                    {label: 'Średnie', value: 'MEDIUM'},
+                    {label: 'Trudne', value: 'HARD'}
+                ],
+                difficultyFilter: '',
+                nameSearch: '',
+                lastNameSearch: '',
+                exerciseNameSearch: '',
+                lastExerciseNameSearch: '',
+                sortByOptions: [
+                    {label: 'Nazwa A-Z', value: 'name,asc'},
+                    {label: 'Nazwa Z-A', value: 'name,desc'},
+                    {label: 'Trudność rosnąco', value: 'trainingDifficulty,asc'},
+                    {label: 'Trudność malejąco', value: 'trainingDifficulty,desc'}],
+                sortBy: 'name,asc'
+            },
+            navigation: {
+                totalElements: 0,
+                totalPages: 0,
+                isFirst: false,
+                isLast: false,
+                isEmpty: false,
+                currentPage: 0,
+                pageSize: 20
+            },
+            userNavigation: {
+                goToPage: 0,
+                pageSizeOptions: [1, 3, 5, 10, 20, 50],
+                pageSize: 20,
+                pagesNavbar: []
+            }
         }
     },
     methods: {
         moment: function () {
             return moment();
+        },
+        async setNewActive(plan) {
+            const url = `${this.apiURL}sport/training-plan/${plan.trainingPlanId}`
+            const token = this.$store.getters.getToken;
+            let data = {
+                planStatus: 'STARTED'
+            }
+            await this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                console.log(response.data)
+                // Dodać zmianę dat w pozycjach treningowych
+                this.setActivePlan()
+                this.getMyTrainingPlans()
+            }).catch(error => {
+                console.log(error.response);
+            });
         },
         updateItems() {
             {
@@ -240,7 +275,6 @@ export default {
                     let isDown = false;
                     let startX;
                     let scrollLeft;
-                    console.log(sliders)
                     if (sliders != null) {
                         sliders.forEach(slider => {
                             slider.addEventListener('mousedown', (e) => {
@@ -288,14 +322,13 @@ export default {
             });
         },
         async updateBeginningDate() {
-            console.log('New week: ', this.newPlan.beginningDate)
+            // console.log('New week: ', this.newPlan.beginningDate)
             const url = `${this.apiURL}sport/training-plan/${this.newCreatedPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
             let data = {
                 beginningDate: moment(new Date(this.newPlan.beginningDate)).format('DD.MM.YYYY')
             }
             await this.axios.patch(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response.data)
                 console.log('New post week: ', response.data)
                 // Dodać zmianę dat w pozycjach treningowych
                 this.refreshNewPlan()
@@ -364,6 +397,15 @@ export default {
                 console.log(error.response);
             });
         },
+        async getTrainingPlan(planId) {
+            const url = `${this.apiURL}sport/training-plan/${planId}`
+            const token = this.$store.getters.getToken;
+            return await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                return response.data
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
         getNextMonday() {
             let d = new Date();
             d.setDate(d.getDate() + (((1 + 7 - d.getDay()) % 7) || 7));
@@ -372,7 +414,6 @@ export default {
         async refreshNewPlan() {
             const url = `${this.apiURL}sport/training-plan/${this.newPlan.trainingPlanId}`
             const token = this.$store.getters.getToken;
-            console.log('here')
             await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 // this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
@@ -392,7 +433,7 @@ export default {
             } else {
                 this.newCreatedPlan = scratchPlan
                 this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate();
-                console.log('Data scratch', this.newCreatedPlan.beginningDate)
+                // console.log('Data scratch', this.newCreatedPlan.beginningDate)
                 this.newPlan.week = moment(new Date(this.newCreatedPlan.beginningDate)).toDate().getWeek()
                 this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
                 this.newPlan.trainingPlanId = this.newCreatedPlan.trainingPlanId
@@ -401,10 +442,9 @@ export default {
         async createNewPlan() {
             const url = `${this.apiURL}sport/training-plan`
             const token = this.$store.getters.getToken;
-            console.log('here')
             const data = {
                 trainingPlan: {
-                    beginningDate: this.newPlan.beginningDate,
+                    beginningDate: moment().clone().isoWeekday(1).startOf('day').toDate(),
                     // details: this.newPlan.details,
                     details: "Nowy plan"
                 }
@@ -412,6 +452,8 @@ export default {
             await this.axios.post(url, data, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
                 this.newPlan.trainingPlanId = response.data.trainingPlanId
                 this.newCreatedPlan = response.data
+                this.newCreatedPlan.beginningDate = moment(this.newCreatedPlan.beginningDate).toDate()
+                this.newPlan.beginningDate = this.newCreatedPlan.beginningDate
             }).catch(error => {
                 console.log(error.response);
             });
@@ -420,12 +462,12 @@ export default {
             this.createAuto = isAuto;
             this.createManual = !isAuto;
             this.savedNewPlan = false
+            this.updateItems()
         },
         setActivePlan() {
             let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
-            let plan = this.myTrainingPlans.find(plan => plan.planStatus !== 'SCRATCH' && new Date(new Date(plan.beginningDate) - tzoffset).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
-            console.log('Active', plan)
+            let plan = this.myTrainingPlans.find(plan => plan.planStatus === 'STARTED' && new Date(new Date(plan.beginningDate) - tzoffset).toISOString().slice(0, 10) === moment().clone().isoWeekday(1).toDate().toISOString().slice(0, 10));
             if (plan != null) {
                 this.activePlan = plan;
                 this.calculateProgress()
@@ -443,7 +485,7 @@ export default {
             let weekDays = []
             for (let i = 0; i < 7; i++) {
                 weekDays.push({
-                    day: this.days[i],
+                    day: this.$func_global.days[i],
                     date: d1.addDays(i)
                 })
             }
@@ -452,22 +494,93 @@ export default {
         matchesDayOfTheWeek(position, day) {
             return new Date(position.trainingDate).getDay() === day;
         },
-        async getTrainings() {
+        async getTrainingsWithFilters(resetGoToPage) {
             const url = `${this.apiURL}sport/training`
             const token = this.$store.getters.getToken;
-            console.log('token ', token);
-            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+            if (resetGoToPage)
+                this.userNavigation.goToPage = 0
+            const myParams = {
+                page: this.userNavigation.goToPage,
+                size: this.userNavigation.pageSize,
+                sort: this.filters.sortBy,
+                name: this.filters.nameSearch,
+                exerciseName: this.filters.exerciseNameSearch,
+                trainingDifficulty: this.filters.difficultyFilter
+            }
+            await this.axios.get(url, {
+                params: myParams,
+                headers: {Authorization: `Bearer ${token}`}
+            }).then((response) => {
                 this.trainings = response.data['content']
-                console.log(this.trainings)
+                this.navigation.totalElements = response.data['totalElements']
+                this.navigation.totalPages = response.data['totalPages']
+                this.navigation.isFirst = response.data['first']
+                this.navigation.isLast = response.data['last']
+                this.navigation.isEmpty = response.data['empty']
+                this.navigation.currentPage = response.data['number']
+                this.navigation.pageSize = response.data['size']
+                this.filters.lastNameSearch = myParams.name
+                this.filters.lastExerciseNameSearch = myParams.exerciseName
+                this.userNavigation.pagesNavbar = []
+                if (this.navigation.currentPage > 1)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage - 2)
+                if (this.navigation.currentPage !== 0)
+                    this.userNavigation.pagesNavbar.push(this.navigation.currentPage - 1)
+                for (let i = this.navigation.currentPage; i < this.navigation.totalPages; i++) {
+                    this.userNavigation.pagesNavbar.push(i)
+                    if (i === this.navigation.currentPage + 2)
+                        break;
+                }
             }).catch(error => {
                 console.log(error.response);
             });
+        },
+        async getTrainings() {
+            const url = `${this.apiURL}sport/training`
+            const token = this.$store.getters.getToken;
+            await this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
+                this.trainings = response.data['content']
+            }).catch(error => {
+                console.log(error.response);
+            });
+        },
+        setGeneratedPlan(planId) {
+            this.getTrainingPlan(planId).then((result) => {
+                this.generatedPlan = result
+            })
+            this.updateItems()
+            this.getMyTrainingPlans()
+        },
+        goToPage(pageNo) {
+            this.userNavigation.goToPage = pageNo;
+            this.getTrainingsWithFilters(false)
+        },
+        async removeFilters(filter) {
+            switch (filter) {
+                case 'name':
+                    this.filters.nameSearch = '';
+                    this.filters.lastNameSearch = '';
+                    break;
+                case 'difficulty':
+                    this.filters.difficultyFilter = '';
+                    break;
+                default: {
+                    this.filters.nameSearch = '';
+                    this.filters.difficultyFilter = '';
+                    this.filters.lastNameSearch = '';
+                    this.filters.exerciseNameSearch = ''
+                    this.filters.lastExerciseNameSearch = '';
+                    break;
+                }
+            }
+
+            await this.getTrainingsWithFilters(true)
         },
     },
     mounted() {
         this.week = new Date().getWeek()
         this.getMyTrainingPlans()
-        this.getTrainings()
+        this.getTrainingsWithFilters(true)
     },
     watch: {
         activePlan: function () {
