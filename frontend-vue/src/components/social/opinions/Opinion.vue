@@ -44,7 +44,7 @@
                 </div>
                 <div class="grow-wrap">
                     <textarea
-                        class="textarea js-autoresize w-100"
+                        class="textarea w-100"
                         id="opinion-content"
                         v-model="editedOpinion.opinionContent"
                         placeholder="Jeśli chcesz, uzasadnij swoją ocenę..."
@@ -201,10 +201,10 @@ textarea {
 
 }
 
-.grow-wrap > textarea {
-    resize: none;
-    overflow: hidden;
-}
+/*.grow-wrap > textarea {*/
+/*    resize: none;*/
+/*    overflow: hidden;*/
+/*}*/
 
 textarea::placeholder {
     color: white;
