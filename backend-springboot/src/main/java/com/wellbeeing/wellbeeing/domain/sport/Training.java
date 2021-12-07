@@ -3,10 +3,7 @@ package com.wellbeeing.wellbeeing.domain.sport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wellbeeing.wellbeeing.domain.SportLabel;
 import com.wellbeeing.wellbeeing.domain.account.Profile;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -20,6 +17,8 @@ import java.util.stream.Stream;
 @Setter
 @NoArgsConstructor
 @Data
+@Builder
+@AllArgsConstructor
 @Entity
 public class Training {
     @Id
@@ -109,7 +108,8 @@ public class Training {
 
     public Set<SportLabel> getLabels() {
         Set<SportLabel> labels = new HashSet<>();
-        exerciseInTrainings.forEach(e -> labels.addAll(e.getExercise().getLabels()));
+        if (exerciseInTrainings != null)
+            exerciseInTrainings.forEach(e -> labels.addAll(e.getExercise().getLabels()));
         return labels;
     }
 }
