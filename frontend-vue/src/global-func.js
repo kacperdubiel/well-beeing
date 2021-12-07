@@ -90,7 +90,6 @@ export const func_global = {
             headers: {Authorization: `Bearer ${token}`, 'Accept': 'application/pdf'},
             responseType: 'arraybuffer'
         }).then((response) => {
-            console.log(response.data)
             const blob = new Blob([response.data], {type: 'application/pdf'})
             const objectUrl = window.URL.createObjectURL(blob)
             window.open(objectUrl)

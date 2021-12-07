@@ -99,7 +99,6 @@ export default {
     },
     methods: {
         getResults() {
-            console.log(this.$store.getters.getSearchProfileResult)
             this.navigation.totalElements = this.$store.getters.getSearchProfileResult.totalElements
             this.navigation.totalPages = this.$store.getters.getSearchProfileResult.totalPages
             this.navigation.isFirst = this.$store.getters.getSearchProfileResult.first

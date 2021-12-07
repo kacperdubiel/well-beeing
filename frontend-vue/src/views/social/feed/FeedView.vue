@@ -81,7 +81,6 @@ export default {
                 params: myParams,
                 headers: {Authorization: `Bearer ${token}`}
             }).then((response) => {
-                console.log(response.data)
                 if (!this.postNavigation.last && isScroll)
                     this.posts = this.posts.concat(response.data['content'])
                 else if (!isScroll) {
