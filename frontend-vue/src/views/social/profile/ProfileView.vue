@@ -20,9 +20,13 @@
             <new-post :is-feed="false" v-if="profile" @refresh:posts="getPosts"/>
         </div>
 
-        <div v-if="isPostView" class="row mx-4 py-2">
-            <posts-list v-if="posts" id="posts" :posts-source="posts"/>
+        <div v-if="isPostView && posts && posts.length > 0" class="row mx-4 py-2">
+            <posts-list id="posts" :posts-source="posts"/>
         </div>
+        <div v-else-if="isPostView  && posts.length === 0" class="container mt-4">
+            Brak postów do wyświetlenia :(
+        </div>
+
 
 
         <div v-if="!isPostView && profile && (opinions.length > 0 || (myOpinion != null && myOpinion.deleted === false))"
@@ -43,9 +47,12 @@
                      @update:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();"/>
         </div>
 
-        <div v-if="!isPostView && opinions.length > 0" class="row mx-4 py-2">
+        <div v-if="!isPostView && opinions && opinions.length > 0" class="row mx-4 py-2">
             <h4 class="text-start">Opinie innych użytkowników:</h4>
-            <opinions-list v-if="opinions" id="opinions" :opinions-source="opinions"/>
+            <opinions-list id="opinions" :opinions-source="opinions"/>
+        </div>
+        <div v-else-if="!isPostView  && opinions.length === 0" class="container mt-4">
+            Brak opinii innych użytkowników do wyświetlenia :(
         </div>
 
     </div>
