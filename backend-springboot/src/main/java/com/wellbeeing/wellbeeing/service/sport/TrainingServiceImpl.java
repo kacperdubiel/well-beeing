@@ -2,6 +2,8 @@ package com.wellbeeing.wellbeeing.service.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.account.User;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
@@ -11,6 +13,7 @@ import com.wellbeeing.wellbeeing.repository.sport.ExerciseDAO;
 import com.wellbeeing.wellbeeing.repository.sport.ExerciseInTrainingDAO;
 import com.wellbeeing.wellbeeing.repository.sport.TrainingDAO;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -100,7 +103,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId,
                                                     int repetitions, int timeSeconds,
-                                                    int series, String clientName) throws NotFoundException {
+                                                    int series, String clientName) throws NotFoundException, ForbiddenException, ConflictException {
         Training foundTraining = trainingDAO.findById(trainingId).orElse(null);
         Exercise foundExercise = exerciseDAO.findById(exerciseId).orElse(null);
         if (foundTraining == null) {
@@ -111,10 +114,15 @@ public class TrainingServiceImpl implements TrainingService {
         Profile creator = foundTraining.getCreator();
         if (creator == null || creator.getProfileUser().getUsername().equals(clientName)) {
             ExerciseInTraining newExerciseInTraining = new ExerciseInTraining(foundTraining, foundExercise, repetitions, timeSeconds, series);
-            exerciseInTrainingDAO.save(newExerciseInTraining); // Duplicate Key
+            try {
+                newExerciseInTraining = exerciseInTrainingDAO.save(newExerciseInTraining); // Duplicate Key
+
+            } catch (DataIntegrityViolationException e) {
+                throw new ConflictException("Duplicate exercise!");
+            }
             return newExerciseInTraining;
         } else
-            throw new NotFoundException("You can't modify a training, that was created by somebody else!");
+            throw new ForbiddenException("You can't modify a training, that was created by somebody else!");
     }
 
     @Override

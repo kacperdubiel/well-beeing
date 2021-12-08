@@ -1,13 +1,22 @@
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
+SET
+statement_timeout = 0;
+SET
+lock_timeout = 0;
+SET
+idle_in_transaction_session_timeout = 0;
+SET
+client_encoding = 'UTF8';
+SET
+standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
+SET
+check_function_bodies = false;
+SET
+xmloption = content;
+SET
+client_min_messages = warning;
+SET
+row_security = off;
 
 --
 -- Data for Name: profile_diet_calculation; Type: TABLE DATA; Schema: public; Owner: wellbeeing
@@ -245,55 +254,54 @@ VALUES (505, 'Wzmacnia ABS');
 -- Data for Name: post; Type: TABLE DATA; Schema: public; Owner: wellbeeing
 --
 
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (2, '2021-11-09 09:11:08.879', 'Post ze zdjęciem', '2021-11-15-20-42-31-465_krasnal.jpg', 'FOR_EVERYONE',
+VALUES (2, '2021-11-09 09:11:08.879', 'Post ze zdjęciem', '2021-11-15-20-42-31-465_krasnal.jpg',
         'ebb5b5c4-0fd1-4aca-b8b8-5b6cd35b06ed', false, false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (9, '2021-11-15 20:41:05.513', '6', '2021-11-09-09-30-31-082_dog-3.jpg', 'FOR_EVERYONE',
+VALUES (9, '2021-11-15 20:41:05.513', '6', '2021-11-09-09-30-31-082_dog-3.jpg',
         'dc722668-12a5-4c90-92bc-f348a3bf92c4', false, false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (1, '2021-11-09 09:10:58.475', 'Nowy post', '2021-11-09-09-23-32-906_dog-1.jpg', 'FOR_EVERYONE',
+VALUES (1, '2021-11-09 09:10:58.475', 'Nowy post', '2021-11-09-09-23-32-906_dog-1.jpg',
         'ebb5b5c4-0fd1-4aca-b8b8-5b6cd35b06ed', false, false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (10, '2021-11-18 21:08:47.561', 'Siema', NULL, 'FOR_EVERYONE', '68514957-19f4-4764-a978-58d175948d7f', false,
+VALUES (10, '2021-11-18 21:08:47.561', 'Siema', NULL, '68514957-19f4-4764-a978-58d175948d7f', false,
         false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (7, '2021-11-15 20:40:05.447', 'Test 4', '2021-11-15-20-40-05-526_krasnal.jpg', 'FOR_EVERYONE',
+VALUES (7, '2021-11-15 20:40:05.447', 'Test 4', '2021-11-15-20-40-05-526_krasnal.jpg',
         'dc722668-12a5-4c90-92bc-f348a3bf92c4', false, false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (6, '2021-11-15 20:39:55.847', 'Test 3', NULL, 'FOR_EVERYONE', 'dc722668-12a5-4c90-92bc-f348a3bf92c4', false,
+VALUES (6, '2021-11-15 20:39:55.847', 'Test 3', NULL, 'dc722668-12a5-4c90-92bc-f348a3bf92c4', false,
         false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (3, '2021-11-09 09:29:41.698', 'Nowy post ze zdjęciem', '2021-11-09-09-30-31-081_dog-3.jpg', 'FOR_EVERYONE',
+VALUES (3, '2021-11-09 09:29:41.698', 'Nowy post ze zdjęciem', '2021-11-09-09-30-31-081_dog-3.jpg',
         'ebb5b5c4-0fd1-4aca-b8b8-5b6cd35b06ed', true, false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
 VALUES (5, '2021-11-15 20:39:44.409', 'Już dziś wieczorem podeślę wam nowy plan treningowy!
 
-Czekajcie!', NULL, 'FOR_EVERYONE', 'dc722668-12a5-4c90-92bc-f348a3bf92c4', false, false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+Czekajcie!', NULL, 'dc722668-12a5-4c90-92bc-f348a3bf92c4', false, false, NULL, 0);
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (8, '2021-11-15 20:40:57.817', '5
-', NULL, 'FOR_EVERYONE', 'dc722668-12a5-4c90-92bc-f348a3bf92c4', false, false, NULL, 1);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+VALUES (8, '2021-11-15 20:40:57.817', '5', NULL, 'dc722668-12a5-4c90-92bc-f348a3bf92c4', false, false, NULL, 1);
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (11, '2021-11-25 22:00:50.049', 'Udostępniam 5', NULL, 'FOR_EVERYONE', 'dc722668-12a5-4c90-92bc-f348a3bf92c4',
+VALUES (11, '2021-11-25 22:00:50.049', 'Udostępniam 5', NULL, 'dc722668-12a5-4c90-92bc-f348a3bf92c4',
         false, true, 8, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
-VALUES (4, '2021-11-15 20:39:22.758', 'Zapraszam na moje treningi', NULL, 'FOR_EVERYONE',
+VALUES (4, '2021-11-15 20:39:22.758', 'Zapraszam na moje treningi', NULL,
         'dc722668-12a5-4c90-92bc-f348a3bf92c4', true, false, NULL, 0);
-INSERT INTO public.post (post_id, added_date, post_content, post_img_path, priv_settings, creator_id, is_deleted,
+INSERT INTO public.post (post_id, added_date, post_content, post_img_path, creator_id, is_deleted,
                          is_sharing, original_post_id, sharing_counter)
 VALUES (12, '2021-11-30 00:12:56.743', 'Cześć wszystkim!
-', NULL, 'FOR_EVERYONE', '68514957-19f4-4764-a978-58d175948d7f', false, false, NULL, 0);
+', NULL, '68514957-19f4-4764-a978-58d175948d7f', false, false, NULL, 0);
 
 
 --
