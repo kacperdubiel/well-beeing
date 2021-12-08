@@ -140,11 +140,11 @@ public class TrainingControllerTests {
     @Test
     public void addExerciseToTraining200Test()
             throws Exception {
-        String userName = "konrad@pwr.com";
+        String userName = "klaudia@";
         User user = (User) userService.loadUserByUsername(userName);
         String jwtToken = jwtUtil.generateToken(user);
 
-        long trainingId = 79;
+        long trainingId = 1;
         long exerciseId = 81;
 
         AddExerciseToTrainingRequest requestBody = new AddExerciseToTrainingRequest(2, 900, 3);
@@ -164,12 +164,12 @@ public class TrainingControllerTests {
     @Test
     public void addExerciseToTrainingTestDuplicateExercise409Test()
             throws Exception {
-        String userName = "konrad@pwr.com";
+        String userName = "klaudia@";
         User user = (User) userService.loadUserByUsername(userName);
         String jwtToken = jwtUtil.generateToken(user);
 
-        long trainingId = 79;
-        long exerciseId = 79;
+        long trainingId = 1;
+        long exerciseId = 60;
 
         AddExerciseToTrainingRequest requestBody = new AddExerciseToTrainingRequest(2, 900, 3);
         mvc.perform(patch(String.format("%s/%d/add-exercise/%d", URL_BASE, trainingId, exerciseId))
@@ -186,7 +186,7 @@ public class TrainingControllerTests {
         User user = (User) userService.loadUserByUsername(userName);
         String jwtToken = jwtUtil.generateToken(user);
 
-        long trainingId = 95;
+        long trainingId = 1;
         long exerciseId = 79;
 
         AddExerciseToTrainingRequest requestBody = new AddExerciseToTrainingRequest(2, 900, 3);
@@ -206,7 +206,7 @@ public class TrainingControllerTests {
 
         Training training = Training
                 .builder()
-                .name("Siła i moc")
+                .name("Trening")
                 .trainingDifficulty(ETrainingDifficulty.MEDIUM)
                 .description("Some description")
                 .instruction("Some instruction")

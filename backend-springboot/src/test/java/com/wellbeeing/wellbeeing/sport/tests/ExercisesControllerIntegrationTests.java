@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -70,7 +71,7 @@ public class ExercisesControllerIntegrationTests {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content[0].name").value("1 Handed Kettlebell Swing"));
+                .andExpect(jsonPath("$.content[0].name").value("2 Handed Kettlebell Swing"));
     }
 
     @Test
@@ -128,7 +129,7 @@ public class ExercisesControllerIntegrationTests {
 
         Exercise exercise = Exercise
                 .builder()
-                .name("1 Handed Kettlebell Swing")
+                .name("2 Handed Kettlebell Swing")
                 .exerciseType(EExerciseType.CARDIO)
                 .met(8.5)
                 .description("Some description")
