@@ -23,7 +23,7 @@ public class DishProductDetail extends ProductAmountDetail implements Nutritiona
     @JoinColumn(name = "dish_id")
     @JsonIgnore
     private Dish dish;
-    @Embedded
+    /*@Embedded
     @AttributeOverrides({
             @AttributeOverride( name = "derivedCalories", column = @Column(name = "derived_calories")),
             @AttributeOverride( name = "derivedFats", column = @Column(name = "derived_fats")),
@@ -35,10 +35,12 @@ public class DishProductDetail extends ProductAmountDetail implements Nutritiona
             @AttributeOverride( name = "derivedCaffeine", column = @Column(name = "derived_caffeine")),
             @AttributeOverride( name = "derivedSugar", column = @Column(name = "derived_sugar")),
             @AttributeOverride( name = "derivedSaturatedFats", column = @Column(name = "derived_saturated_fats"))
-    })
-    NutritionalValueDerivedData derivedNutritionalValues;
+    })*/
+    @Transient
+    NutritionalValueDerivedData derivedNutritionalValues = new NutritionalValueDerivedData();
 
     @Override
+    @PostLoad
     public void setDerived(){
         this.derivedNutritionalValues.setDerivedCalories(countCalories());
         this.derivedNutritionalValues.setDerivedCarbohydrates(countCarbohydrates());

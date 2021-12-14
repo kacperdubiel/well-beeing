@@ -69,7 +69,7 @@ public abstract class ProductAmountDetail implements NutritionalValueDerivable {
     @Override
     public double countCholesterol(){
         return this.getAmountOfProduct() * this.getMeasureType().getNumberOfGrams() *
-                this.getProduct().getCholesterolPerHundredGrams()/100;
+                this.getProduct().getCaffeinePerHundredGrams()/100;
     }
 
     @Override

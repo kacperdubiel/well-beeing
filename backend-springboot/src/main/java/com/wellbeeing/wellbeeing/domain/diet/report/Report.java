@@ -37,7 +37,7 @@ public class Report implements NutritionalValueDerivable {
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
     List<ReportDishDetail> dishDetailsList = new ArrayList<>();
 
-    @Embedded
+   /* @Embedded
     @AttributeOverrides({
             @AttributeOverride( name = "derivedCalories", column = @Column(name = "derived_calories")),
             @AttributeOverride( name = "derivedFats", column = @Column(name = "derived_fats")),
@@ -49,8 +49,9 @@ public class Report implements NutritionalValueDerivable {
             @AttributeOverride( name = "derivedCaffeine", column = @Column(name = "derived_caffeine")),
             @AttributeOverride( name = "derivedSugar", column = @Column(name = "derived_sugar")),
             @AttributeOverride( name = "derivedSaturatedFats", column = @Column(name = "derived_saturated_fats"))
-    })
-    NutritionalValueDerivedData derivedNutritionalValues;
+    })*/
+    @Transient
+    NutritionalValueDerivedData derivedNutritionalValues = new NutritionalValueDerivedData();
 
     @Override
     public double countCalories() {
@@ -173,6 +174,7 @@ public class Report implements NutritionalValueDerivable {
     }
 
     @Override
+    @PostLoad
     public void setDerived(){
         this.derivedNutritionalValues.setDerivedCalories(countCalories());
         this.derivedNutritionalValues.setDerivedCarbohydrates(countCarbohydrates());

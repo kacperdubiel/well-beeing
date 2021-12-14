@@ -61,7 +61,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p style="color: black;">Czy na pewno chcesz usunąć?</p>
+                        <p style="color: black;">Czy na pewno chcesz usunąć raport?</p>
                         <div>
                             <button @click="this.deleteReport" style="margin: 2px;" type="button" class="btn btn-success" data-bs-dismiss="modal">TAK</button>
                             <button style="margin: 2px;" type="button" class="btn btn-danger" data-bs-dismiss="modal">NIE</button>

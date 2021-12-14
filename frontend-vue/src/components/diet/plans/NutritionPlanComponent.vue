@@ -142,7 +142,7 @@
                                     Wygenenerowano plan!
                                 </div>
                                 <div v-if="this.generationError" class="alert alert-danger m-2" role="alert">
-                                    Niestety w naszym systemie jest za mało danych, aby wygenerować idealny plan dla Ciebie! Spróbuj później :)
+                                    Niestety w systemie jest za mało danych, aby wygenerować idealny plan dla Ciebie.
                                 </div>
                             </div>
                         </div>

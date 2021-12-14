@@ -31,7 +31,7 @@ public class ReportDishDetail implements NutritionalValueDerivable {
     @Column
     private double portions;
 
-    @Embedded
+    /*@Embedded
     @AttributeOverrides({
             @AttributeOverride( name = "derivedCalories", column = @Column(name = "derived_calories")),
             @AttributeOverride( name = "derivedFats", column = @Column(name = "derived_fats")),
@@ -43,8 +43,9 @@ public class ReportDishDetail implements NutritionalValueDerivable {
             @AttributeOverride( name = "derivedCaffeine", column = @Column(name = "derived_caffeine")),
             @AttributeOverride( name = "derivedSugar", column = @Column(name = "derived_sugar")),
             @AttributeOverride( name = "derivedSaturatedFats", column = @Column(name = "derived_saturated_fats"))
-    })
-    NutritionalValueDerivedData derivedNutritionalValues;
+    })*/
+    @Transient
+    NutritionalValueDerivedData derivedNutritionalValues = new NutritionalValueDerivedData();
 
     public double countFats(){
         return this.getDish().getDerivedNutritionalValues().getDerivedFats() * this.getPortions();
@@ -93,6 +94,7 @@ public class ReportDishDetail implements NutritionalValueDerivable {
     }
 
     @Override
+    @PostLoad
     public void setDerived(){
         this.derivedNutritionalValues.setDerivedCalories(countCalories());
         this.derivedNutritionalValues.setDerivedCarbohydrates(countCarbohydrates());

@@ -152,7 +152,7 @@ export default {
                 page: this.navigation.currentPage,
                 size: this.navigation.pageSize
             }
-            axios.get('http://localhost:8090/nutrition-label/my', {
+            axios.get('http://localhost:8090/nutrition-label/dietician', {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 },

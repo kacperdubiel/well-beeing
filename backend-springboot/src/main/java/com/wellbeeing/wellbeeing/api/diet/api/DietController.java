@@ -19,7 +19,7 @@ public class DietController {
     }
 
     @RequestMapping(path = "/diet", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllAilments() {
+    public ResponseEntity<?> getAllDiets() {
         return new ResponseEntity<>(dietService.getAllDiets(), HttpStatus.OK);
     }
 }

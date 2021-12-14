@@ -86,7 +86,7 @@
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse-dish' + dishDetail.id" aria-expanded="true" aria-controls="collapse-dish">
                             <div style="width: 100%;" class="row">
                                 <b class="col-lg-7 p-0 m-0">{{dishDetail.dish.name}}</b>
-                                <p class="col-lg-3">{{dishDetail.portions}} porcji</p>
+                                <p class="col-lg-3">{{dishDetail.portions}} x porcja</p>
                                 <p class="col-lg-2">{{dishDetail.consumingTime.substring(11, 16)}}</p>
                             </div>
                         </button>

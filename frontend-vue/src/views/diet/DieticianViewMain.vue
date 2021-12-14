@@ -3,7 +3,7 @@
         <ul class="nav nav-tabs diet-tabs">
             <li class="nav-item">
                 <router-link :to="{ name: 'DieticianUsersView' }">
-                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianUsersView' }">Podopieczni</span>
+                    <span class="nav-link" v-bind:class="{ active: this.$route.name === 'DieticianUsersView' || this.$route.name === 'DieticianUserProfileView'  }">Podopieczni</span>
                 </router-link>
             </li>
             <li class="nav-item">

@@ -40,7 +40,7 @@ public class NutritionLabelController {
         return new ResponseEntity<>(nutritionLabelService.getNutritionLabels(), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/nutrition-label/my", method = RequestMethod.GET)
+    @RequestMapping(path = "/nutrition-label/dietician", method = RequestMethod.GET)
     public ResponseEntity<?> getDieticianNutritionLabels(Principal principal,
                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                          @RequestParam(value = "size", defaultValue = "10") int size) {

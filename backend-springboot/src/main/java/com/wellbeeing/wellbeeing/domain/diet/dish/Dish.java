@@ -48,7 +48,7 @@ public class Dish implements NutritionalValueDerivable {
             inverseJoinColumns = @JoinColumn(name = "nutrition_label_id", referencedColumnName = "nutritionLabel_Id")
     )
     private List<NutritionLabel> allowedForNutritionLabels = new ArrayList<>();
-    @Embedded
+    /*@Embedded
     @AttributeOverrides({
             @AttributeOverride( name = "derivedCalories", column = @Column(name = "derived_calories")),
             @AttributeOverride( name = "derivedFats", column = @Column(name = "derived_fats")),
@@ -60,8 +60,9 @@ public class Dish implements NutritionalValueDerivable {
             @AttributeOverride( name = "derivedCaffeine", column = @Column(name = "derived_caffeine")),
             @AttributeOverride( name = "derivedSugar", column = @Column(name = "derived_sugar")),
             @AttributeOverride( name = "derivedSaturatedFats", column = @Column(name = "derived_saturated_fats"))
-    })
-    NutritionalValueDerivedData derivedNutritionalValues;
+    })*/
+    @Transient
+    NutritionalValueDerivedData derivedNutritionalValues = new NutritionalValueDerivedData();
     @Column
     private boolean active = true;
     @Column
@@ -151,6 +152,7 @@ public class Dish implements NutritionalValueDerivable {
     }
 
     @Override
+    @PostLoad
     public void setDerived(){
         this.derivedNutritionalValues.setDerivedCalories(countCalories());
         this.derivedNutritionalValues.setDerivedCarbohydrates(countCarbohydrates());

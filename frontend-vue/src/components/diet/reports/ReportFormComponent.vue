@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div v-if="this.productFormError" style="margin: 5px;" class="alert alert-danger" role="alert">
-                Wprowadź wszystkie dane!
+                Aby dodać pozycję wprowadź poprawnie wszystkie dane!
             </div>
             <hr/>
             <div v-if="showEmptyProductsAlert" class="alert alert-danger" role="alert">
@@ -126,7 +126,7 @@
                 </div>
             </div>
             <div v-if="this.dishFormError" style="margin: 5px;" class="alert alert-danger" role="alert">
-                Wprowadź wszystkie dane!
+                Aby dodać pozycję wprowadź poprawnie wszystkie dane!
             </div>
             <hr/>
             <div v-if="showEmptyDishesAlert" class="alert alert-danger" role="alert">

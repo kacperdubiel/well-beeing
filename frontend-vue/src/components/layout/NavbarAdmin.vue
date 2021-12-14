@@ -13,7 +13,7 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link :to="{name: 'DataImportsViewAdmin'}" class="nav-link">Import danych</router-link>
+                        <router-link :to="{name: 'DataImportsViewAdmin'}" class="nav-link">Import danych dietetycznych</router-link>
                     </li>
                     <li class="nav-item">
                         <router-link :to="{name: 'SportDataImportsViewAdmin'}" class="nav-link">Import danych
