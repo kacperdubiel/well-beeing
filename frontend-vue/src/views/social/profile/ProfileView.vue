@@ -20,9 +20,13 @@
             <new-post :is-feed="false" v-if="profile" @refresh:posts="getPosts"/>
         </div>
 
-        <div v-if="isPostView" class="row mx-4 py-2">
-            <posts-list v-if="posts" id="posts" :posts-source="posts"/>
+        <div v-if="isPostView && posts && posts.length > 0" class="row mx-4 py-2">
+            <posts-list id="posts" :posts-source="posts"/>
         </div>
+        <div v-else-if="isPostView  && posts.length === 0" class="container mt-4">
+            Brak postów do wyświetlenia :(
+        </div>
+
 
 
         <div v-if="!isPostView && profile && (opinions.length > 0 || (myOpinion != null && myOpinion.deleted === false))"
@@ -43,9 +47,12 @@
                      @update:opinion="getMyOpinionToSpecialist(); getOpinions(); getProfile();"/>
         </div>
 
-        <div v-if="!isPostView && opinions.length > 0" class="row mx-4 py-2">
+        <div v-if="!isPostView && opinions && opinions.length > 0" class="row mx-4 py-2">
             <h4 class="text-start">Opinie innych użytkowników:</h4>
-            <opinions-list v-if="opinions" id="opinions" :opinions-source="opinions"/>
+            <opinions-list id="opinions" :opinions-source="opinions"/>
+        </div>
+        <div v-else-if="!isPostView  && opinions.length === 0" class="container mt-4">
+            Brak opinii innych użytkowników do wyświetlenia :(
         </div>
 
     </div>
@@ -108,7 +115,6 @@ export default {
             }
             const token = this.$store.getters.getToken;
             this.axios.get(url, {headers: {Authorization: `Bearer ${token}`}}).then((response) => {
-                console.log(response.data)
                 this.profile = response.data
             }).catch(error => {
                 console.log(error.response.status)
@@ -138,7 +144,6 @@ export default {
                 url = `${this.apiURL}posts/${this.$route.params.profileId}`
             }
             const token = this.$store.getters.getToken;
-            console.log('PAGE: ', page)
             const myParams = {
                 page: page,
                 size: this.postNavigation.pageSize
@@ -146,15 +151,10 @@ export default {
             if (this.postNavigation.last && isScroll)
                 return
 
-            console.log('PreGET: ', page, isScroll)
-
             return this.axios.get(url, {
                 params: myParams,
                 headers: {Authorization: `Bearer ${token}`}
             }).then((response) => {
-                console.log('POST GET: ', page, isScroll)
-
-                console.log(response.data)
                 if (!this.postNavigation.last && isScroll)
                     this.posts = this.posts.concat(response.data['content'])
                 else if (!isScroll) {
@@ -183,7 +183,6 @@ export default {
                 url = `${this.apiURL}opinions/${this.$route.params.profileId}`
             }
             const token = this.$store.getters.getToken;
-            console.log('PAGE: ', page)
             const myParams = {
                 page: page,
                 size: this.opinionNavigation.pageSize
@@ -195,9 +194,7 @@ export default {
                 params: myParams,
                 headers: {Authorization: `Bearer ${token}`}
             }).then((response) => {
-                console.log(response.data)
                 let newOpinions = response.data['content'].filter(op => op.giver.id !== this.$store.getters.getProfileId)
-                console.log('opiniossss', newOpinions)
                 this.opinionNavigation.totalElements = response.data['totalElements']
                 if (!this.opinionNavigation.last && isScroll)
                     this.opinions = this.opinions.concat(newOpinions)
@@ -231,9 +228,6 @@ export default {
             window.onscroll = () => {
                 let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) +
                     window.innerHeight + 5 >= document.documentElement.offsetHeight
-                // console.log(Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop), ' + ')
-                // console.log(window.innerHeight, ' = ')
-                // console.log(document.documentElement.offsetHeight)
                 if (bottomOfWindow) {
                     if (!this.postNavigation.last && this.scrolledToBottomPost && this.loadedPost && this.isPostView) {
                         this.scrolledToBottomPost = false
@@ -271,7 +265,6 @@ export default {
         this.getProfile()
         this.getPosts(this.postNavigation.nextPage, false, 0).then(() => {
             if (this.isSpecialist) {
-                console.log('jestem spacjelista')
                 this.getOpinions(this.opinionNavigation.nextPage, false)
                 this.getMyOpinionToSpecialist()
             }

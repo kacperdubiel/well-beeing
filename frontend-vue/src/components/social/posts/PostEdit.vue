@@ -30,12 +30,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="!this.editedPostSource.sharing">
                             <div class="col fw-bolder">
                                 Zdjęcie:
                             </div>
                         </div>
-                        <div class="row" v-if="isWithPhoto">
+                        <div class="row" v-if="isWithPhoto && !this.editedPostSource.sharing">
                             <div class="col">
                                 <img :src="postPicSrc" alt="Post picture"  id="post-picture" class="w-100">
                             </div>
@@ -45,7 +45,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="row" v-else>
+                        <div class="row" v-else-if="!isWithPhoto && !this.editedPostSource.sharing">
                             <input
                                 class="form-control"
                                 type="file"
@@ -105,8 +105,7 @@ export default {
             this.submittingUpdatePost = true
             this.clearStatusPost()
 
-            if (!this.isWithPhoto && this.$refs.newPostPicture.files.length > 0) {
-                console.log('tu wchodze')
+            if (!this.isWithPhoto && !this.editedPostSource.sharing && this.$refs.newPostPicture.files.length > 0) {
                 this.editedPost.postImgPath = this.$refs.newPostPicture.files[0].name
                 this.newPhoto = true
             }

@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing;
+package com.wellbeeing.wellbeeing.sport.tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -7,24 +7,28 @@ import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseWithLabelsReque
 import com.wellbeeing.wellbeeing.domain.sport.EExerciseType;
 import com.wellbeeing.wellbeeing.domain.sport.Exercise;
 import com.wellbeeing.wellbeeing.util.JwtUtil;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@SpringBootTest(
-//        SpringBootTest.WebEnvironment.MOCK,
-//        classes = Application.class)
+@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
+@Transactional
 @TestPropertySource(
         locations = "classpath:sport-test.properties")
 
@@ -49,6 +53,11 @@ public class ExercisesControllerIntegrationTests {
         }
     }
 
+    @Before
+    public void setup() {
+        System.out.println("Initiating the before steps");
+    }
+
     @Test
     public void getAllExercisesArrayAndCheckFirstRecordTest()
             throws Exception {
@@ -62,7 +71,7 @@ public class ExercisesControllerIntegrationTests {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content[0].name").value("1 Handed Kettlebell Swing"));
+                .andExpect(jsonPath("$.content[0].name").value("2 Handed Kettlebell Swing"));
     }
 
     @Test
@@ -120,7 +129,7 @@ public class ExercisesControllerIntegrationTests {
 
         Exercise exercise = Exercise
                 .builder()
-                .name("1 Handed Kettlebell Swing")
+                .name("2 Handed Kettlebell Swing")
                 .exerciseType(EExerciseType.CARDIO)
                 .met(8.5)
                 .description("Some description")

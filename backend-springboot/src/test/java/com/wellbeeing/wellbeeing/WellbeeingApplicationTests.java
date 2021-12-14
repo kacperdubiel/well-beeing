@@ -1,10 +1,17 @@
 package com.wellbeeing.wellbeeing;
 
+import com.wellbeeing.wellbeeing.sport.tests.ExercisesControllerIntegrationTests;
+import com.wellbeeing.wellbeeing.sport.tests.TrainingControllerTests;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-@SpringBootTest
-class WellbeeingApplicationTests {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        ExercisesControllerIntegrationTests.class,
+        TrainingControllerTests.class
+})
+public class WellbeeingApplicationTests {
 
     @Test
     void contextLoads() {

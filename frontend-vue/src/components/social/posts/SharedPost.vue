@@ -66,7 +66,6 @@ export default {
         downloadProfilePicture () {
             const url = `${this.apiURL}profile/export/${this.postSource.creator.id}`
             const token = this.$store.getters.getToken;
-            console.log('profile')
             this.$func_global.downloadPhoto(url, token).then(result => this.profilePictureSrc = result)
         },
         downloadPostPicture () {

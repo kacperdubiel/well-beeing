@@ -29,7 +29,9 @@
                     <img v-else src="@/assets/no-photo.png" alt="Profile picture"  class="profile-picture" height="40" width="40">
                     <div class="dropdown">
                         <a class="dropdown-toggle ms-2" href="#" role="button" id="dropdown-profile" data-bs-toggle="dropdown" aria-expanded="false">
-                            Cześć, {{this.$store.getters.getFirstName}}!
+                            <span>Cześć</span>
+                            <span v-if="this.$store.getters.getFirstName">, {{this.$store.getters.getFirstName}}</span>
+                            <span>!</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdown-profile">
                             <li>
@@ -61,7 +63,7 @@ export default {
         getProfiles () {
             if (this.searchPhrase !== '') {
                 const url = `${this.apiURL}profile`
-                const token = this.$store.getters.getToken;
+                const token = this.$store.getters.getToken
                 const myParams = {
                     fullName: this.searchPhrase
                 }

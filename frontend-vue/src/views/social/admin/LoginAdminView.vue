@@ -67,7 +67,6 @@ export default {
                 this.$store.commit('setToken', response.data['jwt']);
                 console.log(this.$store.getters.getToken)
                 this.getUserInfo()
-                this.$router.push({name: 'RoleRequestsViewAdmin'})
             }).catch(error => {
                 console.log(error.response);
                 this.errorLogin = true
@@ -81,17 +80,17 @@ export default {
             this.axios.get(url, {headers: {Authorization: `Bearer ${this.$store.getters.getToken}`}}).then((response) => {
                 this.$store.commit('setFirstName', response.data['firstName']);
                 this.$store.commit('setLastName', response.data['lastName']);
-                console.log(this.$store.getters.getFirstName)
-                console.log(this.$store.getters.getLastName)
                 let roles = []
                 response.data['roles'].forEach((e) => {
                     roles.push(e['role'])
                 })
                 this.$store.commit('setRoles', roles);
                 console.log('role', this.$store.getters.getRoles)
+                this.$router.push({name: 'RoleRequestsViewAdmin'})
             }).catch(error => {
                 console.log(error.response);
             });
+            return ''
         },
     }
 }

@@ -26,7 +26,7 @@
 
                 </ul>
                 <form class="d-flex">
-                    <button class="btn btn-outline-light">Wyloguj się</button>
+                    <button @click="handleLogout" class="btn btn-outline-light">Wyloguj się</button>
                 </form>
             </div>
         </div>
@@ -35,7 +35,14 @@
 
 <script>
 export default {
-    name: "NavbarAdmin"
+    name: "NavbarAdmin",
+    methods: {
+        handleLogout() {
+            this.$store.replaceState({})
+            this.$store.commit('setSearchPhrase', "")
+            this.$router.push({ name: 'LoginAdminView' });
+        }
+    }
 }
 </script>
 

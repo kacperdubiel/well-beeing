@@ -1,6 +1,8 @@
 package com.wellbeeing.wellbeeing.api.sport;
 
 import com.wellbeeing.wellbeeing.domain.account.ERole;
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.message.ErrorMessage;
 import com.wellbeeing.wellbeeing.domain.message.sport.AddExerciseToTrainingRequest;
@@ -103,7 +105,7 @@ public class TrainingController {
     }
 
     @PatchMapping("/{id}/add-exercise/{exerciseId}")
-    public ResponseEntity<?> addExerciseToTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, @RequestBody @NonNull AddExerciseToTrainingRequest request, Principal principal) throws NotFoundException {
+    public ResponseEntity<?> addExerciseToTrainingById(@PathVariable(value = "id") Long trainingId, @PathVariable(value = "exerciseId") Long exerciseId, @RequestBody @NonNull AddExerciseToTrainingRequest request, Principal principal) throws NotFoundException, ForbiddenException, ConflictException {
         ExerciseInTraining addedExercise = null;
         addedExercise = trainingService.addExerciseToTraining(trainingId, exerciseId, request.getReps(),
                 request.getTime_seconds(), request.getSeries(),

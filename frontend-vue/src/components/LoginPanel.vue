@@ -179,7 +179,6 @@ export default {
     },
     methods: {
         login() {
-            console.log('email: ' + this.email + ' pass: ' + this.password)
             this.submittingLogin = true
             this.clearStatus()
             if (this.invalidEmail || this.invalidPassword) {
@@ -194,9 +193,7 @@ export default {
             this.axios.post(url, data).then((response) => {
                 this.$store.commit('setToken', response.data['jwt']);
                 localStorage.setItem('token', response.data.jwt)
-                console.log(this.$store.getters.getToken)
                 this.$store.commit('setEmail', this.email);
-                console.log(this.$store.getters.getEmail)
                 this.getUserInfo()
                 this.clearInputs()
             }).catch(error => {
@@ -207,7 +204,6 @@ export default {
             this.submittingLogin = false
         },
         register() {
-            console.log('email: ' + this.newEmail + ' pass: ' + this.newPassword)
             this.submittingRegister = true
             this.clearStatus()
             if (this.invalidNewEmail || this.invalidNewPassword || this.invalidNewPasswordSecond) {
@@ -250,20 +246,11 @@ export default {
                 this.$store.commit('setSex', response.data['esex']);
 
                 localStorage.setItem('userId', response.data['id'])
-                console.log(this.$store.getters.getFirstName)
-                console.log(this.$store.getters.getLastName)
-                console.log(this.$store.getters.getProfileId)
-                console.log(this.$store.getters.getProfileImageSrc)
-                console.log(this.$store.getters.getDoctorProfile)
-                console.log(this.$store.getters.getDieticianProfile)
-                console.log(this.$store.getters.getTrainerProfile)
-                console.log(this.$store.getters.getSex)
                 let roles = []
                 response.data['roles'].forEach((e) => {
                     roles.push(e['role'])
                 })
                 this.$store.commit('setRoles', roles);
-                console.log('role', this.$store.getters.getRoles)
                 let specializations = []
                 this.$store.commit('setSpecialization', specializations);
                 if (response.data['doctorProfile'] !== null) {
@@ -271,7 +258,6 @@ export default {
                         specializations.push(e['name'])
                     })
                     this.$store.commit('setSpecialization', specializations);
-                    console.log('specializations', this.$store.getters.getSpecializations)
                 }
                 this.$router.push({name: 'FeedView'})
             }).catch(error => {

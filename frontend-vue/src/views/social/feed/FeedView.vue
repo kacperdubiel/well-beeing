@@ -4,8 +4,14 @@
             <new-post :is-feed="true" @refresh:posts="getPostsFeedWithNewPost"/>
         </div>
 
-        <div class="row mx-4 py-2">
-            <posts-list v-if="posts" id="posts" :posts-source="posts"/>
+        <div class="row mx-4 py-2" v-if="posts && posts.length > 0">
+            <posts-list id="posts" :posts-source="posts"/>
+        </div>
+
+        <div v-else class="container mt-4">
+            Nie masz jeszcze znajomych ani obserwowanych :(
+            <br />
+            Zaproś kogoś do znajomych lub zaobserwuj, aby widzieć tutaj ich posty
         </div>
 
 
@@ -75,7 +81,6 @@ export default {
                 params: myParams,
                 headers: {Authorization: `Bearer ${token}`}
             }).then((response) => {
-                console.log(response.data)
                 if (!this.postNavigation.last && isScroll)
                     this.posts = this.posts.concat(response.data['content'])
                 else if (!isScroll) {

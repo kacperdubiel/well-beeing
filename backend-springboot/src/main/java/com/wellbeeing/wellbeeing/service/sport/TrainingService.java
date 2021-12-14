@@ -1,5 +1,7 @@
 package com.wellbeeing.wellbeeing.service.sport;
 
+import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
+import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.sport.ExerciseInTraining;
 import com.wellbeeing.wellbeeing.domain.sport.Training;
@@ -30,7 +32,7 @@ public interface TrainingService {
 
     boolean deleteTraining(long trainingId) throws NotFoundException;
 
-    ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId, int repetitions, int timeSeconds, int series, String clientName) throws NotFoundException;
+    ExerciseInTraining addExerciseToTraining(long trainingId, long exerciseId, int repetitions, int timeSeconds, int series, String clientName) throws NotFoundException, ForbiddenException, ConflictException;
 
     boolean removeExerciseFromTraining(long trainingId, long exerciseId, String clientName) throws NotFoundException;
 
