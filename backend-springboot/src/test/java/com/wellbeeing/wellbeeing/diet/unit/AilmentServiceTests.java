@@ -1,4 +1,4 @@
-package com.wellbeeing.wellbeeing.diet;
+package com.wellbeeing.wellbeeing.diet.unit;
 
 import com.wellbeeing.wellbeeing.domain.diet.Ailment;
 import com.wellbeeing.wellbeeing.repository.diet.AilmentDAO;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(MockitoExtension.class)
-public class AilmentControllerTests {
+public class AilmentServiceTests {
 
     @MockBean
     private AilmentDAO ailmentDAO;
