@@ -96,6 +96,7 @@ public class ReportDishDetail implements NutritionalValueDerivable {
     @Override
     @PostLoad
     public void setDerived(){
+        this.dish.setDerived();
         this.derivedNutritionalValues.setDerivedCalories(countCalories());
         this.derivedNutritionalValues.setDerivedCarbohydrates(countCarbohydrates());
         this.derivedNutritionalValues.setDerivedFats(countFats());

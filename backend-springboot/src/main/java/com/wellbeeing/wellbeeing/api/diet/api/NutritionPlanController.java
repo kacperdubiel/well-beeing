@@ -1,18 +1,15 @@
 package com.wellbeeing.wellbeeing.api.diet.api;
 
+import com.wellbeeing.wellbeeing.api.diet.message.AddNutritionPlanOwnerRequest;
+import com.wellbeeing.wellbeeing.api.diet.message.CreateNutritionPlanRequest;
+import com.wellbeeing.wellbeeing.api.diet.message.GenerateNutritionPlanRequest;
 import com.wellbeeing.wellbeeing.domain.account.ERole;
-import com.wellbeeing.wellbeeing.domain.account.Profile;
 import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlan;
 import com.wellbeeing.wellbeeing.domain.diet.nutrition_plan.NutritionPlanPosition;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
 import com.wellbeeing.wellbeeing.domain.exception.NotFoundException;
 import com.wellbeeing.wellbeeing.domain.exception.NutritionPlanGenerationException;
-import com.wellbeeing.wellbeeing.api.diet.message.AddNutritionPlanOwnerRequest;
-import com.wellbeeing.wellbeeing.api.diet.message.CreateNutritionPlanRequest;
-import com.wellbeeing.wellbeeing.api.diet.message.GenerateNutritionPlanRequest;
-import com.wellbeeing.wellbeeing.domain.telemedic.EConnectionType;
-import com.wellbeeing.wellbeeing.domain.telemedic.ProfileConnection;
 import com.wellbeeing.wellbeeing.service.account.ProfileService;
 import com.wellbeeing.wellbeeing.service.account.UserService;
 import com.wellbeeing.wellbeeing.service.diet.plan.NutritionPlanService;
@@ -138,7 +135,7 @@ public class NutritionPlanController {
     public ResponseEntity<?> addEmptyNutritionPlan(Principal principal, @RequestBody @NonNull CreateNutritionPlanRequest request) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());
         NutritionPlan nutritionPlan = nutritionPlanService.addEmptyNutritionPlanToProfile(profileId, request.getName());
-        return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
+        return new ResponseEntity<>(nutritionPlan, HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/nutrition-plan/profile/{profileId}/main", method = RequestMethod.GET)
@@ -154,6 +151,7 @@ public class NutritionPlanController {
         return new ResponseEntity<>(nutritionPlan, HttpStatus.OK);
     }
 
+    @RolesAllowed({ERole.Name.ROLE_DIETICIAN})
     @RequestMapping(path = "/nutrition-plan/dietician", method = RequestMethod.POST)
     public ResponseEntity<?> addEmptyDieticianNutritionPlan(Principal principal, @RequestBody @NonNull CreateNutritionPlanRequest request) throws NotFoundException {
         UUID profileId = userService.findUserIdByUsername(principal.getName());

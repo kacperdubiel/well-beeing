@@ -1,5 +1,6 @@
 package com.wellbeeing.wellbeeing.api.diet.api;
 
+import com.wellbeeing.wellbeeing.domain.account.ERole;
 import com.wellbeeing.wellbeeing.domain.diet.NutritionLabel;
 import com.wellbeeing.wellbeeing.domain.exception.ConflictException;
 import com.wellbeeing.wellbeeing.domain.exception.ForbiddenException;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -29,17 +31,21 @@ public class NutritionLabelController {
         this.userService = userService;
     }
 
+    @RolesAllowed({ERole.Name.ROLE_BASIC_USER})
     @RequestMapping(path = "/nutrition-label/{labelId}", method = RequestMethod.GET)
     public ResponseEntity<?> getLabelById(@PathVariable("labelId") UUID labelID) throws NotFoundException {
         NutritionLabel nutritionLabel = nutritionLabelService.getNutritionLabelById(labelID);
         return new ResponseEntity<>(nutritionLabel, HttpStatus.OK);
     }
 
+    @RolesAllowed({ERole.Name.ROLE_BASIC_USER})
     @RequestMapping(path = "/nutrition-label", method = RequestMethod.GET)
     public ResponseEntity<?> getAllNutritionLabels() {
         return new ResponseEntity<>(nutritionLabelService.getNutritionLabels(), HttpStatus.OK);
     }
 
+
+    @RolesAllowed({ERole.Name.ROLE_DIETICIAN})
     @RequestMapping(path = "/nutrition-label/dietician", method = RequestMethod.GET)
     public ResponseEntity<?> getDieticianNutritionLabels(Principal principal,
                                                          @RequestParam(value = "page", defaultValue = "0") int page,
@@ -55,11 +61,13 @@ public class NutritionLabelController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RolesAllowed({ERole.Name.ROLE_DIETICIAN})
     @RequestMapping(path = "/nutrition-label", method = RequestMethod.POST)
     public ResponseEntity<?> addNutritionLabel(@RequestBody @NonNull NutritionLabel label) throws ConflictException {
         return new ResponseEntity<>(nutritionLabelService.addNutritionLabel(label), HttpStatus.CREATED);
     }
 
+    @RolesAllowed({ERole.Name.ROLE_DIETICIAN})
     @RequestMapping(path = "/nutrition-label/{labelId}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateNutritionLabel(Principal principal, @RequestBody @NonNull NutritionLabel label, @PathVariable("labelId") UUID labelId) throws NotFoundException, ForbiddenException, ConflictException {
         NutritionLabel actualLabel = nutritionLabelService.getNutritionLabelById(labelId);
@@ -69,6 +77,7 @@ public class NutritionLabelController {
         return new ResponseEntity<>(nutritionLabelService.updateNutritionLabel(label, labelId), HttpStatus.OK);
     }
 
+    @RolesAllowed({ERole.Name.ROLE_DIETICIAN})
     @RequestMapping(path = "/nutrition-label/{labelId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteNutritionLabel(Principal principal, @PathVariable("labelId") UUID labelId) throws NotFoundException, ForbiddenException {
         NutritionLabel actualLabel = nutritionLabelService.getNutritionLabelById(labelId);
