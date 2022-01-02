@@ -580,7 +580,7 @@ INSERT INTO public.diet_nutrition_label (nutrition_label_id, diet_id) VALUES ('d
 -- Data for Name: dish; Type: TABLE DATA; Schema: public; Owner: wellbeeing
 --
 
-INSERT INTO public.dish (id, active, created_date, derived_caffeine, derived_calories, derived_carbohydrates, derived_cholesterol, derived_fats, derived_fiber, derived_proteins, derived_salt, derived_saturated_fats, derived_sugar, description, draft, glycemic_index_level, img_dish_path, name, recipe, creator_id) VALUES ('2ea31743-56d8-454a-adba-19b331f7b96d', true, '2021-12-07', 0, 1650, 40, 0, 10, 17.000000000000004, 50, 10.5, 2, 250, 'Bardzo dobre danie', false, 'LOW', '2021-12-06-18-36-07-254_marchewki.jfif', 'Kolorowe marchewki', 'Obierz i zjedz', '2b79bda3-85bd-4992-9cdf-e9f508325aee');
+INSERT INTO public.dish (id, active, created_date, description, draft, glycemic_index_level, img_dish_path, name, recipe, creator_id) VALUES ('2ea31743-56d8-454a-adba-19b331f7b96d', true, '2021-12-07', 'Bardzo dobre danie', false, 'LOW', '2021-12-06-18-36-07-254_marchewki.jfif', 'Kolorowe marchewki', 'Obierz i zjedz', '2b79bda3-85bd-4992-9cdf-e9f508325aee');
 
 
 --
@@ -608,7 +608,7 @@ INSERT INTO public.product (id, caffeine_per_hundred_grams, calories_per_hundred
 -- Data for Name: dish_product_detail; Type: TABLE DATA; Schema: public; Owner: wellbeeing
 --
 
-INSERT INTO public.dish_product_detail (id, amount_of_product, measure_type, derived_caffeine, derived_calories, derived_carbohydrates, derived_cholesterol, derived_fats, derived_fiber, derived_proteins, derived_salt, derived_saturated_fats, derived_sugar, product_id, dish_id) VALUES ('3cfcd5e3-3b82-42ed-8755-0d8b7cd2e431', 5, 'KILO_GRAM', 0, 1650, 40, 0, 10, 17.000000000000004, 50, 10.5, 2, 250, 'f95222ef-770a-4c31-a6a7-c887068516aa', '2ea31743-56d8-454a-adba-19b331f7b96d');
+INSERT INTO public.dish_product_detail (id, amount_of_product, measure_type, product_id, dish_id) VALUES ('3cfcd5e3-3b82-42ed-8755-0d8b7cd2e431', 5, 'KILO_GRAM', 'f95222ef-770a-4c31-a6a7-c887068516aa', '2ea31743-56d8-454a-adba-19b331f7b96d');
 
 
 --
@@ -1512,8 +1512,8 @@ INSERT INTO public.profile_connections (id, accept_date, connection_type, is_acc
 -- Data for Name: report; Type: TABLE DATA; Schema: public; Owner: wellbeeing
 --
 
-INSERT INTO public.report (id, derived_calories, derived_carbohydrates, derived_fats, derived_proteins, report_date, owner_profile_id, derived_caffeine, derived_cholesterol, derived_fiber, derived_salt, derived_saturated_fats, derived_sugar) VALUES ('39dd2a4d-077c-45d6-a121-e6587b59943c', 0, 0, 0, 0, '2021-11-14', '2b79bda3-85bd-4992-9cdf-e9f508325aee', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO public.report (id, derived_calories, derived_carbohydrates, derived_fats, derived_proteins, report_date, owner_profile_id, derived_caffeine, derived_cholesterol, derived_fiber, derived_salt, derived_saturated_fats, derived_sugar) VALUES ('362b7c68-fc0f-45d4-94ca-e6bdaaffeb63', 0, 0, 0, 0, '2021-11-22', '2b79bda3-85bd-4992-9cdf-e9f508325aee', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO public.report (id, report_date, owner_profile_id) VALUES ('39dd2a4d-077c-45d6-a121-e6587b59943c', '2021-11-14', '2b79bda3-85bd-4992-9cdf-e9f508325aee');
+INSERT INTO public.report (id, report_date, owner_profile_id) VALUES ('362b7c68-fc0f-45d4-94ca-e6bdaaffeb63', '2021-11-22', '2b79bda3-85bd-4992-9cdf-e9f508325aee');
 
 
 --
